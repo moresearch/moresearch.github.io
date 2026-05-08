@@ -23,6 +23,7 @@
 - Posts may also cite workshops, talks, videos, and companion repositories when a reflection post is grounded in their technical content.
 - Posts that cite YouTube videos should include a linked thumbnail image near the relevant discussion rather than a text-only reference.
 - Posts may embed remote publisher-hosted book-cover images when discussing influential books tied directly to the post topic.
+- Posts may compare concrete Go libraries or frameworks when the comparison is grounded in current official docs and includes code examples.
 - Fenced code blocks with language info strings are allowed and should be used when posts include code examples.
 - Highlighted code blocks inherit the shared site-wide syntax theme automatically; authors should only supply the correct language info string.
 - When a post includes code, the shared snippet styling should render it in a monochrome `vim-256noir`-style palette and Sudo font without post-level overrides.

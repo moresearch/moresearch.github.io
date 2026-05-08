@@ -18,9 +18,8 @@ import (
 )
 
 const (
-	siteTitle       = "Engineering Blog"
+	siteTitle       = "Engineering blog"
 	siteURL         = "https://blog.hackspree.com/"
-	siteTagline     = "Software engineering notes, experiments, and build logs."
 	siteDescription = "Single-page writing log built from Markdown sources."
 )
 
@@ -171,11 +170,10 @@ var (
 
     .post-meta,
     .post-summary,
-    .role,
     .tag {
       margin: 0;
       color: #9ca3af;
-      font-size: 0.54rem;
+      font-size: 0.42rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -193,23 +191,15 @@ var (
     }
 
     h1 {
-      font-size: clamp(1rem, 1.6vw, 1.35rem);
+      font-size: clamp(0.84rem, 1.1vw, 0.98rem);
     }
 
     h2 {
-      font-size: clamp(0.76rem, 1.1vw, 0.9rem);
+      font-size: clamp(0.6rem, 0.85vw, 0.72rem);
     }
 
     h3 {
-      font-size: 0.92rem;
-    }
-
-    .role {
-      margin: 10px 0 0;
-      max-width: 36ch;
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      line-height: 1.7;
+      font-size: 0.72rem;
     }
 
     .posts-nav {
@@ -237,21 +227,15 @@ var (
       gap: 8px;
     }
 
-    .posts-nav-title,
     .posts-nav-empty,
     .posts-nav a {
       color: #9ca3af;
-      font-size: 0.56rem;
+      font-size: 0.44rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      line-height: 1.6;
+      line-height: 1.5;
       overflow-wrap: anywhere;
       word-break: break-word;
-    }
-
-    .posts-nav-title {
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
     }
 
     .posts-nav a:hover {
@@ -264,8 +248,8 @@ var (
     }
 
     .posts-nav-links > * + * {
-      margin-top: 12px;
-      padding-top: 12px;
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.16);
     }
 
@@ -274,19 +258,19 @@ var (
     }
 
     .post + .post {
-      margin-top: 34px;
-      padding-top: 34px;
+      margin-top: 28px;
+      padding-top: 28px;
       border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .post-header > * + * {
-      margin-top: 12px;
+      margin-top: 9px;
     }
 
     .post-summary {
       max-width: 46ch;
-      font-size: 0.54rem;
-      line-height: 1.6;
+      font-size: 0.42rem;
+      line-height: 1.45;
     }
 
     .tags {
@@ -296,15 +280,15 @@ var (
     }
 
     .tag {
-      font-size: 0.52rem;
+      font-size: 0.4rem;
     }
 
     .post-body {
-      margin-top: 22px;
+      margin-top: 18px;
       color: #fff;
-      font-size: 0.72rem;
+      font-size: 0.58rem;
       letter-spacing: 0.02em;
-      line-height: 1.68;
+      line-height: 1.52;
     }
 
     .post-body > :first-child {
@@ -322,12 +306,12 @@ var (
     .post-body pre,
     .post-body h2,
     .post-body h3 {
-      margin: 0 0 20px;
+      margin: 0 0 16px;
     }
 
     .post-body h2,
     .post-body h3 {
-      font-size: 0.74rem;
+      font-size: 0.62rem;
     }
 
     .post-body ul,
@@ -411,8 +395,7 @@ var (
         padding: 24px 28px 32px;
       }
 
-      .content,
-      .role {
+      .content {
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
@@ -478,10 +461,8 @@ var (
         <div class="nav-rail">
           <div class="nav-head">
             <h1>{{.SiteTitle}}</h1>
-            <p class="role">{{.SiteTagline}}</p>
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
-            <p class="posts-nav-title">Posts</p>
             <div class="posts-nav-links">
               {{- if .HasPosts}}
               {{- range .Posts}}
@@ -516,7 +497,6 @@ type pageData struct {
 	SiteURL         string
 	PageTitle       string
 	SiteTitle       string
-	SiteTagline     string
 	SiteDescription string
 	LatestDate      string
 	Posts           []post
@@ -730,7 +710,6 @@ func writePage(outputPath string, posts []post) error {
 		SiteURL:         siteURL,
 		PageTitle:       siteTitle,
 		SiteTitle:       siteTitle,
-		SiteTagline:     siteTagline,
 		SiteDescription: siteDescription,
 		LatestDate:      latestDate,
 		Posts:           posts,

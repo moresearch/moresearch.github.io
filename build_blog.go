@@ -41,6 +41,8 @@ var (
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
     html,
     body {
@@ -461,14 +463,71 @@ var (
       overflow-x: auto;
       padding: 18px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #181818;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       color: #d1d5db;
     }
 
     .post-body pre code {
       padding: 0;
       background: transparent;
+    }
+
+    .post-body pre code.hljs {
+      display: block;
+      overflow-x: auto;
+      color: #eae6df;
+      background: transparent;
+    }
+
+    .post-body .hljs-comment,
+    .post-body .hljs-quote {
+      color: #6b6b6b;
+    }
+
+    .post-body .hljs-keyword,
+    .post-body .hljs-selector-tag,
+    .post-body .hljs-literal,
+    .post-body .hljs-section,
+    .post-body .hljs-link {
+      color: #c792ea;
+    }
+
+    .post-body .hljs-string,
+    .post-body .hljs-attr,
+    .post-body .hljs-symbol,
+    .post-body .hljs-bullet,
+    .post-body .hljs-template-tag,
+    .post-body .hljs-template-variable,
+    .post-body .hljs-addition {
+      color: #c3e88d;
+    }
+
+    .post-body .hljs-number,
+    .post-body .hljs-regexp,
+    .post-body .hljs-selector-class,
+    .post-body .hljs-selector-id {
+      color: #f78c6c;
+    }
+
+    .post-body .hljs-title.function_,
+    .post-body .hljs-title.class_,
+    .post-body .hljs-function .hljs-title,
+    .post-body .hljs-title {
+      color: #82aaff;
+    }
+
+    .post-body .hljs-operator,
+    .post-body .hljs-punctuation,
+    .post-body .hljs-meta {
+      color: #d6deeb;
+    }
+
+    .post-body .hljs-variable,
+    .post-body .hljs-property,
+    .post-body .hljs-params,
+    .post-body .hljs-type {
+      color: #f9e2af;
     }
 
     .empty-state {
@@ -600,6 +659,10 @@ var (
     </div>
   </main>
   <script>
+    if (window.hljs) {
+      window.hljs.highlightAll();
+    }
+
     (() => {
       const posts = Array.from(document.querySelectorAll('.post[id]'));
       const navRail = document.querySelector('.nav-rail');

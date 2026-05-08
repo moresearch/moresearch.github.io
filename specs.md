@@ -10,7 +10,7 @@
 - The page should feel like `hackspree.com` with a three-column layout: logo rail, body column, and posts navigation rail.
 - On larger screens, the left logo rail and the right posts navigation rail both stay fixed in the vertical center while the body column scrolls.
 - The visible typography must be smaller than the current Hackspree landing page while remaining comfortably readable, so more blog content fits on screen.
-- The rotated Hackspree logo and overall desktop/mobile proportions must stay visually close enough to `hackspree.com` that moving between the landing page and blog feels like a seamless transition.
+- The rotated Hackspree logo, its effective left-page margin, and the overall desktop/mobile proportions must stay visually close enough to `hackspree.com` that moving between the landing page and blog feels like a seamless transition.
 - The primary visible heading inside the right-side navigation rail is only `Engineering blog`, rendered in a smaller treatment with no subtitle.
 - The right-side navigation list must not show a `Posts` label, must use smaller link text with clear separators between entries, link to the in-page post anchors, and keep its vertical scrollbar visually hidden until the user hovers the navigation rail.
 - As the user scrolls through posts, the matching navigation entry should become visibly active and the navigation rail should automatically keep that active entry near its vertical center.

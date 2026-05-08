@@ -20,6 +20,7 @@
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
 - Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.
 - Rendered post bodies use the site's configured monospace body font; post authors should not rely on custom font styling in Markdown.
+- Each post slug also drives the in-page navigation state, so slugs must stay stable and unique.
 
 ## Constraints and invariants
 

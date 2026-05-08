@@ -13,6 +13,7 @@
 - The rotated Hackspree logo and overall desktop/mobile proportions must stay visually close enough to `hackspree.com` that moving between the landing page and blog feels like a seamless transition.
 - The primary visible heading inside the right-side navigation rail is only `Engineering blog`, rendered in a smaller treatment with no subtitle.
 - The right-side navigation list must not show a `Posts` label, must use smaller link text with clear separators between entries, link to the in-page post anchors, and keep its vertical scrollbar visually hidden until the user hovers the navigation rail.
+- As the user scrolls through posts, the matching navigation entry should become visibly active and the navigation rail should automatically keep that active entry near its vertical center.
 - Post titles must be substantially larger than the body copy so each article headline stands out clearly in the dense layout.
 - Standard post body copy should use a straighter, less rounded professional monospace face than Space Mono and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
 - The post typography should stay compact overall, but the body copy should remain slightly enlarged for readability.
@@ -30,6 +31,7 @@
 - The local build pipeline must use the Go toolchain only.
 - The build flow must be deterministic: posts are rendered in descending date order and repeated builds without source changes must not change the output.
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
+- The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.
 - The repository must include `.nojekyll` so GitHub Pages serves the generated output without Jekyll processing.
 - The repository root must contain the Hackspree logo asset used by the fixed side rail.

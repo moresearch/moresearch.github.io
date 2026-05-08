@@ -41,6 +41,7 @@ var (
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/iosevka.min.css" rel="stylesheet">
   <style>
     html,
     body {
@@ -195,7 +196,7 @@ var (
     }
 
     h2 {
-      font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+      font-size: clamp(1.18rem, 1.7vw, 1.4rem);
     }
 
     h3 {
@@ -285,10 +286,11 @@ var (
 
     .post-body {
       margin-top: 18px;
-      color: #fff;
+      color: #737983;
       font-size: 0.58rem;
       letter-spacing: 0.02em;
       line-height: 1.52;
+      font-family: "Iosevka", "Iosevka Web", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .post-body > :first-child {
@@ -312,6 +314,14 @@ var (
     .post-body h2,
     .post-body h3 {
       font-size: 0.62rem;
+      color: #fff;
+      font-family: "Orbitron", Arial, sans-serif;
+    }
+
+    .post-body a,
+    .post-body strong,
+    .post-body code {
+      color: #fff;
     }
 
     .post-body ul,
@@ -327,6 +337,7 @@ var (
       max-width: 34ch;
       padding-left: 18px;
       border-left: 2px solid rgba(255, 255, 255, 0.14);
+      color: #949aa4;
     }
 
     .post-body code {
@@ -342,6 +353,7 @@ var (
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #d1d5db;
     }
 
     .post-body pre code {

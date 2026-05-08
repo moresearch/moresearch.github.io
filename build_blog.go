@@ -367,9 +367,9 @@ var (
       max-width: 54ch;
       padding-left: 12px;
       border-left: 1px solid rgba(255, 255, 255, 0.14);
-      color: #b5bdc8;
-      font-size: 0.58rem;
-      line-height: 1.72;
+      color: #c0c8d2;
+      font-size: 0.62rem;
+      line-height: 1.78;
       letter-spacing: 0.04em;
       text-transform: none;
       font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
@@ -387,10 +387,10 @@ var (
 
     .post-body {
       margin-top: 18px;
-      color: #737983;
-      font-size: 0.68rem;
+      color: #9099a5;
+      font-size: 0.74rem;
       letter-spacing: 0.02em;
-      line-height: 1.64;
+      line-height: 1.76;
       font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-weight: 400;
     }
@@ -410,7 +410,7 @@ var (
     .post-body pre,
     .post-body h2,
     .post-body h3 {
-      margin: 0 0 16px;
+      margin: 0 0 20px;
     }
 
     .post-body h2,
@@ -427,13 +427,11 @@ var (
     }
 
     .post-body a {
-      text-decoration: underline;
-      text-decoration-color: rgba(255, 255, 255, 0.34);
-      text-underline-offset: 0.18em;
+      text-decoration: none;
     }
 
     .post-body a:hover {
-      text-decoration-color: rgba(255, 255, 255, 0.8);
+      color: #d1d5db;
     }
 
     .post-body ul,

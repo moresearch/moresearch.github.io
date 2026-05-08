@@ -21,6 +21,7 @@
 - Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
 - The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
+- The published archive may also include first-person technical reflection posts on workshops, talks, or videos, as long as they stay grounded in concrete implementation details rather than generic impressions.
 - Posts may include fenced code examples with syntax highlighting, and the code presentation should use a 246_noir-inspired dark palette that fits the Hackspree aesthetic.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - Links rendered inside post bodies should stay minimal and readable without visible underlines.

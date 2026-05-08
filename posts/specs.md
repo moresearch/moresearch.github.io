@@ -20,6 +20,7 @@
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
+- Posts may also cite workshops, talks, videos, and companion repositories when a reflection post is grounded in their technical content.
 - Fenced code blocks with language info strings are allowed and should be used when posts include code examples.
 - Highlighted code blocks inherit the shared site-wide syntax theme automatically; authors should only supply the correct language info string.
 - Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.
@@ -27,6 +28,7 @@
 - Rendered post-body links follow the site theme and should not rely on underline styling for visibility.
 - Each post slug also drives the in-page navigation state, so slugs must stay stable and unique.
 - Post length may vary, including medium-length essays, as long as the Markdown stays readable in the single-page archive.
+- Reflection posts should explain what specifically was learned, what tradeoffs mattered, and why those details changed the author's view of the topic.
 
 ## Constraints and invariants
 

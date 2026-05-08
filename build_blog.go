@@ -125,7 +125,6 @@ var (
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
     }
 
     .logo-link {
@@ -157,6 +156,17 @@ var (
       width: 100%;
       max-width: 640px;
       margin: 0;
+    }
+
+    .content-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+      gap: 32px;
+      align-items: start;
+    }
+
+    .content-copy {
+      min-width: 0;
     }
 
     .post-meta,
@@ -203,11 +213,12 @@ var (
     }
 
     .posts-nav {
-      width: min(220px, 100%);
+      width: 100%;
       display: grid;
       gap: 10px;
-      justify-items: center;
-      text-align: center;
+      justify-items: start;
+      text-align: left;
+      padding-top: 6px;
     }
 
     .posts-nav-title,
@@ -369,11 +380,22 @@ var (
         text-align: center;
       }
 
+      .content-top {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
       .content,
       .role {
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      .posts-nav {
+        justify-items: center;
+        text-align: center;
+        padding-top: 0;
       }
 
       .post-body {
@@ -391,22 +413,26 @@ var (
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
             <img src="logo.png" alt="Hackspree logo" class="logo">
           </a>
-          <nav class="posts-nav" aria-label="Posts navigation">
-            <p class="posts-nav-title">Posts</p>
-            {{- if .HasPosts}}
-            {{- range .Posts}}
-            <a href="#{{.Slug}}">{{.Title}}</a>
-            {{- end}}
-            {{- else}}
-            <span class="posts-nav-empty">No posts yet</span>
-            {{- end}}
-          </nav>
         </div>
       </aside>
       <section class="content-side">
         <div class="content">
-          <h1>{{.SiteTitle}}</h1>
-          <p class="role">{{.SiteTagline}}</p>
+          <div class="content-top">
+            <div class="content-copy">
+              <h1>{{.SiteTitle}}</h1>
+              <p class="role">{{.SiteTagline}}</p>
+            </div>
+            <nav class="posts-nav" aria-label="Posts navigation">
+              <p class="posts-nav-title">Posts</p>
+              {{- if .HasPosts}}
+              {{- range .Posts}}
+              <a href="#{{.Slug}}">{{.Title}}</a>
+              {{- end}}
+              {{- else}}
+              <span class="posts-nav-empty">No posts yet</span>
+              {{- end}}
+            </nav>
+          </div>
       {{- if .HasPosts}}
           <div class="post-list">
       {{- range .Posts}}

@@ -93,7 +93,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
     }
 
     .logo-link {
@@ -125,6 +124,17 @@
       width: 100%;
       max-width: 640px;
       margin: 0;
+    }
+
+    .content-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+      gap: 32px;
+      align-items: start;
+    }
+
+    .content-copy {
+      min-width: 0;
     }
 
     .post-meta,
@@ -171,11 +181,12 @@
     }
 
     .posts-nav {
-      width: min(220px, 100%);
+      width: 100%;
       display: grid;
       gap: 10px;
-      justify-items: center;
-      text-align: center;
+      justify-items: start;
+      text-align: left;
+      padding-top: 6px;
     }
 
     .posts-nav-title,
@@ -337,11 +348,22 @@
         text-align: center;
       }
 
+      .content-top {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
       .content,
       .role {
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      .posts-nav {
+        justify-items: center;
+        text-align: center;
+        padding-top: 0;
       }
 
       .post-body {
@@ -359,16 +381,20 @@
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
             <img src="logo.png" alt="Hackspree logo" class="logo">
           </a>
-          <nav class="posts-nav" aria-label="Posts navigation">
-            <p class="posts-nav-title">Posts</p>
-            <a href="#why-go-still-matters-in-the-ai-era">Why Go still matters in the AI era</a>
-          </nav>
         </div>
       </aside>
       <section class="content-side">
         <div class="content">
-          <h1>Engineering Blog</h1>
-          <p class="role">Software engineering notes, experiments, and build logs.</p>
+          <div class="content-top">
+            <div class="content-copy">
+              <h1>Engineering Blog</h1>
+              <p class="role">Software engineering notes, experiments, and build logs.</p>
+            </div>
+            <nav class="posts-nav" aria-label="Posts navigation">
+              <p class="posts-nav-title">Posts</p>
+              <a href="#why-go-still-matters-in-the-ai-era">Why Go still matters in the AI era</a>
+            </nav>
+          </div>
           <div class="post-list">
       <article class="post" id="why-go-still-matters-in-the-ai-era">
         <header class="post-header">

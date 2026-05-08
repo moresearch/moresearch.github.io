@@ -14,7 +14,7 @@
 - Required front matter fields are `title` and `date`.
 - Optional front matter fields are `slug`, `summary`, and `tags`.
 - `date` must use ISO-8601 calendar format (`YYYY-MM-DD`).
-- The source `date` remains ISO-8601 in front matter even though the published site renders it as Unix time.
+- The source `date` remains ISO-8601 in front matter even though the published site renders it as a larger Unix timestamp with a UTC hover tooltip.
 - `slug`, when provided, must be URL-safe lowercase text using letters, numbers, and hyphens.
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.

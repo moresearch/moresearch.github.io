@@ -18,7 +18,7 @@
 - Standard post body copy should use a straighter, less rounded professional monospace face than Space Mono and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
 - The post typography should stay compact overall, but the body copy should remain slightly enlarged for readability.
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
-- Published post metadata should display the post date as a Unix timestamp, and hovering that timestamp should reveal the normal UTC date.
+- Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
@@ -33,6 +33,7 @@
 - The build flow must be deterministic: posts are rendered in descending date order and repeated builds without source changes must not change the output.
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
 - The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
+- Navigation-centering behavior must not interfere with the main page scroll direction or pull the reader upward while they are scrolling down the post column.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.
 - The repository must include `.nojekyll` so GitHub Pages serves the generated output without Jekyll processing.
 - The repository root must contain the Hackspree logo asset used by the fixed side rail.

@@ -16,6 +16,7 @@
 - Post titles must be substantially larger than the body copy so each article headline stands out clearly in the dense layout.
 - Standard post body copy should use Space Mono Regular 400 and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
 - The post typography should stay compact overall, but the Space Mono body copy should be slightly larger than the current setting to improve readability.
+- The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules

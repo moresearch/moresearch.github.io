@@ -17,6 +17,7 @@
 - `slug`, when provided, must be URL-safe lowercase text using letters, numbers, and hyphens.
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.
+- Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
 
 ## Constraints and invariants
 

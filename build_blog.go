@@ -94,13 +94,14 @@ var (
       align-items: center;
       justify-content: center;
       padding: 32px;
+      box-sizing: border-box;
     }
 
     .layout {
-      width: min(1600px, 100%);
+      width: min(1400px, 100%);
       display: grid;
-      grid-template-columns: minmax(220px, 260px) minmax(0, 640px) minmax(200px, 240px);
-      gap: 40px;
+      grid-template-columns: minmax(220px, 260px) minmax(0, 640px) minmax(200px, 228px);
+      gap: 36px;
       align-items: start;
       justify-content: center;
     }
@@ -138,7 +139,7 @@ var (
       height: auto;
       max-width: 156vh;
       max-height: 117%;
-      transform: rotate(-90deg) scale(1.3);
+      transform: rotate(-90deg) scale(1.15);
       transform-origin: center center;
     }
 
@@ -146,13 +147,14 @@ var (
       display: flex;
       align-items: flex-start;
       justify-content: flex-start;
-      padding: 48px 0;
+      padding: 48px 48px 48px 8px;
       box-sizing: border-box;
       min-width: 0;
     }
 
     .content {
       width: 100%;
+      max-width: 640px;
       margin: 0;
     }
 
@@ -169,7 +171,6 @@ var (
     }
 
     .post-meta,
-    .post-summary,
     .tag {
       margin: 0;
       color: #9ca3af;
@@ -268,9 +269,15 @@ var (
     }
 
     .post-summary {
-      max-width: 46ch;
-      font-size: 0.42rem;
-      line-height: 1.45;
+      max-width: 54ch;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+      color: #b5bdc8;
+      font-size: 0.58rem;
+      line-height: 1.72;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .tags {
@@ -322,6 +329,16 @@ var (
     .post-body strong,
     .post-body code {
       color: #fff;
+    }
+
+    .post-body a {
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.34);
+      text-underline-offset: 0.18em;
+    }
+
+    .post-body a:hover {
+      text-decoration-color: rgba(255, 255, 255, 0.8);
     }
 
     .post-body ul,
@@ -399,8 +416,8 @@ var (
 
       .logo {
         transform: none;
-        max-width: 286px;
-        max-height: 234px;
+        max-width: 252px;
+        max-height: 206px;
       }
 
       .content-side {
@@ -661,7 +678,12 @@ func renderMarkdown(body string) (template.HTML, error) {
 	if err := markdowner.Convert([]byte(body), &buffer); err != nil {
 		return "", err
 	}
-	return template.HTML(buffer.String()), nil
+	rendered := strings.ReplaceAll(
+		buffer.String(),
+		`<a href=`,
+		`<a target="_blank" rel="noopener noreferrer" href=`,
+	)
+	return template.HTML(rendered), nil
 }
 
 func parseTags(raw string) []string {

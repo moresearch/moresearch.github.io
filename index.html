@@ -188,6 +188,7 @@
       padding-right: 8px;
       display: grid;
       gap: 18px;
+      scroll-behavior: smooth;
       scrollbar-width: thin;
       scrollbar-color: transparent transparent;
     }
@@ -221,16 +222,27 @@
     .posts-nav-empty,
     .posts-nav a {
       color: #9ca3af;
+      display: block;
+      width: 100%;
+      padding-left: 10px;
+      border-left: 2px solid transparent;
       font-size: 0.44rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       line-height: 1.5;
       overflow-wrap: anywhere;
       word-break: break-word;
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
     .posts-nav a:hover {
       color: #fff;
+    }
+
+    .posts-nav a.is-active,
+    .posts-nav a[aria-current="true"] {
+      color: #fff;
+      border-left-color: rgba(255, 255, 255, 0.92);
     }
 
     .posts-nav-links {
@@ -784,6 +796,101 @@
       </aside>
     </div>
   </main>
+  <script>
+    (() => {
+      const posts = Array.from(document.querySelectorAll('.post[id]'));
+      const navRail = document.querySelector('.nav-rail');
+      const links = Array.from(document.querySelectorAll('.posts-nav-links a[href^="#"]'));
+      if (!posts.length || !navRail || !links.length) {
+        return;
+      }
+
+      const linkById = new Map(
+        links.map((link) => [decodeURIComponent(link.getAttribute('href').slice(1)), link]),
+      );
+      const scrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'auto'
+        : 'smooth';
+      let activeID = '';
+
+      const setActive = (id) => {
+        if (!id || id === activeID) {
+          return;
+        }
+
+        if (activeID && linkById.has(activeID)) {
+          const previous = linkById.get(activeID);
+          previous.classList.remove('is-active');
+          previous.removeAttribute('aria-current');
+        }
+
+        const next = linkById.get(id);
+        if (!next) {
+          return;
+        }
+
+        next.classList.add('is-active');
+        next.setAttribute('aria-current', 'true');
+        next.scrollIntoView({block: 'center', inline: 'nearest', behavior: scrollBehavior});
+        activeID = id;
+      };
+
+      const fromHash = () => {
+        const hashID = decodeURIComponent(window.location.hash.slice(1));
+        if (linkById.has(hashID)) {
+          setActive(hashID);
+          return true;
+        }
+        return false;
+      };
+
+      if (!('IntersectionObserver' in window)) {
+        if (!fromHash()) {
+          setActive(posts[0].id);
+        }
+        return;
+      }
+
+      const visible = new Map();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              visible.set(entry.target.id, entry.intersectionRatio);
+            } else {
+              visible.delete(entry.target.id);
+            }
+          }
+
+          let bestID = '';
+          let bestRatio = -1;
+          for (const [id, ratio] of visible.entries()) {
+            if (ratio > bestRatio) {
+              bestRatio = ratio;
+              bestID = id;
+            }
+          }
+
+          if (bestID) {
+            setActive(bestID);
+          }
+        },
+        {
+          rootMargin: '-18% 0px -52% 0px',
+          threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1],
+        },
+      );
+
+      for (const post of posts) {
+        observer.observe(post);
+      }
+
+      window.addEventListener('hashchange', fromHash);
+      if (!fromHash()) {
+        setActive(posts[0].id);
+      }
+    })();
+  </script>
 </body>
 </html>
 

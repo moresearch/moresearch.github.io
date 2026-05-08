@@ -52,7 +52,7 @@ var (
       --syntax-constant: #d0d0d0;
       --syntax-string: #8a8a8a;
       --syntax-comment: #585858;
-      --syntax-number: #ff0000;
+      --syntax-number: #d0d0d0;
       --syntax-error-bg: #870000;
     }
 
@@ -92,8 +92,6 @@ var (
     pre {
       font-family: "Terminus", monospace;
       font-variant-ligatures: none;
-      -webkit-font-smoothing: none;
-      -moz-osx-font-smoothing: auto;
     }
 
     .bg {
@@ -482,7 +480,8 @@ var (
       background: #000;
       color: var(--syntax-normal);
       font-family: "Terminus", monospace;
-      font-size: 0.58rem;
+      font-size: 12px;
+      line-height: 16px;
     }
 
     .post-body pre {
@@ -493,8 +492,8 @@ var (
       border: 1px solid #121212;
       color: var(--syntax-normal);
       font-family: "Terminus", monospace;
-      font-size: 0.37rem;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 16px;
       scrollbar-width: none;
       scrollbar-color: #585858 #000;
     }

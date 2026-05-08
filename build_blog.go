@@ -92,7 +92,7 @@ var (
       z-index: 1;
       min-height: 100vh;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       padding: 32px;
     }
@@ -100,7 +100,7 @@ var (
     .layout {
       width: min(1400px, 100%);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
     }
 
@@ -119,6 +119,15 @@ var (
       min-height: 100vh;
     }
 
+    .logo-rail {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
     .logo-link {
       display: flex;
       align-items: center;
@@ -131,16 +140,16 @@ var (
       height: auto;
       max-width: 156vh;
       max-height: 117%;
-      transform: rotate(-90deg) scale(1.18);
+      transform: rotate(-90deg) scale(1.3);
       transform-origin: center center;
     }
 
     .content-side {
       width: 80%;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: flex-start;
-      padding: 48px 48px 72px 8px;
+      padding: 48px 48px 48px 8px;
       box-sizing: border-box;
     }
 
@@ -174,7 +183,7 @@ var (
     }
 
     h1 {
-      font-size: clamp(1.35rem, 2.4vw, 2rem);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
     }
 
     h2 {
@@ -188,8 +197,36 @@ var (
     .role {
       margin: 20px 0 0;
       max-width: 36ch;
-      font-size: 0.74rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
       line-height: 1.9;
+    }
+
+    .posts-nav {
+      width: min(220px, 100%);
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .posts-nav-title,
+    .posts-nav-empty,
+    .posts-nav a {
+      color: #9ca3af;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+
+    .posts-nav-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+    }
+
+    .posts-nav a:hover {
+      color: #fff;
     }
 
     .post-list {
@@ -329,6 +366,18 @@ var (
 
       .content-side {
         padding: 24px 28px 48px;
+        text-align: center;
+      }
+
+      .content,
+      .role {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .post-body {
+        text-align: left;
       }
     }
   </style>
@@ -338,9 +387,21 @@ var (
   <main class="wrap">
     <div class="layout">
       <aside class="logo-side">
-      <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-        <img src="logo.png" alt="Hackspree logo" class="logo">
-      </a>
+        <div class="logo-rail">
+          <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
+            <img src="logo.png" alt="Hackspree logo" class="logo">
+          </a>
+          <nav class="posts-nav" aria-label="Posts navigation">
+            <p class="posts-nav-title">Posts</p>
+            {{- if .HasPosts}}
+            {{- range .Posts}}
+            <a href="#{{.Slug}}">{{.Title}}</a>
+            {{- end}}
+            {{- else}}
+            <span class="posts-nav-empty">No posts yet</span>
+            {{- end}}
+          </nav>
+        </div>
       </aside>
       <section class="content-side">
         <div class="content">

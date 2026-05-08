@@ -40,8 +40,7 @@ var (
   <title>{{.PageTitle}}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/iosevka.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     html,
     body {
@@ -77,7 +76,7 @@ var (
 
     code,
     pre {
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .bg {
@@ -290,7 +289,8 @@ var (
       font-size: 0.58rem;
       letter-spacing: 0.02em;
       line-height: 1.52;
-      font-family: "Iosevka", "Iosevka Web", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 400;
     }
 
     .post-body > :first-child {

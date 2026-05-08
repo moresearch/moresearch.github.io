@@ -9,10 +9,10 @@
 - The visual language follows `hackspree.com`: dark background, high-contrast text, Orbitron typography, uppercase labels, and restrained muted secondary text.
 - The page should feel like `hackspree.com` with a three-column layout: logo rail, body column, and posts navigation rail.
 - On larger screens, the left logo rail and the right posts navigation rail both stay fixed in the vertical center while the body column scrolls.
-- The visible title and subtitle typography must match the sizing and spacing used by `hackspree.com`.
+- The visible typography must be smaller than the current Hackspree landing page while remaining comfortably readable, so more blog content fits on screen.
 - The rotated Hackspree logo must match the sizing treatment used by `hackspree.com`.
-- The primary visible page title is `Engineering Blog`, using the same scale treatment as the main `hackspree.com` heading.
-- A `Posts` navigation list must appear in its own right-side rail, link to the in-page post anchors, and keep an independent scrollbar when the list is taller than the viewport.
+- The primary visible `Engineering Blog` title and subtitle live inside the right-side navigation rail rather than the body column.
+- The `Posts` navigation list must appear in its own right-side rail, use smaller link text with clear separators between entries, link to the in-page post anchors, and keep an independent scrollbar when the list is taller than the viewport.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules

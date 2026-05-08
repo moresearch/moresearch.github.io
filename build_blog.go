@@ -501,7 +501,7 @@ var (
       {{- range .Posts}}
       <article class="post" id="{{.Slug}}">
         <header class="post-header">
-          <p class="post-meta">{{.DateDisplay}}</p>
+          <p class="post-meta"><time datetime="{{.DateISO}}" title="{{.DateHoverUTC}}">{{.DateUnix}}</time></p>
           <h2><a href="#{{.Slug}}">{{.Title}}</a></h2>
           {{- if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
           {{- if .Tags}}
@@ -640,13 +640,15 @@ var (
 )
 
 type post struct {
-	Title       string
-	Date        time.Time
-	DateDisplay string
-	Slug        string
-	Summary     string
-	Tags        []string
-	BodyHTML    template.HTML
+	Title        string
+	Date         time.Time
+	DateISO      string
+	DateUnix     int64
+	DateHoverUTC string
+	Slug         string
+	Summary      string
+	Tags         []string
+	BodyHTML     template.HTML
 }
 
 type pageData struct {
@@ -756,13 +758,15 @@ func loadPost(path string) (post, error) {
 	}
 
 	return post{
-		Title:       title,
-		Date:        date,
-		DateDisplay: strings.ToUpper(date.Format("Jan 02, 2006")),
-		Slug:        slug,
-		Summary:     strings.TrimSpace(meta["summary"]),
-		Tags:        parseTags(meta["tags"]),
-		BodyHTML:    renderedBody,
+		Title:        title,
+		Date:         date,
+		DateISO:      date.Format("2006-01-02"),
+		DateUnix:     date.Unix(),
+		DateHoverUTC: date.UTC().Format("Jan 02, 2006 UTC"),
+		Slug:         slug,
+		Summary:      strings.TrimSpace(meta["summary"]),
+		Tags:         parseTags(meta["tags"]),
+		BodyHTML:     renderedBody,
 	}, nil
 }
 
@@ -861,7 +865,7 @@ func writePage(outputPath string, posts []post) error {
 	latestDate := "TBD"
 	metaDescription := siteDescription
 	if len(posts) > 0 {
-		latestDate = posts[0].DateDisplay
+		latestDate = fmt.Sprintf("%d", posts[0].DateUnix)
 		if strings.TrimSpace(posts[0].Summary) != "" {
 			metaDescription = posts[0].Summary
 		}

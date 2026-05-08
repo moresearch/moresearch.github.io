@@ -10,19 +10,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/terminus" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
     :root {
-      --syntax-bg: #181818;
-      --syntax-fg: #eae6df;
-      --syntax-comment: #6b6b6b;
-      --syntax-keyword: #c792ea;
-      --syntax-string: #c3e88d;
-      --syntax-number: #f78c6c;
-      --syntax-function: #82aaff;
-      --syntax-operator: #d6deeb;
-      --syntax-accent: #f9e2af;
+      --syntax-bg: #000000;
+      --syntax-normal: #bcbcbc;
+      --syntax-keyword: #eeeeee;
+      --syntax-constant: #d0d0d0;
+      --syntax-string: #8a8a8a;
+      --syntax-comment: #585858;
+      --syntax-number: #ff0000;
+      --syntax-error-bg: #870000;
     }
 
     html,
@@ -59,7 +59,7 @@
 
     code,
     pre {
-      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "Terminus", monospace;
     }
 
     .bg {
@@ -417,6 +417,15 @@
       color: #d1d5db;
     }
 
+    .post-body img {
+      width: min(240px, 100%);
+      margin: 28px 0 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: #060606;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
+    }
+
     .post-body ul,
     .post-body ol {
       padding-left: 24px;
@@ -435,18 +444,19 @@
 
     .post-body code {
       padding: 2px 6px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
+      border-radius: 0;
+      background: #000;
+      color: var(--syntax-normal);
       font-size: 0.92em;
     }
 
     .post-body pre {
       overflow-x: auto;
       padding: 18px;
-      border-radius: 18px;
+      border-radius: 0;
       background: var(--syntax-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #d1d5db;
+      border: 1px solid #121212;
+      color: var(--syntax-normal);
     }
 
     .post-body pre code {
@@ -457,58 +467,62 @@
     .post-body pre code.hljs {
       display: block;
       overflow-x: auto;
-      color: var(--syntax-fg);
+      color: var(--syntax-normal);
       background: transparent;
     }
 
     .post-body .hljs-comment,
-    .post-body .hljs-quote {
+    .post-body .hljs-quote,
+    .post-body .hljs-meta {
       color: var(--syntax-comment);
     }
 
     .post-body .hljs-keyword,
+    .post-body .hljs-built_in,
+    .post-body .hljs-type,
+    .post-body .hljs-title.function_,
+    .post-body .hljs-title.class_,
+    .post-body .hljs-function .hljs-title,
+    .post-body .hljs-title,
+    .post-body .hljs-operator,
     .post-body .hljs-selector-tag,
-    .post-body .hljs-literal,
     .post-body .hljs-section,
-    .post-body .hljs-link {
+    .post-body .hljs-link,
+    .post-body .hljs-tag {
       color: var(--syntax-keyword);
     }
 
-    .post-body .hljs-string,
+    .post-body .hljs-literal,
+    .post-body .hljs-variable,
+    .post-body .hljs-property,
+    .post-body .hljs-params,
     .post-body .hljs-attr,
+    .post-body .hljs-attribute,
+    .post-body .hljs-punctuation {
+      color: var(--syntax-constant);
+    }
+
+    .post-body .hljs-string,
     .post-body .hljs-symbol,
     .post-body .hljs-bullet,
     .post-body .hljs-template-tag,
     .post-body .hljs-template-variable,
-    .post-body .hljs-addition {
+    .post-body .hljs-addition,
+    .post-body .hljs-subst {
       color: var(--syntax-string);
     }
 
     .post-body .hljs-number,
     .post-body .hljs-regexp,
     .post-body .hljs-selector-class,
-    .post-body .hljs-selector-id {
+    .post-body .hljs-selector-id,
+    .post-body .hljs-char.escape_ {
       color: var(--syntax-number);
     }
 
-    .post-body .hljs-title.function_,
-    .post-body .hljs-title.class_,
-    .post-body .hljs-function .hljs-title,
-    .post-body .hljs-title {
-      color: var(--syntax-function);
-    }
-
-    .post-body .hljs-operator,
-    .post-body .hljs-punctuation,
-    .post-body .hljs-meta {
-      color: var(--syntax-operator);
-    }
-
-    .post-body .hljs-variable,
-    .post-body .hljs-property,
-    .post-body .hljs-params,
-    .post-body .hljs-type {
-      color: var(--syntax-accent);
+    .post-body .hljs-emphasis,
+    .post-body .hljs-strong {
+      color: var(--syntax-keyword);
     }
 
     .empty-state {
@@ -761,6 +775,154 @@ func TestCatalogContract(t *testing.T) {
 <li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills.md">Claude Code skills</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/worktrees.md">Claude Code worktrees</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/eugenelim/agent-ready-repo">agent-ready-repo example</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="empirical-games-and-algorithmic-game-theory-for-agents">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical games and algorithmic game theory for agents</a></h2><p class="post-summary">Empirical game-theoretic analysis is one of the best ways to study how agent policies actually interact, while algorithmic game theory gives the language for designing those interactions on purpose.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">egta</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>I think one of the biggest missed opportunities in current agent evaluation is the lack of serious <strong>empirical game-theoretic analysis</strong>.</p>
+<p>Most evaluations still look like isolated benchmark scores: one agent, one task, one result. That is useful, but it misses the part that becomes economically important as soon as agents coexist: <strong>strategic interaction</strong>.</p>
+<p>What happens when multiple routing policies compete in the same environment? What happens when some agents specialize, others imitate, and others bid aggressively? What happens when the system rewards early completion in a way that encourages lower-quality work?</p>
+<p>Those are game-theoretic questions, and empirical methods matter because the systems are too messy to understand from first principles alone.</p>
+<h2 id="why-empirical-game-theoretic-analysis-fits-agentic-systems-so-well">Why empirical game-theoretic analysis fits agentic systems so well</h2>
+<p>The core idea of empirical game-theoretic analysis is simple: instead of assuming the payoff matrix analytically, you estimate it from simulations or measured interactions across strategy profiles.</p>
+<p>That is incredibly natural for agentic systems.</p>
+<p>You can define a profile as a combination of policies:</p>
+<ul>
+<li>routing policy,</li>
+<li>bidding policy,</li>
+<li>retry policy,</li>
+<li>review policy,</li>
+<li>settlement rule,</li>
+<li>memory-sharing rule.</li>
+</ul>
+<p>Then you simulate or replay many runs, observe payoffs, and build an empirical game from the results. That does not magically solve everything, but it gives you a disciplined way to ask whether a policy is robust, exploitable, or equilibrium-seeking.</p>
+<p>In practice, the loop looks something like this:</p>
+<pre><code class="language-go">package egta
+
+type Profile struct {
+	Router   string
+	Bidder   string
+	Reviewer string
+}
+
+type Outcome struct {
+	Utility float64
+	Cost    float64
+	Success float64
+}
+
+func Payoff(o Outcome) float64 {
+	return o.Utility - o.Cost + o.Success
+}
+</code></pre>
+<p>The hard part is not writing the struct. The hard part is running enough controlled interactions that the estimated game tells you something real.</p>
+<h2 id="algorithmic-game-theory-gives-the-design-language">Algorithmic game theory gives the design language</h2>
+<p>Empirical analysis tells you what the interaction landscape looks like. Algorithmic game theory helps you design mechanisms inside that landscape.</p>
+<p>This is why I see the two fields as complementary rather than separate. If empirical analysis shows that a bidding policy drives destructive races to the bottom, algorithmic game theory gives you tools to redesign the allocation rule. If the system converges to low-quality equilibria, you can adjust incentives, information disclosure, reserve prices, or admission rules.</p>
+<p>That is much better than pretending the benchmark failed because the model was “not smart enough.”</p>
+<p>Often the issue is not intelligence at all. It is the game.</p>
+<h2 id="this-matters-because-agent-evaluation-is-becoming-multi-agent-evaluation">This matters because agent evaluation is becoming multi-agent evaluation</h2>
+<p>As soon as agents operate in shared repos, shared queues, or shared markets, single-agent accuracy stops being the whole story.</p>
+<p>You need to ask:</p>
+<ol>
+<li>whether a strategy is stable against exploitation,</li>
+<li>whether incentives improve or degrade quality,</li>
+<li>whether the system produces concentration or diversity,</li>
+<li>whether local gains create bad global equilibria.</li>
+</ol>
+<p>Those questions belong naturally to empirical game-theoretic analysis.</p>
+<p>I expect this to matter even more in agent marketplaces, decentralized software work, autonomous procurement, and negotiation-heavy systems. In all of those settings, the interaction surface is the product.</p>
+<h2 id="the-books-i-would-put-on-this-shelf">The books I would put on this shelf</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9781107172661"><img src="https://assets.cambridge.org/97811071/72661/cover/9781107172661.jpg" alt="Twenty Lectures on Algorithmic Game Theory cover"></a></p>
+<p>Tim Roughgarden's <em>Twenty Lectures on Algorithmic Game Theory</em> is an excellent compact map of the field because it keeps the link between computation and incentives visible. That is exactly the connection agent builders need.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521899437"><img src="https://assets.cambridge.org/97805218/99437/cover/9780521899437.jpg" alt="Multiagent Systems cover"></a></p>
+<p><em>Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations</em> matters because it frames strategic interaction as a systems problem, not just an economics problem. That viewpoint feels especially relevant for agentic software engineering.</p>
+<h2 id="my-practical-reflection">My practical reflection</h2>
+<p>I think teams building serious agent systems should evaluate at least some policy decisions as empirical games. Not every product needs a giant formal mechanism. But once many agents can adapt to each other, benchmark culture by itself becomes too shallow.</p>
+<p>Empirical game-theoretic analysis gives you a way to measure interaction. Algorithmic game theory gives you a way to redesign it. Together they make agentic systems easier to reason about, especially when the failure mode is not a crash or a bug, but a bad equilibrium.</p>
+<p>That is a much more interesting class of engineering problem than most AI dashboards currently expose.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9781107172661">Twenty Lectures on Algorithmic Game Theory</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521899437">Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="mechanism-design-and-network-economics-for-agentic-markets">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#mechanism-design-and-network-economics-for-agentic-markets">Mechanism design and network economics for agentic markets</a></h2><p class="post-summary">If software agents are going to bid, route work, and specialize across shared infrastructure, mechanism design and network economics stop being theory and become operating requirements.</p>
+          <div class="tags"><span class="tag">economics</span><span class="tag">mechanism-design</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>As more software systems become agentic, I keep coming back to two areas that feel more practical every month: <strong>mechanism design</strong> and <strong>network economics</strong>.</p>
+<p>Mechanism design matters because agentic systems increasingly need explicit rules for allocation, pricing, ranking, and settlement. Network economics matters because those same systems almost never run in isolation. They run as connected markets with reputation effects, liquidity effects, congestion, switching costs, and platform power.</p>
+<p>I do not think this is academic garnish. I think it is the control plane.</p>
+<h2 id="mechanism-design-starts-where-just-rank-the-best-answer-stops">Mechanism design starts where “just rank the best answer” stops</h2>
+<p>A lot of AI product discussions still talk as if orchestration is mostly about accuracy. But once there are many agents, many tasks, many cost profiles, and many principals, the real problem becomes: <strong>what rule determines who gets what, under which incentives?</strong></p>
+<p>That is mechanism design.</p>
+<p>If you let multiple agents compete for work, you need to think about:</p>
+<ul>
+<li>how bids are expressed,</li>
+<li>which signals count as quality,</li>
+<li>whether specialization is rewarded,</li>
+<li>whether the platform optimizes for cost, quality, speed, or some weighted combination,</li>
+<li>how gaming is discouraged,</li>
+<li>and how failure or low-quality delivery changes future allocation.</li>
+</ul>
+<p>Even a simple auction-like scheduler already embeds a mechanism:</p>
+<pre><code class="language-go">package market
+
+type Bid struct {
+	AgentID   string
+	TaskID    string
+	Price     int64
+	Quality   float64
+	LatencyMS int
+}
+
+func Score(b Bid) float64 {
+	return b.Quality - float64(b.Price)/100.0 - float64(b.LatencyMS)/1000.0
+}
+</code></pre>
+<p>That scoring function is not “just implementation.” It is policy. It tells the market what behavior wins.</p>
+<p>This is why I think mechanism design belongs close to agent infrastructure. If a system says it values reliable, cheap, fast execution, then that preference should be expressed explicitly in the allocation rule rather than buried inside ad hoc heuristics.</p>
+<h2 id="network-economics-explains-why-the-best-local-rule-can-still-lose-globally">Network economics explains why the best local rule can still lose globally</h2>
+<p>Mechanism design gives you local rules. Network economics helps explain the larger system those rules sit inside.</p>
+<p>Suppose a platform routes more work to agents with the richest historical traces. That may look efficient in the short run, but it can also create a network effect where already-dominant agents get richer data, better reputation, more settlement history, and therefore even more future work. The result can be lock-in rather than healthy competition.</p>
+<p>That is a network-economics problem.</p>
+<p>The same thing shows up in developer platforms, model marketplaces, and tool ecosystems:</p>
+<ol>
+<li>participants join where liquidity already exists,</li>
+<li>liquidity improves matching quality,</li>
+<li>better matching attracts more participants,</li>
+<li>the platform becomes more dominant,</li>
+<li>switching costs rise.</li>
+</ol>
+<p>Those effects are powerful even when the underlying ranking rule looks neutral. That is why network economics matters for agentic systems. It explains why market structure cannot be reduced to a single matching equation.</p>
+<h2 id="agentic-platforms-will-have-to-think-about-congestion-and-interoperability">Agentic platforms will have to think about congestion and interoperability</h2>
+<p>Another reason I care about network economics is that agents consume shared infrastructure. They hit APIs, vector indexes, GPUs, browsers, queues, and payment rails. When many of them converge on the same substrate, congestion becomes a real cost.</p>
+<p>In classical network economics, you would ask how pricing, access rules, or interoperability constraints change the equilibrium. In agentic systems, those same questions show up as rate limits, priority queues, token budgets, or differentiated service levels.</p>
+<p>A platform that ignores those constraints will not stay neutral for long. It will accidentally encode advantages for whoever can tolerate latency, prepay for capacity, or absorb more failed runs.</p>
+<h2 id="the-books-i-keep-returning-to">The books I keep returning to</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829"><img src="https://assets.cambridge.org/97805218/72829/cover/9780521872829.jpg" alt="Algorithmic Game Theory cover"></a></p>
+<p><em>Algorithmic Game Theory</em> is still one of the clearest bridges between computational systems and economic allocation. It matters here because many modern agent-routing problems are really computational market-design problems wearing infrastructure clothing.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049"><img src="https://assets.cambridge.org/97805218/05049/large_cover/9780521805049i.jpg" alt="Network Economics cover"></a></p>
+<p>Oz Shy's <em>Network Economics</em> is useful because it keeps reminding me that value is often endogenous to the network itself. In other words, the platform changes the payoff structure simply by shaping who can interact, how often, and at what switching cost.</p>
+<h2 id="my-practical-takeaway">My practical takeaway</h2>
+<p>If you are building agentic systems, mechanism design tells you how to allocate. Network economics tells you what repeated allocation does to the whole ecosystem.</p>
+<p>That combination matters more than most teams admit.</p>
+<p>An agent platform that ignores mechanism design gets manipulation, low trust, and inconsistent incentives. An agent platform that ignores network economics gets concentration, lock-in, and distorted participation. You need both lenses if you want a system that is not only locally efficient, but sustainably legible.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829">Algorithmic Game Theory</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049">Network Economics</a></li>
 </ul>
 </div>
       </article>
@@ -1529,6 +1691,8 @@ type Logger interface {
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Codebases in the era of agentic software engineering</a>
+              <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical games and algorithmic game theory for agents</a>
+              <a href="#mechanism-design-and-network-economics-for-agentic-markets">Mechanism design and network economics for agentic markets</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>
               <a href="#studying-local-llm-training-from-scratch">Studying local LLM training from scratch</a>
               <a href="#why-blockchains-matter-again-for-agentic-software">Why blockchains matter again for agentic software</a>

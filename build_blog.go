@@ -41,19 +41,19 @@ var (
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/terminus" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
     :root {
-      --syntax-bg: #181818;
-      --syntax-fg: #eae6df;
-      --syntax-comment: #6b6b6b;
-      --syntax-keyword: #c792ea;
-      --syntax-string: #c3e88d;
-      --syntax-number: #f78c6c;
-      --syntax-function: #82aaff;
-      --syntax-operator: #d6deeb;
-      --syntax-accent: #f9e2af;
+      --syntax-bg: #000000;
+      --syntax-normal: #bcbcbc;
+      --syntax-keyword: #eeeeee;
+      --syntax-constant: #d0d0d0;
+      --syntax-string: #8a8a8a;
+      --syntax-comment: #585858;
+      --syntax-number: #ff0000;
+      --syntax-error-bg: #870000;
     }
 
     html,
@@ -90,7 +90,7 @@ var (
 
     code,
     pre {
-      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "Terminus", monospace;
     }
 
     .bg {
@@ -448,6 +448,15 @@ var (
       color: #d1d5db;
     }
 
+    .post-body img {
+      width: min(240px, 100%);
+      margin: 28px 0 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: #060606;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
+    }
+
     .post-body ul,
     .post-body ol {
       padding-left: 24px;
@@ -466,18 +475,19 @@ var (
 
     .post-body code {
       padding: 2px 6px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
+      border-radius: 0;
+      background: #000;
+      color: var(--syntax-normal);
       font-size: 0.92em;
     }
 
     .post-body pre {
       overflow-x: auto;
       padding: 18px;
-      border-radius: 18px;
+      border-radius: 0;
       background: var(--syntax-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #d1d5db;
+      border: 1px solid #121212;
+      color: var(--syntax-normal);
     }
 
     .post-body pre code {
@@ -488,58 +498,62 @@ var (
     .post-body pre code.hljs {
       display: block;
       overflow-x: auto;
-      color: var(--syntax-fg);
+      color: var(--syntax-normal);
       background: transparent;
     }
 
     .post-body .hljs-comment,
-    .post-body .hljs-quote {
+    .post-body .hljs-quote,
+    .post-body .hljs-meta {
       color: var(--syntax-comment);
     }
 
     .post-body .hljs-keyword,
+    .post-body .hljs-built_in,
+    .post-body .hljs-type,
+    .post-body .hljs-title.function_,
+    .post-body .hljs-title.class_,
+    .post-body .hljs-function .hljs-title,
+    .post-body .hljs-title,
+    .post-body .hljs-operator,
     .post-body .hljs-selector-tag,
-    .post-body .hljs-literal,
     .post-body .hljs-section,
-    .post-body .hljs-link {
+    .post-body .hljs-link,
+    .post-body .hljs-tag {
       color: var(--syntax-keyword);
     }
 
-    .post-body .hljs-string,
+    .post-body .hljs-literal,
+    .post-body .hljs-variable,
+    .post-body .hljs-property,
+    .post-body .hljs-params,
     .post-body .hljs-attr,
+    .post-body .hljs-attribute,
+    .post-body .hljs-punctuation {
+      color: var(--syntax-constant);
+    }
+
+    .post-body .hljs-string,
     .post-body .hljs-symbol,
     .post-body .hljs-bullet,
     .post-body .hljs-template-tag,
     .post-body .hljs-template-variable,
-    .post-body .hljs-addition {
+    .post-body .hljs-addition,
+    .post-body .hljs-subst {
       color: var(--syntax-string);
     }
 
     .post-body .hljs-number,
     .post-body .hljs-regexp,
     .post-body .hljs-selector-class,
-    .post-body .hljs-selector-id {
+    .post-body .hljs-selector-id,
+    .post-body .hljs-char.escape_ {
       color: var(--syntax-number);
     }
 
-    .post-body .hljs-title.function_,
-    .post-body .hljs-title.class_,
-    .post-body .hljs-function .hljs-title,
-    .post-body .hljs-title {
-      color: var(--syntax-function);
-    }
-
-    .post-body .hljs-operator,
-    .post-body .hljs-punctuation,
-    .post-body .hljs-meta {
-      color: var(--syntax-operator);
-    }
-
-    .post-body .hljs-variable,
-    .post-body .hljs-property,
-    .post-body .hljs-params,
-    .post-body .hljs-type {
-      color: var(--syntax-accent);
+    .post-body .hljs-emphasis,
+    .post-body .hljs-strong {
+      color: var(--syntax-keyword);
     }
 
     .empty-state {

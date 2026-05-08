@@ -12,7 +12,7 @@
 - The visible title and subtitle typography must match the sizing and spacing used by `hackspree.com`.
 - The rotated Hackspree logo must match the sizing treatment used by `hackspree.com`.
 - The primary visible page title is `Engineering Blog`, using the same scale treatment as the main `hackspree.com` heading.
-- A `Posts` navigation list must appear under the logo rail and link to the in-page post anchors.
+- A `Posts` navigation list must appear on the opposite side of the logo, aligned with the content header, and link to the in-page post anchors.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules

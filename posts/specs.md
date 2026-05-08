@@ -18,6 +18,7 @@
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
+- Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.
 
 ## Constraints and invariants
 

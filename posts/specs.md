@@ -15,6 +15,7 @@
 - Optional front matter fields are `slug`, `summary`, and `tags`.
 - `date` must use ISO-8601 calendar format (`YYYY-MM-DD`).
 - The source `date` remains ISO-8601 in front matter even though the published site renders it as a larger Unix timestamp with a UTC hover tooltip.
+- Front matter dates control the published chronology of the archive, so authors should set them deliberately.
 - `slug`, when provided, must be URL-safe lowercase text using letters, numbers, and hyphens.
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.
@@ -23,6 +24,7 @@
 - Rendered post bodies use the site's configured monospace body font; post authors should not rely on custom font styling in Markdown.
 - Rendered post-body links follow the site theme and should not rely on underline styling for visibility.
 - Each post slug also drives the in-page navigation state, so slugs must stay stable and unique.
+- Post length may vary, including medium-length essays, as long as the Markdown stays readable in the single-page archive.
 
 ## Constraints and invariants
 

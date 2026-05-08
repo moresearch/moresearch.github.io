@@ -19,6 +19,7 @@
 - The post typography should stay compact overall, but the body copy should be slightly larger, lighter, and more generously spaced for quick readability.
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
 - Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
+- The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - Links rendered inside post bodies should stay minimal and readable without visible underlines.

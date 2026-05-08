@@ -22,6 +22,7 @@
 - The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - The published archive may also include first-person technical reflection posts on workshops, talks, or videos, as long as they stay grounded in concrete implementation details rather than generic impressions.
+- The published archive may also include first-person essays about how games, habits, or other non-code systems shaped engineering skill, as long as they connect back to concrete technical practice.
 - Posts may include fenced code examples with syntax highlighting, and the code presentation should use a 246_noir-inspired dark palette that fits the Hackspree aesthetic.
 - Posts may include remote publisher-hosted book-cover images when they materially support the essay content.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.

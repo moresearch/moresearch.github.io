@@ -286,9 +286,9 @@ var (
     .post-body {
       margin-top: 18px;
       color: #737983;
-      font-size: 0.58rem;
+      font-size: 0.68rem;
       letter-spacing: 0.02em;
-      line-height: 1.52;
+      line-height: 1.64;
       font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-weight: 400;
     }

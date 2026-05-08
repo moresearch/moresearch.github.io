@@ -98,25 +98,25 @@ var (
     }
 
     .layout {
-      width: min(1400px, 100%);
-      display: flex;
-      align-items: center;
+      width: min(1600px, 100%);
+      display: grid;
+      grid-template-columns: minmax(220px, 260px) minmax(0, 640px) minmax(200px, 240px);
+      gap: 40px;
+      align-items: start;
       justify-content: center;
     }
 
     .logo-side {
-      width: 20%;
-      min-width: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: visible;
       padding: 16px 8px 16px 16px;
       box-sizing: border-box;
-      flex-shrink: 0;
       position: sticky;
-      top: 0;
-      min-height: 100vh;
+      top: 50vh;
+      transform: translateY(-50%);
+      align-self: start;
     }
 
     .logo-rail {
@@ -144,29 +144,29 @@ var (
     }
 
     .content-side {
-      width: 80%;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
-      padding: 48px 48px 48px 8px;
+      padding: 48px 0;
       box-sizing: border-box;
+      min-width: 0;
     }
 
     .content {
       width: 100%;
-      max-width: 640px;
       margin: 0;
     }
 
-    .content-top {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
-      gap: 32px;
-      align-items: start;
-    }
-
-    .content-copy {
-      min-width: 0;
+    .nav-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 16px 16px 8px;
+      box-sizing: border-box;
+      position: sticky;
+      top: 50vh;
+      transform: translateY(-50%);
+      align-self: start;
     }
 
     .post-meta,
@@ -218,7 +218,15 @@ var (
       gap: 10px;
       justify-items: start;
       text-align: left;
-      padding-top: 6px;
+    }
+
+    .nav-rail {
+      width: min(220px, 100%);
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: #9ca3af transparent;
     }
 
     .posts-nav-title,
@@ -352,19 +360,22 @@ var (
       }
 
       .layout {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         width: 100%;
+        gap: 24px;
       }
 
       .logo-side,
-      .content-side {
+      .content-side,
+      .nav-side {
         width: 100%;
         min-width: 0;
         justify-content: center;
+        position: static;
+        transform: none;
       }
 
       .logo-side {
-        position: static;
         min-height: 28vh;
         padding: 24px 16px 8px;
       }
@@ -380,11 +391,6 @@ var (
         text-align: center;
       }
 
-      .content-top {
-        grid-template-columns: 1fr;
-        gap: 24px;
-      }
-
       .content,
       .role {
         max-width: 100%;
@@ -392,10 +398,18 @@ var (
         margin-right: auto;
       }
 
+      .nav-side {
+        padding: 0 28px 32px;
+      }
+
+      .nav-rail {
+        max-height: none;
+        padding-right: 0;
+      }
+
       .posts-nav {
         justify-items: center;
         text-align: center;
-        padding-top: 0;
       }
 
       .post-body {
@@ -417,22 +431,8 @@ var (
       </aside>
       <section class="content-side">
         <div class="content">
-          <div class="content-top">
-            <div class="content-copy">
-              <h1>{{.SiteTitle}}</h1>
-              <p class="role">{{.SiteTagline}}</p>
-            </div>
-            <nav class="posts-nav" aria-label="Posts navigation">
-              <p class="posts-nav-title">Posts</p>
-              {{- if .HasPosts}}
-              {{- range .Posts}}
-              <a href="#{{.Slug}}">{{.Title}}</a>
-              {{- end}}
-              {{- else}}
-              <span class="posts-nav-empty">No posts yet</span>
-              {{- end}}
-            </nav>
-          </div>
+          <h1>{{.SiteTitle}}</h1>
+          <p class="role">{{.SiteTagline}}</p>
       {{- if .HasPosts}}
           <div class="post-list">
       {{- range .Posts}}
@@ -456,6 +456,20 @@ var (
       {{- end}}
         </div>
       </section>
+      <aside class="nav-side">
+        <div class="nav-rail">
+          <nav class="posts-nav" aria-label="Posts navigation">
+            <p class="posts-nav-title">Posts</p>
+            {{- if .HasPosts}}
+            {{- range .Posts}}
+            <a href="#{{.Slug}}">{{.Title}}</a>
+            {{- end}}
+            {{- else}}
+            <span class="posts-nav-empty">No posts yet</span>
+            {{- end}}
+          </nav>
+        </div>
+      </aside>
     </div>
   </main>
 </body>

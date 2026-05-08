@@ -36,6 +36,7 @@
 - The build flow must be deterministic: posts are rendered in descending date order and repeated builds without source changes must not change the output.
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
 - The generated page may load remote syntax-highlighting assets when needed for post code examples.
+- The syntax-highlighting palette should be defined once in reusable shared tokens so every current and future post inherits the same 246_noir-inspired code styling.
 - The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
 - Navigation-centering behavior must not interfere with the main page scroll direction or pull the reader upward while they are scrolling down the post column.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.

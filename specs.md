@@ -18,6 +18,7 @@
 - Standard post body copy should use a straighter, less rounded professional monospace face than Space Mono and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
 - The post typography should stay compact overall, but the body copy should remain slightly enlarged for readability.
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
+- Published post metadata should display the post date as a Unix timestamp, and hovering that timestamp should reveal the normal UTC date.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.

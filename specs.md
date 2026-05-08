@@ -41,6 +41,9 @@
 - The syntax-highlighting palette should be defined once in reusable shared tokens so every current and future post inherits the same code styling.
 - Code snippets must match the `vim-256noir` palette exactly: black background, light-gray normal text, white keywords/types/functions, dark-gray strings, darker-gray comments, and red numerals.
 - Code snippets must use Terminus as the dedicated code font.
+- Code-snippet horizontal scrollbars must stay visually hidden until the reader hovers the snippet.
+- Go code snippets should include short comments that clarify the example logic instead of presenting uncommented bare code.
+- Posts that cite a YouTube video should include that video's thumbnail image in the post body, linked to the video.
 - The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
 - Navigation-centering behavior must not interfere with the main page scroll direction or pull the reader upward while they are scrolling down the post column.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.

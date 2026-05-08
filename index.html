@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.">
+  <meta name="description" content="The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -526,141 +526,44 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="agent-harnesses-need-tasks-that-fight-back">
+      <article class="post" id="on-device-llms-are-a-systems-design-problem">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#agent-harnesses-need-tasks-that-fight-back">Agent harnesses need tasks that fight back</a></h2><p class="post-summary">Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.</p>
-          <div class="tags"><span class="tag">harness</span><span class="tag">gaia</span><span class="tag">evaluation</span>
+          <h2><a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a></h2><p class="post-summary">The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">review</span><span class="tag">systems</span>
           </div>
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> is useful because it resists the temptation to make evaluation too neat. It mixes reasoning, tool use, information gathering, and multimodal work in a way that feels closer to assistant reality.</p>
-<p>That is a good model for internal harnesses too.</p>
-<p>The harness should ask the system to do tasks that are:</p>
+        <div class="post-body"><p>There is a reason review papers are useful in fast-moving fields: they show how many moving parts a clean demo hides.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> is valuable because it frames edge LLM deployment as a systems problem spanning compression, hardware acceleration, runtime strategy, and hybrid edge-cloud design.</p>
+<p>That framing is worth stealing.</p>
+<p>If a team says it is &quot;doing on-device AI,&quot; the real question is whether it has a clear answer for:</p>
 <ul>
-<li>small enough to score,</li>
-<li>rich enough to require multiple steps,</li>
-<li>messy enough that shortcuts stop working.</li>
+<li>what runs locally,</li>
+<li>what falls back remotely,</li>
+<li>how quality and latency trade off,</li>
+<li>how the deployment will be debugged in the field.</li>
 </ul>
-<p>If every test can be passed by pattern-matching the prompt, you are not measuring an assistant. You are measuring prompt luck.</p>
-</div>
-      </article>
-      <article class="post" id="coding-agent-harnesses-need-real-repositories">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#coding-agent-harnesses-need-real-repositories">Coding agent harnesses need real repositories</a></h2><p class="post-summary">Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.</p>
-          <div class="tags"><span class="tag">harness</span><span class="tag">coding-agents</span><span class="tag">swe-bench</span>
-          </div>
-        </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> changed the conversation because it moved coding evaluation closer to the work people actually do: read a real issue, edit a real repo, and satisfy a real test suite.</p>
-<p>That is also the right pattern for harness design inside product teams.</p>
-<p>A credible coding harness should prefer:</p>
+<h2 id="the-model-is-only-one-component">The model is only one component</h2>
+<p>It is tempting to talk about on-device AI as if choosing a small enough model solves the hard part. In practice, model choice is only the beginning. Once a team tries to ship, other questions arrive immediately: how the model is compressed, what hardware path it depends on, and how the system behaves when local execution is not the right answer.</p>
+<p>That is why the systems framing matters. It keeps teams from pretending that an edge strategy is just a checkpoint plus a demo video.</p>
+<h2 id="shipping-requires-coordinated-decisions">Shipping requires coordinated decisions</h2>
+<p>A real on-device deployment has to line up several layers at once:</p>
 <ul>
-<li>messy repositories over perfect examples,</li>
-<li>failing tests over vague grading,</li>
-<li>issue-driven tasks over isolated snippets.</li>
+<li>model efficiency,</li>
+<li>runtime behavior,</li>
+<li>hardware acceleration,</li>
+<li>fallback and hybrid execution,</li>
+<li>field observability.</li>
 </ul>
-<p>If the agent only looks good in a clean-room benchmark, the harness is flattering the system instead of measuring it.</p>
-</div>
-      </article>
-      <article class="post" id="edge-llms-live-or-die-by-model-shape">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs live or die by model shape</a></h2><p class="post-summary">On-device language models are constrained less by hype and more by architecture choices that survive mobile memory, latency, and thermal limits.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">mobile</span><span class="tag">architecture</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The promise of on-device inference is easy to say and hard to ship.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> is a useful paper because it focuses on the architecture details that matter at the small end: depth, width, and parameter efficiency.</p>
-<p>The engineering takeaway is that edge deployment is not only about compressing a big cloud model. Sometimes the winning move is to start from a model shape that was designed for the edge in the first place.</p>
-<p>For product teams, that means evaluating model architecture and serving strategy together, not in separate meetings.</p>
-</div>
-      </article>
-      <article class="post" id="edge-npus-change-the-serving-shape">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#edge-npus-change-the-serving-shape">Edge NPUs change the serving shape</a></h2><p class="post-summary">NPU-aware LLM systems need different scheduling instincts, especially around prompt chunking, latency spikes, and device-specific execution paths.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">npu</span><span class="tag">serving</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The edge story gets more interesting once NPUs enter the picture.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> highlights ideas like prompt chunking and hardware-aware scheduling to reduce the ugly parts of latency. That matters because edge serving is rarely just &quot;run the same pipeline on smaller hardware.&quot;</p>
-<p>It is a different scheduling problem.</p>
-<p>Teams building edge stacks should expect device-specific execution strategies, uneven latency profiles, and careful fallbacks. The serving shape changes with the hardware, so the software architecture has to change with it.</p>
-</div>
-      </article>
-      <article class="post" id="go-can-keep-structured-llm-runtimes-boring">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#go-can-keep-structured-llm-runtimes-boring">Go can keep structured LLM runtimes boring</a></h2><p class="post-summary">Structured LLM programs need cache-aware runtimes and simple orchestration boundaries, which is exactly where Go stays useful.</p>
-          <div class="tags"><span class="tag">golang</span><span class="tag">llm-serving</span><span class="tag">systems</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Structured prompting workflows look fancy at the model layer, but they usually fail or slow down at the runtime layer.</p>
-<p>That is why I like reading systems papers such as <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.07104">SGLang: Efficient Execution of Structured Language Model Programs</a>. The paper argues that structured LLM programs benefit from runtime features like cache reuse and careful execution planning, not just better prompts.</p>
-<p>My Go takeaway is simple: keep Python close to model experimentation, but let Go own the boring infrastructure around it. Go is a good fit for:</p>
-<ul>
-<li>queueing and routing structured requests,</li>
-<li>managing timeouts and retries,</li>
-<li>exposing clear metrics for cache hit rates and latency.</li>
-</ul>
-<p>The paper is not about Go, but the engineering lesson maps well to Go services. The more structured the LLM program becomes, the more valuable it is to have a control layer that is easy to reason about under load.</p>
-</div>
-      </article>
-      <article class="post" id="go-fits-the-control-plane-of-mobile-llm-products">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#go-fits-the-control-plane-of-mobile-llm-products">Go fits the control plane of mobile LLM products</a></h2><p class="post-summary">Edge AI products still need sync services, rollout control, metrics, and device policy, which keeps Go relevant even when inference runs elsewhere.</p>
-          <div class="tags"><span class="tag">golang</span><span class="tag">edge-llms</span><span class="tag">mobile</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Even when inference runs on-device, the surrounding product still needs a control plane.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> focuses on the model side of that problem, but product teams still need servers for model rollout, feature flags, telemetry collection, and safety policy updates.</p>
-<p>That is one reason Go keeps showing up in AI-adjacent systems work.</p>
-<p>The model can live on a phone. The operational contract still lives in services, CLIs, background jobs, and dashboards. A boring systems language is still a competitive advantage there.</p>
-</div>
-      </article>
-      <article class="post" id="go-is-a-natural-control-plane-for-disaggregated-serving">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#go-is-a-natural-control-plane-for-disaggregated-serving">Go is a natural control plane for disaggregated serving</a></h2><p class="post-summary">Disaggregated prefill and decode pipelines need schedulers, backpressure, and observability more than they need another complex runtime.</p>
-          <div class="tags"><span class="tag">golang</span><span class="tag">inference</span><span class="tag">llm-serving</span>
-          </div>
-        </header>
-        <div class="post-body"><p>One of the clearest recent serving ideas is in <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.09670">DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</a>. The paper shows why prefill and decode interfere with each other and why separating them can improve goodput under real latency targets.</p>
-<p>That architecture has a very Go-shaped seam in it.</p>
-<p>If prefill and decode become distinct pools, somebody has to own:</p>
-<ul>
-<li>request admission,</li>
-<li>routing policy,</li>
-<li>streaming state,</li>
-<li>deadline propagation.</li>
-</ul>
-<p>That &quot;somebody&quot; does not need to be the same runtime that executes the kernels. A small Go service is often the right place to implement the policy layer because it stays deployable, observable, and easy to debug when traffic gets weird.</p>
-</div>
-      </article>
-      <article class="post" id="go-is-good-for-harness-pipelines">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#go-is-good-for-harness-pipelines">Go is good for harness pipelines</a></h2><p class="post-summary">Harness systems benefit from boring concurrency, clean binaries, and predictable tooling, all of which make Go a practical fit for evaluation pipelines.</p>
-          <div class="tags"><span class="tag">golang</span><span class="tag">harness</span><span class="tag">evaluation</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Harness engineering is often less about model math and more about repeatable pipelines.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> and <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> both reinforce the same operational point: serious evaluation requires a lot of plumbing around the model.</p>
-<p>That plumbing usually includes:</p>
-<ul>
-<li>work queues,</li>
-<li>sandbox orchestration,</li>
-<li>artifact capture,</li>
-<li>metric aggregation,</li>
-<li>reproducible CLI entrypoints.</li>
-</ul>
-<p>Go is not the only way to build those pieces, but it is a very good way to keep them understandable. For harness code, that matters more than cleverness.</p>
+<p>Weakness in any one of those layers can define the product experience. A great local model with poor fallback behavior is still a poor product. A fast path with no clear debugging story is still an operational risk.</p>
+<h2 id="the-useful-question-is-architectural">The useful question is architectural</h2>
+<p>That is why I like the comprehensive-review framing. It encourages a better question than &quot;can we run an LLM on-device?&quot; The better question is &quot;what system are we actually building around local inference?&quot;</p>
+<p>That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.</p>
 </div>
       </article>
       <article class="post" id="good-harnesses-watch-the-whole-operating-system">
         <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <p class="post-meta"><time datetime="2026-05-03" data-utc="May 03, 2026 UTC" aria-label="May 03, 2026 UTC" tabindex="0">1777766400</time></p>
           <h2><a href="#good-harnesses-watch-the-whole-operating-system">Good harnesses watch the whole operating system</a></h2><p class="post-summary">Desktop and multimodal agents need execution harnesses that see the same operating system complexity the user sees.</p>
           <div class="tags"><span class="tag">harness</span><span class="tag">osworld</span><span class="tag">multimodal</span>
           </div>
@@ -675,11 +578,113 @@
 <li>recovery after mistakes.</li>
 </ul>
 <p>The more your harness reflects the real environment, the less likely you are to ship a demo that falls apart the moment a user clicks somewhere unexpected.</p>
+<h2 id="the-operating-system-is-part-of-the-task">The operating system is part of the task</h2>
+<p>Desktop and multimodal agents do not act in a vacuum. They act in an environment with windows, focus changes, files, delays, and all the messy state that ordinary users barely notice until something goes wrong.</p>
+<p>A harness that trims that away may be easier to manage, but it also stops measuring the thing the user will actually experience.</p>
+<h2 id="state-is-where-many-failures-hide">State is where many failures hide</h2>
+<p>Operating system tasks are difficult partly because the agent has to maintain awareness across a longer chain of effects. A single wrong click can change focus. A clipboard action can overwrite an assumption. A file operation can succeed but still leave the system in the wrong place for the next step.</p>
+<p>That is why it helps to capture the broader environment, not just the final answer.</p>
+<h2 id="honest-environments-create-honest-confidence">Honest environments create honest confidence</h2>
+<p>OSWorld is useful because it pushes evaluation toward the real surface area of desktop interaction. The lesson is not that every harness must copy the benchmark exactly. The lesson is that environment fidelity matters.</p>
+<p>If the product is supposed to work across the operating system, the harness should watch the operating system too. Otherwise the team risks learning the wrong lesson from a passing score.</p>
+</div>
+      </article>
+      <article class="post" id="agent-harnesses-need-tasks-that-fight-back">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-27" data-utc="Apr 27, 2026 UTC" aria-label="Apr 27, 2026 UTC" tabindex="0">1777248000</time></p>
+          <h2><a href="#agent-harnesses-need-tasks-that-fight-back">Agent harnesses need tasks that fight back</a></h2><p class="post-summary">Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">gaia</span><span class="tag">evaluation</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> is useful because it resists the temptation to make evaluation too neat. It mixes reasoning, tool use, information gathering, and multimodal work in a way that feels closer to assistant reality.</p>
+<p>That is a good model for internal harnesses too.</p>
+<p>The harness should ask the system to do tasks that are:</p>
+<ul>
+<li>small enough to score,</li>
+<li>rich enough to require multiple steps,</li>
+<li>messy enough that shortcuts stop working.</li>
+</ul>
+<p>If every test can be passed by pattern-matching the prompt, you are not measuring an assistant. You are measuring prompt luck.</p>
+<h2 id="good-tasks-create-resistance">Good tasks create resistance</h2>
+<p>A useful harness case should push back a little. It should require the system to gather information, make a choice, and survive the possibility that the first path is wrong. Without that resistance, it becomes too easy for a model to look capable by sounding capable.</p>
+<p>This is what I like about GAIA as a reference point. It treats assistant work as something broader than isolated reasoning. The assistant has to operate, not just answer.</p>
+<h2 id="multi-step-work-is-the-real-surface-area">Multi-step work is the real surface area</h2>
+<p>Most assistants become interesting only when they need to combine several behaviors:</p>
+<ul>
+<li>retrieve something,</li>
+<li>use a tool,</li>
+<li>inspect intermediate state,</li>
+<li>finish with a verifiable answer.</li>
+</ul>
+<p>A harness that removes those transitions removes a big portion of the actual risk. Many failures live in the handoffs between steps, not in any single step on its own.</p>
+<h2 id="score-what-matters">Score what matters</h2>
+<p>The trick is to keep tasks hard enough to be honest without making them impossible to grade. That usually means designing cases with clear evidence of success while preserving enough messiness that shortcuts stop working.</p>
+<p>That balance is worth the effort. If the tasks fight back a little, the results are much more believable. And believable results are what let teams trust an assistant enough to give it more room to work.</p>
+</div>
+      </article>
+      <article class="post" id="harnesses-need-real-browsers-not-polite-demos">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-19" data-utc="Apr 19, 2026 UTC" aria-label="Apr 19, 2026 UTC" tabindex="0">1776556800</time></p>
+          <h2><a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses need real browsers, not polite demos</a></h2><p class="post-summary">Web agent evaluation gets more useful when the harness runs against real pages, real interaction flows, and explicit pass-fail criteria.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">agents</span><span class="tag">browser</span>
+          </div>
+        </header>
+        <div class="post-body"><p>If an agent claims it can use the web, the harness should make it prove it on the web.</p>
+<p>That is why <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.13919">WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models</a> matters. The paper pushes evaluation into realistic browser tasks instead of stopping at tidy prompt-response examples.</p>
+<p>The harness lesson is straightforward:</p>
+<ul>
+<li>use real interfaces,</li>
+<li>preserve the messy interaction sequence,</li>
+<li>score outcomes with concrete checks.</li>
+</ul>
+<p>A fake DOM or hand-picked screenshot can still be useful for unit tests, but it should not be the final word on whether a browser agent actually works.</p>
+<h2 id="browser-work-is-interaction-work">Browser work is interaction work</h2>
+<p>Web tasks are not only about extracting the right answer from a page. They involve navigation, state, timing, and the strange little contingencies that happen when an interface is built for humans rather than benchmarks.</p>
+<p>That is why polite demos can be misleading. A perfectly staged page or a frozen snapshot removes most of the difficulty that makes browser use interesting in the first place.</p>
+<h2 id="real-pages-expose-real-weaknesses">Real pages expose real weaknesses</h2>
+<p>Once the harness runs against real interfaces, all the inconvenient details return:</p>
+<ul>
+<li>buttons move,</li>
+<li>forms span multiple steps,</li>
+<li>state has to persist across actions,</li>
+<li>success depends on the whole sequence, not one isolated click.</li>
+</ul>
+<p>Those details are not noise. They are the task.</p>
+<h2 id="keep-simpler-fixtures-but-do-not-stop-there">Keep simpler fixtures, but do not stop there</h2>
+<p>There is still room for lightweight browser fixtures. They help with unit tests and targeted debugging. But a serious claim about browser competence should survive a more honest environment.</p>
+<p>That is why work like WebVoyager is useful. It reminds teams that if a product pitch includes autonomous web interaction, the evaluation should include actual web interaction. Otherwise the harness is grading presentation quality, not browser ability.</p>
+</div>
+      </article>
+      <article class="post" id="coding-agent-harnesses-need-real-repositories">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-11" data-utc="Apr 11, 2026 UTC" aria-label="Apr 11, 2026 UTC" tabindex="0">1775865600</time></p>
+          <h2><a href="#coding-agent-harnesses-need-real-repositories">Coding agent harnesses need real repositories</a></h2><p class="post-summary">Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">coding-agents</span><span class="tag">swe-bench</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> changed the conversation because it moved coding evaluation closer to the work people actually do: read a real issue, edit a real repo, and satisfy a real test suite.</p>
+<p>That is also the right pattern for harness design inside product teams.</p>
+<p>A credible coding harness should prefer:</p>
+<ul>
+<li>messy repositories over perfect examples,</li>
+<li>failing tests over vague grading,</li>
+<li>issue-driven tasks over isolated snippets.</li>
+</ul>
+<p>If the agent only looks good in a clean-room benchmark, the harness is flattering the system instead of measuring it.</p>
+<h2 id="real-repositories-force-real-tradeoffs">Real repositories force real tradeoffs</h2>
+<p>Toy prompts are attractive because they are easy to score and easy to explain. They are also easy to overfit. A coding agent can look competent when the entire task fits neatly inside a paragraph and a single file.</p>
+<p>Real repositories are different. They introduce layout confusion, hidden assumptions, partial context, and tests that fail for reasons the agent has to discover. That is much closer to the work engineers actually delegate.</p>
+<h2 id="why-issue-driven-evaluation-matters">Why issue-driven evaluation matters</h2>
+<p>The issue format is valuable because it mirrors a normal entry point for engineering work. A task begins with an imperfect description, not with a fully specified solution path. The agent has to read, inspect, and decide what matters.</p>
+<p>That is the sort of friction a harness should preserve. It reveals whether the system can navigate ambiguity without immediately collapsing into guesswork.</p>
+<h2 id="tests-are-better-than-vibes">Tests are better than vibes</h2>
+<p>A strong coding harness needs explicit outcomes, and failing tests are one of the cleanest ways to get them. They are not perfect, but they are far better than a human observer deciding whether an output felt plausible.</p>
+<p>The broader lesson from SWE-bench is not only about benchmarking. It is about honesty. If you want to know whether a coding agent can help on real work, give it real repositories and real consequences. Everything else is too easy to stage-manage.</p>
 </div>
       </article>
       <article class="post" id="harness-engineering-best-practices-for-ai-agents">
         <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <p class="post-meta"><time datetime="2026-04-02" data-utc="Apr 02, 2026 UTC" aria-label="Apr 02, 2026 UTC" tabindex="0">1775088000</time></p>
           <h2><a href="#harness-engineering-best-practices-for-ai-agents">Harness engineering best practices for AI agents</a></h2><p class="post-summary">Strong agent systems depend on strong harnesses: repeatable tasks, realistic tool simulations, and clear pass-fail signals that expose bad behavior early.</p>
           <div class="tags"><span class="tag">ai-agents</span><span class="tag">evaluation</span><span class="tag">harness</span>
           </div>
@@ -726,68 +731,47 @@
 <li>what artifacts should be stored for debugging.</li>
 </ul>
 <p>That discipline matters more as agents gain more tools and more autonomy. The wider the action space, the more valuable a narrow, repeatable harness becomes.</p>
+<h2 id="the-goal-is-faster-learning-not-more-ceremony">The goal is faster learning, not more ceremony</h2>
+<p>A strong harness is not valuable because it looks rigorous on a slide. It is valuable because it shortens the distance between failure and understanding. When an agent regresses, the team should be able to see what changed, replay it, and decide what to fix without heroic investigation.</p>
 <p>Harness engineering is not glamorous work, but it is one of the highest-leverage disciplines in applied AI. It is how teams turn agent behavior from a demo into a system they can trust.</p>
 </div>
       </article>
-      <article class="post" id="harnesses-need-real-browsers-not-polite-demos">
+      <article class="post" id="go-is-good-for-harness-pipelines">
         <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses need real browsers, not polite demos</a></h2><p class="post-summary">Web agent evaluation gets more useful when the harness runs against real pages, real interaction flows, and explicit pass-fail criteria.</p>
-          <div class="tags"><span class="tag">harness</span><span class="tag">agents</span><span class="tag">browser</span>
+          <p class="post-meta"><time datetime="2026-03-24" data-utc="Mar 24, 2026 UTC" aria-label="Mar 24, 2026 UTC" tabindex="0">1774310400</time></p>
+          <h2><a href="#go-is-good-for-harness-pipelines">Go is good for harness pipelines</a></h2><p class="post-summary">Harness systems benefit from boring concurrency, clean binaries, and predictable tooling, all of which make Go a practical fit for evaluation pipelines.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">harness</span><span class="tag">evaluation</span>
           </div>
         </header>
-        <div class="post-body"><p>If an agent claims it can use the web, the harness should make it prove it on the web.</p>
-<p>That is why <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.13919">WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models</a> matters. The paper pushes evaluation into realistic browser tasks instead of stopping at tidy prompt-response examples.</p>
-<p>The harness lesson is straightforward:</p>
+        <div class="post-body"><p>Harness engineering is often less about model math and more about repeatable pipelines.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> and <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> both reinforce the same operational point: serious evaluation requires a lot of plumbing around the model.</p>
+<p>That plumbing usually includes:</p>
 <ul>
-<li>use real interfaces,</li>
-<li>preserve the messy interaction sequence,</li>
-<li>score outcomes with concrete checks.</li>
+<li>work queues,</li>
+<li>sandbox orchestration,</li>
+<li>artifact capture,</li>
+<li>metric aggregation,</li>
+<li>reproducible CLI entrypoints.</li>
 </ul>
-<p>A fake DOM or hand-picked screenshot can still be useful for unit tests, but it should not be the final word on whether a browser agent actually works.</p>
-</div>
-      </article>
-      <article class="post" id="on-device-llms-are-a-systems-design-problem">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a></h2><p class="post-summary">The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">review</span><span class="tag">systems</span>
-          </div>
-        </header>
-        <div class="post-body"><p>There is a reason review papers are useful in fast-moving fields: they show how many moving parts a clean demo hides.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> is valuable because it frames edge LLM deployment as a systems problem spanning compression, hardware acceleration, runtime strategy, and hybrid edge-cloud design.</p>
-<p>That framing is worth stealing.</p>
-<p>If a team says it is &quot;doing on-device AI,&quot; the real question is whether it has a clear answer for:</p>
+<p>Go is not the only way to build those pieces, but it is a very good way to keep them understandable. For harness code, that matters more than cleverness.</p>
+<h2 id="harnesses-fail-in-ordinary-ways">Harnesses fail in ordinary ways</h2>
+<p>People sometimes talk about evaluation as if the hard part is inventing the benchmark. In practice, a lot of pain comes from less glamorous problems: task runners that wedge, artifact paths that drift, workers that become hard to reason about, and support scripts that only one engineer wants to touch.</p>
+<p>That is why the language and tooling choice for the harness actually matters. The harness is the thing telling you whether the model improved. It should not be the least trustworthy part of the stack.</p>
+<h2 id="why-go-works-well-here">Why Go works well here</h2>
+<p>Go tends to be a good fit for harness pipelines because it handles routine infrastructure cleanly:</p>
 <ul>
-<li>what runs locally,</li>
-<li>what falls back remotely,</li>
-<li>how quality and latency trade off,</li>
-<li>how the deployment will be debugged in the field.</li>
+<li>concurrent workers without a lot of ceremony,</li>
+<li>static binaries that are easy to ship into controlled environments,</li>
+<li>predictable CLIs for repeatable runs,</li>
+<li>code that stays readable when the pipeline grows new branches.</li>
 </ul>
-</div>
-      </article>
-      <article class="post" id="one-bit-models-may-rewrite-the-edge-budget">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#one-bit-models-may-rewrite-the-edge-budget">1-bit models may rewrite the edge budget</a></h2><p class="post-summary">Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">efficiency</span><span class="tag">bitnet</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Efficiency work becomes more exciting when it changes what hardware can participate.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.11453">BitNet: Scaling 1-bit Transformers for Large Language Models</a> is interesting for that reason. The paper points toward a future where memory and energy budgets shift enough to make different deployment targets practical.</p>
-<p>That matters for edge intelligence because budget is the product constraint:</p>
-<ul>
-<li>battery,</li>
-<li>memory,</li>
-<li>thermals,</li>
-<li>cost per shipped device.</li>
-</ul>
-<p>If a model architecture changes those constraints in a real way, it can change what the product team is willing to build at all.</p>
+<p>That does not make Go magical. It just makes it a practical tool for a class of problems where operational clarity pays off.</p>
+<p>Papers like SWE-bench and GAIA make the case that evaluation should get closer to real tasks. Once you accept that, you also accept more harness complexity. My bias is to meet that complexity with boring tools and explicit pipelines, not with a pile of clever glue code that becomes its own benchmark failure.</p>
 </div>
       </article>
       <article class="post" id="why-go-still-matters-in-the-ai-era">
         <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <p class="post-meta"><time datetime="2026-03-14" data-utc="Mar 14, 2026 UTC" aria-label="Mar 14, 2026 UTC" tabindex="0">1773446400</time></p>
           <h2><a href="#why-go-still-matters-in-the-ai-era">Why Go still matters in the AI era</a></h2><p class="post-summary">Go keeps earning its spot in AI products by making inference infrastructure, orchestration, and operational tooling simple to ship and simple to trust.</p>
           <div class="tags"><span class="tag">golang</span><span class="tag">ai</span><span class="tag">systems</span>
           </div>
@@ -823,7 +807,183 @@
 <li>Go for services, orchestration, developer tooling, and production control planes.</li>
 </ul>
 <p>That split lets each language do what it is best at. You do not need one language to dominate the entire stack to build a fast team.</p>
-<p>Go still matters because AI is not only about models. It is also about shipping dependable systems around them.</p>
+<h2 id="reliability-is-still-a-product-feature">Reliability is still a product feature</h2>
+<p>It is easy to talk about AI as if the whole category reduces to model capability. In production, capability is only one layer. Someone still has to make the system dependable, observable, and affordable enough to run every day.</p>
+<p>That is why Go keeps surfacing in mature AI products. It helps teams build the unglamorous pieces that decide whether intelligence feels like a feature or like a recurring incident. The more valuable models become, the more valuable that kind of boring infrastructure becomes too.</p>
+</div>
+      </article>
+      <article class="post" id="go-fits-the-control-plane-of-mobile-llm-products">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-03-03" data-utc="Mar 03, 2026 UTC" aria-label="Mar 03, 2026 UTC" tabindex="0">1772496000</time></p>
+          <h2><a href="#go-fits-the-control-plane-of-mobile-llm-products">Go fits the control plane of mobile LLM products</a></h2><p class="post-summary">Edge AI products still need sync services, rollout control, metrics, and device policy, which keeps Go relevant even when inference runs elsewhere.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">edge-llms</span><span class="tag">mobile</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Even when inference runs on-device, the surrounding product still needs a control plane.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> focuses on the model side of that problem, but product teams still need servers for model rollout, feature flags, telemetry collection, and safety policy updates.</p>
+<p>That is one reason Go keeps showing up in AI-adjacent systems work.</p>
+<p>The model can live on a phone. The operational contract still lives in services, CLIs, background jobs, and dashboards. A boring systems language is still a competitive advantage there.</p>
+<h2 id="on-device-does-not-mean-no-backend">On-device does not mean no backend</h2>
+<p>There is a recurring fantasy in edge AI discussions that local inference makes the rest of the product magically disappear. It does not. The product still needs to decide which model version to ship, how to observe behavior in the field, and how to respond when a rollout goes badly.</p>
+<p>Those are not minor details around the edges. They are the parts that determine whether an edge feature can be maintained after launch.</p>
+<h2 id="the-control-plane-still-matters">The control plane still matters</h2>
+<p>Even with local inference, teams usually need reliable systems for:</p>
+<ul>
+<li>rollout coordination across device cohorts,</li>
+<li>telemetry and health signals,</li>
+<li>remote policy updates,</li>
+<li>internal tools that help humans understand what is deployed.</li>
+</ul>
+<p>None of that makes the on-device story less interesting. It makes the on-device story real.</p>
+<p>This is why Go remains relevant in mobile LLM products. Not because it should replace the model stack, but because it handles the operational layer well. Services, jobs, CLIs, and dashboards benefit from a language that makes simple infrastructure easy to keep simple.</p>
+<p>The model may live close to the user. The control plane still lives in the ordinary world of software operations, and ordinary engineering discipline still wins there.</p>
+</div>
+      </article>
+      <article class="post" id="go-is-a-natural-control-plane-for-disaggregated-serving">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-02-22" data-utc="Feb 22, 2026 UTC" aria-label="Feb 22, 2026 UTC" tabindex="0">1771718400</time></p>
+          <h2><a href="#go-is-a-natural-control-plane-for-disaggregated-serving">Go is a natural control plane for disaggregated serving</a></h2><p class="post-summary">Disaggregated prefill and decode pipelines need schedulers, backpressure, and observability more than they need another complex runtime.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">inference</span><span class="tag">llm-serving</span>
+          </div>
+        </header>
+        <div class="post-body"><p>One of the clearest recent serving ideas is in <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.09670">DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</a>. The paper shows why prefill and decode interfere with each other and why separating them can improve goodput under real latency targets.</p>
+<p>That architecture has a very Go-shaped seam in it.</p>
+<p>If prefill and decode become distinct pools, somebody has to own:</p>
+<ul>
+<li>request admission,</li>
+<li>routing policy,</li>
+<li>streaming state,</li>
+<li>deadline propagation.</li>
+</ul>
+<p>That &quot;somebody&quot; does not need to be the same runtime that executes the kernels. A small Go service is often the right place to implement the policy layer because it stays deployable, observable, and easy to debug when traffic gets weird.</p>
+<h2 id="separation-creates-coordination-work">Separation creates coordination work</h2>
+<p>Disaggregation is attractive because it stops different phases of inference from fighting each other quite so directly. But separating them does not remove complexity. It relocates complexity into scheduling, buffering, and operational policy.</p>
+<p>That is exactly the kind of work that benefits from a clean control plane.</p>
+<p>Once there are distinct pools, the system needs a component that can make understandable decisions when load shifts. It has to answer practical questions: which requests get admitted, what deadlines matter most, and how streaming state is preserved without turning every incident into a forensic exercise.</p>
+<h2 id="why-go-fits-the-seam">Why Go fits the seam</h2>
+<p>A Go service is not interesting here because it is fashionable. It is useful because the control-plane job rewards plain engineering:</p>
+<ul>
+<li>predictable concurrency,</li>
+<li>simple deployment units,</li>
+<li>straightforward observability,</li>
+<li>code paths operators can still follow during an incident.</li>
+</ul>
+<p>The serving runtime can stay specialized around execution. The control layer can stay specialized around policy.</p>
+<p>That separation of responsibilities feels healthy to me. DistServe highlights why inference phases deserve different treatment. The systems lesson is that once you accept that split, you should also accept a clear policy layer around it. Go is often a very practical place to put that layer.</p>
+</div>
+      </article>
+      <article class="post" id="go-can-keep-structured-llm-runtimes-boring">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-02-10" data-utc="Feb 10, 2026 UTC" aria-label="Feb 10, 2026 UTC" tabindex="0">1770681600</time></p>
+          <h2><a href="#go-can-keep-structured-llm-runtimes-boring">Go can keep structured LLM runtimes boring</a></h2><p class="post-summary">Structured LLM programs need cache-aware runtimes and simple orchestration boundaries, which is exactly where Go stays useful.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">llm-serving</span><span class="tag">systems</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Structured prompting workflows look fancy at the model layer, but they usually fail or slow down at the runtime layer.</p>
+<p>That is why I like reading systems papers such as <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.07104">SGLang: Efficient Execution of Structured Language Model Programs</a>. The paper argues that structured LLM programs benefit from runtime features like cache reuse and careful execution planning, not just better prompts.</p>
+<p>My Go takeaway is simple: keep Python close to model experimentation, but let Go own the boring infrastructure around it. Go is a good fit for:</p>
+<ul>
+<li>queueing and routing structured requests,</li>
+<li>managing timeouts and retries,</li>
+<li>exposing clear metrics for cache hit rates and latency.</li>
+</ul>
+<p>The paper is not about Go, but the engineering lesson maps well to Go services. The more structured the LLM program becomes, the more valuable it is to have a control layer that is easy to reason about under load.</p>
+<h2 id="structure-raises-the-runtime-bar">Structure raises the runtime bar</h2>
+<p>A surprisingly large amount of LLM application complexity appears only after teams move past one-shot prompts. Once a workflow starts branching, reusing context, or coordinating multiple calls, the runtime matters much more. Suddenly cache behavior, execution order, and failure handling shape the user experience.</p>
+<p>That is why &quot;better prompting&quot; is often an incomplete answer. A smart prompt on top of a sloppy runtime still produces a sloppy system.</p>
+<h2 id="boring-infrastructure-is-a-feature">Boring infrastructure is a feature</h2>
+<p>This is where Go keeps earning its place. Not because it knows anything special about prompts, but because it helps teams build a simple boundary around the complicated part.</p>
+<p>A solid Go layer can make structured programs easier to operate by handling:</p>
+<ul>
+<li>admission control before expensive work starts,</li>
+<li>cancellation and timeout propagation,</li>
+<li>metrics that explain whether cache-aware execution is helping,</li>
+<li>stable service contracts around rapidly changing model logic.</li>
+</ul>
+<p>That kind of boring is valuable. It turns runtime behavior into something engineers can inspect without decoding a tower of incidental complexity.</p>
+<p>The more structured LLM applications become, the more they resemble ordinary systems problems wrapped around unusual compute. That is a good place for Go. Let the model layer stay experimental. Let the runtime boundary stay readable.</p>
+</div>
+      </article>
+      <article class="post" id="edge-npus-change-the-serving-shape">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-01-29" data-utc="Jan 29, 2026 UTC" aria-label="Jan 29, 2026 UTC" tabindex="0">1769644800</time></p>
+          <h2><a href="#edge-npus-change-the-serving-shape">Edge NPUs change the serving shape</a></h2><p class="post-summary">NPU-aware LLM systems need different scheduling instincts, especially around prompt chunking, latency spikes, and device-specific execution paths.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">npu</span><span class="tag">serving</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The edge story gets more interesting once NPUs enter the picture.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> highlights ideas like prompt chunking and hardware-aware scheduling to reduce the ugly parts of latency. That matters because edge serving is rarely just &quot;run the same pipeline on smaller hardware.&quot;</p>
+<p>It is a different scheduling problem.</p>
+<p>Teams building edge stacks should expect device-specific execution strategies, uneven latency profiles, and careful fallbacks. The serving shape changes with the hardware, so the software architecture has to change with it.</p>
+<h2 id="specialized-hardware-changes-software-assumptions">Specialized hardware changes software assumptions</h2>
+<p>When teams first hear &quot;NPU,&quot; it is tempting to translate that into &quot;faster inference&quot; and move on. In practice, specialized acceleration changes the system shape more than the marketing shorthand suggests. Latency can improve, but the path to predictable latency often depends on the runtime making better decisions.</p>
+<p>That is why ideas like prompt chunking matter. They are reminders that scheduling on-device work is not only about raw throughput. It is about smoothing the unpleasant edges of real interaction patterns.</p>
+<h2 id="expect-device-specific-execution-paths">Expect device-specific execution paths</h2>
+<p>An edge stack that ignores device variation usually ends up either fragile or overly conservative. Different hardware profiles push the software toward different execution strategies, and that means the product needs explicit handling for:</p>
+<ul>
+<li>uneven latency behavior,</li>
+<li>fallback paths when the preferred accelerator path is unavailable,</li>
+<li>request shaping that matches the device instead of an abstract average.</li>
+</ul>
+<p>This is where a lot of &quot;works on my test phone&quot; demos break down. The demo path is often a single happy execution route. The product path needs to survive a fleet.</p>
+<p>The more NPUs matter, the less useful it is to think of serving as a generic layer beneath the model. Hardware-aware serving becomes part of the product architecture itself. That is a healthy shift. It forces teams to design for the hardware they actually have, not the hardware they wish every user owned.</p>
+</div>
+      </article>
+      <article class="post" id="edge-llms-live-or-die-by-model-shape">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-01-17" data-utc="Jan 17, 2026 UTC" aria-label="Jan 17, 2026 UTC" tabindex="0">1768608000</time></p>
+          <h2><a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs live or die by model shape</a></h2><p class="post-summary">On-device language models are constrained less by hype and more by architecture choices that survive mobile memory, latency, and thermal limits.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">mobile</span><span class="tag">architecture</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The promise of on-device inference is easy to say and hard to ship.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> is a useful paper because it focuses on the architecture details that matter at the small end: depth, width, and parameter efficiency.</p>
+<p>The engineering takeaway is that edge deployment is not only about compressing a big cloud model. Sometimes the winning move is to start from a model shape that was designed for the edge in the first place.</p>
+<p>For product teams, that means evaluating model architecture and serving strategy together, not in separate meetings.</p>
+<h2 id="small-models-are-not-just-shrunk-models">Small models are not just shrunk models</h2>
+<p>A lot of edge planning still begins with the assumption that the main job is to squeeze an existing large model into a smaller box. That instinct is understandable, but it can lead teams toward awkward compromises. A model that works well in the cloud may carry structural assumptions that stop making sense once memory pressure, latency budgets, and thermals become the real boss.</p>
+<p>That is why model shape matters. Depth, width, and parameter allocation are not abstract architecture debates when the target is a phone or another constrained device. They are part of the deployment contract.</p>
+<h2 id="architecture-and-serving-are-one-decision">Architecture and serving are one decision</h2>
+<p>On-device systems do not get to treat architecture as an upstream research choice and serving as a downstream platform choice. The two interact immediately.</p>
+<p>A model shape that behaves well under tight resource limits can simplify the rest of the stack:</p>
+<ul>
+<li>fewer ugly runtime compromises,</li>
+<li>less dependence on aggressive fallback behavior,</li>
+<li>more predictable performance across device classes.</li>
+</ul>
+<p>A bad fit does the opposite. The serving layer ends up compensating for an architecture that was never comfortable on the target hardware.</p>
+<p>That is the practical lesson I keep taking from work like MobileLLM. Edge success is not about forcing a cloud story onto smaller hardware. It is about choosing a model form that respects the hardware from day one. When teams do that, the rest of the product conversation gets much cleaner.</p>
+</div>
+      </article>
+      <article class="post" id="one-bit-models-may-rewrite-the-edge-budget">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-01-06" data-utc="Jan 06, 2026 UTC" aria-label="Jan 06, 2026 UTC" tabindex="0">1767657600</time></p>
+          <h2><a href="#one-bit-models-may-rewrite-the-edge-budget">1-bit models may rewrite the edge budget</a></h2><p class="post-summary">Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">efficiency</span><span class="tag">bitnet</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Efficiency work becomes more exciting when it changes what hardware can participate.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.11453">BitNet: Scaling 1-bit Transformers for Large Language Models</a> is interesting for that reason. The paper points toward a future where memory and energy budgets shift enough to make different deployment targets practical.</p>
+<p>That matters for edge intelligence because budget is the product constraint:</p>
+<ul>
+<li>battery,</li>
+<li>memory,</li>
+<li>thermals,</li>
+<li>cost per shipped device.</li>
+</ul>
+<p>If a model architecture changes those constraints in a real way, it can change what the product team is willing to build at all.</p>
+<h2 id="why-the-budget-matters-more-than-the-benchmark-headline">Why the budget matters more than the benchmark headline</h2>
+<p>A lot of model discourse still assumes the main question is whether a smaller system can retain enough quality to feel respectable next to a cloud model. That is part of the story, but it is not the whole story. On the edge, the first question is usually simpler: can this thing run at all inside the envelope of a real product?</p>
+<p>That is why aggressive efficiency ideas deserve attention even before they become mainstream defaults. A meaningful shift in representation can move a device from &quot;not viable&quot; to &quot;viable with tradeoffs,&quot; or from &quot;lab demo&quot; to &quot;shippable feature.&quot; Those are product-level changes, not paper-only changes.</p>
+<h2 id="what-changes-when-the-budget-moves">What changes when the budget moves</h2>
+<p>When memory and energy costs drop, design space opens up in practical ways:</p>
+<ul>
+<li>more room for local context without immediately hitting device ceilings,</li>
+<li>less pressure to offload every hard case to the network,</li>
+<li>more freedom to treat intelligence as a default capability instead of a premium tier.</li>
+</ul>
+<p>That does not mean every edge team should bet immediately on 1-bit architectures. It does mean teams should watch for ideas that alter the baseline economics of deployment. If the cost profile changes enough, the roadmap changes with it.</p>
+<p>For edge work, that is the real promise of papers like BitNet. They are not only about squeezing a prettier number out of an efficiency table. They hint at a different hardware participation curve, and that is where product strategy starts to move.</p>
 </div>
       </article>
           </div>
@@ -836,20 +996,20 @@
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>
+              <a href="#good-harnesses-watch-the-whole-operating-system">Good harnesses watch the whole operating system</a>
               <a href="#agent-harnesses-need-tasks-that-fight-back">Agent harnesses need tasks that fight back</a>
+              <a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses need real browsers, not polite demos</a>
               <a href="#coding-agent-harnesses-need-real-repositories">Coding agent harnesses need real repositories</a>
-              <a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs live or die by model shape</a>
-              <a href="#edge-npus-change-the-serving-shape">Edge NPUs change the serving shape</a>
-              <a href="#go-can-keep-structured-llm-runtimes-boring">Go can keep structured LLM runtimes boring</a>
+              <a href="#harness-engineering-best-practices-for-ai-agents">Harness engineering best practices for AI agents</a>
+              <a href="#go-is-good-for-harness-pipelines">Go is good for harness pipelines</a>
+              <a href="#why-go-still-matters-in-the-ai-era">Why Go still matters in the AI era</a>
               <a href="#go-fits-the-control-plane-of-mobile-llm-products">Go fits the control plane of mobile LLM products</a>
               <a href="#go-is-a-natural-control-plane-for-disaggregated-serving">Go is a natural control plane for disaggregated serving</a>
-              <a href="#go-is-good-for-harness-pipelines">Go is good for harness pipelines</a>
-              <a href="#good-harnesses-watch-the-whole-operating-system">Good harnesses watch the whole operating system</a>
-              <a href="#harness-engineering-best-practices-for-ai-agents">Harness engineering best practices for AI agents</a>
-              <a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses need real browsers, not polite demos</a>
-              <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>
+              <a href="#go-can-keep-structured-llm-runtimes-boring">Go can keep structured LLM runtimes boring</a>
+              <a href="#edge-npus-change-the-serving-shape">Edge NPUs change the serving shape</a>
+              <a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs live or die by model shape</a>
               <a href="#one-bit-models-may-rewrite-the-edge-budget">1-bit models may rewrite the edge budget</a>
-              <a href="#why-go-still-matters-in-the-ai-era">Why Go still matters in the AI era</a>
             </div>
           </nav>
         </div>

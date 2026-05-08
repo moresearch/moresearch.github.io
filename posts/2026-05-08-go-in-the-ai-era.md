@@ -1,6 +1,6 @@
 ---
 title: Why Go still matters in the AI era
-date: 2026-05-08
+date: 2026-03-14
 slug: why-go-still-matters-in-the-ai-era
 summary: Go keeps earning its spot in AI products by making inference infrastructure, orchestration, and operational tooling simple to ship and simple to trust.
 tags: golang, ai, systems
@@ -45,4 +45,8 @@ A pragmatic stack often looks like this:
 
 That split lets each language do what it is best at. You do not need one language to dominate the entire stack to build a fast team.
 
-Go still matters because AI is not only about models. It is also about shipping dependable systems around them.
+## Reliability is still a product feature
+
+It is easy to talk about AI as if the whole category reduces to model capability. In production, capability is only one layer. Someone still has to make the system dependable, observable, and affordable enough to run every day.
+
+That is why Go keeps surfacing in mature AI products. It helps teams build the unglamorous pieces that decide whether intelligence feels like a feature or like a recurring incident. The more valuable models become, the more valuable that kind of boring infrastructure becomes too.

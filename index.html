@@ -799,6 +799,103 @@ func TestCatalogContract(t *testing.T) {
 <p>That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.</p>
 </div>
       </article>
+      <article class="post" id="studying-local-llm-training-from-scratch">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#studying-local-llm-training-from-scratch">Studying local LLM training from scratch</a></h2><p class="post-summary">I spent time studying Angelos Perivolaropoulos&#39;s workshop on training a small LLM locally, and the most important lesson was that tokenization and training discipline matter more than people usually admit.</p>
+          <div class="tags"><span class="tag">llms</span><span class="tag">training</span><span class="tag">reflections</span>
+          </div>
+        </header>
+        <div class="post-body"><p>I spent time studying <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=UsB70Tf5zcE">Angelos Perivolaropoulos's workshop on training an LLM from scratch locally</a>, plus the companion <a target="_blank" rel="noopener noreferrer" href="https://github.com/angelos-p/llm-from-scratch">llm-from-scratch repository</a>, and I think it is one of the better introductions to the topic precisely because it refuses to mystify the process.</p>
+<p>The workshop is not really about “making a tiny ChatGPT.” It is about seeing the transformer pipeline stripped down far enough that every moving part becomes legible: tokenizer, embeddings, self-attention, MLP blocks, residual paths, layer norm, training loop, validation, and sampling.</p>
+<p>What I liked most is that the workshop keeps the model small enough to run locally while still preserving the real structure of modern GPT-style training. The companion repo uses a family of configs from tiny to medium, with the default workshop setup landing around a 6-layer, 6-head, 384-dimensional model. That scale is small enough to make experimentation local, but large enough that the important engineering questions still show up.</p>
+<h2 id="the-tokenizer-is-not-a-preprocessing-detail">The tokenizer is not a preprocessing detail</h2>
+<p>The first thing that stood out to me is how correctly the workshop treats tokenization as a core modeling decision rather than a boring preprocessing step.</p>
+<p>For Shakespeare-scale data, the choice of a character-level tokenizer is not a toy simplification. It is the right systems choice.</p>
+<p>The repo makes the case very clearly:</p>
+<ul>
+<li>Shakespeare has about 65 unique characters,</li>
+<li>that means only 65² = 4,225 possible character bigrams,</li>
+<li>those transitions are dense enough that a small model can actually learn them,</li>
+<li>and the embedding/output layers stay tiny.</li>
+</ul>
+<p>That last point matters more than many people realize. With <code>vocab_size=65</code> and <code>n_embd=384</code>, the token embedding table is only about 25K parameters. If you swap in GPT-2's 50,257-token BPE vocabulary at the same embedding width, the embedding table alone jumps to roughly 19.3 million parameters. On a workshop-scale model, that is not a small implementation detail. That is the architecture.</p>
+<p>The deeper lesson is that tokenizer choice is really about matching representational granularity to data scale. On a tiny corpus, BPE gives you a vocabulary that is too sparse to learn useful transition structure. Character-level modeling makes the sequence longer, but it gives the model a denser statistical world.</p>
+<p>That tradeoff clicked for me very hard while studying the workshop: <strong>sequence length, vocabulary size, and learnable statistics are all coupled</strong>.</p>
+<h2 id="the-transformer-itself-is-not-the-mysterious-part">The transformer itself is not the mysterious part</h2>
+<p>The model architecture is intentionally GPT-2-like:</p>
+<ol>
+<li>token embeddings,</li>
+<li>position embeddings,</li>
+<li>repeated transformer blocks,</li>
+<li>each block containing causal self-attention plus an MLP,</li>
+<li>residual connections around both sublayers,</li>
+<li>layer norm for stability,</li>
+<li>a projection back to vocabulary logits.</li>
+</ol>
+<p>There is nothing magical here, and that is exactly why the workshop is useful.</p>
+<p>A lot of people still speak about LLMs as if the mystery lives inside some impossibly exotic block. But once you write the forward path down, the core mechanics are straightforward. Attention produces context-aware token representations; the MLP mixes features position-wise; residual paths preserve gradient flow; layer norm keeps activations sane.</p>
+<p>What is more interesting is how these pieces constrain each other. If <code>n_embd=384</code> and <code>n_head=6</code>, each attention head gets 64 dimensions. That is not just a shape check. It defines the capacity per head, the cost of attention, and the granularity of the similarity computation. Small-model design is mostly about these tradeoffs rather than about novelty.</p>
+<h2 id="the-training-loop-is-where-the-real-engineering-starts">The training loop is where the real engineering starts</h2>
+<p>The strongest message in the workshop is that the training loop matters more than architecture tweaks, and I think that is exactly right.</p>
+<p>The objective is standard next-token prediction: input <code>[t0, t1, ..., tn]</code>, predict <code>[t1, t2, ..., tn+1]</code>. But the workshop makes the practical consequences visible:</p>
+<ul>
+<li>batch construction matters,</li>
+<li>train/validation splits matter,</li>
+<li>the learning-rate schedule matters,</li>
+<li>gradient clipping matters,</li>
+<li>sample generation during training matters,</li>
+<li>and watching validation loss is not optional if you care about overfitting.</li>
+</ul>
+<p>This is the kind of detail that separates “I ran a notebook” from “I understand what the model is doing.”</p>
+<p>One small piece I kept thinking about is how simple the batch builder is. It just samples random starting offsets, slices <code>block_size</code> tokens for <code>x</code>, and shifts by one token for <code>y</code>. That is conceptually simple, but it encodes the whole autoregressive learning problem:</p>
+<pre><code class="language-go">func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
+	x := make([][]int, 0, len(starts))
+	y := make([][]int, 0, len(starts))
+
+	for _, start := range starts {
+		input := append([]int(nil), tokens[start:start+blockSize]...)
+		target := append([]int(nil), tokens[start+1:start+blockSize+1]...)
+		x = append(x, input)
+		y = append(y, target)
+	}
+
+	return x, y
+}
+</code></pre>
+<p>That tiny shift is the whole learning signal. The model is never told about syntax, style, or Shakespearean rhythm directly. It gets only the pressure to predict the next token well, repeatedly, at scale.</p>
+<h2 id="cosine-decay-is-not-cosmetic">Cosine decay is not cosmetic</h2>
+<p>I also appreciated that the workshop does not hand-wave optimization. The repo uses warmup, cosine decay, AdamW, and gradient clipping. That is already enough to show why training methodology dominates a lot of outcomes people wrongly attribute to “model intelligence.”</p>
+<p>Warmup exists because early optimization steps are fragile. Cosine decay exists because the job changes over time: early on you want exploration and rapid movement; later you want refinement. Gradient clipping exists because small instabilities can still wreck a run, especially when you are learning interactively and changing things quickly.</p>
+<p>A lot of frontier-model discussion hides these basics behind scale. This workshop does the opposite. It makes the loop visible enough that you can see the shape of the problem.</p>
+<h2 id="validation-loss-and-sampling-are-both-debugging-tools">Validation loss and sampling are both debugging tools</h2>
+<p>One subtle but important point in the workshop is that generation is not only a flashy demo. It is a diagnostic.</p>
+<p>If validation loss is improving but samples are still collapsing into garbage, you learn something. If the text starts looking structured and then later begins to regurgitate training fragments, you learn something else. The repo even calls out that peak sample quality often arrives before the end of training, which is a clean reminder that “longer training” is not the same as “better model.”</p>
+<p>That is the kind of habit I wish more people carried into practical model work: do not evaluate only through a final scalar loss and do not evaluate only through vibes. Use both.</p>
+<h2 id="the-workshop-also-clarifies-what-transfers-to-reasoning-and-multimodality">The workshop also clarifies what transfers to reasoning and multimodality</h2>
+<p>I found the later discussion especially useful because it shows how these ideas generalize. A transformer expects sequences of vectors. Once that clicks, it becomes much easier to reason about why language, audio, and other modalities can all fit into related architectures.</p>
+<p>The point is not that all modalities are the same. The point is that if you can map them into the right embedding space and preserve the relevant sequence structure, the downstream transformer machinery becomes reusable.</p>
+<p>That is also why the workshop feels valuable beyond this exact Shakespeare example. It is teaching the shape of the abstraction, not just one toy exercise.</p>
+<h2 id="my-main-reflection">My main reflection</h2>
+<p>The biggest thing I took from studying this workshop is that small local training is useful not because it competes with frontier models, but because it teaches where the real leverage lives.</p>
+<p>It lives in:</p>
+<ul>
+<li>tokenizer/data fit,</li>
+<li>parameter budgeting,</li>
+<li>optimization discipline,</li>
+<li>loss interpretation,</li>
+<li>and the relationship between training signals and generated behavior.</li>
+</ul>
+<p>If you understand those pieces, larger model systems become much less mystical.</p>
+<p>That is why I liked this workshop. It keeps the model compact, but it does not fake the important parts. It shows that even a local, laptop-scale transformer is still a serious engineering object. And once you internalize that, a lot of current LLM discourse starts sounding less like magic and more like systems work.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=UsB70Tf5zcE">Angelos Perivolaropoulos, Training an LLM from Scratch, Locally</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/angelos-p/llm-from-scratch">angelos-p/llm-from-scratch</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="why-blockchains-matter-again-for-agentic-software">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
@@ -1433,6 +1530,7 @@ type Logger interface {
             <div class="posts-nav-links">
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Codebases in the era of agentic software engineering</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>
+              <a href="#studying-local-llm-training-from-scratch">Studying local LLM training from scratch</a>
               <a href="#why-blockchains-matter-again-for-agentic-software">Why blockchains matter again for agentic software</a>
               <a href="#the-agentic-era-is-an-economic-system">The agentic era is an economic system</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">Why I focused my research on SWE-Agent economics</a>

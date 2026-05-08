@@ -7,12 +7,12 @@
 - The published site is a single-page blog at the site root, served from `index.html`.
 - The page presents all published posts on one scrollable page with stable direct anchors per post.
 - The visual language follows `hackspree.com`: dark background, high-contrast text, Orbitron typography, uppercase labels, and restrained muted secondary text.
-- The page should feel like `hackspree.com` with the same logo/content split layout, except the content area is replaced by blog content.
-- On larger screens, a fixed side rail keeps the Hackspree logo visible while the post column scrolls.
+- The page should feel like `hackspree.com` with a three-column layout: logo rail, body column, and posts navigation rail.
+- On larger screens, the left logo rail and the right posts navigation rail both stay fixed in the vertical center while the body column scrolls.
 - The visible title and subtitle typography must match the sizing and spacing used by `hackspree.com`.
 - The rotated Hackspree logo must match the sizing treatment used by `hackspree.com`.
 - The primary visible page title is `Engineering Blog`, using the same scale treatment as the main `hackspree.com` heading.
-- A `Posts` navigation list must appear on the opposite side of the logo, aligned with the content header, and link to the in-page post anchors.
+- A `Posts` navigation list must appear in its own right-side rail, link to the in-page post anchors, and keep an independent scrollbar when the list is taller than the viewport.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules
@@ -36,4 +36,4 @@
 - GitHub Pages does not run the repository `Makefile`; generated artifacts required for publishing must therefore be committed to the repository.
 - Every published post must have a stable in-page anchor derived from its slug.
 - The blog page must remain functional with JavaScript disabled.
-- The desktop fixed side rail must gracefully collapse into a stacked top section on narrower screens.
+- The desktop fixed rails must gracefully collapse into a stacked top section on narrower screens.

@@ -175,7 +175,7 @@ var (
     .tag {
       margin: 0;
       color: #9ca3af;
-      font-size: 0.64rem;
+      font-size: 0.54rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -193,11 +193,11 @@ var (
     }
 
     h1 {
-      font-size: clamp(1.35rem, 2.2vw, 1.95rem);
+      font-size: clamp(1rem, 1.6vw, 1.35rem);
     }
 
     h2 {
-      font-size: clamp(0.92rem, 1.45vw, 1.08rem);
+      font-size: clamp(0.76rem, 1.1vw, 0.9rem);
     }
 
     h3 {
@@ -207,9 +207,9 @@ var (
     .role {
       margin: 10px 0 0;
       max-width: 36ch;
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      line-height: 1.8;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      line-height: 1.7;
     }
 
     .posts-nav {
@@ -224,6 +224,7 @@ var (
       width: min(220px, 100%);
       max-height: calc(100vh - 96px);
       overflow-y: auto;
+      overflow-x: hidden;
       padding-right: 8px;
       display: grid;
       gap: 18px;
@@ -240,15 +241,17 @@ var (
     .posts-nav-empty,
     .posts-nav a {
       color: #9ca3af;
-      font-size: 0.64rem;
+      font-size: 0.56rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      line-height: 1.7;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .posts-nav-title {
-      font-size: 0.66rem;
-      letter-spacing: 0.2em;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
     }
 
     .posts-nav a:hover {
@@ -261,9 +264,9 @@ var (
     }
 
     .posts-nav-links > * + * {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     .post-list {
@@ -282,8 +285,8 @@ var (
 
     .post-summary {
       max-width: 46ch;
-      font-size: 0.62rem;
-      line-height: 1.75;
+      font-size: 0.54rem;
+      line-height: 1.6;
     }
 
     .tags {
@@ -293,15 +296,15 @@ var (
     }
 
     .tag {
-      font-size: 0.66rem;
+      font-size: 0.52rem;
     }
 
     .post-body {
       margin-top: 22px;
       color: #fff;
-      font-size: 0.88rem;
+      font-size: 0.72rem;
       letter-spacing: 0.02em;
-      line-height: 1.8;
+      line-height: 1.68;
     }
 
     .post-body > :first-child {
@@ -324,7 +327,7 @@ var (
 
     .post-body h2,
     .post-body h3 {
-      font-size: 0.92rem;
+      font-size: 0.74rem;
     }
 
     .post-body ul,

@@ -23,6 +23,7 @@
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - The published archive may also include first-person technical reflection posts on workshops, talks, or videos, as long as they stay grounded in concrete implementation details rather than generic impressions.
 - Posts may include fenced code examples with syntax highlighting, and the code presentation should use a 246_noir-inspired dark palette that fits the Hackspree aesthetic.
+- Posts may include remote publisher-hosted book-cover images when they materially support the essay content.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - Links rendered inside post bodies should stay minimal and readable without visible underlines.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
@@ -37,7 +38,9 @@
 - The build flow must be deterministic: posts are rendered in descending date order and repeated builds without source changes must not change the output.
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
 - The generated page may load remote syntax-highlighting assets when needed for post code examples.
-- The syntax-highlighting palette should be defined once in reusable shared tokens so every current and future post inherits the same 246_noir-inspired code styling.
+- The syntax-highlighting palette should be defined once in reusable shared tokens so every current and future post inherits the same code styling.
+- Code snippets must match the `vim-256noir` palette exactly: black background, light-gray normal text, white keywords/types/functions, dark-gray strings, darker-gray comments, and red numerals.
+- Code snippets must use Terminus as the dedicated code font.
 - The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
 - Navigation-centering behavior must not interfere with the main page scroll direction or pull the reader upward while they are scrolling down the post column.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.

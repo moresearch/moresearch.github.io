@@ -40,7 +40,7 @@ var (
   <title>{{.PageTitle}}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <style>
     html,
     body {
@@ -76,7 +76,7 @@ var (
 
     code,
     pre {
-      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .bg {
@@ -220,7 +220,28 @@ var (
       display: grid;
       gap: 18px;
       scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+    }
+
+    .nav-rail:hover {
       scrollbar-color: #9ca3af transparent;
+    }
+
+    .nav-rail::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .nav-rail::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .nav-rail::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .nav-rail:hover::-webkit-scrollbar-thumb {
+      background: #9ca3af;
     }
 
     .nav-head {
@@ -277,7 +298,7 @@ var (
       line-height: 1.72;
       letter-spacing: 0.04em;
       text-transform: none;
-      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .tags {
@@ -296,7 +317,7 @@ var (
       font-size: 0.68rem;
       letter-spacing: 0.02em;
       line-height: 1.64;
-      font-family: "Space Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-weight: 400;
     }
 

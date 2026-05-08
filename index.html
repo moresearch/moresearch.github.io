@@ -449,8 +449,8 @@
       background: #000;
       color: var(--syntax-normal);
       font-family: "Sudo Var", monospace;
-      font-size: 13px;
-      line-height: 18px;
+      font-size: 14px;
+      line-height: 20px;
     }
 
     .post-body pre {
@@ -461,8 +461,8 @@
       border: 1px solid #121212;
       color: var(--syntax-normal);
       font-family: "Sudo Var", monospace;
-      font-size: 13px;
-      line-height: 18px;
+      font-size: 14px;
+      line-height: 20px;
       scrollbar-width: none;
       scrollbar-color: #585858 #000;
     }
@@ -821,6 +821,230 @@ func TestCatalogContract(t *testing.T) {
 <li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills.md">Claude Code skills</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/worktrees.md">Claude Code worktrees</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/eugenelim/agent-ready-repo">agent-ready-repo example</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="dependency-injection-in-go-with-fx-and-alternatives">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#dependency-injection-in-go-with-fx-and-alternatives">Dependency injection in Go with Fx and the alternatives</a></h2><p class="post-summary">In Go, dependency injection is usually best when it stays explicit. Uber Fx becomes useful when the application graph and lifecycle are large enough to justify framework help, but it is not the only option.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">architecture</span><span class="tag">dependency-injection</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Dependency injection in Go is one of those topics where the community is often right for the wrong reason.</p>
+<p>People say “just wire things manually,” and a lot of the time that is the correct answer. But the deeper point is not that frameworks are bad. It is that Go already gives you a simple, testable way to express dependencies: constructors, interfaces, and explicit initialization in <code>main</code>.</p>
+<p>That means a DI framework has to earn its complexity.</p>
+<p>When I look at the current Go ecosystem, I think the most useful way to frame the space is:</p>
+<ol>
+<li><strong>manual wiring first,</strong></li>
+<li><strong>Dig if you want a runtime container without a full app framework,</strong></li>
+<li><strong>Fx if you want runtime wiring plus lifecycle orchestration,</strong></li>
+<li><strong>Wire if you specifically want compile-time generation, with the caveat that it is now unmaintained.</strong></li>
+</ol>
+<p>That ordering matches how I think about operational risk, not just developer preference.</p>
+<h2 id="what-dependency-injection-should-mean-in-go">What dependency injection should mean in Go</h2>
+<p>In Go, dependency injection should mostly mean this: constructors receive the collaborators they need, and <code>main</code> decides how the graph gets assembled.</p>
+<p>That keeps the code honest.</p>
+<pre><code class="language-go">package main
+
+import &quot;log&quot;
+
+type Config struct {
+	DSN string
+}
+
+type DB struct {
+	dsn string
+}
+
+// NewDB keeps database setup explicit at the application edge.
+func NewDB(cfg Config) *DB {
+	return &amp;DB{dsn: cfg.DSN}
+}
+
+type UserService struct {
+	db *DB
+}
+
+// NewUserService injects the database directly through the constructor.
+func NewUserService(db *DB) *UserService {
+	return &amp;UserService{db: db}
+}
+
+func main() {
+	cfg := Config{DSN: &quot;postgres://app&quot;}
+	db := NewDB(cfg)
+	svc := NewUserService(db)
+
+	// Use the fully assembled service graph.
+	log.Printf(&quot;service ready with %s&quot;, svc.db.dsn)
+}
+</code></pre>
+<p>This style is boring, but it scales farther than people sometimes admit. It is obvious in code review, easy to test, and does not hide object creation behind reflection or generated files.</p>
+<p>If the graph is still small enough to fit comfortably in one place, this is usually my favorite option.</p>
+<h2 id="where-uber-dig-fits">Where Uber Dig fits</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/uber-go/dig">Uber Dig</a> is a runtime DI toolkit, not a full framework. Its own README is pretty clear about the intended scope: it is good for resolving the object graph during process startup and as a building block for a framework like Fx, but not as a user-facing service locator.</p>
+<p>That distinction matters.</p>
+<p>Dig is useful when you want container-driven wiring without buying into a larger application model. You provide constructors, then invoke a function whose parameters the container fills in.</p>
+<pre><code class="language-go">package main
+
+import (
+	&quot;log&quot;
+
+	&quot;go.uber.org/dig&quot;
+)
+
+type Config struct {
+	DSN string
+}
+
+type DB struct {
+	dsn string
+}
+
+// NewDB builds the shared database dependency.
+func NewDB(cfg Config) *DB {
+	return &amp;DB{dsn: cfg.DSN}
+}
+
+func main() {
+	c := dig.New()
+
+	// Register concrete constructors with the container.
+	_ = c.Provide(func() Config { return Config{DSN: &quot;postgres://app&quot;} })
+	_ = c.Provide(NewDB)
+
+	// Ask Dig to resolve the object graph for this startup function.
+	_ = c.Invoke(func(db *DB) {
+		log.Printf(&quot;connected to %s&quot;, db.dsn)
+	})
+}
+</code></pre>
+<p>The upside is less manual wiring in <code>main</code>. The downside is that the dependency graph becomes more implicit. You read constructor signatures to understand the graph, but the assembly is no longer plain Go code in one obvious place.</p>
+<p>That tradeoff can be fine, but I think it should be deliberate.</p>
+<h2 id="where-uber-fx-becomes-compelling">Where Uber Fx becomes compelling</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/uber-go/fx">Uber Fx</a> sits one level higher. It is built on Dig, but it is really an <strong>application framework</strong> for dependency injection plus lifecycle.</p>
+<p>That lifecycle part is the reason to care.</p>
+<p>Once your application has:</p>
+<ul>
+<li>HTTP servers,</li>
+<li>background workers,</li>
+<li>metrics/reporting,</li>
+<li>shutdown hooks,</li>
+<li>multiple modules owned by different teams,</li>
+</ul>
+<p>plain constructor wiring stops being the whole problem. Now you also need deterministic startup ordering, clean shutdown, and a compositional way to express module boundaries.</p>
+<p>That is where Fx earns its keep.</p>
+<pre><code class="language-go">package main
+
+import (
+	&quot;context&quot;
+	&quot;log&quot;
+	&quot;net/http&quot;
+
+	&quot;go.uber.org/fx&quot;
+)
+
+type ServerParams struct {
+	fx.In
+
+	Lifecycle fx.Lifecycle
+	Mux       *http.ServeMux
+}
+
+// NewMux provides the shared HTTP router for the app.
+func NewMux() *http.ServeMux {
+	return http.NewServeMux()
+}
+
+// RegisterServer binds the HTTP server lifecycle to the Fx app.
+func RegisterServer(p ServerParams) {
+	server := &amp;http.Server{
+		Addr:    &quot;:8080&quot;,
+		Handler: p.Mux,
+	}
+
+	p.Lifecycle.Append(fx.Hook{
+		OnStart: func(context.Context) error {
+			go server.ListenAndServe()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			return server.Shutdown(ctx)
+		},
+	})
+}
+
+func main() {
+	app := fx.New(
+		fx.Provide(NewMux),
+		fx.Invoke(RegisterServer),
+	)
+
+	// Run manages startup, signal handling, and shutdown hooks.
+	app.Run()
+	log.Println(&quot;stopped&quot;)
+}
+</code></pre>
+<p>That example captures the real difference. Fx is not just about “inject this dependency for me.” It is about giving the whole application a structured runtime and lifecycle.</p>
+<p>If I had a multi-module service with enough startup/shutdown machinery, Fx would be near the top of my list.</p>
+<h2 id="the-strongest-alternative-to-fx-is-often-still-manual-wiring">The strongest alternative to Fx is often still manual wiring</h2>
+<p>This is the part that gets lost in some DI comparisons. The main alternative to Fx is not necessarily another DI library. It is often <strong>explicit module wiring plus a few carefully owned lifecycle abstractions</strong>.</p>
+<p>For many Go services, that wins on:</p>
+<ul>
+<li>debuggability,</li>
+<li>ease of onboarding,</li>
+<li>grep-ability,</li>
+<li>and the ability to understand startup by reading one file.</li>
+</ul>
+<p>Fx becomes attractive when those benefits are outweighed by graph size and lifecycle complexity. Until then, a framework can be solving a problem you do not actually have yet.</p>
+<h2 id="what-about-google-wire">What about Google Wire?</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/google/wire">Google Wire</a> took a very different approach: compile-time code generation instead of runtime reflection.</p>
+<p>That is conceptually appealing in Go because it keeps the final wiring as ordinary generated Go code, with no runtime container and no reflection overhead. It also fits the language's bias toward explicitness better than many DI frameworks do.</p>
+<pre><code class="language-go">//go:build wireinject
+
+package main
+
+import &quot;github.com/google/wire&quot;
+
+type Config struct{}
+type DB struct{}
+type UserService struct{}
+
+// NewDB constructs the database dependency from configuration.
+func NewDB(Config) *DB { return &amp;DB{} }
+
+// NewUserService wires the service against the database dependency.
+func NewUserService(*DB) *UserService { return &amp;UserService{} }
+
+// InitializeUserService tells Wire which providers belong in the graph.
+func InitializeUserService() *UserService {
+	wire.Build(NewDB, NewUserService)
+	return nil
+}
+</code></pre>
+<p>The problem is that Wire is now explicitly marked as <strong>no longer maintained</strong>. Its README says so directly and points users toward forks if they need updates.</p>
+<p>That does not make the idea bad. In fact, I still think compile-time wiring is philosophically attractive in Go. But if I were starting something fresh today, I would treat Wire as a useful reference point, not my default foundation.</p>
+<h2 id="my-practical-ranking">My practical ranking</h2>
+<p>If I were choosing today for a production Go codebase, my rough decision tree would be:</p>
+<ol>
+<li><strong>Manual constructors</strong> if the graph is still easy to read in <code>main</code>.</li>
+<li><strong>Fx</strong> if startup/shutdown lifecycle and module composition are the real pain.</li>
+<li><strong>Dig</strong> if I want container-style runtime wiring without the full Fx application model.</li>
+<li><strong>Wire</strong> only with eyes open, because the project is no longer maintained.</li>
+</ol>
+<p>The important part is not picking the most “advanced” tool. It is matching the tool to the shape of the graph and the operational complexity of the app.</p>
+<h2 id="my-reflection">My reflection</h2>
+<p>Go dependency injection works best when it preserves the language's bias toward clarity.</p>
+<p>That is why I like Fx more than many DI frameworks in other ecosystems: it is not trying to turn Go into annotation soup. It still relies on constructors and explicit parameter types. But I also think Fx is easiest to justify when lifecycle management is the real problem, not just constructor wiring.</p>
+<p>If your application is still small, manual wiring is not primitive. It is often the most Go-like answer.</p>
+<p>If your application has grown into a startup graph with real operational structure, Fx becomes much more convincing.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/uber-go/fx">Uber Fx README</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://uber-go.github.io/fx/">Uber Fx docs</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/uber-go/dig">Uber Dig README</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/google/wire">Google Wire README</a></li>
 </ul>
 </div>
       </article>
@@ -1749,6 +1973,7 @@ type Logger interface {
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Codebases in the era of agentic software engineering</a>
+              <a href="#dependency-injection-in-go-with-fx-and-alternatives">Dependency injection in Go with Fx and the alternatives</a>
               <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical games and algorithmic game theory for agents</a>
               <a href="#mechanism-design-and-network-economics-for-agentic-markets">Mechanism design and network economics for agentic markets</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>

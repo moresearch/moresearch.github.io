@@ -480,8 +480,8 @@ var (
       background: #000;
       color: var(--syntax-normal);
       font-family: "Sudo Var", monospace;
-      font-size: 13px;
-      line-height: 18px;
+      font-size: 14px;
+      line-height: 20px;
     }
 
     .post-body pre {
@@ -492,8 +492,8 @@ var (
       border: 1px solid #121212;
       color: var(--syntax-normal);
       font-family: "Sudo Var", monospace;
-      font-size: 13px;
-      line-height: 18px;
+      font-size: 14px;
+      line-height: 20px;
       scrollbar-width: none;
       scrollbar-color: #585858 #000;
     }

@@ -44,6 +44,18 @@ var (
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
+    :root {
+      --syntax-bg: #181818;
+      --syntax-fg: #eae6df;
+      --syntax-comment: #6b6b6b;
+      --syntax-keyword: #c792ea;
+      --syntax-string: #c3e88d;
+      --syntax-number: #f78c6c;
+      --syntax-function: #82aaff;
+      --syntax-operator: #d6deeb;
+      --syntax-accent: #f9e2af;
+    }
+
     html,
     body {
       margin: 0 !important;
@@ -463,7 +475,7 @@ var (
       overflow-x: auto;
       padding: 18px;
       border-radius: 18px;
-      background: #181818;
+      background: var(--syntax-bg);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #d1d5db;
     }
@@ -476,13 +488,13 @@ var (
     .post-body pre code.hljs {
       display: block;
       overflow-x: auto;
-      color: #eae6df;
+      color: var(--syntax-fg);
       background: transparent;
     }
 
     .post-body .hljs-comment,
     .post-body .hljs-quote {
-      color: #6b6b6b;
+      color: var(--syntax-comment);
     }
 
     .post-body .hljs-keyword,
@@ -490,7 +502,7 @@ var (
     .post-body .hljs-literal,
     .post-body .hljs-section,
     .post-body .hljs-link {
-      color: #c792ea;
+      color: var(--syntax-keyword);
     }
 
     .post-body .hljs-string,
@@ -500,34 +512,34 @@ var (
     .post-body .hljs-template-tag,
     .post-body .hljs-template-variable,
     .post-body .hljs-addition {
-      color: #c3e88d;
+      color: var(--syntax-string);
     }
 
     .post-body .hljs-number,
     .post-body .hljs-regexp,
     .post-body .hljs-selector-class,
     .post-body .hljs-selector-id {
-      color: #f78c6c;
+      color: var(--syntax-number);
     }
 
     .post-body .hljs-title.function_,
     .post-body .hljs-title.class_,
     .post-body .hljs-function .hljs-title,
     .post-body .hljs-title {
-      color: #82aaff;
+      color: var(--syntax-function);
     }
 
     .post-body .hljs-operator,
     .post-body .hljs-punctuation,
     .post-body .hljs-meta {
-      color: #d6deeb;
+      color: var(--syntax-operator);
     }
 
     .post-body .hljs-variable,
     .post-body .hljs-property,
     .post-body .hljs-params,
     .post-body .hljs-type {
-      color: #f9e2af;
+      color: var(--syntax-accent);
     }
 
     .empty-state {

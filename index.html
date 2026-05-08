@@ -13,6 +13,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
+    :root {
+      --syntax-bg: #181818;
+      --syntax-fg: #eae6df;
+      --syntax-comment: #6b6b6b;
+      --syntax-keyword: #c792ea;
+      --syntax-string: #c3e88d;
+      --syntax-number: #f78c6c;
+      --syntax-function: #82aaff;
+      --syntax-operator: #d6deeb;
+      --syntax-accent: #f9e2af;
+    }
+
     html,
     body {
       margin: 0 !important;
@@ -432,7 +444,7 @@
       overflow-x: auto;
       padding: 18px;
       border-radius: 18px;
-      background: #181818;
+      background: var(--syntax-bg);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #d1d5db;
     }
@@ -445,13 +457,13 @@
     .post-body pre code.hljs {
       display: block;
       overflow-x: auto;
-      color: #eae6df;
+      color: var(--syntax-fg);
       background: transparent;
     }
 
     .post-body .hljs-comment,
     .post-body .hljs-quote {
-      color: #6b6b6b;
+      color: var(--syntax-comment);
     }
 
     .post-body .hljs-keyword,
@@ -459,7 +471,7 @@
     .post-body .hljs-literal,
     .post-body .hljs-section,
     .post-body .hljs-link {
-      color: #c792ea;
+      color: var(--syntax-keyword);
     }
 
     .post-body .hljs-string,
@@ -469,34 +481,34 @@
     .post-body .hljs-template-tag,
     .post-body .hljs-template-variable,
     .post-body .hljs-addition {
-      color: #c3e88d;
+      color: var(--syntax-string);
     }
 
     .post-body .hljs-number,
     .post-body .hljs-regexp,
     .post-body .hljs-selector-class,
     .post-body .hljs-selector-id {
-      color: #f78c6c;
+      color: var(--syntax-number);
     }
 
     .post-body .hljs-title.function_,
     .post-body .hljs-title.class_,
     .post-body .hljs-function .hljs-title,
     .post-body .hljs-title {
-      color: #82aaff;
+      color: var(--syntax-function);
     }
 
     .post-body .hljs-operator,
     .post-body .hljs-punctuation,
     .post-body .hljs-meta {
-      color: #d6deeb;
+      color: var(--syntax-operator);
     }
 
     .post-body .hljs-variable,
     .post-body .hljs-property,
     .post-body .hljs-params,
     .post-body .hljs-type {
-      color: #f9e2af;
+      color: var(--syntax-accent);
     }
 
     .empty-state {
@@ -785,6 +797,203 @@ func TestCatalogContract(t *testing.T) {
 <h2 id="the-useful-question-is-architectural">The useful question is architectural</h2>
 <p>That is why I like the comprehensive-review framing. It encourages a better question than &quot;can we run an LLM on-device?&quot; The better question is &quot;what system are we actually building around local inference?&quot;</p>
 <p>That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.</p>
+</div>
+      </article>
+      <article class="post" id="why-blockchains-matter-again-for-agentic-software">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#why-blockchains-matter-again-for-agentic-software">Why blockchains matter again for agentic software</a></h2><p class="post-summary">Blockchains become interesting again when coding agents need programmable, auditable, and explicitly economic coordination instead of opaque platform rules.</p>
+          <div class="tags"><span class="tag">blockchain</span><span class="tag">agents</span><span class="tag">research</span>
+          </div>
+        </header>
+        <div class="post-body"><p>I did not focus on blockchain in my dissertation because I wanted to rehash crypto slogans. I focused on it because blockchains make economic rules programmable, transparent, and auditable.</p>
+<p>That matters a lot more in an agentic world than it did in the earlier platform era.</p>
+<p>In <a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">my dissertation on SWE-Agent Economics and SWEChain-SDK</a>, I argue that decentralized SWE-Agent outsourcing markets are worth studying precisely because centralized platforms hide too much of the mechanism. They hide the ordering logic, the settlement logic, the admission rules, and often the event history needed for serious analysis.</p>
+<p>If agents are going to negotiate, specialize, and compete in software markets, I want those rules visible.</p>
+<h2 id="why-blockchain-was-the-right-research-substrate">Why blockchain was the right research substrate</h2>
+<p>The dissertation frames a blockchain not as branding, but as an implementation of an economic mechanism. That distinction mattered a lot to me.</p>
+<p>I was interested in:</p>
+<ul>
+<li>explicit allocation rules,</li>
+<li>transparent bids and payments,</li>
+<li>auditable state transitions,</li>
+<li>reproducible experiments under fixed conditions.</li>
+</ul>
+<p>A blockchain-style substrate is useful there because it makes state change legible. Every bid, allocation, payment, and artifact trail can be logged as part of the system rather than reconstructed later from scattered dashboards.</p>
+<p>That is exactly why one of the central contributions of the dissertation is <strong>SWEChain-SDK</strong>, a local-first blockchain-native SDK for economic network simulations of decentralized SWE-Agent markets.</p>
+<h2 id="why-this-gets-more-relevant-in-the-agentic-era">Why this gets more relevant in the agentic era</h2>
+<p>The stronger agents become, the more we need clean answers to questions like:</p>
+<ol>
+<li>who can submit work,</li>
+<li>who is allowed to bid,</li>
+<li>how selection happens,</li>
+<li>how settlement happens,</li>
+<li>what evidence counts as completion,</li>
+<li>how disputes or failures are inspected afterward.</li>
+</ol>
+<p>Traditional software systems can answer those questions too, but they often do so in an opaque way. Blockchains are interesting here because they make those policies first-class and programmable.</p>
+<p>That is why I focused on them in research. I was less interested in speculation and more interested in mechanism visibility.</p>
+<h2 id="go-is-a-natural-language-for-the-experimental-surface">Go is a natural language for the experimental surface</h2>
+<p>Even if the settlement substrate is blockchain-based, the surrounding tooling still benefits from straightforward systems code. A local-first SDK needs CLIs, dashboards, bridges, and deterministic utilities. That is where Go fits very naturally.</p>
+<p>A small Go surface makes the policy layer easier to reason about:</p>
+<pre><code class="language-go">package settlement
+
+type AuctionResult struct {
+	TaskID      string
+	WinnerID    string
+	PriceCents  int64
+	ArtifactRef string
+}
+
+type Ledger interface {
+	Settle(result AuctionResult) error
+}
+
+func Finalize(ledger Ledger, result AuctionResult) error {
+	return ledger.Settle(result)
+}
+</code></pre>
+<p>Again, the point is not complexity. The point is clarity. If agentic systems are going to rely on explicit mechanisms, the code around those mechanisms should be boring, auditable, and testable.</p>
+<h2 id="why-i-think-this-topic-is-still-underrated">Why I think this topic is still underrated</h2>
+<p>A lot of agent discussion still assumes coordination will be solved inside application logic alone. I think that misses the opportunity.</p>
+<p>Once agents are meaningful economic actors, infrastructure matters. Settlement matters. Logging matters. The ability to replay and inspect the exact rule path matters. That is why a blockchain-native SDK felt like a useful research artifact rather than a gimmick.</p>
+<p>The dissertation made that case because I wanted a platform where decentralized SWE-Agent markets could be studied under controlled, paired experiments. If you want to compare policies seriously, you need the mechanism to be part of the experiment, not an invisible dependency.</p>
+<h2 id="the-real-reason-i-cared">The real reason I cared</h2>
+<p>I focused on this because I think agentic software engineering will eventually force us to choose between opaque coordination and explicit coordination. My bet is that explicit coordination wins, especially in high-stakes systems where trust, incentives, and auditability matter.</p>
+<p>That is why blockchains matter again in this context. Not because they make agents magical, but because they make the rules legible.</p>
+<h2 id="source">Source</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">Mohamed A. Fouad, <em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="the-agentic-era-is-an-economic-system">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-07" data-utc="May 07, 2026 UTC" aria-label="May 07, 2026 UTC" tabindex="0">1778112000</time></p>
+          <h2><a href="#the-agentic-era-is-an-economic-system">The agentic era is an economic system</a></h2><p class="post-summary">The agentic era should be understood as a system of priced intelligence, constrained resources, and comparative advantage rather than just a better autocomplete stack.</p>
+          <div class="tags"><span class="tag">economics</span><span class="tag">agents</span><span class="tag">golang</span>
+          </div>
+        </header>
+        <div class="post-body"><p>One reason I kept pushing on SWE-Agent economics in my dissertation is that the agentic era is easy to misunderstand. It is tempting to frame it as a UX improvement: faster coding, better assistants, cheaper automation.</p>
+<p>That is real, but it is not the deepest change.</p>
+<p>The deeper change is that intelligence is becoming an allocatable resource. Once agents can act with some autonomy, the problem becomes economic: how do we route scarce capability across tasks, budgets, quality thresholds, and time constraints?</p>
+<p>That is exactly the kind of question I wanted to study in <a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">my dissertation on SWE-Agent Economics and SWEChain-SDK</a>. I focused on it because software engineering is moving from static labor assumptions toward dynamic allocation problems.</p>
+<h2 id="agentic-systems-make-cost-visible">Agentic systems make cost visible</h2>
+<p>In the old story, software work was mostly discussed in terms of teams, estimates, and ticket flow. In the agentic story, it becomes easier to measure the real tradeoffs:</p>
+<ul>
+<li>which agent finishes first,</li>
+<li>which one finishes cheapest,</li>
+<li>which one has the highest first-pass success,</li>
+<li>which one burns the most compute,</li>
+<li>which routing policy creates the best portfolio outcome.</li>
+</ul>
+<p>That is why the economic lens matters. It turns a fuzzy conversation into one about mechanism design, resource allocation, and incentives.</p>
+<p>The dissertation uses the language of <strong>SWE-Agent outsourcing markets</strong> because outsourcing markets make those choices explicit. The idea is not that every company will literally run an auction tomorrow. The idea is that auctions expose the structure of the problem in a way that centralized product flows usually hide.</p>
+<h2 id="why-i-cared-about-intelligence-per-watt">Why I cared about Intelligence Per Watt</h2>
+<p>One clue that pushed me further into this area was the growing importance of efficiency metrics such as <strong>Intelligence Per Watt (IPW)</strong>. Once model quality is no longer the only variable, system design has to care about capability per unit of energy, cost, and latency.</p>
+<p>That is economically meaningful because it changes who gets selected. A slightly weaker agent with better cost-performance can win in a constrained environment. The agentic era is full of those tradeoffs.</p>
+<p>In Go terms, that means the orchestration layer has to become explicit about utility:</p>
+<pre><code class="language-go">package routing
+
+type Candidate struct {
+	Name       string
+	PriceCents int64
+	LatencyMS  int
+	Score      float64
+}
+
+func Utility(c Candidate) float64 {
+	return c.Score - float64(c.PriceCents)/100.0 - float64(c.LatencyMS)/1000.0
+}
+</code></pre>
+<p>This is not a production formula. It is a reminder that selection policy is an economic policy. Even a simple router is already making claims about what the system values.</p>
+<h2 id="why-i-thought-software-engineering-needed-this-framing">Why I thought software engineering needed this framing</h2>
+<p>I focused on this in research because I did not want software engineering to adopt agents while leaving its evaluation language behind. If we keep treating agentic systems as isolated model demos, we miss the fact that they are participating in a larger allocation problem.</p>
+<p>That is why the dissertation emphasizes controlled paired experiments. If you want to compare policies, you need a system where you can hold the environment steady and vary one rule at a time. Otherwise, people confuse noise with insight.</p>
+<h2 id="the-economics-is-not-optional">The economics is not optional</h2>
+<p>The agentic era creates an economic system whether we acknowledge it or not. Agents consume resources, compete for tasks, differ in comparative advantage, and operate under explicit or implicit incentives.</p>
+<p>The practical question is whether we want to study those rules directly. My answer in the dissertation was yes. That is why I focused on building a framework where those interactions could be observed, logged, and rerun under comparable conditions.</p>
+<p>To me, that is one of the most exciting parts of the whole field. It means software engineering is no longer only about writing code better. It is about designing systems where intelligence itself becomes a resource to allocate well.</p>
+<h2 id="source">Source</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">Mohamed A. Fouad, <em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="why-i-focused-my-research-on-swe-agent-economics">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-06" data-utc="May 06, 2026 UTC" aria-label="May 06, 2026 UTC" tabindex="0">1778025600</time></p>
+          <h2><a href="#why-i-focused-my-research-on-swe-agent-economics">Why I focused my research on SWE-Agent economics</a></h2><p class="post-summary">My dissertation focused on SWE-Agent economics because software work is becoming a market of autonomous decision-makers, not just a pipeline of human tickets.</p>
+          <div class="tags"><span class="tag">research</span><span class="tag">agentic-economics</span><span class="tag">golang</span>
+          </div>
+        </header>
+        <div class="post-body"><p>One of the clearest questions in front of us is not whether coding agents will get better. They will. The harder question is what happens when software work itself starts behaving like an economic system.</p>
+<p>That is why I focused my dissertation on this area. In <a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf"><em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a>, I framed what I call <strong>SWE-Agent Economics</strong> as the intersection of intelligent software engineering and software-engineering economics. I was not interested only in whether agents can solve tasks. I was interested in what happens when they bid, specialize, compete, consume priced resources, and operate under explicit allocation rules.</p>
+<p>That focus came from a simple observation: once software work can be decomposed into scoped issues, artifacts, tests, and payments, the system starts to look less like a task board and more like a market.</p>
+<h2 id="why-i-thought-the-economic-lens-mattered">Why I thought the economic lens mattered</h2>
+<p>A lot of discussion around coding agents still treats them as isolated assistants. That framing is too small.</p>
+<p>In practice, agents already operate under:</p>
+<ul>
+<li>budget limits,</li>
+<li>latency limits,</li>
+<li>tool-access limits,</li>
+<li>quality thresholds,</li>
+<li>routing and scheduling decisions.</li>
+</ul>
+<p>Those are economic constraints, even when people describe them as product or platform constraints.</p>
+<p>My research focused on this because I wanted a language and an experimental setup that could capture those interactions directly rather than pretending they were just implementation details. The dissertation argues that decentralized SWE-Agent outsourcing markets are a useful central case because they make allocation, pricing, and settlement rules explicit.</p>
+<h2 id="why-i-built-a-toolkit-instead-of-writing-only-theory">Why I built a toolkit instead of writing only theory</h2>
+<p>The dissertation does not stop at framing. One of its main contributions is <strong>SWEChain-SDK</strong>, a blockchain-native SDK for controlled economic network simulations of SWE-Agent markets. I cared about that because good ideas are cheap if nobody can run the experiment again under comparable conditions.</p>
+<p>I wanted an environment where we could vary one policy dimension at a time and still keep:</p>
+<ol>
+<li>the same datasets,</li>
+<li>the same time base,</li>
+<li>the same agent pool,</li>
+<li>the same logging surface.</li>
+</ol>
+<p>That is what makes claims about agent economics credible instead of anecdotal.</p>
+<p>From a Go perspective, that kind of work benefits from explicit contracts and small composable binaries. A simulation stack like this should make every surface painfully clear:</p>
+<pre><code class="language-go">package market
+
+type Bid struct {
+	AgentID string
+	TaskID  string
+	Price   int64
+	Score   float64
+}
+
+type Allocation struct {
+	TaskID   string
+	AgentID  string
+	Accepted bool
+}
+
+type Logger interface {
+	RecordBid(Bid) error
+	RecordAllocation(Allocation) error
+}
+</code></pre>
+<p>The code is intentionally boring. That is the point. If the economic mechanism is the thing under study, the interfaces around it should be stable enough to let experiments change policy without rewriting the whole platform.</p>
+<h2 id="why-this-mattered-to-me-as-a-software-engineering-problem">Why this mattered to me as a software engineering problem</h2>
+<p>I focused on this line of research because software engineering is entering a phase where coordination matters as much as raw model capability. The interesting question is no longer only “can an agent solve this issue?” It is also:</p>
+<ul>
+<li>which agent should do it,</li>
+<li>under what incentives,</li>
+<li>at what price,</li>
+<li>with what comparative advantage,</li>
+<li>under which settlement rule,</li>
+<li>and with what observable audit trail.</li>
+</ul>
+<p>That is a very software-engineering question, but it is also an economic one.</p>
+<p>The dissertation formalizes that intuition because I think the next stage of agentic software engineering will reward teams that can reason about incentives and market structure, not only prompts and models.</p>
+<h2 id="the-real-motivation">The real motivation</h2>
+<p>The deepest reason I focused on SWE-Agent economics is that it creates a bridge between two worlds that are often separated: engineering systems and economic systems. Agents force them back together.</p>
+<p>Once software workers become autonomous, the surrounding system has to answer questions about specialization, cost, settlement, trust, and transparency. I wanted my research to address those questions directly, with reproducible tooling rather than vague metaphors.</p>
+<p>That is why the dissertation centers this topic. I think it is one of the most important lenses for understanding where software engineering is heading next.</p>
+<h2 id="source">Source</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">Mohamed A. Fouad, <em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a></li>
+</ul>
 </div>
       </article>
       <article class="post" id="good-harnesses-watch-the-whole-operating-system">
@@ -1224,6 +1433,9 @@ func TestCatalogContract(t *testing.T) {
             <div class="posts-nav-links">
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Codebases in the era of agentic software engineering</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-device LLMs are a systems design problem</a>
+              <a href="#why-blockchains-matter-again-for-agentic-software">Why blockchains matter again for agentic software</a>
+              <a href="#the-agentic-era-is-an-economic-system">The agentic era is an economic system</a>
+              <a href="#why-i-focused-my-research-on-swe-agent-economics">Why I focused my research on SWE-Agent economics</a>
               <a href="#good-harnesses-watch-the-whole-operating-system">Good harnesses watch the whole operating system</a>
               <a href="#agent-harnesses-need-tasks-that-fight-back">Agent harnesses need tasks that fight back</a>
               <a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses need real browsers, not polite demos</a>

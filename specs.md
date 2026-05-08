@@ -21,6 +21,7 @@
 - Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
 - The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
+- Posts may include fenced code examples with syntax highlighting, and the code presentation should use a 246_noir-inspired dark palette that fits the Hackspree aesthetic.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.
 - Links rendered inside post bodies should stay minimal and readable without visible underlines.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
@@ -34,6 +35,7 @@
 - The local build pipeline must use the Go toolchain only.
 - The build flow must be deterministic: posts are rendered in descending date order and repeated builds without source changes must not change the output.
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
+- The generated page may load remote syntax-highlighting assets when needed for post code examples.
 - The generated page may use a small inline enhancement script for active-post navigation behavior, but the page must remain usable when JavaScript is unavailable.
 - Navigation-centering behavior must not interfere with the main page scroll direction or pull the reader upward while they are scrolling down the post column.
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.

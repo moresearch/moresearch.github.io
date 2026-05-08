@@ -20,6 +20,7 @@
 - If `slug` is omitted, the build derives it from the title.
 - Markdown content begins after the closing front matter delimiter.
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
+- Fenced code blocks with language info strings are allowed and should be used when posts include code examples.
 - Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.
 - Rendered post bodies use the site's configured monospace body font; post authors should not rely on custom font styling in Markdown.
 - Rendered post-body links follow the site theme and should not rely on underline styling for visibility.

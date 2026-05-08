@@ -175,7 +175,7 @@ var (
     .tag {
       margin: 0;
       color: #9ca3af;
-      font-size: 0.68rem;
+      font-size: 0.64rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -193,11 +193,11 @@ var (
     }
 
     h1 {
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-size: clamp(1.35rem, 2.2vw, 1.95rem);
     }
 
     h2 {
-      font-size: clamp(1rem, 1.7vw, 1.24rem);
+      font-size: clamp(0.92rem, 1.45vw, 1.08rem);
     }
 
     h3 {
@@ -205,11 +205,11 @@ var (
     }
 
     .role {
-      margin: 20px 0 0;
+      margin: 10px 0 0;
       max-width: 36ch;
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
-      line-height: 1.9;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      line-height: 1.8;
     }
 
     .posts-nav {
@@ -225,31 +225,49 @@ var (
       max-height: calc(100vh - 96px);
       overflow-y: auto;
       padding-right: 8px;
+      display: grid;
+      gap: 18px;
       scrollbar-width: thin;
       scrollbar-color: #9ca3af transparent;
+    }
+
+    .nav-head {
+      display: grid;
+      gap: 8px;
     }
 
     .posts-nav-title,
     .posts-nav-empty,
     .posts-nav a {
       color: #9ca3af;
-      font-size: 0.72rem;
+      font-size: 0.64rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      line-height: 1.8;
+      line-height: 1.7;
     }
 
     .posts-nav-title {
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
+      font-size: 0.66rem;
+      letter-spacing: 0.2em;
     }
 
     .posts-nav a:hover {
       color: #fff;
     }
 
+    .posts-nav-links {
+      width: 100%;
+      display: grid;
+    }
+
+    .posts-nav-links > * + * {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
     .post-list {
-      margin-top: 42px;
+      margin-top: 0;
     }
 
     .post + .post {
@@ -264,8 +282,8 @@ var (
 
     .post-summary {
       max-width: 46ch;
-      font-size: 0.68rem;
-      line-height: 1.9;
+      font-size: 0.62rem;
+      line-height: 1.75;
     }
 
     .tags {
@@ -281,9 +299,9 @@ var (
     .post-body {
       margin-top: 22px;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       letter-spacing: 0.02em;
-      line-height: 1.92;
+      line-height: 1.8;
     }
 
     .post-body > :first-child {
@@ -387,8 +405,7 @@ var (
       }
 
       .content-side {
-        padding: 24px 28px 48px;
-        text-align: center;
+        padding: 24px 28px 32px;
       }
 
       .content,
@@ -431,8 +448,6 @@ var (
       </aside>
       <section class="content-side">
         <div class="content">
-          <h1>{{.SiteTitle}}</h1>
-          <p class="role">{{.SiteTagline}}</p>
       {{- if .HasPosts}}
           <div class="post-list">
       {{- range .Posts}}
@@ -458,15 +473,21 @@ var (
       </section>
       <aside class="nav-side">
         <div class="nav-rail">
+          <div class="nav-head">
+            <h1>{{.SiteTitle}}</h1>
+            <p class="role">{{.SiteTagline}}</p>
+          </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <p class="posts-nav-title">Posts</p>
-            {{- if .HasPosts}}
-            {{- range .Posts}}
-            <a href="#{{.Slug}}">{{.Title}}</a>
-            {{- end}}
-            {{- else}}
-            <span class="posts-nav-empty">No posts yet</span>
-            {{- end}}
+            <div class="posts-nav-links">
+              {{- if .HasPosts}}
+              {{- range .Posts}}
+              <a href="#{{.Slug}}">{{.Title}}</a>
+              {{- end}}
+              {{- else}}
+              <span class="posts-nav-empty">No posts yet</span>
+              {{- end}}
+            </div>
           </nav>
         </div>
       </aside>

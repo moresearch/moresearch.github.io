@@ -5,8 +5,9 @@
 - The GitHub Pages site is reachable at `https://moresearch.github.io/`.
 - The GitHub Pages site is also published at `https://blog.hackspree.com/`.
 - The published site is a single-page blog at the site root, served from `index.html`.
-- The page presents all published posts on one scrollable page with direct anchor links per post.
+- The page presents all published posts on one scrollable page with stable direct anchors per post.
 - The visual language follows `hackspree.com`: dark background, high-contrast text, Orbitron typography, uppercase labels, and restrained muted secondary text.
+- The page should feel like `hackspree.com` with the same logo/content split layout, except the content area is replaced by blog content.
 - On larger screens, a fixed side rail keeps the Hackspree logo visible while the post column scrolls.
 - The primary visible page title is `Engineering Blog`, set smaller than the previous sidebar title treatment.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
@@ -23,6 +24,7 @@
 - The build must fail when required post metadata is missing or when two posts resolve to the same slug.
 - The repository must include `.nojekyll` so GitHub Pages serves the generated output without Jekyll processing.
 - The repository root must contain the Hackspree logo asset used by the fixed side rail.
+- The generated page must not render a helper intro card or an on-page index section above the posts.
 
 ## Constraints and invariants
 

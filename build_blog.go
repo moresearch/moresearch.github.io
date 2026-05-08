@@ -173,9 +173,72 @@ var (
     .tag {
       margin: 0;
       color: #9ca3af;
-      font-size: 0.42rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
+    }
+
+    .post-meta {
+      font-size: 0.56rem;
+      line-height: 1.4;
+    }
+
+    .post-meta time {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+      outline: none;
+    }
+
+    .post-meta time::before,
+    .post-meta time::after {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .post-meta time::before {
+      content: "";
+      position: absolute;
+      left: calc(100% + 8px);
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(10, 10, 10, 0.96);
+      transform: translateY(-50%) rotate(-45deg);
+      z-index: 2;
+    }
+
+    .post-meta time::after {
+      content: attr(data-utc);
+      position: absolute;
+      left: calc(100% + 12px);
+      top: 50%;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(10, 10, 10, 0.96);
+      color: #fff;
+      font-size: 0.44rem;
+      letter-spacing: 0.08em;
+      line-height: 1.4;
+      white-space: nowrap;
+      text-transform: uppercase;
+      transform: translateY(-50%) translateX(4px);
+      z-index: 3;
+    }
+
+    .post-meta time:hover::before,
+    .post-meta time:focus-visible::before {
+      opacity: 1;
+    }
+
+    .post-meta time:hover::after,
+    .post-meta time:focus-visible::after {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
     }
 
     h1,
@@ -500,7 +563,7 @@ var (
       {{- range .Posts}}
       <article class="post" id="{{.Slug}}">
         <header class="post-header">
-          <p class="post-meta"><time datetime="{{.DateISO}}" title="{{.DateHoverUTC}}">{{.DateUnix}}</time></p>
+          <p class="post-meta"><time datetime="{{.DateISO}}" data-utc="{{.DateHoverUTC}}" aria-label="{{.DateHoverUTC}}" tabindex="0">{{.DateUnix}}</time></p>
           <h2><a href="#{{.Slug}}">{{.Title}}</a></h2>
           {{- if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
           {{- if .Tags}}
@@ -573,7 +636,15 @@ var (
 
         next.classList.add('is-active');
         next.setAttribute('aria-current', 'true');
-        next.scrollIntoView({block: 'center', inline: 'nearest', behavior: scrollBehavior});
+        if (navRail.scrollHeight > navRail.clientHeight) {
+          const nextTop =
+            next.getBoundingClientRect().top - navRail.getBoundingClientRect().top + navRail.scrollTop;
+          const targetTop = Math.max(
+            0,
+            nextTop - navRail.clientHeight / 2 + next.clientHeight / 2,
+          );
+          navRail.scrollTo({top: targetTop, behavior: scrollBehavior});
+        }
         activeID = id;
       };
 

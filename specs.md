@@ -39,8 +39,8 @@
 - The generated page must keep the site styling self-contained inside `index.html`, except for remote font or icon stylesheets required to match `hackspree.com`.
 - The generated page may load remote syntax-highlighting assets when needed for post code examples.
 - The syntax-highlighting palette should be defined once in reusable shared tokens so every current and future post inherits the same code styling.
-- Code snippets must match the `vim-256noir` palette exactly: black background, light-gray normal text, white keywords/types/functions, dark-gray strings, darker-gray comments, and red numerals.
-- Code snippets must use Terminus as the dedicated code font.
+- Code snippets must stay visually close to `vim-256noir`: black background with a monochrome black/gray/white token palette, including grayscale numerals instead of accent colors.
+- Code snippets must use Terminus as the dedicated code font, rendered at a sane pixel size so glyphs do not distort.
 - Code-snippet horizontal scrollbars must stay visually hidden until the reader hovers the snippet.
 - Go code snippets should include short comments that clarify the example logic instead of presenting uncommented bare code.
 - Posts that cite a YouTube video should include that video's thumbnail image in the post body, linked to the video.

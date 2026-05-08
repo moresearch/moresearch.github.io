@@ -11,8 +11,9 @@
 - On larger screens, the left logo rail and the right posts navigation rail both stay fixed in the vertical center while the body column scrolls.
 - The visible typography must be smaller than the current Hackspree landing page while remaining comfortably readable, so more blog content fits on screen.
 - The rotated Hackspree logo must match the sizing treatment used by `hackspree.com`.
-- The primary visible `Engineering Blog` title and subtitle live inside the right-side navigation rail rather than the body column.
-- The `Posts` navigation list must appear in its own right-side rail, use smaller link text with clear separators between entries, link to the in-page post anchors, and keep an independent scrollbar when the list is taller than the viewport.
+- The primary visible `Engineering Blog` title and subtitle live inside the right-side navigation rail in a smaller treatment than before.
+- The `Posts` navigation list must appear in its own right-side rail, use smaller link text with clear separators between entries, link to the in-page post anchors, and scroll vertically without introducing a horizontal scrollbar.
+- The post typography should be compressed aggressively relative to the current version to maximize visible content while staying legible.
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules

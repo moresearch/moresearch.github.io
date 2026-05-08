@@ -43,37 +43,30 @@ var (
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #000;
-      --panel: rgba(255, 255, 255, 0.03);
-      --line: rgba(255, 255, 255, 0.12);
-      --text: #fff;
-      --muted: #9ca3af;
-      --muted-strong: #d1d5db;
-      --accent: #f8fafc;
-      --code-bg: rgba(255, 255, 255, 0.06);
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    html,
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      min-height: 100% !important;
+      background: #000 !important;
+      color: #fff !important;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
     body {
-      margin: 0;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    body {
+      position: relative;
+      overflow-x: hidden;
       font-family: "Orbitron", Arial, sans-serif;
-      line-height: 1.7;
     }
 
     a {
       color: inherit;
+      text-decoration: none;
     }
 
     img {
@@ -90,67 +83,80 @@ var (
     .bg {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(circle at top left, rgba(156, 163, 175, 0.12), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.08), transparent 25%),
-        #000;
+      background: #000;
       z-index: 0;
     }
 
-    .shell {
+    .wrap {
       position: relative;
       z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .layout {
       width: min(1400px, 100%);
-      margin: 0 auto;
-      padding: clamp(20px, 3vw, 32px);
-      display: grid;
-      grid-template-columns: minmax(190px, 260px) minmax(0, 760px);
-      gap: clamp(28px, 5vw, 72px);
+      display: flex;
+      align-items: flex-start;
       justify-content: center;
     }
 
-    .sidebar {
+    .logo-side {
+      width: 20%;
+      min-width: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      padding: 16px 8px 16px 16px;
+      box-sizing: border-box;
+      flex-shrink: 0;
       position: sticky;
       top: 0;
-      align-self: start;
-      height: 100vh;
-      padding: clamp(18px, 3vw, 28px) 0;
-      display: grid;
-      grid-template-rows: minmax(220px, 1fr) auto;
-      gap: 18px;
+      min-height: 100vh;
     }
 
     .logo-link {
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
-      min-height: 220px;
-      text-decoration: none;
     }
 
     .logo {
-      width: min(420px, 34vw);
-      max-width: none;
-      transform: rotate(-90deg) scale(0.92);
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 156vh;
+      max-height: 117%;
+      transform: rotate(-90deg) scale(1.18);
       transform-origin: center center;
-      filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.35));
     }
 
-    .sidebar-copy {
-      display: grid;
-      gap: 14px;
-      align-self: end;
+    .content-side {
+      width: 80%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 48px 48px 72px 8px;
+      box-sizing: border-box;
     }
 
-    .eyebrow,
+    .content {
+      width: 100%;
+      max-width: 640px;
+      margin: 0;
+    }
+
     .post-meta,
-    .toc-title,
-    .stat-label,
+    .post-summary,
+    .role,
     .tag {
       margin: 0;
-      color: var(--muted);
-      font-size: 0.66rem;
+      color: #9ca3af;
+      font-size: 0.68rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -160,137 +166,68 @@ var (
     h3,
     h4 {
       margin: 0;
+      font-weight: 600;
       line-height: 1.2;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      color: #fff;
     }
 
     h1 {
-      font-size: clamp(1.02rem, 1.7vw, 1.32rem);
+      font-size: clamp(1.35rem, 2.4vw, 2rem);
     }
 
     h2 {
-      font-size: clamp(1.2rem, 2.3vw, 1.65rem);
+      font-size: clamp(1rem, 1.7vw, 1.24rem);
     }
 
     h3 {
-      font-size: clamp(0.98rem, 1.9vw, 1.28rem);
+      font-size: 0.92rem;
     }
 
-    .tagline,
-    .summary,
-    .intro p,
-    .post-body,
-    .post-summary {
-      color: var(--muted-strong);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-    }
-
-    .tagline {
-      margin: 0;
-      text-transform: uppercase;
-    }
-
-    .summary {
-      margin: 0;
-      max-width: 34ch;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin: 10px 0 6px;
-    }
-
-    .stats strong {
-      display: block;
-      margin-top: 6px;
-      font-size: 0.86rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .toc {
-      display: grid;
-      gap: 10px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-      max-height: 28vh;
-      overflow: auto;
-    }
-
-    .toc a {
-      color: var(--muted-strong);
-      text-decoration: none;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .role {
+      margin: 20px 0 0;
+      max-width: 36ch;
       font-size: 0.74rem;
+      line-height: 1.9;
     }
 
-    .toc a:hover,
-    .post-card h3 a:hover {
-      color: var(--accent);
+    .post-list {
+      margin-top: 42px;
     }
 
-    .content {
-      max-width: 760px;
-      padding: clamp(18px, 3vw, 28px) 0 72px;
-    }
-
-    .intro {
-      margin-bottom: 24px;
-      padding: clamp(20px, 2.8vw, 28px);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .intro p {
-      margin: 12px 0 0;
-      max-width: 56ch;
-    }
-
-    .post-card {
-      margin-top: 24px;
-      padding: clamp(20px, 2.8vw, 28px);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
+    .post + .post {
+      margin-top: 34px;
+      padding-top: 34px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .post-header > * + * {
-      margin-top: 14px;
-    }
-
-    .post-card h3 a {
-      text-decoration: none;
+      margin-top: 12px;
     }
 
     .post-summary {
-      margin: 0;
-      max-width: 58ch;
+      max-width: 46ch;
+      font-size: 0.68rem;
+      line-height: 1.9;
     }
 
     .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 12px;
     }
 
     .tag {
-      padding: 4px 10px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
+      font-size: 0.66rem;
     }
 
     .post-body {
-      margin-top: 28px;
-      line-height: 1.82;
+      margin-top: 22px;
+      color: #fff;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      line-height: 1.92;
     }
 
     .post-body > :first-child {
@@ -305,8 +242,15 @@ var (
     .post-body ul,
     .post-body ol,
     .post-body blockquote,
-    .post-body pre {
-      margin: 0 0 18px;
+    .post-body pre,
+    .post-body h2,
+    .post-body h3 {
+      margin: 0 0 20px;
+    }
+
+    .post-body h2,
+    .post-body h3 {
+      font-size: 0.92rem;
     }
 
     .post-body ul,
@@ -319,24 +263,24 @@ var (
     }
 
     .post-body blockquote {
+      max-width: 34ch;
       padding-left: 18px;
-      border-left: 2px solid var(--line);
-      color: var(--text);
+      border-left: 2px solid rgba(255, 255, 255, 0.14);
     }
 
     .post-body code {
       padding: 2px 6px;
       border-radius: 8px;
-      background: var(--code-bg);
+      background: rgba(255, 255, 255, 0.08);
       font-size: 0.92em;
     }
 
     .post-body pre {
       overflow-x: auto;
       padding: 18px;
-      border-radius: 16px;
-      background: var(--code-bg);
-      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .post-body pre code {
@@ -345,128 +289,70 @@ var (
     }
 
     .empty-state {
-      text-align: center;
+      margin-top: 42px;
+      max-width: 100%;
+      color: #9ca3af;
+      font-size: 0.74rem;
+      line-height: 1.9;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 1180px) {
-      .shell {
-        grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
-        gap: clamp(22px, 4vw, 48px);
+    @media (max-width: 900px) {
+      .wrap {
+        padding: 24px;
       }
 
-      .logo {
-        width: min(340px, 30vw);
-      }
-    }
-
-    @media (max-width: 960px) {
-      .shell {
-        grid-template-columns: 1fr;
-        gap: 18px;
-        padding: 20px;
-      }
-
-      .sidebar {
-        position: static;
-        height: auto;
-        min-height: auto;
-        padding: 8px 0 0;
-        grid-template-rows: none;
-        justify-items: center;
-      }
-
-      .logo-link {
-        min-height: 0;
-      }
-
-      .logo {
-        width: min(270px, 74vw);
-        transform: none;
-      }
-
-      .sidebar-copy {
-        width: min(640px, 100%);
-        justify-items: center;
-        text-align: center;
-      }
-
-      .stats {
-        width: min(320px, 100%);
-      }
-
-      .toc {
+      .layout {
+        flex-direction: column;
         width: 100%;
-        max-height: none;
       }
 
-      .summary,
-      .intro p,
-      .post-summary {
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .shell {
-        padding: 16px;
+      .logo-side,
+      .content-side {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
       }
 
-      .intro,
-      .post-card {
-        padding: 18px;
+      .logo-side {
+        position: static;
+        min-height: 28vh;
+        padding: 24px 16px 8px;
+      }
+
+      .logo {
+        transform: none;
+        max-width: 286px;
+        max-height: 234px;
+      }
+
+      .content-side {
+        padding: 24px 28px 48px;
       }
     }
   </style>
 </head>
 <body>
   <div class="bg"></div>
-  <div class="shell">
-    <aside class="sidebar">
+  <main class="wrap">
+    <div class="layout">
+      <aside class="logo-side">
       <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
         <img src="logo.png" alt="Hackspree logo" class="logo">
       </a>
-      <div class="sidebar-copy">
-        <p class="eyebrow">single page / markdown-built</p>
-        <h1>{{.SiteTitle}}</h1>
-        <p class="tagline">{{.SiteTagline}}</p>
-        <p class="summary">{{.SiteDescription}}</p>
-        <div class="stats">
-          <div>
-            <span class="stat-label">posts</span>
-            <strong>{{len .Posts}}</strong>
-          </div>
-          <div>
-            <span class="stat-label">latest</span>
-            <strong>{{.LatestDate}}</strong>
-          </div>
-        </div>
-        <nav class="toc" aria-label="Post index">
-          <p class="toc-title">on this page</p>
-          {{- if .HasPosts}}
-          {{- range .Posts}}
-          <a href="#{{.Slug}}">{{.Title}}</a>
-          {{- end}}
-          {{- else}}
-          <a href="#posts">posts coming soon</a>
-          {{- end}}
-        </nav>
-      </div>
-    </aside>
-    <main class="content">
-      <section class="intro">
-        <p class="eyebrow">scroll the posts / keep the mark in view</p>
-        <h2>All posts live here.</h2>
-        <p>
-          Add a new file to <code>posts/</code>, run <code>make</code>, and commit the regenerated
-          <code>index.html</code>.
-        </p>
-      </section>
+      </aside>
+      <section class="content-side">
+        <div class="content">
+          <h1>{{.SiteTitle}}</h1>
+          <p class="role">{{.SiteTagline}}</p>
       {{- if .HasPosts}}
+          <div class="post-list">
       {{- range .Posts}}
-      <article class="post-card" id="{{.Slug}}">
+      <article class="post" id="{{.Slug}}">
         <header class="post-header">
           <p class="post-meta">{{.DateDisplay}}</p>
-          <h3><a href="#{{.Slug}}">{{.Title}}</a></h3>
+          <h2><a href="#{{.Slug}}">{{.Title}}</a></h2>
           {{- if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
           {{- if .Tags}}
           <div class="tags">
@@ -477,16 +363,14 @@ var (
         <div class="post-body">{{.BodyHTML}}</div>
       </article>
       {{- end}}
+          </div>
       {{- else}}
-      <section class="post-card empty-state">
-        <header class="post-header">
-          <p class="post-meta">no posts yet</p>
-          <h3>Add your first markdown file in <code>posts/</code>.</h3>
-        </header>
-      </section>
+          <p class="empty-state">No posts yet.</p>
       {{- end}}
-    </main>
-  </div>
+        </div>
+      </section>
+    </div>
+  </main>
 </body>
 </html>
 `))

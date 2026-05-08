@@ -25,7 +25,7 @@
 - Posts may embed remote publisher-hosted book-cover images when discussing influential books tied directly to the post topic.
 - Fenced code blocks with language info strings are allowed and should be used when posts include code examples.
 - Highlighted code blocks inherit the shared site-wide syntax theme automatically; authors should only supply the correct language info string.
-- When a post includes code, the shared snippet styling should render it in a monochrome `vim-256noir`-style palette and Terminus font without post-level overrides.
+- When a post includes code, the shared snippet styling should render it in a monochrome `vim-256noir`-style palette and Sudo font without post-level overrides.
 - Go code examples should include brief comments so the example remains self-explanatory inside the single-page archive.
 - Code-block scrollbars should only become visibly styled when the reader hovers the block.
 - Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.

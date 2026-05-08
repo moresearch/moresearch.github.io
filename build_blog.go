@@ -91,6 +91,9 @@ var (
     code,
     pre {
       font-family: "Terminus", monospace;
+      font-variant-ligatures: none;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: auto;
     }
 
     .bg {
@@ -478,7 +481,8 @@ var (
       border-radius: 0;
       background: #000;
       color: var(--syntax-normal);
-      font-size: 0.92em;
+      font-family: "Terminus", monospace;
+      font-size: 0.58rem;
     }
 
     .post-body pre {
@@ -488,18 +492,55 @@ var (
       background: var(--syntax-bg);
       border: 1px solid #121212;
       color: var(--syntax-normal);
+      font-family: "Terminus", monospace;
+      font-size: 0.37rem;
+      line-height: 1.45;
+      scrollbar-width: none;
+      scrollbar-color: #585858 #000;
     }
 
     .post-body pre code {
       padding: 0;
       background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
     }
 
     .post-body pre code.hljs {
       display: block;
-      overflow-x: auto;
+      overflow: visible;
       color: var(--syntax-normal);
       background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .post-body pre:hover {
+      scrollbar-width: thin;
+    }
+
+    .post-body pre::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .post-body pre:hover::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .post-body pre::-webkit-scrollbar-track {
+      background: #000;
+    }
+
+    .post-body pre::-webkit-scrollbar-thumb {
+      background: #585858;
+    }
+
+    .post-body pre:hover::-webkit-scrollbar-thumb {
+      background: #8a8a8a;
     }
 
     .post-body .hljs-comment,

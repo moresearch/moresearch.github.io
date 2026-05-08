@@ -47,6 +47,7 @@ type Candidate struct {
 }
 
 func Utility(c Candidate) float64 {
+	// Trade off quality against both price and latency.
 	return c.Score - float64(c.PriceCents)/100.0 - float64(c.LatencyMS)/1000.0
 }
 ```

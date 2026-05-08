@@ -41,6 +41,7 @@ type Bid struct {
 }
 
 func Score(b Bid) float64 {
+	// Encode the market's current preference for quality, price, and speed.
 	return b.Quality - float64(b.Price)/100.0 - float64(b.LatencyMS)/1000.0
 }
 ```

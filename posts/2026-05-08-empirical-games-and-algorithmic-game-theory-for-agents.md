@@ -49,6 +49,7 @@ type Outcome struct {
 }
 
 func Payoff(o Outcome) float64 {
+	// Collapse the observed outcome into one comparison-friendly payoff.
 	return o.Utility - o.Cost + o.Success
 }
 ```

@@ -60,6 +60,9 @@
     code,
     pre {
       font-family: "Terminus", monospace;
+      font-variant-ligatures: none;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: auto;
     }
 
     .bg {
@@ -447,7 +450,8 @@
       border-radius: 0;
       background: #000;
       color: var(--syntax-normal);
-      font-size: 0.92em;
+      font-family: "Terminus", monospace;
+      font-size: 0.58rem;
     }
 
     .post-body pre {
@@ -457,18 +461,55 @@
       background: var(--syntax-bg);
       border: 1px solid #121212;
       color: var(--syntax-normal);
+      font-family: "Terminus", monospace;
+      font-size: 0.37rem;
+      line-height: 1.45;
+      scrollbar-width: none;
+      scrollbar-color: #585858 #000;
     }
 
     .post-body pre code {
       padding: 0;
       background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
     }
 
     .post-body pre code.hljs {
       display: block;
-      overflow-x: auto;
+      overflow: visible;
       color: var(--syntax-normal);
       background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .post-body pre:hover {
+      scrollbar-width: thin;
+    }
+
+    .post-body pre::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .post-body pre:hover::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .post-body pre::-webkit-scrollbar-track {
+      background: #000;
+    }
+
+    .post-body pre::-webkit-scrollbar-thumb {
+      background: #585858;
+    }
+
+    .post-body pre:hover::-webkit-scrollbar-thumb {
+      background: #8a8a8a;
     }
 
     .post-body .hljs-comment,
@@ -664,11 +705,13 @@
 
 import &quot;context&quot;
 
+// SkillsCatalog defines the read-only contract for skill discovery.
 type SkillsCatalog interface {
 	Load(ctx context.Context, name string) (Skill, error)
 	List(ctx context.Context) ([]Skill, error)
 }
 
+// WorktreeAllocator isolates parallel work into separate trees.
 type WorktreeAllocator interface {
 	Reserve(ctx context.Context, branch string) (Worktree, error)
 	Release(ctx context.Context, path string) error
@@ -695,6 +738,7 @@ import (
 	&quot;fmt&quot;
 )
 
+// TaskStore persists the generated plan steps for later execution.
 type TaskStore interface {
 	SavePlan(ctx context.Context, id string, steps []string) error
 }
@@ -708,6 +752,7 @@ func New(store TaskStore) *Service {
 }
 
 func (s *Service) Plan(ctx context.Context, id string, ask string) error {
+	// Keep the planning stages explicit so parallel agents share the same flow.
 	steps := []string{
 		fmt.Sprintf(&quot;classify: %s&quot;, ask),
 		&quot;load local contracts&quot;,
@@ -733,12 +778,14 @@ import (
 	&quot;testing&quot;
 )
 
+// fakeCatalog is a tiny stand-in that satisfies the contract in tests.
 type fakeCatalog struct{}
 
 func (fakeCatalog) Load(context.Context, string) (Skill, error) { return Skill{Name: &quot;go-api&quot;}, nil }
 func (fakeCatalog) List(context.Context) ([]Skill, error)       { return []Skill{{Name: &quot;go-api&quot;}}, nil }
 
 func TestCatalogContract(t *testing.T) {
+	// Bind the fake to the interface so the consumer-facing seam stays explicit.
 	var svc SkillsCatalog = fakeCatalog{}
 
 	skill, err := svc.Load(context.Background(), &quot;go-api&quot;)
@@ -818,6 +865,7 @@ type Outcome struct {
 }
 
 func Payoff(o Outcome) float64 {
+	// Collapse the observed outcome into one comparison-friendly payoff.
 	return o.Utility - o.Cost + o.Success
 }
 </code></pre>
@@ -888,6 +936,7 @@ type Bid struct {
 }
 
 func Score(b Bid) float64 {
+	// Encode the market's current preference for quality, price, and speed.
 	return b.Quality - float64(b.Price)/100.0 - float64(b.LatencyMS)/1000.0
 }
 </code></pre>
@@ -969,6 +1018,7 @@ func Score(b Bid) float64 {
           </div>
         </header>
         <div class="post-body"><p>I spent time studying <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=UsB70Tf5zcE">Angelos Perivolaropoulos's workshop on training an LLM from scratch locally</a>, plus the companion <a target="_blank" rel="noopener noreferrer" href="https://github.com/angelos-p/llm-from-scratch">llm-from-scratch repository</a>, and I think it is one of the better introductions to the topic precisely because it refuses to mystify the process.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=UsB70Tf5zcE"><img src="https://img.youtube.com/vi/UsB70Tf5zcE/maxresdefault.jpg" alt="Training an LLM from Scratch, Locally thumbnail"></a></p>
 <p>The workshop is not really about “making a tiny ChatGPT.” It is about seeing the transformer pipeline stripped down far enough that every moving part becomes legible: tokenizer, embeddings, self-attention, MLP blocks, residual paths, layer norm, training loop, validation, and sampling.</p>
 <p>What I liked most is that the workshop keeps the model small enough to run locally while still preserving the real structure of modern GPT-style training. The companion repo uses a family of configs from tiny to medium, with the default workshop setup landing around a 6-layer, 6-head, 384-dimensional model. That scale is small enough to make experimentation local, but large enough that the important engineering questions still show up.</p>
 <h2 id="the-tokenizer-is-not-a-preprocessing-detail">The tokenizer is not a preprocessing detail</h2>
@@ -1011,11 +1061,13 @@ func Score(b Bid) float64 {
 </ul>
 <p>This is the kind of detail that separates “I ran a notebook” from “I understand what the model is doing.”</p>
 <p>One small piece I kept thinking about is how simple the batch builder is. It just samples random starting offsets, slices <code>block_size</code> tokens for <code>x</code>, and shifts by one token for <code>y</code>. That is conceptually simple, but it encodes the whole autoregressive learning problem:</p>
-<pre><code class="language-go">func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
+<pre><code class="language-go">// makeBatch slices paired input and target windows for next-token prediction.
+func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
 	x := make([][]int, 0, len(starts))
 	y := make([][]int, 0, len(starts))
 
 	for _, start := range starts {
+		// The target window is shifted by one token relative to the input.
 		input := append([]int(nil), tokens[start:start+blockSize]...)
 		target := append([]int(nil), tokens[start+1:start+blockSize+1]...)
 		x = append(x, input)
@@ -1097,6 +1149,7 @@ func Score(b Bid) float64 {
 <p>A small Go surface makes the policy layer easier to reason about:</p>
 <pre><code class="language-go">package settlement
 
+// AuctionResult is the minimal state needed to settle a finished task.
 type AuctionResult struct {
 	TaskID      string
 	WinnerID    string
@@ -1104,11 +1157,13 @@ type AuctionResult struct {
 	ArtifactRef string
 }
 
+// Ledger abstracts the settlement backend behind one explicit call.
 type Ledger interface {
 	Settle(result AuctionResult) error
 }
 
 func Finalize(ledger Ledger, result AuctionResult) error {
+	// Keep the settlement path obvious so it is easy to audit.
 	return ledger.Settle(result)
 }
 </code></pre>
@@ -1162,6 +1217,7 @@ type Candidate struct {
 }
 
 func Utility(c Candidate) float64 {
+	// Trade off quality against both price and latency.
 	return c.Score - float64(c.PriceCents)/100.0 - float64(c.LatencyMS)/1000.0
 }
 </code></pre>
@@ -1214,6 +1270,7 @@ func Utility(c Candidate) float64 {
 <p>From a Go perspective, that kind of work benefits from explicit contracts and small composable binaries. A simulation stack like this should make every surface painfully clear:</p>
 <pre><code class="language-go">package market
 
+// Bid captures the economic signal an agent submits for a task.
 type Bid struct {
 	AgentID string
 	TaskID  string
@@ -1221,12 +1278,14 @@ type Bid struct {
 	Score   float64
 }
 
+// Allocation records the assignment decision emitted by the market.
 type Allocation struct {
 	TaskID   string
 	AgentID  string
 	Accepted bool
 }
 
+// Logger preserves the events needed for replayable experiments.
 type Logger interface {
 	RecordBid(Bid) error
 	RecordAllocation(Allocation) error

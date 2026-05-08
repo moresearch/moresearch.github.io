@@ -8,6 +8,8 @@ tags: llms, training, reflections
 
 I spent time studying [Angelos Perivolaropoulos's workshop on training an LLM from scratch locally](https://www.youtube.com/watch?v=UsB70Tf5zcE), plus the companion [llm-from-scratch repository](https://github.com/angelos-p/llm-from-scratch), and I think it is one of the better introductions to the topic precisely because it refuses to mystify the process.
 
+[![Training an LLM from Scratch, Locally thumbnail](https://img.youtube.com/vi/UsB70Tf5zcE/maxresdefault.jpg)](https://www.youtube.com/watch?v=UsB70Tf5zcE)
+
 The workshop is not really about “making a tiny ChatGPT.” It is about seeing the transformer pipeline stripped down far enough that every moving part becomes legible: tokenizer, embeddings, self-attention, MLP blocks, residual paths, layer norm, training loop, validation, and sampling.
 
 What I liked most is that the workshop keeps the model small enough to run locally while still preserving the real structure of modern GPT-style training. The companion repo uses a family of configs from tiny to medium, with the default workshop setup landing around a 6-layer, 6-head, 384-dimensional model. That scale is small enough to make experimentation local, but large enough that the important engineering questions still show up.
@@ -67,11 +69,13 @@ This is the kind of detail that separates “I ran a notebook” from “I under
 One small piece I kept thinking about is how simple the batch builder is. It just samples random starting offsets, slices `block_size` tokens for `x`, and shifts by one token for `y`. That is conceptually simple, but it encodes the whole autoregressive learning problem:
 
 ```go
+// makeBatch slices paired input and target windows for next-token prediction.
 func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
 	x := make([][]int, 0, len(starts))
 	y := make([][]int, 0, len(starts))
 
 	for _, start := range starts {
+		// The target window is shifted by one token relative to the input.
 		input := append([]int(nil), tokens[start:start+blockSize]...)
 		target := append([]int(nil), tokens[start+1:start+blockSize+1]...)
 		x = append(x, input)

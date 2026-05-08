@@ -73,11 +73,13 @@ package contracts
 
 import "context"
 
+// SkillsCatalog defines the read-only contract for skill discovery.
 type SkillsCatalog interface {
 	Load(ctx context.Context, name string) (Skill, error)
 	List(ctx context.Context) ([]Skill, error)
 }
 
+// WorktreeAllocator isolates parallel work into separate trees.
 type WorktreeAllocator interface {
 	Reserve(ctx context.Context, branch string) (Worktree, error)
 	Release(ctx context.Context, path string) error
@@ -110,6 +112,7 @@ import (
 	"fmt"
 )
 
+// TaskStore persists the generated plan steps for later execution.
 type TaskStore interface {
 	SavePlan(ctx context.Context, id string, steps []string) error
 }
@@ -123,6 +126,7 @@ func New(store TaskStore) *Service {
 }
 
 func (s *Service) Plan(ctx context.Context, id string, ask string) error {
+	// Keep the planning stages explicit so parallel agents share the same flow.
 	steps := []string{
 		fmt.Sprintf("classify: %s", ask),
 		"load local contracts",
@@ -154,12 +158,14 @@ import (
 	"testing"
 )
 
+// fakeCatalog is a tiny stand-in that satisfies the contract in tests.
 type fakeCatalog struct{}
 
 func (fakeCatalog) Load(context.Context, string) (Skill, error) { return Skill{Name: "go-api"}, nil }
 func (fakeCatalog) List(context.Context) ([]Skill, error)       { return []Skill{{Name: "go-api"}}, nil }
 
 func TestCatalogContract(t *testing.T) {
+	// Bind the fake to the interface so the consumer-facing seam stays explicit.
 	var svc SkillsCatalog = fakeCatalog{}
 
 	skill, err := svc.Load(context.Background(), "go-api")

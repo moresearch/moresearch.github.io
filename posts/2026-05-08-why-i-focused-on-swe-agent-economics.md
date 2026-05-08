@@ -46,6 +46,7 @@ From a Go perspective, that kind of work benefits from explicit contracts and sm
 ```go
 package market
 
+// Bid captures the economic signal an agent submits for a task.
 type Bid struct {
 	AgentID string
 	TaskID  string
@@ -53,12 +54,14 @@ type Bid struct {
 	Score   float64
 }
 
+// Allocation records the assignment decision emitted by the market.
 type Allocation struct {
 	TaskID   string
 	AgentID  string
 	Accepted bool
 }
 
+// Logger preserves the events needed for replayable experiments.
 type Logger interface {
 	RecordBid(Bid) error
 	RecordAllocation(Allocation) error

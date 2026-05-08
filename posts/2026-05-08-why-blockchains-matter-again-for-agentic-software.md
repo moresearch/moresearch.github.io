@@ -53,6 +53,7 @@ A small Go surface makes the policy layer easier to reason about:
 ```go
 package settlement
 
+// AuctionResult is the minimal state needed to settle a finished task.
 type AuctionResult struct {
 	TaskID      string
 	WinnerID    string
@@ -60,11 +61,13 @@ type AuctionResult struct {
 	ArtifactRef string
 }
 
+// Ledger abstracts the settlement backend behind one explicit call.
 type Ledger interface {
 	Settle(result AuctionResult) error
 }
 
 func Finalize(ledger Ledger, result AuctionResult) error {
+	// Keep the settlement path obvious so it is easy to audit.
 	return ledger.Settle(result)
 }
 ```

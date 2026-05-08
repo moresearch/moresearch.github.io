@@ -19,6 +19,7 @@
 - Markdown content begins after the closing front matter delimiter.
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
 - Markdown links inside post bodies are rendered to open in a separate browser tab/window by default.
+- Rendered post bodies use the site's configured monospace body font; post authors should not rely on custom font styling in Markdown.
 
 ## Constraints and invariants
 

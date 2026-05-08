@@ -12,10 +12,10 @@
 - The visible typography must be smaller than the current Hackspree landing page while remaining comfortably readable, so more blog content fits on screen.
 - The rotated Hackspree logo and overall desktop/mobile proportions must stay visually close enough to `hackspree.com` that moving between the landing page and blog feels like a seamless transition.
 - The primary visible heading inside the right-side navigation rail is only `Engineering blog`, rendered in a smaller treatment with no subtitle.
-- The right-side navigation list must not show a `Posts` label, must use smaller link text with clear separators between entries, link to the in-page post anchors, and scroll vertically without introducing a horizontal scrollbar.
+- The right-side navigation list must not show a `Posts` label, must use smaller link text with clear separators between entries, link to the in-page post anchors, and keep its vertical scrollbar visually hidden until the user hovers the navigation rail.
 - Post titles must be substantially larger than the body copy so each article headline stands out clearly in the dense layout.
-- Standard post body copy should use Space Mono Regular 400 and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
-- The post typography should stay compact overall, but the Space Mono body copy should be slightly larger than the current setting to improve readability.
+- Standard post body copy should use a straighter, less rounded professional monospace face than Space Mono and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
+- The post typography should stay compact overall, but the body copy should remain slightly enlarged for readability.
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - Links rendered inside post bodies must open in a separate browser tab/window by default with safe external-link rel attributes.

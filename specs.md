@@ -46,6 +46,7 @@
 - Standard post body copy should use a straighter, less rounded professional monospace face than Space Mono and render in muted dark gray rather than pure white, while important emphasis and headings keep bright contrast against the black background.
 - The post typography should stay compact overall, but the body copy should be slightly larger, lighter, and more generously spaced for quick readability.
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
+- Post summaries must use a distinct font from the main body and headings. Use 'Sudo' (a tech-inspired monospace font) for summaries to visually separate them, while keeping the Hackspree style. Fallback to 'IBM Plex Mono', monospace if Sudo is unavailable.
 - Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
 - The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
 - Posts must be listed in descending date order (most recent first) on the blog page.

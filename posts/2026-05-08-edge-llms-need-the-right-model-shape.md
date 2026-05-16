@@ -1,5 +1,5 @@
 ---
-title: Edge LLMs live or die by model shape
+title: Edge LLMs: Model Shape Matters
 date: 2026-01-17
 slug: edge-llms-live-or-die-by-model-shape
 summary: On-device language models are constrained less by hype and more by architecture choices that survive mobile memory, latency, and thermal limits.

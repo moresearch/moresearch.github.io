@@ -1,5 +1,5 @@
 ---
-title: Studying local LLM training from scratch
+title: Studying Local LLM Training
 date: 2026-05-08
 slug: studying-local-llm-training-from-scratch
 summary: I spent time studying Angelos Perivolaropoulos's workshop on training a small LLM locally, and the most important lesson was that tokenization and training discipline matter more than people usually admit.

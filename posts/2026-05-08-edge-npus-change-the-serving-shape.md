@@ -1,5 +1,5 @@
 ---
-title: Edge NPUs change the serving shape
+title: Edge NPUs Change Serving Shape
 date: 2026-01-29
 slug: edge-npus-change-the-serving-shape
 summary: NPU-aware LLM systems need different scheduling instincts, especially around prompt chunking, latency spikes, and device-specific execution paths.

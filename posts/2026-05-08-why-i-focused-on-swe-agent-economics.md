@@ -1,5 +1,5 @@
 ---
-title: Why I focused my research on SWE-Agent economics
+title: SWE-Agent Economics: My Focus
 date: 2026-05-06
 slug: why-i-focused-my-research-on-swe-agent-economics
 summary: My dissertation focused on SWE-Agent economics because software work is becoming a market of autonomous decision-makers, not just a pipeline of human tickets.

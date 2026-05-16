@@ -1,5 +1,5 @@
 ---
-title: Harness engineering best practices for AI agents
+title: Harness Engineering Best Practices
 date: 2026-04-02
 slug: harness-engineering-best-practices-for-ai-agents
 summary: Strong agent systems depend on strong harnesses: repeatable tasks, realistic tool simulations, and clear pass-fail signals that expose bad behavior early.

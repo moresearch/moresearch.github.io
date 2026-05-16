@@ -1,5 +1,5 @@
 ---
-title: Platform Engineering: Navigating Economics of Scale vs Economics of Speed
+title: Platform Engineering: Scale vs Speed
 date: 2026-05-16
 tags: [platform engineering, economics of scale, economics of speed, devops]
 summary: A deep dive into how platform engineering teams can balance the trade-offs and synergies between scaling platforms and accelerating delivery, with actionable frameworks and real-world examples.

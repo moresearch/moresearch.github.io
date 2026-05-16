@@ -1,5 +1,5 @@
 ---
-title: Agent harnesses need tasks that fight back
+title: Harnesses Need Tasks That Fight Back
 date: 2026-04-27
 slug: agent-harnesses-need-tasks-that-fight-back
 summary: Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.

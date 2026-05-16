@@ -1,5 +1,5 @@
 ---
-title: Go is a natural control plane for disaggregated serving
+title: Go for Disaggregated Serving
 date: 2026-02-22
 slug: go-is-a-natural-control-plane-for-disaggregated-serving
 summary: Disaggregated prefill and decode pipelines need schedulers, backpressure, and observability more than they need another complex runtime.

@@ -1,5 +1,5 @@
 ---
-title: Harnesses need real browsers, not polite demos
+title: Harnesses Need Real Browsers
 date: 2026-04-19
 slug: harnesses-need-real-browsers-not-polite-demos
 summary: Web agent evaluation gets more useful when the harness runs against real pages, real interaction flows, and explicit pass-fail criteria.

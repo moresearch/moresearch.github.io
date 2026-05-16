@@ -1,5 +1,5 @@
 ---
-title: Go fits the control plane of mobile LLM products
+title: Go for Mobile LLM Control Planes
 date: 2026-03-03
 slug: go-fits-the-control-plane-of-mobile-llm-products
 summary: Edge AI products still need sync services, rollout control, metrics, and device policy, which keeps Go relevant even when inference runs elsewhere.

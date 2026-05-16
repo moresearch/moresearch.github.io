@@ -1,5 +1,5 @@
 ---
-title: Why blockchains matter again for agentic software
+title: Blockchains for Agentic Software
 date: 2026-05-08
 slug: why-blockchains-matter-again-for-agentic-software
 summary: Blockchains become interesting again when coding agents need programmable, auditable, and explicitly economic coordination instead of opaque platform rules.

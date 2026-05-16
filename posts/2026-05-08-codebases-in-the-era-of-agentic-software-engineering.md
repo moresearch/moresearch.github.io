@@ -1,5 +1,5 @@
 ---
-title: Codebases in the era of agentic software engineering
+title: Codebases for Agentic Engineering
 date: 2026-05-08
 slug: codebases-in-the-era-of-agentic-software-engineering
 summary: Agent-first codebases need explicit contracts, repo-local skills, modular packages, and safe parallel work patterns so multiple coding agents can ship without colliding.

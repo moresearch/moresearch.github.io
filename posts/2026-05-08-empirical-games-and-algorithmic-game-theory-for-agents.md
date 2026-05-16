@@ -1,5 +1,5 @@
 ---
-title: Empirical games and algorithmic game theory for agents
+title: Empirical Game Theory for Agents
 date: 2026-05-08
 slug: empirical-games-and-algorithmic-game-theory-for-agents
 summary: Empirical game-theoretic analysis is one of the best ways to study how agent policies actually interact, while algorithmic game theory gives the language for designing those interactions on purpose.

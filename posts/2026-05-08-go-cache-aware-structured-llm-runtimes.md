@@ -1,5 +1,5 @@
 ---
-title: Go can keep structured LLM runtimes boring
+title: Go for Structured LLM Runtimes
 date: 2026-02-10
 slug: go-can-keep-structured-llm-runtimes-boring
 summary: Structured LLM programs need cache-aware runtimes and simple orchestration boundaries, which is exactly where Go stays useful.

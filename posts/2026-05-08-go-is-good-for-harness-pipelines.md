@@ -1,5 +1,5 @@
 ---
-title: Go is good for harness pipelines
+title: Go for Harness Pipelines
 date: 2026-03-24
 slug: go-is-good-for-harness-pipelines
 summary: Harness systems benefit from boring concurrency, clean binaries, and predictable tooling, all of which make Go a practical fit for evaluation pipelines.

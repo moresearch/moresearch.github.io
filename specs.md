@@ -2,10 +2,33 @@
 
 ## User-facing behavior
 
-### Blog Post: Platform Engineering - Navigating Economics of Scale vs Economics of Speed
-- Title: Platform Engineering: Navigating Economics of Scale vs Economics of Speed
-- Summary: Provides a nuanced, actionable exploration of how platform engineering teams can balance and leverage both economics of scale and speed, with frameworks and real-world examples. Draws on insights from https://www.youtube.com/watch?v=iP-qzK4mQuI and https://www.youtube.com/watch?v=5Ai8UGx7QvQ.
-- Implementation: Enhanced markdown post in posts/platform-engineering-economics-scale-vs-speed.md, includes improved structure, depth, and optional visuals.
+### Blog Post Titles (shortened and improved)
+- Platform Engineering: Scale vs Speed
+- Go for Mobile LLM Control Planes
+- Why Go Still Matters in AI
+- Edge LLMs: Model Shape Matters
+- Harnesses Need Real Browsers
+- Studying Local LLM Training
+- Go for Harness Pipelines
+- Empirical Game Theory for Agents
+- SWE-Agent Economics: My Focus
+- Dependency Injection in Go
+- Factorio & SC2: Systems Thinking
+- Mechanism Design for Agentic Markets
+- On-Device LLMs: Systems Design
+- Codebases for Agentic Engineering
+- Go for Disaggregated Serving
+- Agentic Era: An Economic System
+- Coding Harnesses Need Real Repos
+- Harnesses Need Tasks That Fight Back
+- Blockchains for Agentic Software
+- Harness Engineering Best Practices
+- Edge NPUs Change Serving Shape
+- Harnesses Should Observe the OS
+- Go for Structured LLM Runtimes
+- 1-Bit Models: Edge Budgets
+
+- Platform Engineering: Scale vs Speed (summary: Nuanced, actionable exploration of balancing scale and speed in platform engineering, with frameworks and real-world examples. Based on https://www.youtube.com/watch?v=iP-qzK4mQuI and https://www.youtube.com/watch?v=5Ai8UGx7QvQ)
 
 - The GitHub Pages site is reachable at `https://moresearch.github.io/`.
 - The GitHub Pages site is also published at `https://blog.hackspree.com/`.

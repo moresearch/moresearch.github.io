@@ -1,5 +1,5 @@
 ---
-title: The agentic era is an economic system
+title: Agentic Era: An Economic System
 date: 2026-05-07
 slug: the-agentic-era-is-an-economic-system
 summary: The agentic era should be understood as a system of priced intelligence, constrained resources, and comparative advantage rather than just a better autocomplete stack.

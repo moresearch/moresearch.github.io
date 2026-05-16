@@ -1,5 +1,5 @@
 ---
-title: Why Go still matters in the AI era
+title: Why Go Still Matters in AI
 date: 2026-03-14
 slug: why-go-still-matters-in-the-ai-era
 summary: Go keeps earning its spot in AI products by making inference infrastructure, orchestration, and operational tooling simple to ship and simple to trust.

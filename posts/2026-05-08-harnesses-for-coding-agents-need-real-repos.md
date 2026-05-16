@@ -1,5 +1,5 @@
 ---
-title: Coding agent harnesses need real repositories
+title: Coding Harnesses Need Real Repos
 date: 2026-04-11
 slug: coding-agent-harnesses-need-real-repositories
 summary: Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.

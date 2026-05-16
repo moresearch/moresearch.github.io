@@ -1,5 +1,5 @@
 ---
-title: How Factorio and StarCraft II shaped my systems thinking
+title: Factorio & SC2: Systems Thinking
 date: 2026-05-08
 slug: how-factorio-and-sc2-shaped-my-systems-thinking
 summary: Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.

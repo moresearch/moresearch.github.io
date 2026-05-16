@@ -1,5 +1,5 @@
 ---
-title: On-device LLMs are a systems design problem
+title: On-Device LLMs: Systems Design
 date: 2026-05-08
 slug: on-device-llms-are-a-systems-design-problem
 summary: The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.

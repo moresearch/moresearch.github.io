@@ -1,5 +1,5 @@
 ---
-title: Good harnesses watch the whole operating system
+title: Harnesses Should Observe the OS
 date: 2026-05-03
 slug: good-harnesses-watch-the-whole-operating-system
 summary: Desktop and multimodal agents need execution harnesses that see the same operating system complexity the user sees.

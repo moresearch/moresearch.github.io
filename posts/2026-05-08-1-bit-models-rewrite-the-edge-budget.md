@@ -1,5 +1,5 @@
 ---
-title: 1-bit models may rewrite the edge budget
+title: 1-Bit Models: Edge Budgets
 date: 2026-01-06
 slug: one-bit-models-may-rewrite-the-edge-budget
 summary: Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.

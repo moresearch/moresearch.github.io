@@ -1,5 +1,5 @@
 ---
-title: Dependency injection in Go with Fx and the alternatives
+title: Dependency Injection in Go
 date: 2026-05-08
 slug: dependency-injection-in-go-with-fx-and-alternatives
 summary: In Go, dependency injection is usually best when it stays explicit. Uber Fx becomes useful when the application graph and lifecycle are large enough to justify framework help, but it is not the only option.

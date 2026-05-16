@@ -2,6 +2,11 @@
 
 ## User-facing behavior
 
+### Blog Post: Platform Engineering - Navigating Economics of Scale vs Economics of Speed
+- Title: Platform Engineering: Navigating Economics of Scale vs Economics of Speed
+- Summary: Provides a nuanced, actionable exploration of how platform engineering teams can balance and leverage both economics of scale and speed, with frameworks and real-world examples. Draws on insights from https://www.youtube.com/watch?v=iP-qzK4mQuI and https://www.youtube.com/watch?v=5Ai8UGx7QvQ.
+- Implementation: Enhanced markdown post in posts/platform-engineering-economics-scale-vs-speed.md, includes improved structure, depth, and optional visuals.
+
 - The GitHub Pages site is reachable at `https://moresearch.github.io/`.
 - The GitHub Pages site is also published at `https://blog.hackspree.com/`.
 - The published site is a single-page blog at the site root, served from `index.html`.

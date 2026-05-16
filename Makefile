@@ -8,6 +8,14 @@ all: build
 
 build: index.html
 
+slides: 
+	mkdir -p public/slides
+	for f in presentations/*.tex; do \
+	  n=$$(basename $$f .tex); \
+	  pdffile=public/slides/$$(printf "%03d.pdf" $$n); \
+	  pdflatex -output-directory=public/slides -jobname=$$(printf "%03d" $$n) $$f; \
+	done
+
 index.html: build_blog.go go.mod go.sum logo.png $(POSTS)
 	GOCACHE=$(GOCACHE) $(GO) run . --input-dir posts --output index.html
 

@@ -6,6 +6,10 @@
 - All post titles must follow the template: "{context}: {core idea}". The context sets the domain, technology, or scenario; the core idea states the main insight or contribution. This applies to all published posts, and titles must be updated if requirements change.
 - All post summaries must be approximately 3x longer than before, written in an abstract style similar to academic papers but with a lighter, more casual tone. Summaries must clearly state the problem, approach, and key takeaways, providing enough context for a reader to understand the post's value without reading the full article. This applies to all published posts, and summaries must be updated if requirements change.
 
+- Presentations can be authored as LaTeX (.tex) files using a standard beamer template. The Makefile compiles these to PDFs, which are placed in a public directory as zero-padded files (e.g., 001.pdf, 002.pdf).
+- The site serves these PDFs at /slides/NNN (e.g., /slides/001), displaying them inline in the browser. These links are not listed in navigation or post listings.
+- Only PDFs with matching NNN are served; others return 404. The LaTeX template is standardized for all presentations.
+
 ### Blog Post Titles (shortened and improved)
 - Platform Engineering: Scale vs Speed
 - Go for Mobile LLM Control Planes
@@ -66,6 +70,12 @@
 - New posts become visible on the page after adding a Markdown source file under `posts/` and rebuilding the site with `make`.
 
 ## Implementation rules
+
+- The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
+- The site generator or static file config must serve /slides/NNN as the corresponding PDF (inline), and return 404 for missing PDFs.
+- The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.
+- The LaTeX template for presentations must be standardized and documented in the repo.
+- /slides/NNN links must not appear in navigation or post listings.
 
 - The repository root must contain a `CNAME` file with the custom domain hostname.
 - The `CNAME` file must contain exactly `blog.hackspree.com`.

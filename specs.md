@@ -82,7 +82,10 @@
 - Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.
 - Each /talks/NNN/ viewer page must show two FontAwesome icons (download, back) centered below the PDF viewer, styled minimally and consistent with the site aesthetic.
 - Both /talks/NNN/index.html and /talks/index.html must use the exact same HTML structure, fonts, favicon, and CSS as the main blog (index.html), differing only in the main content area. The layout, logo rail, and all visual identity must match blog.hackspree.com and hackspree.com precisely.
-- All links in /talks/index.html and /talks/NNN/index.html must use #ff9800 as the primary color and the same font as the main blog.
+- All links in /talks/index.html and /talks/NNN/index.html must use #fff as the primary color and the same font as the main blog.
+- The logo in /talks/NNN/ must be in the left rail, vertically centered, matching the main blog and hackspree.com.
+- No dev comments or stray CSS should appear in the output HTML of /talks/NNN/.
+- The color theme for all talks pages must be white/grey on black, matching hackspree.com, with no orange or other accent colors except where specified for navigation or icons.
 - The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.
 - The LaTeX template for presentations must be standardized and documented in the repo.
 - /slides/NNN links must not appear in navigation or post listings.

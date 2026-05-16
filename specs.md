@@ -1,6 +1,7 @@
 # Specs
 
 ## User-facing behavior
+- Every blog post must focus on a single, well-explained idea and be well-referenced. Posts covering multiple ideas must be split or refactored to ensure clarity and value. This applies to all published posts.
 
 - All post titles must follow the template: "{context}: {core idea}". The context sets the domain, technology, or scenario; the core idea states the main insight or contribution. This applies to all published posts, and titles must be updated if requirements change.
 - All post summaries must be approximately 3x longer than before, written in an abstract style similar to academic papers but with a lighter, more casual tone. Summaries must clearly state the problem, approach, and key takeaways, providing enough context for a reader to understand the post's value without reading the full article. This applies to all published posts, and summaries must be updated if requirements change.

@@ -116,3 +116,4 @@
 - Every published post must have a stable in-page anchor derived from its slug.
 - The blog page must remain functional with JavaScript disabled.
 - The desktop fixed rails must gracefully collapse into a stacked top section on narrower screens.
+89. - All talk links in /talks/index.html must reliably navigate to their respective /talks/NNN/ pages using absolute paths (e.g., /talks/001/). No link should ever redirect to the homepage.

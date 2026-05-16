@@ -76,6 +76,7 @@
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
 - /talks/ is an index page listing all available talks with links to each viewer.
 - Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.
+- Both /talks/NNN/index.html and /talks/index.html must use the exact same HTML structure, fonts, favicon, and CSS as the main blog (index.html), differing only in the main content area. The layout, logo rail, and all visual identity must match blog.hackspree.com and hackspree.com precisely.
 - The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.
 - The LaTeX template for presentations must be standardized and documented in the repo.
 - /slides/NNN links must not appear in navigation or post listings.

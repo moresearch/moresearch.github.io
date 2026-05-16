@@ -25,6 +25,7 @@
 - Post summaries should use a more polished, readable presentation than the metadata labels, with calmer spacing and contrast.
 - Published post metadata should display the post date as a larger Unix timestamp, and hovering it should reveal the normal UTC date in a custom tooltip that appears to the right of the timestamp.
 - The archive chronology is intentionally driven by post dates, and the published mix may include medium-length engineering essays rather than only short notes.
+- Posts must be listed in descending date order (most recent first) on the blog page.
 - The published archive may include short research-note posts that cite external papers and link to their source pages directly from the post body.
 - The published archive may also include first-person technical reflection posts on workshops, talks, or videos, as long as they stay grounded in concrete implementation details rather than generic impressions.
 - The published archive may also include first-person essays about how games, habits, or other non-code systems shaped engineering skill, as long as they connect back to concrete technical practice.

@@ -74,7 +74,9 @@
 - The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
 - The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
-- Every /talks/NNN/ page must include a prominent "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/.
+- Every /talks/NNN/ page must include a small, minimally spaced "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/. The text above and below the PDF viewer must be visually minimal and small (smaller font, less spacing).
+- The PDF viewer on /talks/NNN/ must be visually dominant: maximize its size (width and height) within safe viewport limits, and minimize the space taken by other elements. All non-PDF content (navigation, fallback, etc.) must use a smaller font and minimal spacing.
+- The fullscreen button must be a small symbol (⛶) only, with no text label, and visually subtle (smaller, less prominent than before).
 - The main talk links in /talks/index.html must use a different font from the rest of the page, chosen from the set of site fonts (Orbitron, IBM Plex Mono, Sudo Var), to visually distinguish them.
 - /talks/ is an index page listing all available talks with links to each viewer.
 - Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.

@@ -72,9 +72,10 @@
 ## Implementation rules
 
 - The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
-- The site generator or static file config must serve /slides/NNN.pdf and /slides/NNN/index.html from the repository root (not public/), so that /slides/NNN.pdf and /slides/NNN/ work on GitHub Pages.
-- /slides/NNN serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /slides/NNN always works as a user-friendly link.
-- Extensionless URLs like /slides/NNN are supported via an index.html viewer in each /slides/NNN/ directory.
+- The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
+- /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
+- /talks/ is an index page listing all available talks with links to each viewer.
+- Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.
 - The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.
 - The LaTeX template for presentations must be standardized and documented in the repo.
 - /slides/NNN links must not appear in navigation or post listings.

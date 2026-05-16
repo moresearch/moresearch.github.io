@@ -22,6 +22,21 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
   <style>
+.layout {
+  width: min(1400px, 100%);
+  display: grid;
+  grid-template-columns: minmax(220px, 20%) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 24px;
+  }
+}
+
   .viewer-icons .icon-link {
     transition: color 0.2s;
     text-decoration: none;
@@ -69,12 +84,19 @@
       padding: 32px; box-sizing: border-box;
     }
     .layout {
-      width: min(1400px, 100%);
-      display: grid;
-      grid-template-columns: minmax(220px, 20%) minmax(0, 1fr) minmax(200px, 228px);
-      gap: 36px;
-      align-items: start;
-    }
+  width: min(1400px, 100%);
+  display: grid;
+  grid-template-columns: minmax(220px, 20%) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 24px;
+  }
+}
     .logo-side {
       display: flex;
       align-items: center;
@@ -153,6 +175,14 @@
     @media (max-width: 900px) {
       .wrap { padding: 24px; }
       .layout { grid-template-columns: 1fr; width: 100%; gap: 24px; }
+@media (min-width: 901px) {
+  .layout {
+    grid-template-columns: minmax(220px, 20%) minmax(0, 1fr) minmax(200px, 228px);
+    gap: 36px;
+    align-items: start;
+    width: min(1400px, 100%);
+  }
+}
       .logo-side,
       .content-side,
       .nav-side {
@@ -244,13 +274,12 @@
   </style>
 </head>
 <body>
-  <div class="bg"></div>
   <main class="wrap">
     <div class="layout">
       <aside class="logo-side">
         <div class="logo-rail">
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-            <img src="/logo.png" alt="Hackspree logo" class="logo">
+            <img src="/logo.png" alt="Hackspree logo" class="logo" style="display:block;max-width:156vh;max-height:117%;transform:rotate(-90deg) scale(1.15);transform-origin:center center;">
           </a>
           <div class="rail-icons" style="display:flex;flex-direction:column;align-items:center;margin-top:18px;gap:10px;">
             <a href="/talks/" title="Back to Talks" class="icon-link" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-arrow-left"></i></a>
@@ -262,16 +291,49 @@
       <section class="content-side">
         <div class="content">
           <div class="pdf-container" id="pdfContainer" style="margin-bottom:8px;">
-            <button class="fullscreen-btn" onclick="goFullscreen()" title="Fullscreen" style="font-size:0.9em;padding:1px 4px;top:6px;right:8px;">⛶</button>
+
             <iframe src="001.pdf#view=FitH&page=1" allowfullscreen id="pdfFrame" style="height:calc(100vw * 0.707);max-height:90vh;aspect-ratio:210/297;overflow:hidden;"></iframe>
           </div>
-          <div class="viewer-icons" style="display:flex;justify-content:center;gap:12px;margin:2px 0 0 0;">
-            <a href="001.pdf" download title="Download PDF" class="icon-link" style="color:#fff;font-size:1.1em;"><i class="fa-solid fa-download"></i></a>
-            <a href="/talks/" title="Back to Talks" class="icon-link" style="color:#fff;font-size:1.1em;"><i class="fa-solid fa-arrow-left"></i></a>
-          </div>
-
         </div>
       </section>
+    </div>
+  </main>
+  <div class="bg"></div>
+  <main class="wrap">
+  <div class="layout">
+    <aside class="logo-side"></aside>
+    <section class="content-side"></section>
+    <nav class="nav-side"></nav>
+  </div>
+</main>
+<!--
+Expected grid structure:
+.layout (display: grid)
+  .logo-side (left rail)
+  .content-side (main content)
+  .nav-side (right rail, optional)
+-->
+    <div class="layout">
+      <aside class="logo-side">
+  <div class="logo-rail">
+    <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
+      <img src="/logo.png" alt="Hackspree logo" class="logo" style="display:block;max-width:156vh;max-height:117%;transform:rotate(-90deg) scale(1.15);transform-origin:center center;">
+    </a>
+    <div class="rail-icons" style="display:flex;flex-direction:column;align-items:center;margin-top:18px;gap:10px;">
+      <a href="/talks/" title="Back to Talks" class="icon-link" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-arrow-left"></i></a>
+      <a href="#" title="Fullscreen" class="icon-link" onclick="goFullscreen();return false;" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-expand"></i></a>
+      <a href="001.pdf" download title="Download PDF" class="icon-link" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-download"></i></a>
+    </div>
+  </div>
+</aside>
+<section class="content-side">
+  <div class="content">
+    <div class="pdf-container" id="pdfContainer" style="margin-bottom:8px;">
+      
+      <iframe src="001.pdf#view=FitH&page=1" allowfullscreen id="pdfFrame" style="height:calc(100vw * 0.707);max-height:90vh;aspect-ratio:210/297;overflow:hidden;"></iframe>
+    </div>
+  </div>
+</section>
       <nav class="nav-side"></nav>
     </div>
   </main>

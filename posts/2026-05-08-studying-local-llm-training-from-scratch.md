@@ -1,8 +1,8 @@
 ---
-title: Studying Local LLM Training
+title: LLM Training: Lessons from Local Experiments
 date: 2026-05-08
 slug: studying-local-llm-training-from-scratch
-summary: I spent time studying Angelos Perivolaropoulos's workshop on training a small LLM locally, and the most important lesson was that tokenization and training discipline matter more than people usually admit.
+summary: Training a language model from scratch on local hardware is a revealing exercise in both the art and science of machine learning. This post distills lessons from Angelos Perivolaropoulos’s workshop, emphasizing the critical role of tokenization, model scale, and disciplined experimentation. We break down the practical tradeoffs between character-level and BPE tokenization, the impact of model size on learnability, and the importance of transparent, reproducible pipelines. Readers will come away with a grounded perspective on what really matters when building LLMs from the ground up, and how to avoid common pitfalls.
 tags: llms, training, reflections
 ---
 

@@ -1,8 +1,8 @@
 ---
-title: Codebases for Agentic Engineering
+title: Agentic Engineering: Codebase Contracts and Skills
 date: 2026-05-08
 slug: codebases-in-the-era-of-agentic-software-engineering
-summary: Agent-first codebases need explicit contracts, repo-local skills, modular packages, and safe parallel work patterns so multiple coding agents can ship without colliding.
+summary: The rise of agentic software engineering is transforming how codebases are structured, maintained, and extended. This post examines the need for explicit contracts, modular skills, and safe parallel work patterns to support both human and agent contributors. We discuss the emergence of repository-level instruction files, the importance of clear boundaries and invariants, and strategies for reducing merge friction in multi-agent environments. Readers will learn how to design codebases that are resilient, adaptable, and ready for the next wave of collaborative, agent-driven development.
 tags: golang, agents, architecture
 ---
 

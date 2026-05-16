@@ -1,8 +1,8 @@
 ---
-title: Go for Harness Pipelines
+title: Harness Engineering: Go for Reliable Pipelines
 date: 2026-03-24
 slug: go-is-good-for-harness-pipelines
-summary: Harness systems benefit from boring concurrency, clean binaries, and predictable tooling, all of which make Go a practical fit for evaluation pipelines.
+summary: Harness engineering is fundamentally about building repeatable, trustworthy evaluation pipelines that can scale with complexity. This post explores why Go is a practical choice for these systems, focusing on its strengths in concurrency, static binaries, and predictable tooling. We discuss common failure modes in harnesses, the operational requirements for robust evaluation, and how Go’s simplicity helps teams avoid clever but fragile solutions. Readers will gain a clear understanding of how language and tooling choices impact the reliability and maintainability of evaluation infrastructure, with actionable insights for designing harnesses that scale.
 tags: golang, harness, evaluation
 ---
 

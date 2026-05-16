@@ -1,8 +1,8 @@
 ---
-title: Mechanism Design for Agentic Markets
+title: Agentic Markets: Mechanism Design and Network Economics
 date: 2026-05-08
 slug: mechanism-design-and-network-economics-for-agentic-markets
-summary: If software agents are going to bid, route work, and specialize across shared infrastructure, mechanism design and network economics stop being theory and become operating requirements.
+summary: As software agents increasingly interact in shared digital markets, the principles of mechanism design and network economics become essential operating requirements. This post unpacks how allocation, pricing, and incentive structures shape agentic systems, moving beyond theory to practical implications for real-world platforms. We explore the challenges of designing fair, efficient, and robust mechanisms, the role of network effects, and the risks of gaming and congestion. Readers will gain actionable frameworks for thinking about agent coordination, market design, and the economic forces that drive modern distributed systems.
 tags: economics, mechanism-design, agents
 ---
 

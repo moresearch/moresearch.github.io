@@ -74,7 +74,8 @@
 - The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
 - The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
-- Every /talks/NNN/ page must include a prominent "Back to Talks" link at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/.
+- Every /talks/NNN/ page must include a prominent "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/.
+- The main talk links in /talks/index.html must use a different font from the rest of the page, chosen from the set of site fonts (Orbitron, IBM Plex Mono, Sudo Var), to visually distinguish them.
 - /talks/ is an index page listing all available talks with links to each viewer.
 - Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.
 - Both /talks/NNN/index.html and /talks/index.html must use the exact same HTML structure, fonts, favicon, and CSS as the main blog (index.html), differing only in the main content area. The layout, logo rail, and all visual identity must match blog.hackspree.com and hackspree.com precisely.

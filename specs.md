@@ -75,15 +75,15 @@
 - The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
 - Every /talks/NNN/ page must include a small, minimally spaced "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/. The text above and below the PDF viewer must be visually minimal and small (smaller font, less spacing).
-- The PDF viewer on /talks/NNN/ must be visually dominant: maximize its size (width and height) within safe viewport limits, and minimize the space taken by other elements. All non-PDF content (navigation, fallback, etc.) must use a smaller font and minimal spacing.
-- The fullscreen button must be a small symbol (⛶) only, with no text label, and visually subtle (smaller, less prominent than before).
+- The PDF viewer on /talks/NNN/ must be visually dominant: maximize its size (width and height) within safe viewport limits, and minimize the space taken by other elements. The PDF viewer must only show a single page at a time (fit-to-page, no vertical scroll). All non-PDF content (navigation, fallback, etc.) must use a smaller font and minimal spacing.
+- The fullscreen button must be a small symbol (⛶) only, with no text label, and visually subtle (smaller, less prominent than before). The fullscreen button must only fullscreen the PDF viewer container, not the entire page.
 - The main talk links in /talks/index.html must use a different font from the rest of the page, chosen from the set of site fonts (Orbitron, IBM Plex Mono, Sudo Var), to visually distinguish them. Font size and style must match hackspree.com: compact, uppercase, and visually consistent. List items and headings must use smaller, denser font sizes than before, matching the main blog and landing page.
 - /talks/ is an index page listing all available talks with links to each viewer. The Hackspree logo must be displayed only in the left rail, in the same position and style as the main blog. No other logo should appear anywhere on the page.
 - Extensionless URLs like /talks/NNN/ are supported via an index.html viewer in each /talks/NNN/ directory.
 - Each /talks/NNN/ viewer page must show two FontAwesome icons (download, back) centered below the PDF viewer, styled minimally and consistent with the site aesthetic.
 - Both /talks/NNN/index.html and /talks/index.html must use the exact same HTML structure, fonts, favicon, and CSS as the main blog (index.html), differing only in the main content area. The layout, logo rail, and all visual identity must match blog.hackspree.com and hackspree.com precisely.
 - All links in /talks/index.html and /talks/NNN/index.html must use #fff as the primary color and the same font as the main blog.
-- The logo in /talks/NNN/ must be in the left rail, vertically centered, matching the main blog and hackspree.com.
+- The logo in /talks/NNN/ must be visually identical in position, size, and style to hackspree.com, including rotation, margin, and centering. The HTML and CSS for the logo rail must match `index.html` exactly.
 - No dev comments or stray CSS should appear in the output HTML of /talks/NNN/.
 - The color theme for all talks pages must be white/grey on black, matching hackspree.com, with no orange or other accent colors except where specified for navigation or icons.
 - The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.

@@ -76,19 +76,37 @@
       align-items: start;
     }
     .logo-side {
-      display: flex; align-items: center; justify-content: center;
-      overflow: visible; padding: 16px 8px 16px 16px; box-sizing: border-box;
-      position: sticky; top: 50vh; transform: translateY(-50%); align-self: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      padding: 16px 8px 16px 16px;
+      box-sizing: border-box;
+      position: sticky;
+      top: 50vh;
+      transform: translateY(-50%);
+      align-self: start;
     }
     .logo-rail {
-      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .logo-link {
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .logo {
-      display: block; width: auto; height: auto; max-width: 156vh; max-height: 117%;
-      transform: rotate(-90deg) scale(1.15); transform-origin: center center;
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 156vh;
+      max-height: 117%;
+      transform: rotate(-90deg) scale(1.15);
+      transform-origin: center center;
     }
     .content-side {
       display: flex; align-items: flex-start; justify-content: flex-start;
@@ -135,11 +153,32 @@
     @media (max-width: 900px) {
       .wrap { padding: 24px; }
       .layout { grid-template-columns: 1fr; width: 100%; gap: 24px; }
-      .logo-side, .content-side { width: 100%; min-width: 0; justify-content: center; position: static; transform: none; }
-      .logo-side { min-height: 28vh; padding: 24px 16px 8px; }
-      .logo { transform: none; max-width: 252px; max-height: 206px; }
-      .content-side { padding: 24px 28px 32px; }
-      .content { max-width: 100%; margin-left: auto; margin-right: auto; }
+      .logo-side,
+      .content-side,
+      .nav-side {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        position: static;
+        transform: none;
+      }
+      .logo-side {
+        min-height: 28vh;
+        padding: 24px 16px 8px;
+      }
+      .logo {
+        transform: none;
+        max-width: 252px;
+        max-height: 206px;
+      }
+      .content-side {
+        padding: 24px 28px 32px;
+      }
+      .content {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
     .back-to-talks {
       color: #fff;
@@ -213,6 +252,11 @@
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
             <img src="/logo.png" alt="Hackspree logo" class="logo">
           </a>
+          <div class="rail-icons" style="display:flex;flex-direction:column;align-items:center;margin-top:18px;gap:10px;">
+            <a href="/talks/" title="Back to Talks" class="icon-link" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="#" title="Fullscreen" class="icon-link" onclick="goFullscreen();return false;" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-expand"></i></a>
+            <a href="001.pdf" download title="Download PDF" class="icon-link" style="color:#fff;font-size:1.3em;"><i class="fa-solid fa-download"></i></a>
+          </div>
         </div>
       </aside>
       <section class="content-side">
@@ -220,7 +264,7 @@
           <a href="/talks/" class="back-to-talks" style="font-size:0.6em;margin-bottom:2px;letter-spacing:0.04em;">Talks</a>
           <div class="pdf-container" id="pdfContainer" style="margin-bottom:8px;">
             <button class="fullscreen-btn" onclick="goFullscreen()" title="Fullscreen" style="font-size:0.9em;padding:1px 4px;top:6px;right:8px;">⛶</button>
-            <iframe src="001.pdf" allowfullscreen id="pdfFrame"></iframe>
+            <iframe src="001.pdf#view=FitH&page=1" allowfullscreen id="pdfFrame" style="height:calc(100vw * 0.707);max-height:90vh;aspect-ratio:210/297;overflow:hidden;"></iframe>
           </div>
           <div class="viewer-icons" style="display:flex;justify-content:center;gap:12px;margin:2px 0 0 0;">
             <a href="001.pdf" download title="Download PDF" class="icon-link" style="color:#fff;font-size:1.1em;"><i class="fa-solid fa-download"></i></a>

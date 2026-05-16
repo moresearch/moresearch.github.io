@@ -30,6 +30,7 @@
 - Harnesses Should Observe the OS
 - Go for Structured LLM Runtimes
 - 1-Bit Models: Edge Budgets
+- Startup Lessons: The Two-Task Rule (summary: Startups face a barrage of advice, but few lessons are as universally relevant—and as frequently ignored—as the two-task rule. This post unpacks why the discipline of focusing on only two critical tasks at any given time is the single most important operating principle for early-stage companies. Drawing on Y Combinator’s "The Hardest Lessons for Startups to Learn," we explore the psychological traps that lead founders to overcommit, the operational chaos that results, and the compounding benefits of ruthless prioritization. Readers will gain a practical framework for applying the two-task rule, understand its impact on execution and morale, and learn how to resist the temptation to chase every opportunity at once.)
 
 - Platform Engineering: Scale vs Speed (summary: Nuanced, actionable exploration of balancing scale and speed in platform engineering, with frameworks and real-world examples. Based on https://www.youtube.com/watch?v=iP-qzK4mQuI and https://www.youtube.com/watch?v=5Ai8UGx7QvQ)
 

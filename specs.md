@@ -38,6 +38,7 @@
 - The GitHub Pages site is reachable at `https://moresearch.github.io/`.
 - The GitHub Pages site is also published at `https://blog.hackspree.com/`.
 - The published site is a single-page blog at the site root, served from `index.html`.
+- The site must include a favicon using the provided favicon assets in the `favicon/` directory. The favicon should be referenced in the HTML `<head>` using standard `<link rel="icon" ...>` and related tags for broad browser compatibility. All major favicon sizes and manifest should be included.
 - The page presents all published posts on one scrollable page with stable direct anchors per post.
 - The visual language follows `hackspree.com`: dark background, high-contrast text, Orbitron typography, uppercase labels, and restrained muted secondary text.
 - The page should feel like `hackspree.com` with a three-column layout: logo rail, body column, and posts navigation rail.

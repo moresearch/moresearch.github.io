@@ -42,3 +42,6 @@
 - Two posts must never resolve to the same slug.
 - Draft handling is out of scope until explicitly added; every valid post source Markdown file in `posts/` is published.
 - Post bodies may include standard Markdown links, lists, headings, blockquotes, and fenced code blocks.
+
+## Change log:
+- Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" (source: YouTube C_GG5g38vLU).

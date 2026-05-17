@@ -19,3 +19,7 @@ Validation:
 - Clicking fullscreen opens the viewer, Space/ArrowRight advances slide, ArrowLeft goes back, Escape exits
 - Open/download icons work
 - No horizontal overflow on desktop/mobile
+
+Change log:
+- Added talk 003 (Harness Engineering): generated PDF and preview assets must be present at talks/003.pdf and talks/003-page-1.webp and referenced from /talks/.
+- Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" describing Task vs Eval vs Agent harnesses (source: YouTube C_GG5g38vLU).

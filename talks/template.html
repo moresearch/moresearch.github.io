@@ -51,8 +51,8 @@
     }
 
     /* Main content */
-    .content-side{padding:24px 8px;box-sizing:border-box}
-    .content{max-width:900px;margin:0 auto}
+    .content-side{padding:24px 8px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:100vh}
+    .content{max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 120px);position:relative}
     .back-to-talks{color:#ff9800;font-family:'IBM Plex Mono',monospace;font-size:0.85em;text-transform:uppercase;display:inline-block;margin-bottom:8px}
 
     /* PDF viewer: single page container */
@@ -79,7 +79,22 @@
               <img src="/logo.png" alt="Hackspree logo" class="logo" />
             </a>
           </div>
-          <div class="left-actions" aria-hidden="true">
+          <!-- left rail only shows the logo; action icons moved to the right column bottom -->
+          <div style="height:36px"></div>
+        </div>
+      </aside>
+
+      <section class="content-side">
+        <div class="content">
+          <a class="back-to-talks" href="/talks/">Talks</a>
+
+          <!-- PDF container: replace {{ID}} with the talk id (e.g., 001) -->
+          <div class="pdf-container" id="pdfContainer">
+            <iframe src="{{ID}}.pdf#page=1&view=FitH&toolbar=0" id="pdfFrame" scrolling="no" aria-label="Presentation PDF"></iframe>
+          </div>
+
+          <!-- action icons moved to right column bottom, centered -->
+          <div class="action-icons" style="position:relative;margin-top:24px">
             <a class="action-link" href="/talks/" aria-label="Back to Talks">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span class="sr-only">Back to Talks</span>
@@ -93,19 +108,6 @@
               <span class="sr-only">Fullscreen</span>
             </a>
           </div>
-        </div>
-      </aside>
-
-      <section class="content-side">
-        <div class="content">
-          <a class="back-to-talks" href="/talks/">Talks</a>
-
-          <!-- PDF container: replace {{ID}} with the talk id (e.g., 001) -->
-          <div class="pdf-container" id="pdfContainer">
-            <iframe src="{{ID}}.pdf#page=1&view=FitH&toolbar=0" id="pdfFrame" scrolling="no" aria-label="Presentation PDF"></iframe>
-          </div>
-
-
 
         </div>
       </section>

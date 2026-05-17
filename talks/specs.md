@@ -13,3 +13,6 @@ Validation checklist:
 - talks/*.meta.json exists and contains correct page_count
 - talks/{{id}}-page-1.webp exists and is referenced by index.html
 - Fullscreen navigation works across common browsers
+
+Change log:
+- Added talk 003 (Harness Engineering): metadata and page images generated during build.

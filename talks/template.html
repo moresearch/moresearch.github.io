@@ -7,40 +7,30 @@
   <link rel="icon" href="/favicon/favicon.ico" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root{--gap:40px;--sidebar:340px;--bg:#000}
+    :root{--sidebar:220px;--gap:40px;--bg:#000}
     html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:'IBM Plex Mono',monospace}
-    .talk-shell{min-height:100dvh;width:min(1500px,100%);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:var(--gap);padding:32px 24px;box-sizing:border-box;align-items:start}
+    .talk-shell{min-height:100dvh;width:min(1440px,100%);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:var(--gap);padding:32px 24px;box-sizing:border-box;align-items:center}
 
-    /* Left rail matches homepage identity */
-    .hackspree-rail{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px;box-sizing:border-box}
-    .brand-link{display:inline-flex;align-items:center;justify-content:center}
-    .brand-logo{display:block;width:auto;height:200px;object-fit:contain;transform:rotate(-90deg) scale(1.05);transform-origin:center center}
+    /* Left rail: centered logo only */
+    .talk-rail{display:grid;place-items:center;min-width:0}
+    .brand-link{display:inline-flex}
+    .brand-logo{display:block;max-width:160px;width:100%;height:auto;object-fit:contain}
 
-    .identity-block{margin-top:12px}
-    .identity-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover}
-    .identity-name{font-family:'Orbitron',sans-serif;margin:8px 0 0 0}
-    .identity-desc{color:#bcbcbc;margin:6px 0 0 0;font-size:0.95rem}
+    /* Right: preview and actions */
+    .talk-preview{position:relative;min-width:0;display:grid;align-items:center;justify-items:center}
+    .talk-actions{position:absolute;top:12px;right:12px;display:inline-flex;gap:10px;z-index:2}
+    .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(255,255,255,0.18);color:#fff;text-decoration:none;background:rgba(0,0,0,0.5)}
+    .icon-btn i{font-size:16px}
 
-    .social-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .social-links a{text-decoration:none;color:inherit;padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);display:inline-flex;align-items:center;gap:8px;font-size:0.95rem}
-    .social-links i{width:1.25em;text-align:center;flex:0 0 auto}
+    .preview-link{display:block;width:100%;min-width:0}
+    .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#111;border:1px solid rgba(255,255,255,0.16)}
 
-    .talk-actions{margin-top:16px;display:flex;flex-direction:column;gap:8px;width:100%}
-    .talk-actions a,.talk-actions button{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff;text-decoration:none;cursor:pointer}
-
-    /* Right column (PDF) */
-    .talk-main{min-width:0;padding:8px;box-sizing:border-box}
-    .talk-heading p{margin:0;color:#ff9800;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase}
-    .talk-heading h2{margin:6px 0 16px 0;font-family:'Orbitron',sans-serif}
-
-    .pdf-frame{width:100%;height:calc(100dvh - 120px);min-width:0}
-    .pdf-frame iframe{display:block;width:100%;height:100%;border:1px solid rgba(255,255,255,.16);background:#111}
-
-    @media(max-width:900px){
-      .talk-shell{grid-template-columns:1fr;padding:16px;gap:20px}
-      .hackspree-rail{flex-direction:row;justify-content:flex-start;align-items:center;padding:12px;gap:12px}
-      .brand-logo{transform:none;height:96px}
-      .pdf-frame{height:75dvh}
+    @media (max-width:800px){
+      .talk-shell{grid-template-columns:1fr;padding:20px;gap:20px}
+      .talk-rail{min-height:96px}
+      .brand-logo{max-width:140px}
+      .talk-actions{position:static;justify-self:end}
+      .preview-image{max-height:none}
     }
 
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
@@ -48,51 +38,23 @@
 </head>
 <body class="talk-page">
   <main class="talk-shell">
-    <aside class="hackspree-rail" aria-label="Hackspree rail">
-      <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home">
+    <aside class="talk-rail" aria-label="Hackspree logo rail">
+      <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home" title="Hackspree">
         <img class="brand-logo" src="https://hackspree.com/logo.png" alt="Hackspree">
       </a>
-
-      <div class="identity-block">
-        <h1 class="identity-name">Mohamed A. Fouad</h1>
-        <p class="identity-desc">On an engineering hackspree — Vim and blue switches all the way!</p>
-        <blockquote style="margin-top:8px;color:#999;font-style:italic">Engineering speed is the ultimate competitive advantage!</blockquote>
-      </div>
-
-      <nav class="social-links" aria-label="Hackspree links">
-        <a href="https://github.com/moresearch" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github" aria-hidden="true"></i><span class="sr-only">GitHub</span></a>
-        <a href="https://x.com/moresearch" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i><span class="sr-only">X</span></a>
-        <a href="https://linkedin.com/in/moresearch" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin" aria-hidden="true"></i><span class="sr-only">LinkedIn</span></a>
-        <a href="/index.html"><i class="fa-solid fa-rss" aria-hidden="true"></i><span class="sr-only">Blog</span></a>
-      </nav>
-
-      <div class="talk-actions" aria-label="Talk actions">
-        <a href="/talks/" class="btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to Talks</span></a>
-        <a href="{{ID}}.pdf" download class="btn"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i><span>Download PDF</span></a>
-        <button id="fullscreen-button" class="btn" type="button" onclick="goFullscreen('{{ID}}');"><i class="fa-solid fa-expand" aria-hidden="true"></i><span>Fullscreen</span></button>
-      </div>
     </aside>
 
-    <section class="talk-main" aria-label="Talk PDF">
-      <div class="talk-heading">
-        <p>Talk {{ID}}</p>
-        <h2>Presentation title</h2>
-      </div>
+    <section class="talk-preview" aria-label="Talk {{ID}} preview">
+      <nav class="talk-actions" aria-label="Talk actions">
+        <a class="icon-btn" href="/talks/" aria-label="Back to talks" title="Back to talks"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+        <a class="icon-btn" href="{{ID}}.pdf" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="icon-btn" href="{{ID}}.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
+      </nav>
 
-      <div class="pdf-frame">
-        <iframe src="{{ID}}.pdf#page=1&view=FitH&toolbar=0" title="Talk {{ID}} PDF" loading="lazy"></iframe>
-      </div>
+      <a class="preview-link" href="{{ID}}.pdf" aria-label="Open Talk {{ID}} PDF">
+        <img class="preview-image" src="{{ID}}-page-1.png" alt="First page of Talk {{ID}}">
+      </a>
     </section>
   </main>
-
-  <script>
-    function goFullscreen(id){
-      var el = document.querySelector('.pdf-frame');
-      if(!el) return;
-      if(el.requestFullscreen) el.requestFullscreen();
-      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if(el.msRequestFullscreen) el.msRequestFullscreen();
-    }
-  </script>
 </body>
 </html>

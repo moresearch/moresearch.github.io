@@ -142,3 +142,6 @@
 
 ### Talks: strict two-column layout
 - Talks pages now use a strict two-column layout with a left identity rail and a dominant PDF viewer. See talks/specs.md for details and validation checklist.
+
+### Talks: simplified first-page preview
+- Talks pages now show a centered Hackspree logo in a left rail and a first-page preview image on the right. See talks/specs.md for details.

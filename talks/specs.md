@@ -1,22 +1,17 @@
-# Talks template (strict two-column)
+# Talks template (first-page preview)
 
-This spec defines the strict two-column Hackspree talks viewer.
+This spec describes a simplified talks page showing a first-page preview image instead of an embedded PDF viewer.
 
-Design & behavior
-- Desktop: two columns (340px left identity rail matching homepage; right column is the PDF viewer and visually dominant).
-- Left rail replicates the homepage identity: logo (real <img>), identity block (name/description), social links, and talk actions.
-- Right column contains talk heading and PDF iframe that fills available height.
+Behavior
+- Two-column layout: left column (220px) shows only the centered Hackspree logo; right column shows a first-page preview image and icon-only controls (Back/Open/Download).
+- No iframe is used for preview; the full PDF remains available via the open/download actions.
 
-Implementation rules
-- Template: talks/template.html. Generated pages replace {{ID}} with the zero-padded talk id and copy the PDF to /talks/NNN/NNN.pdf.
-- Logo must be a real <img> and use the homepage asset (https://hackspree.com/logo.png) unless the asset is copied into the blog output.
-- Use Font Awesome for icons only. Link to the official stylesheet (CDN allowed). Do not set Font Awesome as a page font.
-- Grid: `.talk-shell { grid-template-columns: 340px minmax(0,1fr); }` and both columns must use `min-width:0` to avoid overflow.
-- PDF sizing: `.pdf-frame { height: calc(100dvh - 120px); }` and iframe fills container.
+Implementation
+- Template: talks/template.html. Replace {{ID}} with zero-padded talk id when generating pages.
+- Build: generate a first-page PNG named `{{ID}}-page-1.png` into each /talks/NNN/ directory using pdftoppm (or ImageMagick convert as fallback).
+- Font Awesome may be loaded from CDN for icons only. Do not use Font Awesome as a page font.
+- Accessibility: all icon-only controls must include aria-label and title attributes.
 
-Validation checklist
-- Logo image returns 200
-- PDF returns 200
-- No horizontal overflow at desktop and mobile
-- Font Awesome icons render for social-links and actions
-- Talk actions work (Back, Download, Fullscreen)
+Validation
+- Logo, preview image, and PDF must return 200 in the network tab.
+- No horizontal overflow; mobile stacks cleanly.

@@ -33,6 +33,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     .logo-box{display:flex;align-items:center;justify-content:center;overflow:visible;margin-bottom:36px}
     .logo {
@@ -58,6 +59,7 @@
     .action-icons{display:flex;gap:12px;justify-content:center;margin-top:18px}
     .action-link{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;color:#fff;text-decoration:none}
     .action-link svg{width:18px;height:18px;stroke:currentColor;fill:none}
+    .left-actions{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:12px;justify-content:center}
 
     /* Small helpers */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
@@ -73,6 +75,20 @@
               <img src="/logo.png" alt="Hackspree logo" class="logo" />
             </a>
           </div>
+          <div class="left-actions" aria-hidden="true">
+            <a class="action-link" href="/talks/" aria-label="Back to Talks">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Back to Talks</span>
+            </a>
+            <a class="action-link" href="{{ID}}.pdf" download aria-label="Download PDF">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7 7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Download PDF</span>
+            </a>
+            <a class="action-link" href="#" onclick="goFullscreen();return false;" aria-label="Fullscreen">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6M21 15v6h-6M3 15v6h6M21 9V3h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Fullscreen</span>
+            </a>
+          </div>
         </div>
       </aside>
 
@@ -85,21 +101,7 @@
             <iframe src="{{ID}}.pdf#page=1&view=FitH&toolbar=0" id="pdfFrame" scrolling="no" aria-label="Presentation PDF"></iframe>
           </div>
 
-          <!-- Action icons centered under the PDF viewer -->
-          <div class="action-icons">
-            <a class="action-link" href="{{ID}}.pdf" download aria-label="Download PDF">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7 7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Download PDF</span>
-            </a>
-            <a class="action-link" href="#" onclick="goFullscreen();return false;" aria-label="Fullscreen">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6M21 15v6h-6M3 15v6h6M21 9V3h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Fullscreen</span>
-            </a>
-            <a class="action-link" href="/talks/" aria-label="Back to Talks">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Back to Talks</span>
-            </a>
-          </div>
+
 
         </div>
       </section>

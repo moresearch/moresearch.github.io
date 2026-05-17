@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Talk {{ID}}</title>
+  <link rel="icon" href="/favicon/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Minimal, self-contained template CSS matching site layout */
+    :root { color-scheme: dark; }
+    html,body{height:100%;margin:0;background:#000;color:#fff;font-family: 'IBM Plex Mono', monospace;}
+    .wrap{min-height:100vh;display:flex;align-items:start;justify-content:center;padding:32px;box-sizing:border-box}
+    .layout{width:min(1200px,100%);display:grid;grid-template-columns:minmax(200px,220px) 1fr;gap:36px;align-items:start}
+    @media (max-width:900px){.layout{grid-template-columns:1fr;padding:16px;gap:20px}}
+
+    /* Left logo rail */
+    .logo-side{display:flex;align-items:center;justify-content:center;padding:16px 8px;position:sticky;top:50vh;transform:translateY(-50%)}
+    .logo-rail{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;width:100%}
+    .logo-box{width:200px;height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:36px}
+    .logo{width:160px;max-width:100%;transform:rotate(-90deg) scale(1.15);}
+
+    /* Main content */
+    .content-side{padding:24px 8px;box-sizing:border-box}
+    .content{max-width:900px;margin:0 auto}
+    .back-to-talks{color:#ff9800;font-family:'IBM Plex Mono',monospace;font-size:0.85em;text-transform:uppercase;display:inline-block;margin-bottom:8px}
+
+    /* PDF viewer: single page container */
+    .pdf-container{width:100%;aspect-ratio:210/297;max-height:92vh;background:#222;border-radius:8px;overflow:hidden;box-shadow:0 0 16px #000a;position:relative}
+    .pdf-container iframe{width:100%;height:100%;border:0;display:block}
+
+    /* Action icons under the viewer */
+    .action-icons{display:flex;gap:12px;justify-content:center;margin-top:18px}
+    .action-link{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;color:#fff;text-decoration:none}
+    .action-link svg{width:18px;height:18px;stroke:currentColor;fill:none}
+
+    /* Small helpers */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="layout">
+      <aside class="logo-side">
+        <div class="logo-rail">
+          <div class="logo-box">
+            <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
+              <img src="/logo.png" alt="Hackspree logo" class="logo" />
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <section class="content-side">
+        <div class="content">
+          <a class="back-to-talks" href="/talks/">Talks</a>
+
+          <!-- PDF container: replace {{ID}} with the talk id (e.g., 001) -->
+          <div class="pdf-container" id="pdfContainer">
+            <iframe src="{{ID}}.pdf#page=1&view=FitH&toolbar=0" id="pdfFrame" scrolling="no" aria-label="Presentation PDF"></iframe>
+          </div>
+
+          <!-- Action icons centered under the PDF viewer -->
+          <div class="action-icons">
+            <a class="action-link" href="{{ID}}.pdf" download aria-label="Download PDF">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7 7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Download PDF</span>
+            </a>
+            <a class="action-link" href="#" onclick="goFullscreen();return false;" aria-label="Fullscreen">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6M21 15v6h-6M3 15v6h6M21 9V3h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Fullscreen</span>
+            </a>
+            <a class="action-link" href="/talks/" aria-label="Back to Talks">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sr-only">Back to Talks</span>
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    function goFullscreen(){
+      var el = document.getElementById('pdfContainer');
+      if(!el) return;
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+  </script>
+</body>
+</html>

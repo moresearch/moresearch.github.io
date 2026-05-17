@@ -3,127 +3,81 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Talk 000</title>
+  <title>Talk 000 — Hackspree</title>
   <link rel="icon" href="/favicon/favicon.ico" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* Minimal, self-contained template CSS matching site layout */
-    :root { color-scheme: dark; }
-    html,body{height:100%;margin:0;background:#000;color:#fff;font-family: 'IBM Plex Mono', monospace;}
-    .wrap{min-height:100dvh;display:flex;align-items:start;justify-content:center;padding:32px;box-sizing:border-box;overflow:visible}
-    .layout{width:min(1440px,100%);display:grid;grid-template-columns:360px minmax(0,1fr);gap:40px;align-items:start}
-    @media (max-width:900px){.layout{grid-template-columns:1fr;padding:16px;gap:20px}.logo-side,.content-side{width:100%;min-width:0;justify-content:center;position:static;transform:none}.logo-side{min-height:28vh;padding:24px 16px 8px}.logo{transform:none;max-width:252px;max-height:206px}}
+    :root{color-scheme:dark}
+    html,body{height:100%;margin:0;background:#000;color:#fff;font-family:'IBM Plex Mono',monospace}
+    .wrap{min-height:100dvh;display:flex;align-items:flex-start;justify-content:center;padding:32px;box-sizing:border-box;overflow:visible}
+    .talk-shell{width:min(1500px,100%);display:grid;grid-template-columns:300px minmax(0,1fr);gap:40px;align-items:stretch}
 
-    /* Left logo rail */
-    .logo-side {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-      padding: 16px 8px 16px 16px;
-      box-sizing: border-box;
-      position: sticky;
-      top: 50vh;
-      transform: translateY(-50%);
-      align-self: start;
-    }
-    .logo-rail {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 64px);
-      padding-top: 12px;
-      padding-bottom: 12px;
-      box-sizing: border-box;
-    }
-    .logo-box{width:320px;height:320px;display:flex;align-items:center;justify-content:center;overflow:visible;margin-bottom:36px;background:#000;padding:8px;border-radius:6px}
-    .logo {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 156vh;
-      max-height: 117%;
-      transform: rotate(-90deg) scale(1.15);
-      transform-origin: center center;
+    /* Sidebar (compact) */
+    .talk-sidebar{display:flex;flex-direction:column;gap:20px;padding:24px;box-sizing:border-box;min-width:0}
+    .brand-link{display:inline-flex;align-items:center;justify-content:center}
+    .brand-logo{display:block;width:auto;height:140px;max-width:100%;object-fit:contain;transform:rotate(-90deg) scale(1.05);transform-origin:center center}
+
+    .talk-meta{padding-top:4px}
+    .talk-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;color:#ff9800;margin:0 0 6px 0}
+    .talk-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;margin:0 0 8px 0}
+    .talk-desc{color:#bcbcbc;margin:0;font-size:0.95rem}
+
+    .talk-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;font-family:inherit;cursor:pointer}
+
+    /* Viewer (dominant) */
+    .talk-viewer{min-width:0;height:calc(100dvh - 96px);background:#111;border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+    .talk-viewer iframe{width:100%;height:100%;border:0;display:block;background:#111}
+
+    @media (max-width:900px){
+      .talk-shell{grid-template-columns:1fr;padding:16px;gap:20px}
+      .talk-sidebar{flex-direction:row;align-items:center;gap:12px}
+      .brand-logo{transform:none;height:96px}
+      .talk-viewer{height:75dvh}
     }
 
-    /* Main content */
-    .content-side{padding:24px 8px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:100vh;min-width:0}
-    .content{max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 120px);position:relative}
-    .back-to-talks{color:#ff9800;font-family:'IBM Plex Mono',monospace;font-size:0.85em;text-transform:uppercase;display:inline-block;margin-bottom:8px}
-
-    /* PDF viewer: single page container */
-    /* make viewer narrower: 50% of its column and centered. Use !important to override page-level styles if present */
-    .pdf-container{width:100%;max-width:100%;aspect-ratio:210/297;max-height:80vh;background:#222;border-radius:8px;overflow:hidden;box-shadow:0 0 16px #000a;position:relative;margin:0}
-    .pdf-container iframe{width:100%;height:100%;border:0;display:block}
-
-    /* Action icons under the viewer */
-    .action-icons{display:flex;gap:12px;justify-content:center;margin-top:18px}
-    .action-link{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;color:#fff;text-decoration:none}
-    .action-link svg{width:18px;height:18px;stroke:currentColor;fill:none}
-    .left-actions{display:flex;gap:12px;justify-content:center;margin-top:0;width:100%;}
-
-    /* Small helpers */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <div class="layout">
-      <aside class="logo-side">
-        <div class="logo-rail">
-          <div class="logo-box">
-            <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-              <img src="https://hackspree.com/logo.png" alt="Hackspree" class="logo" />
-            </a>
-          </div>
-          <!-- left rail only shows the logo; reserved space -->
-          <div style="height:36px"></div>
+    <div class="talk-shell">
+      <aside class="talk-sidebar">
+        <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home">
+          <img class="brand-logo" src="https://hackspree.com/logo.png" alt="Hackspree" />
+        </a>
+
+        <div class="talk-meta">
+          <p class="talk-eyebrow">Talk 000</p>
+          <h1 class="talk-title">Presentation title</h1>
+          <p class="talk-desc">Short description of the talk goes here.</p>
         </div>
+
+        <nav class="talk-actions" aria-label="Talk actions">
+          <a class="button" href="/talks/">Talks</a>
+          <a class="button" href="000.pdf" download>Download</a>
+          <button class="button" type="button" onclick="toggleFullscreen('#pdfFrame')">Fullscreen</button>
+        </nav>
       </aside>
 
-
-
-      <section class="content-side">
-        <div class="content">
-          <a class="back-to-talks" href="/talks/">Talks</a>
-
-          <!-- PDF container: replace 000 with the talk id (e.g., 001) -->
-          <div class="pdf-container" id="pdfContainer">
-            <iframe src="000.pdf#page=1&view=FitH&toolbar=0" id="pdfFrame" scrolling="no" aria-label="Presentation PDF"></iframe>
-          </div>
-
-          <!-- action icons moved to right column bottom, centered -->
-          <div class="action-icons" style="position:relative;margin-top:24px">
-            <a class="action-link" href="/talks/" aria-label="Back to Talks">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Back to Talks</span>
-            </a>
-            <a class="action-link" href="000.pdf" download aria-label="Download PDF">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7 7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Download PDF</span>
-            </a>
-            <a class="action-link" href="#" onclick="goFullscreen();return false;" aria-label="Fullscreen">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6M21 15v6h-6M3 15v6h6M21 9V3h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="sr-only">Fullscreen</span>
-            </a>
-          </div>
-
-        </div>
+      <section class="talk-viewer" aria-label="Presentation PDF">
+        <iframe id="pdfFrame" src="000.pdf#page=1&view=FitH&toolbar=0" title="Presentation PDF" loading="lazy"></iframe>
       </section>
-
     </div>
   </main>
 
   <script>
-    function goFullscreen(){
-      var el = document.getElementById('pdfContainer');
+    function toggleFullscreen(selector){
+      var el = document.querySelector(selector);
       if(!el) return;
-      if(el.requestFullscreen) el.requestFullscreen();
-      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if(el.msRequestFullscreen) el.msRequestFullscreen();
+      // prefer the element's parent container if possible
+      try{
+        if(el.requestFullscreen) el.requestFullscreen();
+        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if(el.msRequestFullscreen) el.msRequestFullscreen();
+      }catch(e){
+        console.warn('fullscreen failed', e);
+      }
     }
   </script>
 </body>

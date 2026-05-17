@@ -131,3 +131,8 @@
 - The blog page must remain functional with JavaScript disabled.
 - The desktop fixed rails must gracefully collapse into a stacked top section on narrower screens.
 89. - All talk links in /talks/index.html must reliably navigate to their respective /talks/NNN/ pages using absolute paths (e.g., /talks/001/). No link should ever redirect to the homepage.
+
+### Talks: PDF-first redesign
+- Updated talks template to a PDF-first two-column layout (300px sidebar + dominant viewer).
+- Sidebar contains logo (<img>), talk metadata, and controls (Talks / Download / Fullscreen).
+- See talks/specs.md for canonical implementation details and validation checklist.

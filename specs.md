@@ -143,6 +143,6 @@
 ### Talks: strict two-column layout
 - Talks pages now use a strict two-column layout with a left identity rail and a dominant PDF viewer. See talks/specs.md for details and validation checklist.
 
-### Talks: simplified first-page preview
-- Talks pages now show a centered Hackspree logo in a left rail and a first-page preview image on the right. See talks/specs.md for details.
-- Fullscreen behavior: the Fullscreen control should requestFullscreen() on the talk preview container ('.talk-preview'), hide action controls using :fullscreen CSS, and support double-click-to-present on the preview image.
+### Talks: index listing
+- The /talks/ page is the canonical talks index and lists presentations as posts (a `.post-list` of `<article class="post">` entries). Each entry links directly to its PDF (e.g., `./001.pdf`, `./002.pdf`) and includes metadata and a short summary. See talks/specs.md for canonical implementation details and validation.
+- Fullscreen behavior: the Fullscreen control should requestFullscreen() on the talk viewer container ('.talk-preview' or '.pdf-frame'), hide action controls using :fullscreen CSS, and support double-click-to-present on the viewer.

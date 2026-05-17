@@ -51,9 +51,43 @@
     .talk-preview-image{display:block;width:100%;max-width:100%;max-height:calc(70dvh);object-fit:contain;border:1px solid rgba(255,255,255,0.12);background:#111;margin-top:12px}
 
     /* fullscreen viewer overlay */
-    #presentation-viewer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#000;z-index:9999}
-    #presentation-viewer.active{display:grid}
-    #presentation-slide{max-width:100%;max-height:100%;object-fit:contain;border:0}
+    #presentation-viewer {
+      width: 100vw;
+      height: 100dvh;
+      background: #000;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      z-index: 9999;
+    }
+
+    #presentation-viewer[hidden] {
+      display: none;
+    }
+
+    #presentation-viewer:fullscreen {
+      width: 100vw;
+      height: 100dvh;
+      background: #000;
+    }
+
+    #presentation-viewer::backdrop {
+      background: #000;
+    }
+
+    #presentation-slide {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100vw;
+      max-height: 100dvh;
+      object-fit: contain;
+      object-position: center;
+      background: #000;
+      border: 0;
+    }
 
     @media (max-width:700px){
       .talk-card-header{flex-direction:column}
@@ -90,8 +124,8 @@
     </div>
   </main>
 
-  <div id="presentation-viewer" aria-hidden="true">
-    <img id="presentation-slide" alt="presentation slide">
+  <div id="presentation-viewer" hidden>
+    <img id="presentation-slide" alt="">
   </div>
 
   <script>
@@ -110,13 +144,6 @@
         }catch(e){ return dstr || ''; }
       }
 
-      if(!talks || talks.length === 0){
-        // fallback: detect 001/002/003 by scanning known files
-        const candidates = ['001','002','003'];
-        talks = candidates.map(id=>({id:id,title:'Talk '+id,date:'',page_count:1})).filter(t=>{ try{ return fetch('./'+t.id+'.pdf',{method:'HEAD'}).then(r=>r.ok); }catch(e){return false}});
-      }
-
-      // If talks is an object map, ensure it's an array
       if(!Array.isArray(talks)) talks = [];
 
       talks.forEach(meta => {
@@ -184,47 +211,101 @@
         postsContainer.appendChild(article);
       });
 
-      // fullscreen viewer logic
+      // Fullscreen presentation viewer (spec-compliant)
       const viewer = document.getElementById('presentation-viewer');
       const slide = document.getElementById('presentation-slide');
-      let active = { id: null, page: 1, pageCount: 1 };
 
-      function showSlide(id,page){ slide.src = `./${id}-page-${page}.webp`; slide.alt = `${id} — slide ${page}`; }
+      let activeTalkId = null;
+      let currentPage = 1;
+      let pageCount = 1;
 
-      function openViewer(id,pageCount){
-        active.id = id; active.page = 1; active.pageCount = pageCount || 1;
-        showSlide(active.id, active.page);
-        viewer.classList.add('active');
-        viewer.removeAttribute('aria-hidden');
-        const req = viewer.requestFullscreen || viewer.webkitRequestFullscreen || viewer.msRequestFullscreen;
-        if(req) req.call(viewer).catch(()=>{});
-        document.addEventListener('keydown', onKey);
-        document.addEventListener('fullscreenchange', onFsChange);
+      function slideSrc(talkId, page) {
+        return `./${talkId}-page-${page}.webp`;
       }
 
-      function hideViewer(){
-        viewer.classList.remove('active');
-        viewer.setAttribute('aria-hidden','true');
-        slide.src = '';
-        document.removeEventListener('keydown', onKey);
-        document.removeEventListener('fullscreenchange', onFsChange);
-        active.id = null;
+      function showPage(page) {
+        if (!activeTalkId) return;
+        currentPage = Math.max(1, Math.min(page, pageCount));
+        slide.src = slideSrc(activeTalkId, currentPage);
+        slide.alt = `${activeTalkId} slide ${currentPage} of ${pageCount}`;
       }
 
-      function onKey(e){
-        if(!active.id) return;
-        if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); if(active.page < active.pageCount){ active.page++; showSlide(active.id, active.page); } }
-        else if(e.key === 'ArrowLeft'){ e.preventDefault(); if(active.page > 1){ active.page--; showSlide(active.id, active.page); } }
-        else if(e.key === 'Escape'){ if(document.fullscreenElement) document.exitFullscreen(); hideViewer(); }
+      async function openPresentation(button) {
+        activeTalkId = button.dataset.talkId;
+        pageCount = Number(button.dataset.pageCount || '1');
+        currentPage = 1;
+
+        viewer.hidden = false;
+        showPage(1);
+
+        try {
+          await viewer.requestFullscreen();
+        } catch (error) {
+          viewer.hidden = true;
+          activeTalkId = null;
+          console.error('Fullscreen failed:', error);
+        }
       }
 
-      function onFsChange(){ if(!document.fullscreenElement){ hideViewer(); } }
+      async function closePresentation() {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        }
+        viewer.hidden = true;
+        activeTalkId = null;
+        currentPage = 1;
+        pageCount = 1;
+        slide.removeAttribute('src');
+      }
 
-      document.querySelectorAll('.presentation-button').forEach(btn => {
-        btn.addEventListener('click', e => { e.preventDefault(); const id = btn.dataset.talkId; const pc = parseInt(btn.dataset.pageCount||'1',10); openViewer(id,pc); });
+      document.querySelectorAll('.presentation-button').forEach((button) => {
+        button.addEventListener('click', () => openPresentation(button));
       });
 
-      viewer.onclick = function(){ if(!document.fullscreenElement) hideViewer(); };
+      document.addEventListener('keydown', (event) => {
+        if (!activeTalkId || !document.fullscreenElement) return;
+
+        if (event.key === ' ' || event.key === 'ArrowRight' || event.key === 'PageDown') {
+          event.preventDefault();
+          showPage(currentPage + 1);
+        }
+
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          showPage(currentPage - 1);
+        }
+
+        if (event.key === 'Home') {
+          event.preventDefault();
+          showPage(1);
+        }
+
+        if (event.key === 'End') {
+          event.preventDefault();
+          showPage(pageCount);
+        }
+
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closePresentation();
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && activeTalkId) {
+          viewer.hidden = true;
+          activeTalkId = null;
+          slide.removeAttribute('src');
+        }
+      });
+
+      viewer.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          viewer.hidden = true;
+          activeTalkId = null;
+          slide.removeAttribute('src');
+        }
+      });
 
     })();
   </script>

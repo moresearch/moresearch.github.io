@@ -74,6 +74,15 @@
 
 - The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
 - The root Makefile must include a 'talks' target that depends on 'slides' and generates per-talk viewer pages. The target should create /talks/NNN/, copy public/slides/NNN.pdf to /talks/NNN/NNN.pdf (or ensure the iframe path resolves correctly), and write /talks/NNN/index.html by replacing a {{ID}} placeholder in talks/template.html with the zero-padded talk ID (NNN). Generated talk pages and PDFs must be committed to the repository so GitHub Pages can serve them.
+- Talks template requirements:
+  - Use a three-column layout: left logo rail (logo only), center empty column, right content column (PDF viewer and controls).
+  - Left rail shows the Hackspree logo using an absolute URL (https://hackspree.com/logo.png) inside a dark background box to ensure visibility.
+  - Action icons (Back to Talks, Download, Fullscreen) must be in the right column, centered horizontally, anchored near the bottom of the content column.
+  - The PDF viewer must be constrained to show a single page at a time and must be narrower: the viewer width should be 50% of its column (use `.pdf-container { width:50%; max-width:50%; aspect-ratio:210/297; max-height:36vh; overflow:hidden; }`).
+  - The template must avoid page scrollbars by constraining the overall template height (e.g., `.wrap { max-height: calc(100vh - 32px); overflow: hidden; }`).
+  - The template must reuse the homepage header/logo treatment so the logo is visible and links to https://hackspree.com/.
+  - Keep controls icon-only and preserve PDF iframe fragment `#page=1&view=FitH&toolbar=0` to attempt single-page rendering.
+
 - The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
 - Every /talks/NNN/ page must include a small, minimally spaced "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/. The text above and below the PDF viewer must be visually minimal and small (smaller font, less spacing).

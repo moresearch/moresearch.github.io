@@ -3,140 +3,130 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Talks — Hackspree</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
-  <title>Talks — Hackspree</title>
-  <link rel="icon" href="/favicon/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    :root{--sidebar:220px;--gap:40px;--bg:#000}
-    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:"Orbitron", Arial, sans-serif}
-    .talk-shell{min-height:100dvh;width:min(1440px,100%);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:var(--gap);padding:32px 24px;box-sizing:border-box;align-items:center}
 
-    /* Reuse exact homepage logo CSS (do not restyle the .logo element) */
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="shortcut icon" href="/favicon/favicon.ico">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{--bg:#000}
+    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:"Orbitron", Arial, sans-serif}
+    *{box-sizing:border-box}
+
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+
+    .layout{width:min(1400px,100%);display:grid;grid-template-columns:minmax(220px,20%) minmax(0,1fr) minmax(200px,228px);gap:36px;align-items:start}
+
+    .logo-side{display:flex;align-items:center;justify-content:center;padding:16px 8px;position:sticky;top:50vh;transform:translateY(-50%);align-self:start}
+    .logo-rail{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
     .logo-link{display:flex;align-items:center;justify-content:center}
     .logo{display:block;width:auto;height:auto;max-width:156vh;max-height:117%;transform:rotate(-90deg) scale(1.15);transform-origin:center center}
 
-    /* Right: preview and actions (minimal) */
-    .talk-preview{position:relative;min-width:0;display:grid;align-items:center;justify-items:center}
-    .talk-actions{position:absolute;top:12px;right:12px;display:inline-flex;gap:10px;z-index:2}
-    .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(255,255,255,0.18);color:#fff;text-decoration:none;background:rgba(0,0,0,0.5)}
-    .icon-btn i{font-size:16px}
+    .content-side{display:flex;align-items:flex-start;justify-content:flex-start;padding:48px 48px 48px 8px;min-width:0}
+    .content{width:100%;max-width:640px;margin:0}
 
-    .pdf-frame{width:100%;height:calc(100dvh - 96px);min-width:0;overflow:hidden;display:block}
-    .pdf-frame iframe{display:block;width:100%;height:100%;border:1px solid rgba(255,255,255,0.16);background:#111}
-    /* fullscreen presentation tweaks */
-    .talk-preview:fullscreen .talk-actions,
-    .talk-preview:-webkit-full-screen .talk-actions,
-    .talk-preview:-ms-fullscreen .talk-actions { display: none !important; }
-    .talk-preview:fullscreen .pdf-frame,
-    .talk-preview:-webkit-full-screen .pdf-frame,
-    .talk-preview:-ms-fullscreen .pdf-frame { width:100%; height:100%; }
+    /* talk-card styles (minimal) */
+    .talk-card{display:grid;gap:1.5rem;background:transparent}
+    .talk-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+    .talk-card-header > div{flex:1}
+    .talk-card .post-meta{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase;font-size:0.56rem}
+    .talk-card h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin:6px 0}
+    .talk-card .summary{color:#bcbcbc;margin:0}
 
-    @media (max-width:900px){
-      .logo{transform:none;max-width:252px;max-height:206px}
-      .talk-shell{grid-template-columns:1fr;padding:20px;gap:20px}
-      .talk-actions{position:static;justify-self:end}
-      .preview-image{max-height:none}
+    .talk-actions{display:inline-flex;align-items:center;gap:0.5rem;flex:0 0 auto}
+    .talk-actions a,.talk-actions button{width:2.5rem;height:2.5rem;display:inline-grid;place-items:center;border:1px solid rgba(255,255,255,0.12);background:transparent;color:inherit;text-decoration:none;cursor:pointer;border-radius:6px}
+    .talk-actions i{font-size:16px}
+
+    .talk-preview-frame{margin:0;width:100%;display:grid;place-items:center}
+    .talk-preview-image{display:block;width:100%;max-width:100%;max-height:calc(100dvh - 14rem);object-fit:contain;border:1px solid rgba(255,255,255,0.12);background:#111}
+
+    /* fullscreen tweaks */
+    .talk-preview-frame:fullscreen{background:#000;padding:2rem}
+    .talk-preview-frame:fullscreen .talk-preview-image{width:100%;height:100%;max-height:100%;object-fit:contain}
+
+    @media (max-width:700px){
+      .talk-card-header{flex-direction:column}
+      .talk-actions{align-self:flex-end}
+      .talk-preview-image{max-height:none}
     }
 
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    /* minimal nav-side placeholder */
+    .nav-side{display:flex;align-items:center;justify-content:center;padding:16px}
   </style>
 </head>
 <body>
-  <main class="talk-shell">
-    <aside class="talk-rail" aria-label="Hackspree logo rail">
-      <div class="homepage-logo-slot">
-        <!-- exact homepage logo block (anchor + img). src uses absolute root path so it resolves from /talks/ -->
-        <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home" title="Hackspree">
-          <img src="/logo.png" alt="Hackspree logo" class="logo">
-        </a>
-      </div>
-    </aside>
-
-    <section class="talk-list-section" aria-label="Talks index">
-      <div class="talk-preview" role="region" aria-label="Talk 001 preview">
-        <div class="talk-actions" role="toolbar" aria-label="Talk actions">
-          <a id="open-btn" class="icon-btn" href="./001.pdf" target="_blank" rel="noopener noreferrer" title="Open"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span class="sr-only">Open</span></a>
-          <a id="fullscreen-btn" class="icon-btn" href="#" title="Fullscreen"><i class="fa-solid fa-expand" aria-hidden="true"></i><span class="sr-only">Fullscreen</span></a>
-          <a id="download-btn" class="icon-btn" href="./001.pdf" download title="Download"><i class="fa-solid fa-download" aria-hidden="true"></i><span class="sr-only">Download</span></a>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="layout">
+      <aside class="logo-side">
+        <div class="logo-rail">
+          <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
+            <img src="/logo.png" alt="Hackspree logo" class="logo">
+          </a>
         </div>
-        <div class="pdf-frame">
-          <iframe id="pdfFrame" src="./001.pdf#page=1&view=FitH&toolbar=0" frameborder="0" aria-label="Talk preview PDF"></iframe>
-        </div>
-      </div>
+      </aside>
 
-      <div class="post-list">
-        <article class="post" id="talk-001">
-          <header class="post-header">
-            <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1779000000</time></p>
-            <h2><a href="./001.pdf">Talk 001 — Presentation title</a></h2>
-          </header>
-          <div class="post-body">
-            <p>First presentation. Click the title or the Open icon to view the full PDF.</p>
+      <section class="content-side">
+        <div class="content">
+          <div class="post-list">
+            <article class="post talk-card" id="talk-001">
+              <header class="talk-card-header">
+                <div>
+                  <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC">1779000000</time></p>
+                  <h1>Talk 001 — Presentation title</h1>
+                  <p class="summary">First presentation. Open, download, or view the first page fullscreen.</p>
+                </div>
+
+                <nav class="talk-actions" aria-label="Talk actions">
+                  <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+                  <a href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
+                  <button type="button" class="fullscreen-button" aria-label="Fullscreen preview" title="Fullscreen preview"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
+                </nav>
+              </header>
+
+              <figure class="talk-preview-frame" id="talk-preview-frame">
+                <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF">
+                  <img class="talk-preview-image" src="./001-page-1.webp" alt="First page preview of Talk 001" loading="eager">
+                </a>
+              </figure>
+            </article>
           </div>
-        </article>
-      </div>
-    </section>
+        </div>
+      </section>
+
+      <aside class="nav-side" aria-label="Site navigation">
+        <!-- left as homepage-like shell; kept minimal -->
+      </aside>
+    </div>
   </main>
-<script>
-  (function(){
-    var current = '001';
 
-    function setTalk(id){
-      current = id;
-      var frame = document.getElementById('pdfFrame');
-      if(frame) frame.src = './' + id + '.pdf';
-      var openBtn = document.getElementById('open-btn');
-      if(openBtn) openBtn.href = './' + id + '.pdf';
-      var downloadBtn = document.getElementById('download-btn');
-      if(downloadBtn){ downloadBtn.href = './' + id + '.pdf'; downloadBtn.setAttribute('download',''); }
-      var sels = document.querySelectorAll('.talk-select');
-      sels.forEach(function(b){ b.setAttribute('aria-pressed', (b.getAttribute('data-id')===id).toString()); });
-    }
-
-    function enterFullscreen(target, fallbackUrl){
-      if(!target){ if(fallbackUrl) window.open(fallbackUrl, '_blank'); return; }
-      var req = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
-      if(req){
-        try { req.call(target); }
-        catch(err){ console.warn('fullscreen failed', err); if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
-      } else { if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
-    }
-
-    var selects = document.querySelectorAll('.talk-select');
-    selects.forEach(function(btn){ btn.addEventListener('click', function(e){ e.preventDefault(); setTalk(btn.getAttribute('data-id')); }); });
-
-    var fsBtn = document.getElementById('fullscreen-btn');
-    if(fsBtn){
-      fsBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        var target = document.querySelector('.talk-preview');
-        enterFullscreen(target, './' + current + '.pdf');
-      });
-    }
-
-    var pdfOuter = document.querySelector('.pdf-frame');
-    if(pdfOuter){
-      pdfOuter.addEventListener('dblclick', function(){
-        var target = document.querySelector('.talk-preview');
-        enterFullscreen(target, './' + current + '.pdf');
-      });
-    }
-
-    // init
-    setTalk(current);
-
-    function onFsChange(){
-      var el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-      document.body.classList.toggle('is-presenting', !!el);
-    }
-    document.addEventListener('fullscreenchange', onFsChange);
-    document.addEventListener('webkitfullscreenchange', onFsChange);
-    document.addEventListener('msfullscreenchange', onFsChange);
-  })();
-</script>
+  <script>
+    (function(){
+      var btn = document.querySelector('.fullscreen-button');
+      async function toggleFullscreen(){
+        var frame = document.getElementById('talk-preview-frame');
+        if(!frame) return;
+        try{
+          if(document.fullscreenElement) await document.exitFullscreen();
+          else await frame.requestFullscreen();
+        }catch(e){ console.warn('fullscreen error', e); }
+      }
+      if(btn) btn.addEventListener('click', function(e){ e.preventDefault(); toggleFullscreen(); });
+      var preview = document.getElementById('talk-preview-frame');
+      if(preview) preview.addEventListener('dblclick', function(){ toggleFullscreen(); });
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,113 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Hackspree presentation template (copied from 001)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault]{sourcesanspro}
+\renewcommand{\familydefault}{\sfdefault}
+\usefonttheme{professionalfonts}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usetheme{default}
+
+% Colors and branding
+\definecolor{mdagrey}{RGB}{70,70,70}
+\definecolor{mdalightgrey}{RGB}{170,170,170}
+\definecolor{accentorange}{RGB}{230,90,40}
+\setbeamercolor{frametitle}{fg=mdagrey}
+\setbeamercolor{normal text}{fg=black}
+
+% Font sizes
+\setbeamerfont{normal text}{size=\large}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{itemize/enumerate body}{size=\large}
+
+% Square bullets
+\setbeamertemplate{itemize item}{\color{mdagrey}$\blacksquare$}
+
+\newcommand{\twocolslide}[4]{%
+\begin{frame}
+\frametitle{#1}
+\begin{columns}
+\begin{column}{0.38\textwidth}
+\textbf{#2}
+\vspace{0.3em}
+#3
+\end{column}
+\begin{column}{0.58\textwidth}
+#4
+\end{column}
+\end{columns}
+\end{frame}
+}
+
+\begin{document}
+
+% Title Slide
+\begin{frame}[plain]
+\centering
+{
+{\LARGE\bfseries Harness Engineering}
+}
+
+\vspace{0.4cm}
+
+{\Large
+Hackspree\\
+}
+
+\end{frame}
+
+% Outline
+\begin{frame}
+\frametitle{Outline}
+\begin{itemize}
+  \item Introduction
+  \item Principles of Harness Engineering
+  \item Tooling and Automation
+  \item Case study
+  \item Summary
+\end{itemize}
+\end{frame}
+
+% Introduction
+\begin{frame}
+\frametitle{Introduction}
+Harness engineering is the practice of creating the scaffolding, tooling, and processes that let teams safely iterate on complex systems.
+\end{frame}
+
+% Principles
+\begin{frame}
+\frametitle{Principles}
+\begin{itemize}
+  \item Observability-first: make failures visible
+  \item Incremental safety: small, reversible changes
+  \item Automated validation: tests and canaries
+\end{itemize}
+\end{frame}
+
+% Tooling
+\begin{frame}
+\frametitle{Tooling and Automation}
+\begin{itemize}
+  \item CI pipelines tailored for harness tests
+  \item Feature flag frameworks
+  \item Replayable deployment orchestration
+\end{itemize}
+\end{frame}
+
+% Case study
+\begin{frame}
+\frametitle{Case study}
+A short example of using harnesses to rollout a config change across services with canary monitors.
+\end{frame}
+
+% Summary
+\begin{frame}
+\frametitle{Summary}
+Harness engineering reduces blast radius and increases deploy confidence.
+\end{frame}
+
+\end{document}

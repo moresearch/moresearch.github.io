@@ -6,7 +6,7 @@
   - {{id}}-page-1.webp, {{id}}-page-2.webp, ...
   - {{id}}.meta.json with keys: id (string), title (string), date (ISO8601 string), page_count (integer)
 - The index page lists each talk as a card with: time, title (h2), first-page preview image, and three icon-only actions (open, download, fullscreen).
-- Fullscreen viewer is an overlay that consumes keyboard events while active and uses the -page-N.webp images for navigation.
+- Fullscreen viewer is an overlay that consumes keyboard events while active, uses the low-resolution {{id}}-page-1.webp for the in-page preview, and uses high-resolution fullscreen images {{id}}-page-<n>-full.webp for fullscreen presentation (recommended: 2560–3200px width or ~300 DPI, WebP quality 90–95).
 - Font Awesome used only for icons; do not change typography or the homepage logo implementation.
 
 Validation checklist:

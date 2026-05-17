@@ -10,7 +10,8 @@ Behavioral rules:
 
 Build rules:
 - Makefile target `previews` must generate for every talks/{{id}}.pdf:
-  - talks/{{id}}-page-1.webp, talks/{{id}}-page-2.webp, ... (one per PDF page)
+  - preview images: talks/{{id}}-page-1.webp, talks/{{id}}-page-2.webp, ... (one per PDF page) — these should be sized ~1200–1600px wide for fast page load and encoded with WebP quality 75–85
+  - fullscreen images: talks/{{id}}-page-1-full.webp, talks/{{id}}-page-2-full.webp, ... — high-resolution images sized ~2560–3200px (or generated at ~300 DPI) and encoded as WebP quality 90–95 for sharp fullscreen rendering
   - talks/{{id}}.meta.json with fields: id, title, date, page_count
 - The site generator or Makefile should ensure these assets are present in the repo for GitHub Pages.
 

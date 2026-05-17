@@ -23,6 +23,13 @@
 
     .preview-link{display:block;width:100%;min-width:0}
     .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#111;border:1px solid rgba(255,255,255,0.16)}
+    /* fullscreen presentation tweaks */
+    .talk-preview:fullscreen .talk-actions,
+    .talk-preview:-webkit-full-screen .talk-actions,
+    .talk-preview:-ms-fullscreen .talk-actions { display: none !important; }
+    .talk-preview:fullscreen .preview-image,
+    .talk-preview:-webkit-full-screen .preview-image,
+    .talk-preview:-ms-fullscreen .preview-image { width:100%; height:100%; object-fit:contain; }
 
     @media (max-width:900px){
       .logo{transform:none;max-width:252px;max-height:206px}
@@ -59,17 +66,39 @@
   </main>
 <script>
   (function(){
+    function enterFullscreen(target, fallbackUrl){
+      if(!target){ if(fallbackUrl) window.open(fallbackUrl, '_blank'); return; }
+      var req = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
+      if(req){
+        try { req.call(target); }
+        catch(err){ console.warn('fullscreen failed', err); if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
+      } else { if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
+    }
+
     var btn = document.getElementById('fullscreen-btn');
     if(btn){
       btn.addEventListener('click', function(e){
         e.preventDefault();
-        var el = document.querySelector('.preview-link') || document.querySelector('.preview-image') || document.querySelector('.talk-preview');
-        if(!el) return;
-        if(el.requestFullscreen) el.requestFullscreen();
-        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        else if(el.msRequestFullscreen) el.msRequestFullscreen();
+        var target = document.querySelector('.talk-preview') || document.querySelector('.preview-link') || document.querySelector('.preview-image');
+        enterFullscreen(target, './001.pdf');
       });
     }
+
+    var img = document.querySelector('.preview-image');
+    if(img){
+      img.addEventListener('dblclick', function(){
+        var target = document.querySelector('.talk-preview') || img;
+        enterFullscreen(target, './001.pdf');
+      });
+    }
+
+    function onFsChange(){
+      var el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+      document.body.classList.toggle('is-presenting', !!el);
+    }
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    document.addEventListener('msfullscreenchange', onFsChange);
   })();
 </script>
 </body>

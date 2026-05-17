@@ -145,3 +145,4 @@
 
 ### Talks: simplified first-page preview
 - Talks pages now show a centered Hackspree logo in a left rail and a first-page preview image on the right. See talks/specs.md for details.
+- Fullscreen behavior: the Fullscreen control should requestFullscreen() on the talk preview container ('.talk-preview'), hide action controls using :fullscreen CSS, and support double-click-to-present on the preview image.

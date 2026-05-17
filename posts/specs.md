@@ -21,7 +21,7 @@
 - Markdown content begins after the closing front matter delimiter.
 - Posts may cite external sources with standard Markdown links in the body, including direct links to arXiv paper pages.
 - Posts may also cite workshops, talks, videos, and companion repositories when a reflection post is grounded in their technical content.
-- Posts that cite YouTube videos should include a linked thumbnail image near the relevant discussion rather than a text-only reference.
+- Posts that cite YouTube videos should include a linked thumbnail image near the relevant discussion rather than a text-only reference. Use the YouTube thumbnail URL format `https://img.youtube.com/vi/<VIDEO_ID>/hqdefault.jpg` and wrap the image in a Markdown link to the video. When referencing a specific scene, include a timestamp (MM:SS) or range (MM:SS–MM:SS) and link to the video with that timestamp.
 - Posts may embed remote publisher-hosted book-cover images when discussing influential books tied directly to the post topic.
 - Posts may compare concrete Go libraries or frameworks when the comparison is grounded in current official docs and includes code examples.
 - Posts may connect personal skill development to games or other systems when the essay stays specific about the engineering habits or mental models that transferred.

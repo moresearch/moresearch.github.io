@@ -5,79 +5,68 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Talk 000 — Hackspree</title>
   <link rel="icon" href="/favicon/favicon.ico" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root{color-scheme:dark}
+    :root{--header-h:88px;color-scheme:dark}
     html,body{height:100%;margin:0;background:#000;color:#fff;font-family:'IBM Plex Mono',monospace}
-    .wrap{min-height:100dvh;display:flex;align-items:flex-start;justify-content:center;padding:32px;box-sizing:border-box;overflow:visible}
-    .talk-shell{width:min(1500px,100%);display:grid;grid-template-columns:300px minmax(0,1fr);gap:40px;align-items:stretch}
+    .talk-shell{width:min(1500px,100%);margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;gap:20px;padding:24px;box-sizing:border-box}
 
-    /* Sidebar (compact) */
-    .talk-sidebar{display:flex;flex-direction:column;gap:20px;padding:24px;box-sizing:border-box;min-width:0}
-    .brand-link{display:inline-flex;align-items:center;justify-content:center}
-    .brand-logo{display:block;width:auto;height:140px;max-width:100%;object-fit:contain;transform:rotate(-90deg) scale(1.05);transform-origin:center center}
+    /* header masthead */
+    .talk-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;height:var(--header-h);padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .brand-link{display:inline-flex;align-items:center}
+    .brand-logo{display:block;height:72px;width:auto;object-fit:contain;transform:rotate(-90deg) scale(1.05);transform-origin:center center}
 
-    .talk-meta{padding-top:4px}
-    .talk-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;color:#ff9800;margin:0 0 6px 0}
-    .talk-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;margin:0 0 8px 0}
-    .talk-desc{color:#bcbcbc;margin:0;font-size:0.95rem}
+    .talk-title p{margin:0;font-size:0.9rem;color:#ff9800;letter-spacing:0.08em;text-transform:uppercase}
+    .talk-title h1{margin:4px 0 0 0;font-family:'Orbitron',sans-serif;font-size:1.1rem}
 
-    .talk-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-    .button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;font-family:inherit;cursor:pointer}
+    .talk-actions{display:flex;gap:12px;align-items:center}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;font-family:inherit;cursor:pointer}
 
-    /* Viewer (dominant) */
-    .talk-viewer{min-width:0;height:calc(100dvh - 96px);background:#111;border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6)}
-    .talk-viewer iframe{width:100%;height:100%;border:0;display:block;background:#111}
+    /* viewer area */
+    .talk-viewer{min-width:0;height:calc(100dvh - var(--header-h) - 48px);background:#111;border-radius:6px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+    .talk-viewer iframe{display:block;width:100%;height:100%;border:0;background:#111}
 
     @media (max-width:900px){
-      .talk-shell{grid-template-columns:1fr;padding:16px;gap:20px}
-      .talk-sidebar{flex-direction:row;align-items:center;gap:12px}
-      .brand-logo{transform:none;height:96px}
+      .talk-shell{padding:16px}
+      .talk-header{grid-template-columns:auto 1fr;gap:12px;height:auto;align-items:center}
+      .brand-logo{transform:none;height:56px}
       .talk-viewer{height:75dvh}
+      .talk-title h1{font-size:1rem}
     }
 
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
   </style>
 </head>
-<body>
-  <main class="wrap">
-    <div class="talk-shell">
-      <aside class="talk-sidebar">
-        <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home">
-          <img class="brand-logo" src="https://hackspree.com/logo.png" alt="Hackspree" />
-        </a>
+<body class="talk-page">
+  <main class="talk-shell">
+    <header class="talk-header">
+      <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home">
+        <img class="brand-logo" src="https://hackspree.com/logo.png" alt="Hackspree" />
+      </a>
 
-        <div class="talk-meta">
-          <p class="talk-eyebrow">Talk 000</p>
-          <h1 class="talk-title">Presentation title</h1>
-          <p class="talk-desc">Short description of the talk goes here.</p>
-        </div>
+      <div class="talk-title">
+        <p>Talk 000</p>
+        <h1>Presentation title</h1>
+      </div>
 
-        <nav class="talk-actions" aria-label="Talk actions">
-          <a class="button" href="/talks/">Talks</a>
-          <a class="button" href="000.pdf" download>Download</a>
-          <button class="button" type="button" onclick="toggleFullscreen('#pdfFrame')">Fullscreen</button>
-        </nav>
-      </aside>
+      <nav class="talk-actions" aria-label="Talk actions">
+        <a class="btn" href="/talks/">Back</a>
+        <a class="btn" href="000.pdf" download>Download</a>
+        <button id="fullscreen-button" class="btn" type="button" onclick="goFullscreen()">Fullscreen</button>
+      </nav>
+    </header>
 
-      <section class="talk-viewer" aria-label="Presentation PDF">
-        <iframe id="pdfFrame" src="000.pdf#page=1&view=FitH&toolbar=0" title="Presentation PDF" loading="lazy"></iframe>
-      </section>
-    </div>
+    <section class="talk-viewer" aria-label="Presentation PDF">
+      <iframe id="pdfFrame" src="000.pdf#page=1&view=FitH&toolbar=0" title="Talk 000 PDF" loading="lazy"></iframe>
+    </section>
   </main>
 
   <script>
-    function toggleFullscreen(selector){
-      var el = document.querySelector(selector);
+    function goFullscreen(){
+      var el = document.querySelector('.talk-viewer');
       if(!el) return;
-      // prefer the element's parent container if possible
-      try{
-        if(el.requestFullscreen) el.requestFullscreen();
-        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        else if(el.msRequestFullscreen) el.msRequestFullscreen();
-      }catch(e){
-        console.warn('fullscreen failed', e);
-      }
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(el.msRequestFullscreen) el.msRequestFullscreen();
     }
   </script>
 </body>

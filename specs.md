@@ -136,3 +136,6 @@
 - Updated talks template to a PDF-first two-column layout (300px sidebar + dominant viewer).
 - Sidebar contains logo (<img>), talk metadata, and controls (Talks / Download / Fullscreen).
 - See talks/specs.md for canonical implementation details and validation checklist.
+
+### Talks: compact masthead layout
+- Talks pages use a compact top masthead (logo + metadata + actions) with the PDF viewer as the page's primary content. See talks/specs.md for details.

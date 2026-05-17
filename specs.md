@@ -83,7 +83,7 @@
 - Each /talks/NNN/ viewer page must show the action icons (download, back, fullscreen) in the left logo rail, arranged horizontally and centered beneath the logo. Icons must be icons-only (no visible text), visually minimal, and must never overlap or be positioned above the logo. FontAwesome may be used with inline SVG fallbacks.
 - Both /talks/NNN/index.html and /talks/index.html must use the exact same HTML structure, fonts, favicon, and CSS as the main blog (index.html), differing only in the main content area. The layout, logo rail, and all visual identity must match blog.hackspree.com and hackspree.com precisely.
 - All links in /talks/index.html and /talks/NNN/index.html must use #fff as the primary color and the same font as the main blog.
-- The logo in /talks/NNN/ must be visually identical in position, size, and style to hackspree.com, including rotation, margin, and centering. The HTML and CSS for the logo rail must match `index.html` exactly.
+- The logo in /talks/NNN/ must be visually identical in position, size, and style to hackspree.com, including rotation, margin, and centering. Concretely, copy the `.logo` CSS rules from the site root `index.html` (e.g., `max-width: 156vh; max-height: 117%; transform: rotate(-90deg) scale(1.15);`) so the rendered size matches the canonical site. The HTML and CSS for the logo rail must match `index.html` exactly.
 - No dev comments or stray CSS should appear in the output HTML of /talks/NNN/.
 - The color theme for all talks pages must be white/grey on black, matching hackspree.com, with no orange or other accent colors except where specified for navigation or icons.
 - The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.

@@ -21,15 +21,15 @@
     .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(255,255,255,0.18);color:#fff;text-decoration:none;background:rgba(0,0,0,0.5)}
     .icon-btn i{font-size:16px}
 
-    .preview-link{display:block;width:100%;min-width:0}
-    .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#111;border:1px solid rgba(255,255,255,0.16)}
+    .pdf-frame{width:100%;height:calc(100dvh - 96px);min-width:0;overflow:hidden;display:block}
+    .pdf-frame iframe{display:block;width:100%;height:100%;border:1px solid rgba(255,255,255,0.16);background:#111}
     /* fullscreen presentation tweaks */
     .talk-preview:fullscreen .talk-actions,
     .talk-preview:-webkit-full-screen .talk-actions,
     .talk-preview:-ms-fullscreen .talk-actions { display: none !important; }
-    .talk-preview:fullscreen .preview-image,
-    .talk-preview:-webkit-full-screen .preview-image,
-    .talk-preview:-ms-fullscreen .preview-image { width:100%; height:100%; object-fit:contain; }
+    .talk-preview:fullscreen .pdf-frame,
+    .talk-preview:-webkit-full-screen .pdf-frame,
+    .talk-preview:-ms-fullscreen .pdf-frame { width:100%; height:100%; }
 
     @media (max-width:900px){
       .logo{transform:none;max-width:252px;max-height:206px}
@@ -52,20 +52,41 @@
       </div>
     </aside>
 
-    <section class="talk-preview" aria-label="Talk preview">
-      <nav class="talk-actions" aria-label="Talk actions">
-        <a class="icon-btn" href="./001.pdf" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
-        <a class="icon-btn" href="#" id="fullscreen-btn" aria-label="Fullscreen" title="Fullscreen"><i class="fa-solid fa-expand" aria-hidden="true"></i></a>
-        <a class="icon-btn" href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
-      </nav>
+    <section class="talk-preview" aria-label="Talk viewer">
+      <div class="talk-top" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div class="talk-list" role="tablist" aria-label="Talk selection">
+          <button class="talk-select icon-btn" data-id="001" aria-pressed="true" title="Show 001">001</button>
+          <button class="talk-select icon-btn" data-id="002" aria-pressed="false" title="Show 002">002</button>
+        </div>
 
-      <a class="preview-link" href="./001.pdf" aria-label="Open PDF">
-        <img class="preview-image" src="./001-page-1.webp" alt="First page preview of the talk">
-      </a>
+        <nav class="talk-actions" aria-label="Talk actions">
+          <a class="icon-btn" href="./001.pdf" id="open-btn" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+          <a class="icon-btn" href="#" id="fullscreen-btn" aria-label="Fullscreen" title="Fullscreen"><i class="fa-solid fa-expand" aria-hidden="true"></i></a>
+          <a class="icon-btn" href="./001.pdf" id="download-btn" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
+        </nav>
+      </div>
+
+      <div class="pdf-frame">
+        <iframe id="pdfFrame" src="./001.pdf" title="Talk PDF viewer" frameborder="0" allowfullscreen></iframe>
+      </div>
     </section>
   </main>
 <script>
   (function(){
+    var current = '001';
+
+    function setTalk(id){
+      current = id;
+      var frame = document.getElementById('pdfFrame');
+      if(frame) frame.src = './' + id + '.pdf';
+      var openBtn = document.getElementById('open-btn');
+      if(openBtn) openBtn.href = './' + id + '.pdf';
+      var downloadBtn = document.getElementById('download-btn');
+      if(downloadBtn){ downloadBtn.href = './' + id + '.pdf'; downloadBtn.setAttribute('download',''); }
+      var sels = document.querySelectorAll('.talk-select');
+      sels.forEach(function(b){ b.setAttribute('aria-pressed', (b.getAttribute('data-id')===id).toString()); });
+    }
+
     function enterFullscreen(target, fallbackUrl){
       if(!target){ if(fallbackUrl) window.open(fallbackUrl, '_blank'); return; }
       var req = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
@@ -75,22 +96,28 @@
       } else { if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
     }
 
-    var btn = document.getElementById('fullscreen-btn');
-    if(btn){
-      btn.addEventListener('click', function(e){
+    var selects = document.querySelectorAll('.talk-select');
+    selects.forEach(function(btn){ btn.addEventListener('click', function(e){ e.preventDefault(); setTalk(btn.getAttribute('data-id')); }); });
+
+    var fsBtn = document.getElementById('fullscreen-btn');
+    if(fsBtn){
+      fsBtn.addEventListener('click', function(e){
         e.preventDefault();
-        var target = document.querySelector('.talk-preview') || document.querySelector('.preview-link') || document.querySelector('.preview-image');
-        enterFullscreen(target, './001.pdf');
+        var target = document.querySelector('.talk-preview');
+        enterFullscreen(target, './' + current + '.pdf');
       });
     }
 
-    var img = document.querySelector('.preview-image');
-    if(img){
-      img.addEventListener('dblclick', function(){
-        var target = document.querySelector('.talk-preview') || img;
-        enterFullscreen(target, './001.pdf');
+    var pdfOuter = document.querySelector('.pdf-frame');
+    if(pdfOuter){
+      pdfOuter.addEventListener('dblclick', function(){
+        var target = document.querySelector('.talk-preview');
+        enterFullscreen(target, './' + current + '.pdf');
       });
     }
+
+    // init
+    setTalk(current);
 
     function onFsChange(){
       var el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;

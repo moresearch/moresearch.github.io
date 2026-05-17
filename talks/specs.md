@@ -1,16 +1,22 @@
-# Talks template (masthead)
+# Talks template (strict two-column)
 
-This spec defines the compact masthead talks viewer.
+This spec defines the strict two-column Hackspree talks viewer.
 
-Design
-- Compact top masthead (logo + talk label + actions), PDF viewer below as the dominant element.
-- Dark, minimal aesthetic matching hackspree.com.
+Design & behavior
+- Desktop: two columns (340px left identity rail matching homepage; right column is the PDF viewer and visually dominant).
+- Left rail replicates the homepage identity: logo (real <img>), identity block (name/description), social links, and talk actions.
+- Right column contains talk heading and PDF iframe that fills available height.
 
-Implementation
-- Template: talks/template.html. Replace {{ID}} with zero-padded talk id when generating pages.
-- Header contains a real <img> logo (prefer https://hackspree.com/logo.png), small talk label, title, and actions (Back / Download / Fullscreen).
-- No large sidebar; viewer width is controlled by container and uses `min-width:0` to prevent overflow.
-- Viewer: `.talk-viewer { height: calc(100dvh - var(--header-h) - 48px); }` and iframe fills it.
+Implementation rules
+- Template: talks/template.html. Generated pages replace {{ID}} with the zero-padded talk id and copy the PDF to /talks/NNN/NNN.pdf.
+- Logo must be a real <img> and use the homepage asset (https://hackspree.com/logo.png) unless the asset is copied into the blog output.
+- Use Font Awesome for icons only. Link to the official stylesheet (CDN allowed). Do not set Font Awesome as a page font.
+- Grid: `.talk-shell { grid-template-columns: 340px minmax(0,1fr); }` and both columns must use `min-width:0` to avoid overflow.
+- PDF sizing: `.pdf-frame { height: calc(100dvh - 120px); }` and iframe fills container.
 
-Validation
-- Logo loads (200), PDF loads (200), header compact, no horizontal overflow, mobile stacks correctly.
+Validation checklist
+- Logo image returns 200
+- PDF returns 200
+- No horizontal overflow at desktop and mobile
+- Font Awesome icons render for social-links and actions
+- Talk actions work (Back, Download, Fullscreen)

@@ -139,3 +139,6 @@
 
 ### Talks: compact masthead layout
 - Talks pages use a compact top masthead (logo + metadata + actions) with the PDF viewer as the page's primary content. See talks/specs.md for details.
+
+### Talks: strict two-column layout
+- Talks pages now use a strict two-column layout with a left identity rail and a dominant PDF viewer. See talks/specs.md for details and validation checklist.

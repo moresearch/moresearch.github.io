@@ -125,8 +125,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
-      margin-bottom: 28px;
+      overflow: hidden; /* ensure icons row doesn't overlap */
+      margin-bottom: 32px;
     }
     .logo-link {
       display: flex;
@@ -147,9 +147,11 @@
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      margin-top: 36px; /* increased spacing for elegance */
+      gap: 12px;
+      margin-top: 32px; /* increased spacing for elegance */
       z-index: 5;
+      width: 100%;
+      box-sizing: border-box;
     }
     .icon-link {
       color: #fff;
@@ -161,6 +163,7 @@
       height: 36px;
       border-radius: 6px;
       text-decoration: none;
+      margin: 0 6px;
     }
     .icon-link:focus, .icon-link:hover {
       background: rgba(255,255,255,0.04);

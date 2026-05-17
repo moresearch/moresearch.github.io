@@ -1,6 +1,7 @@
 # Talks specs (generated)
 
 - /talks/ is a generated index of talks produced by the Makefile from talks/*.pdf and metadata extraction.
+- The blog homepage must include a global, icon-only "Talks" link in the top-right header which points to /talks/ (aria-label and title must be set). The link must use the Font Awesome Regular rectangle-list icon.
 - For each talk PDF the following must be generated and tracked:
   - {{id}}.pdf
   - {{id}}-page-1.webp, {{id}}-page-2.webp, ...

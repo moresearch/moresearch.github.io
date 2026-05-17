@@ -5,6 +5,7 @@ This documents the new talks workflow and validation.
 Behavioral rules:
 - /talks/ reuses the homepage shell (fonts, header/logo, spacing) but renders a generated list of talk cards.
 - The blog homepage includes a global, icon-only "Talks" link in the top-right header which points to /talks/ (aria-label and title must be set).
+- The blog homepage also shows an icon-only "Talks" link immediately above the post list in the content column for quick discovery; use the existing .blog-nav-icon style and include aria-label and title for accessibility.
 - Each talk card shows only: date/timestamp, title, first-page preview image ({{id}}-page-1.webp), and icon-only actions: open PDF, download PDF, fullscreen presentation.
 - No descriptive text under each talk card.
 - Fullscreen opens a presentation viewer that uses generated per-page images ({{id}}-page-N.webp) and supports keyboard navigation (Space/Right, Left, Escape).

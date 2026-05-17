@@ -78,42 +78,8 @@
 
       <section class="content-side">
         <div class="content">
-          <div class="post-list">
-
-            <article class="post talk-card" data-talk-id="001">
-              <header class="talk-card-header">
-                <div>
-                  <time class="post-meta" datetime="2026-05-17">1779000000</time>
-                  <h2>Talk 001 — Presentation title</h2>
-                </div>
-
-                <nav class="talk-actions" aria-label="Talk 001 actions">
-                  <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
-                  <a href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
-                  <button type="button" class="presentation-button" aria-label="Fullscreen presentation" title="Fullscreen presentation" data-talk-id="001"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
-                </nav>
-              </header>
-
-              <img class="talk-preview-image" src="./001-page-1.webp" alt="Talk 001 first page preview" loading="lazy">
-            </article>
-
-            <article class="post talk-card" data-talk-id="002">
-              <header class="talk-card-header">
-                <div>
-                  <time class="post-meta" datetime="2026-05-17">1779000000</time>
-                  <h2>Talk 002 — Presentation title</h2>
-                </div>
-
-                <nav class="talk-actions" aria-label="Talk 002 actions">
-                  <a href="./002.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
-                  <a href="./002.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
-                  <button type="button" class="presentation-button" aria-label="Fullscreen presentation" title="Fullscreen presentation" data-talk-id="002"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
-                </nav>
-              </header>
-
-              <img class="talk-preview-image" src="./002-page-1.webp" alt="Talk 002 first page preview" loading="lazy">
-            </article>
-
+          <div id="post-list" class="post-list">
+            <!-- generated talk cards will be inserted here -->
           </div>
         </div>
       </section>
@@ -129,78 +95,136 @@
   </div>
 
   <script>
-    (function(){
-      async function fetchMeta(id){
+    (async function(){
+      const postsContainer = document.getElementById('post-list');
+      let talks = [];
+      try{
+        const res = await fetch('./index.json');
+        if(res.ok) talks = await res.json();
+      }catch(e){ /* ignore */ }
+
+      function fmtDate(dstr){
         try{
-          const res = await fetch(`./${id}.meta.json`);
-          if(!res.ok) throw new Error('no meta');
-          return await res.json();
-        }catch(e){
-          return { id:id, title: `Talk ${id}`, page_count: 1 };
-        }
+          const d = new Date(dstr);
+          return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+        }catch(e){ return dstr || ''; }
       }
 
-      function showSlide(id, page){
-        const img = document.getElementById('presentation-slide');
-        img.src = `./${id}-page-${page}.webp`;
-        img.alt = `${id} — slide ${page}`;
+      if(!talks || talks.length === 0){
+        // fallback: detect 001/002/003 by scanning known files
+        const candidates = ['001','002','003'];
+        talks = candidates.map(id=>({id:id,title:'Talk '+id,date:'',page_count:1})).filter(t=>{ try{ return fetch('./'+t.id+'.pdf',{method:'HEAD'}).then(r=>r.ok); }catch(e){return false}});
       }
 
-      function openViewer(id, meta){
-        const viewer = document.getElementById('presentation-viewer');
-        const slide = document.getElementById('presentation-slide');
-        let page = 1;
-        const pageCount = (meta && meta.page_count) ? meta.page_count : 1;
-        function update(){ showSlide(id, page); }
-        update();
+      // If talks is an object map, ensure it's an array
+      if(!Array.isArray(talks)) talks = [];
+
+      talks.forEach(meta => {
+        const id = meta.id;
+        const article = document.createElement('article');
+        article.className = 'post talk-card';
+        article.dataset.talkId = id;
+
+        const header = document.createElement('header');
+        header.className = 'talk-card-header';
+
+        const left = document.createElement('div');
+        const time = document.createElement('time');
+        time.className = 'post-meta';
+        time.dateTime = meta.date || '';
+        time.textContent = meta.date ? fmtDate(meta.date) : '';
+        const h2 = document.createElement('h2');
+        h2.textContent = meta.title || ('Talk ' + id);
+        left.appendChild(time);
+        left.appendChild(h2);
+
+        const nav = document.createElement('nav');
+        nav.className = 'talk-actions';
+        nav.setAttribute('aria-label', (meta.title || ('Talk '+id)) + ' actions');
+
+        const aOpen = document.createElement('a');
+        aOpen.href = './' + id + '.pdf';
+        aOpen.target = '_blank';
+        aOpen.rel = 'noopener';
+        aOpen.setAttribute('aria-label','Open PDF');
+        aOpen.title = 'Open PDF';
+        aOpen.innerHTML = '<i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i>';
+
+        const aDl = document.createElement('a');
+        aDl.href = './' + id + '.pdf';
+        aDl.download = '';
+        aDl.setAttribute('aria-label','Download PDF');
+        aDl.title = 'Download PDF';
+        aDl.innerHTML = '<i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'presentation-button';
+        btn.setAttribute('aria-label','Fullscreen presentation');
+        btn.title = 'Fullscreen presentation';
+        btn.dataset.talkId = id;
+        btn.dataset.pageCount = meta.page_count || 1;
+        btn.innerHTML = '<i class="fa-solid fa-expand" aria-hidden="true"></i>';
+
+        nav.appendChild(aOpen);
+        nav.appendChild(aDl);
+        nav.appendChild(btn);
+
+        header.appendChild(left);
+        header.appendChild(nav);
+
+        const img = document.createElement('img');
+        img.className = 'talk-preview-image';
+        img.src = './' + id + '-page-1.webp';
+        img.alt = (meta.title || ('Talk ' + id)) + ' first page preview';
+        img.loading = 'lazy';
+
+        article.appendChild(header);
+        article.appendChild(img);
+        postsContainer.appendChild(article);
+      });
+
+      // fullscreen viewer logic
+      const viewer = document.getElementById('presentation-viewer');
+      const slide = document.getElementById('presentation-slide');
+      let active = { id: null, page: 1, pageCount: 1 };
+
+      function showSlide(id,page){ slide.src = `./${id}-page-${page}.webp`; slide.alt = `${id} — slide ${page}`; }
+
+      function openViewer(id,pageCount){
+        active.id = id; active.page = 1; active.pageCount = pageCount || 1;
+        showSlide(active.id, active.page);
         viewer.classList.add('active');
         viewer.removeAttribute('aria-hidden');
-
-        // try to request fullscreen on the viewer
         const req = viewer.requestFullscreen || viewer.webkitRequestFullscreen || viewer.msRequestFullscreen;
-        if(req){ req.call(viewer).catch(function(){ /* ignore */ }); }
-
-        function onKey(e){
-          if(e.key === 'ArrowRight' || e.key === ' '){
-            e.preventDefault();
-            if(page < pageCount){ page++; update(); }
-          } else if(e.key === 'ArrowLeft'){
-            e.preventDefault();
-            if(page > 1){ page--; update(); }
-          } else if(e.key === 'Escape'){
-            e.preventDefault();
-            if(document.fullscreenElement) document.exitFullscreen();
-            hideViewer();
-          }
-        }
-
-        function onFsChange(){
-          if(!document.fullscreenElement){ hideViewer(); }
-        }
-
-        function hideViewer(){
-          viewer.classList.remove('active');
-          viewer.setAttribute('aria-hidden','true');
-          slide.src = '';
-          document.removeEventListener('keydown', onKey);
-          document.removeEventListener('fullscreenchange', onFsChange);
-        }
-
+        if(req) req.call(viewer).catch(()=>{});
         document.addEventListener('keydown', onKey);
         document.addEventListener('fullscreenchange', onFsChange);
-
-        // close on click when not fullscreen
-        viewer.onclick = function(e){ if(!document.fullscreenElement){ hideViewer(); } };
       }
 
-      document.querySelectorAll('.presentation-button').forEach(function(btn){
-        btn.addEventListener('click', async function(e){
-          e.preventDefault();
-          const id = btn.dataset.talkId;
-          const meta = await fetchMeta(id);
-          openViewer(id, meta);
-        });
+      function hideViewer(){
+        viewer.classList.remove('active');
+        viewer.setAttribute('aria-hidden','true');
+        slide.src = '';
+        document.removeEventListener('keydown', onKey);
+        document.removeEventListener('fullscreenchange', onFsChange);
+        active.id = null;
+      }
+
+      function onKey(e){
+        if(!active.id) return;
+        if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); if(active.page < active.pageCount){ active.page++; showSlide(active.id, active.page); } }
+        else if(e.key === 'ArrowLeft'){ e.preventDefault(); if(active.page > 1){ active.page--; showSlide(active.id, active.page); } }
+        else if(e.key === 'Escape'){ if(document.fullscreenElement) document.exitFullscreen(); hideViewer(); }
+      }
+
+      function onFsChange(){ if(!document.fullscreenElement){ hideViewer(); } }
+
+      document.querySelectorAll('.presentation-button').forEach(btn => {
+        btn.addEventListener('click', e => { e.preventDefault(); const id = btn.dataset.talkId; const pc = parseInt(btn.dataset.pageCount||'1',10); openViewer(id,pc); });
       });
+
+      viewer.onclick = function(){ if(!document.fullscreenElement) hideViewer(); };
 
     })();
   </script>

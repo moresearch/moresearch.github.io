@@ -3,160 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <title>Talks Index</title>
-  <!-- Favicon and manifest -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon/favicon-48x48.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <link rel="shortcut icon" href="/favicon/favicon.ico">
-  <meta name="msapplication-TileColor" content="#000000">
-  <meta name="msapplication-TileImage" content="/favicon/mstile-150x150.png">
-  <meta name="theme-color" content="#000000">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <title>Talks — Hackspree</title>
+  <link rel="icon" href="/favicon/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root {
-      --syntax-bg: #000000;
-      --syntax-normal: #bcbcbc;
-      --syntax-keyword: #eeeeee;
-      --syntax-constant: #d0d0d0;
-      --syntax-string: #8a8a8a;
-      --syntax-comment: #585858;
-      --syntax-number: #d0d0d0;
-      --syntax-error-bg: #870000;
+    :root{--sidebar:220px;--gap:40px;--bg:#000}
+    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:'IBM Plex Mono',monospace}
+    .talk-shell{min-height:100dvh;width:min(1440px,100%);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:var(--gap);padding:32px 24px;box-sizing:border-box;align-items:center}
+
+    /* Reuse exact homepage logo CSS (do not restyle the .logo element) */
+    .logo-link{display:flex;align-items:center;justify-content:center}
+    .logo{display:block;width:auto;height:auto;max-width:156vh;max-height:117%;transform:rotate(-90deg) scale(1.15);transform-origin:center center}
+
+    /* Right: preview and actions (minimal) */
+    .talk-preview{position:relative;min-width:0;display:grid;align-items:center;justify-items:center}
+    .talk-actions{position:absolute;top:12px;right:12px;display:inline-flex;gap:10px;z-index:2}
+    .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(255,255,255,0.18);color:#fff;text-decoration:none;background:rgba(0,0,0,0.5)}
+    .icon-btn i{font-size:16px}
+
+    .preview-link{display:block;width:100%;min-width:0}
+    .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#111;border:1px solid rgba(255,255,255,0.16)}
+
+    @media (max-width:900px){
+      .logo{transform:none;max-width:252px;max-height:206px}
+      .talk-shell{grid-template-columns:1fr;padding:20px;gap:20px}
+      .talk-actions{position:static;justify-self:end}
+      .preview-image{max-height:none}
     }
-    html, body {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-      min-width: 100% !important;
-      min-height: 100% !important;
-      background: #000 !important;
-      color: #fff !important;
-    }
-    * { box-sizing: border-box; }
-    body {
-      position: relative;
-      overflow-x: hidden;
-      font-family: "Orbitron", Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; height: auto; }
-    code, pre {
-      font-family: "Sudo Var", monospace;
-      font-variant-ligatures: none;
-    }
-    .bg {
-      position: fixed; inset: 0; background: #000; z-index: 0;
-    }
-    .wrap {
-      position: relative; z-index: 1; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 32px; box-sizing: border-box;
-    }
-    .layout {
-      width: min(1440px, 100%);
-      display: grid;
-      grid-template-columns: 360px minmax(0, 1fr);
-      gap: 40px;
-      align-items: start;
-    }
-    .logo-side {
-      display: flex; align-items: center; justify-content: center;
-      overflow: visible; padding: 16px 8px 16px 16px; box-sizing: border-box;
-      position: sticky; top: 50vh; transform: translateY(-50%); align-self: start;
-    }
-    .logo-rail {
-      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    .logo-link {
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo {
-      display: block; width: auto; height: auto; max-width: 156vh; max-height: 117%;
-      transform: rotate(-90deg) scale(1.15); transform-origin: center center;
-    }
-    .content-side {
-      display: flex; align-items: flex-start; justify-content: flex-start;
-      padding: 48px 48px 48px 8px; box-sizing: border-box; min-width: 0;
-      width: 100%;
-    }
-    .content {
-      width: 100%; max-width: 640px; margin: 0;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    h1 {
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 1.1em;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 18px;
-      margin-top: 0;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      max-width: 420px;
-    }
-    li {
-      margin: 1.2em 0;
-      border-bottom: 1px solid #181818;
-      padding-bottom: 0.8em;
-    }
-    a {
-      color: #ff9800;
-      text-decoration: none;
-      font-size: 0.95em;
-      font-family: 'IBM Plex Mono', monospace;
-      transition: color 0.2s;
-    }
-    a:hover {
-      color: #fff;
-    }
-    @media (max-width: 900px) {
-      .wrap { padding: 24px; }
-      .layout { grid-template-columns: 1fr; width: 100%; gap: 24px; }
-      .logo-side, .content-side { width: 100%; min-width: 0; justify-content: center; position: static; transform: none; }
-      .logo-side { min-height: 28vh; padding: 24px 16px 8px; }
-      .logo { transform: none; max-width: 252px; max-height: 206px; }
-      .content-side { padding: 24px 28px 32px; }
-      .content { max-width: 100%; margin-left: auto; margin-right: auto; }
-    }
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
   </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <main class="wrap">
-    <div class="layout">
-      <aside class="logo-side">
-        <div class="logo-rail">
-          <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-            <img src="https://hackspree.com/logo.png" alt="Hackspree" class="logo">
-          </a>
-        </div>
-      </aside>
-      <section class="content-side">
-        <div class="content">
-          <h1>Talks</h1>
-<div style="display:flex;justify-content:center;margin-bottom:32px;">
+  <main class="talk-shell">
+    <aside class="talk-rail" aria-label="Hackspree logo rail">
+      <div class="homepage-logo-slot">
+        <!-- exact homepage logo block (anchor + img). src uses absolute root path so it resolves from /talks/ -->
+        <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home" title="Hackspree">
+          <img src="/logo.png" alt="Hackspree logo" class="logo">
+        </a>
+      </div>
+    </aside>
 
-</div>
-<!-- Talks index uses correct color and font for links -->
-          <ul>
-            <li><a href="/talks/001/" style="font-family: 'Orbitron', Arial, sans-serif; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Talk 001</a></li>
-          </ul>
-        </div>
-      </section>
-      <nav class="nav-side"></nav>
-    </div>
+    <section class="talk-preview" aria-label="Talk preview">
+      <nav class="talk-actions" aria-label="Talk actions">
+        <a class="icon-btn" href="./001.pdf" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="icon-btn" href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
+      </nav>
+
+      <a class="preview-link" href="./001.pdf" aria-label="Open PDF">
+        <img class="preview-image" src="./001-page-1.webp" alt="First page preview of the talk">
+      </a>
+    </section>
   </main>
 </body>
 </html>

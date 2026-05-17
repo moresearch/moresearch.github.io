@@ -96,9 +96,31 @@
                 </nav>
               </header>
 
-              <figure class="talk-preview-frame" id="talk-preview-frame">
+              <figure class="talk-preview-frame">
                 <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF">
                   <img class="talk-preview-image" src="./001-page-1.webp" alt="First page preview of Talk 001" loading="eager">
+                </a>
+              </figure>
+            </article>
+
+            <article class="post talk-card" id="talk-002">
+              <header class="talk-card-header">
+                <div>
+                  <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC">1779000000</time></p>
+                  <h1>Talk 002 — Presentation title</h1>
+                  <p class="summary">Second presentation. Open, download, or view the first page fullscreen.</p>
+                </div>
+
+                <nav class="talk-actions" aria-label="Talk actions">
+                  <a href="./002.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+                  <a href="./002.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
+                  <button type="button" class="fullscreen-button" aria-label="Fullscreen preview" title="Fullscreen preview"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
+                </nav>
+              </header>
+
+              <figure class="talk-preview-frame">
+                <a href="./002.pdf" target="_blank" rel="noopener" aria-label="Open PDF">
+                  <img class="talk-preview-image" src="./002-page-1.webp" alt="First page preview of Talk 002" loading="eager">
                 </a>
               </figure>
             </article>
@@ -114,18 +136,38 @@
 
   <script>
     (function(){
-      var btn = document.querySelector('.fullscreen-button');
-      async function toggleFullscreen(){
-        var frame = document.getElementById('talk-preview-frame');
-        if(!frame) return;
-        try{
-          if(document.fullscreenElement) await document.exitFullscreen();
-          else await frame.requestFullscreen();
-        }catch(e){ console.warn('fullscreen error', e); }
+      function enterFullscreen(target, fallbackUrl){
+        if(!target){ if(fallbackUrl) window.open(fallbackUrl, '_blank'); return; }
+        var req = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
+        if(req){
+          try { req.call(target); }
+          catch(err){ console.warn('fullscreen failed', err); if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
+        } else { if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
       }
-      if(btn) btn.addEventListener('click', function(e){ e.preventDefault(); toggleFullscreen(); });
-      var preview = document.getElementById('talk-preview-frame');
-      if(preview) preview.addEventListener('dblclick', function(){ toggleFullscreen(); });
+
+      document.querySelectorAll('.post.talk-card').forEach(function(card){
+        var btn = card.querySelector('.fullscreen-button');
+        var frame = card.querySelector('.talk-preview-frame');
+        var linkEl = card.querySelector('.talk-preview-frame a');
+        var linkHref = linkEl ? linkEl.href : null;
+        if(btn && frame){
+          btn.addEventListener('click', function(e){
+            e.preventDefault();
+            enterFullscreen(frame, linkHref);
+          });
+        }
+        if(frame){
+          frame.addEventListener('dblclick', function(){ enterFullscreen(frame, linkHref); });
+        }
+      });
+
+      function onFsChange(){
+        var el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        document.body.classList.toggle('is-presenting', !!el);
+      }
+      document.addEventListener('fullscreenchange', onFsChange);
+      document.addEventListener('webkitfullscreenchange', onFsChange);
+      document.addEventListener('msfullscreenchange', onFsChange);
     })();
   </script>
 </body>

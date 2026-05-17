@@ -35,3 +35,24 @@ talks: slides
 		sed 's/{{ID}}/'"$$id"'/g' talks/template.html > $$dir/index.html; \
 		cp -f $$f $$dir/$$id.pdf; \
 	done
+
+# generate first-page previews for talks/*.pdf (webp)
+previews:
+	@echo "Generating talk preview images"
+	@for f in talks/*.pdf; do \
+		p=$$(basename $$f .pdf); \
+		if command -v pdftoppm >/dev/null 2>&1; then \
+			pdftoppm -f 1 -l 1 -singlefile -png "$$f" "talks/$$p-page-1"; \
+			if command -v cwebp >/dev/null 2>&1; then \
+				cwebp -q 80 "talks/$$p-page-1.png" -o "talks/$$p-page-1.webp" >/dev/null 2>&1 || true; \
+				rm -f "talks/$$p-page-1.png"; \
+			else \
+				if command -v convert >/dev/null 2>&1; then \
+					convert "talks/$$p-page-1.png" "talks/$$p-page-1.webp" >/dev/null 2>&1 || true; \
+					rm -f "talks/$$p-page-1.png"; \
+				fi; \
+			fi; \
+		else \
+			echo "pdftoppm not found; skipping $$f"; \
+		fi; \
+	done

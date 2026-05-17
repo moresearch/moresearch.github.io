@@ -23,3 +23,15 @@ clean:
 	rm -rf $(GOCACHE)
 
 rebuild: clean build
+
+# generate talks pages from template
+talks: slides
+	@echo "Generating talks pages from template"
+	@mkdir -p talks
+	@for f in public/slides/*.pdf; do \
+		id=$$(basename $$f .pdf); \
+		dir=talks/$$id; \
+		mkdir -p $$dir; \
+		sed 's/{{ID}}/'"$$id"'/g' talks/template.html > $$dir/index.html; \
+		cp -f $$f $$dir/$$id.pdf; \
+	done

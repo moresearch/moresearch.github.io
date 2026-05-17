@@ -110,4 +110,393 @@ A short example of using harnesses to rollout a config change across services wi
 Harness engineering reduces blast radius and increases deploy confidence.
 \end{frame}
 
+% --- Appendix: full blog posts embedded for archival/reference ---
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Harness Engineering Best Practices}
+\begin{verbatim}
+---
+title: Harness Engineering Best Practices
+date: 2026-04-02
+slug: harness-engineering-best-practices-for-ai-agents
+summary: Strong agent systems depend on strong harnesses: repeatable tasks, realistic tool simulations, and clear pass-fail signals that expose bad behavior early.
+tags: ai-agents, evaluation, harness
+---
+
+Agent quality is rarely limited by model intelligence alone. Most failures show up in the harness around the model: weak fixtures, vague success criteria, missing tool mocks, and no clean way to replay a bad run.
+
+If the harness is sloppy, the team ends up debating anecdotes instead of improving behavior.
+
+## Treat the harness as product infrastructure
+
+A good agent harness is not a throwaway script. It is the system that tells you whether the agent is getting better or just getting luckier.
+
+That means the harness should:
+
+- capture full inputs, tool calls, and outputs,
+- replay tasks deterministically where possible,
+- isolate external dependencies behind controllable fakes or fixtures,
+- score outcomes with explicit checks instead of vibes.
+
+Once the harness is trustworthy, iteration gets much faster because regressions stop hiding inside impressive demos.
+
+## Build cases from real failures
+
+The highest-value harness cases usually come from production misses:
+
+1. a tool call that should have been blocked,
+2. a loop that should have terminated earlier,
+3. a formatting step that silently broke downstream parsing,
+4. an agent that took a plausible-but-wrong shortcut.
+
+Every one of those should become a permanent evaluation case.
+
+> The best harnesses turn yesterday's incident into tomorrow's baseline.
+
+## Prefer observable steps over giant end-to-end guesses
+
+End-to-end tests matter, but they are not enough on their own. Agent systems benefit from layered checks:
+
+- prompt-level cases,
+- tool-selection cases,
+- state-transition cases,
+- final outcome cases.
+
+That layering makes failures legible. Instead of “the agent failed,” you get “the planner chose the wrong tool” or “the verifier accepted malformed output.”
+
+## Keep the pass-fail contract concrete
+
+For each harness case, define:
+
+- what the agent is allowed to do,
+- what it must never do,
+- what exact evidence counts as success,
+- what artifacts should be stored for debugging.
+
+That discipline matters more as agents gain more tools and more autonomy. The wider the action space, the more valuable a narrow, repeatable harness becomes.
+
+## The goal is faster learning, not more ceremony
+
+A strong harness is not valuable because it looks rigorous on a slide. It is valuable because it shortens the distance between failure and understanding. When an agent regresses, the team should be able to see what changed, replay it, and decide what to fix without heroic investigation.
+
+Harness engineering is not glamorous work, but it is one of the highest-leverage disciplines in applied AI. It is how teams turn agent behavior from a demo into a system they can trust.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Coding Harnesses Need Real Repos}
+\begin{verbatim}
+---
+title: Coding Harnesses Need Real Repos
+date: 2026-04-11
+slug: coding-agent-harnesses-need-real-repositories
+summary: Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.
+tags: harness, coding-agents, swe-bench
+---
+
+[SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) changed the conversation because it moved coding evaluation closer to the work people actually do: read a real issue, edit a real repo, and satisfy a real test suite.
+
+That is also the right pattern for harness design inside product teams.
+
+A credible coding harness should prefer:
+
+- messy repositories over perfect examples,
+- failing tests over vague grading,
+- issue-driven tasks over isolated snippets.
+
+If the agent only looks good in a clean-room benchmark, the harness is flattering the system instead of measuring it.
+
+## Real repositories force real tradeoffs
+
+Toy prompts are attractive because they are easy to score and easy to explain. They are also easy to overfit. A coding agent can look competent when the entire task fits neatly inside a paragraph and a single file.
+
+Real repositories are different. They introduce layout confusion, hidden assumptions, partial context, and tests that fail for reasons the agent has to discover. That is much closer to the work engineers actually delegate.
+
+## Why issue-driven evaluation matters
+
+The issue format is valuable because it mirrors a normal entry point for engineering work. A task begins with an imperfect description, not with a fully specified solution path. The agent has to read, inspect, and decide what matters.
+
+That is the sort of friction a harness should preserve. It reveals whether the system can navigate ambiguity without immediately collapsing into guesswork.
+
+## Tests are better than vibes
+
+A strong coding harness needs explicit outcomes, and failing tests are one of the cleanest ways to get them. They are not perfect, but they are far better than a human observer deciding whether an output felt plausible.
+
+The broader lesson from SWE-bench is not only about benchmarking. It is about honesty. If you want to know whether a coding agent can help on real work, give it real repositories and real consequences. Everything else is too easy to stage-manage.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Harnesses Need Real Browsers}
+\begin{verbatim}
+---
+title: Harnesses Need Real Browsers
+date: 2026-04-19
+slug: harnesses-need-real-browsers-not-polite-demos
+summary: Web agent evaluation gets more useful when the harness runs against real pages, real interaction flows, and explicit pass-fail criteria.
+tags: harness, agents, browser
+---
+
+If an agent claims it can use the web, the harness should make it prove it on the web.
+
+That is why [WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models](https://arxiv.org/abs/2401.13919) matters. The paper pushes evaluation into realistic browser tasks instead of stopping at tidy prompt-response examples.
+
+The harness lesson is straightforward:
+
+- use real interfaces,
+- preserve the messy interaction sequence,
+- score outcomes with concrete checks.
+
+A fake DOM or hand-picked screenshot can still be useful for unit tests, but it should not be the final word on whether a browser agent actually works.
+
+## Browser work is interaction work
+
+Web tasks are not only about extracting the right answer from a page. They involve navigation, state, timing, and the strange little contingencies that happen when an interface is built for humans rather than benchmarks.
+
+That is why polite demos can be misleading. A perfectly staged page or a frozen snapshot removes most of the difficulty that makes browser use interesting in the first place.
+
+## Real pages expose real weaknesses
+
+Once the harness runs against real interfaces, all the inconvenient details return:
+
+- buttons move,
+- forms span multiple steps,
+- state has to persist across actions,
+- success depends on the whole sequence, not one isolated click.
+
+Those details are not noise. They are the task.
+
+## Keep simpler fixtures, but do not stop there
+
+There is still room for lightweight browser fixtures. They help with unit tests and targeted debugging. But a serious claim about browser competence should survive a more honest environment.
+
+That is why work like WebVoyager is useful. It reminds teams that if a product pitch includes autonomous web interaction, the evaluation should include actual web interaction. Otherwise the harness is grading presentation quality, not browser ability.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Harnesses Need Tasks That Fight Back}
+\begin{verbatim}
+---
+title: Harnesses Need Tasks That Fight Back
+date: 2026-04-27
+slug: agent-harnesses-need-tasks-that-fight-back
+summary: Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.
+tags: harness, gaia, evaluation
+---
+
+[GAIA: a benchmark for General AI Assistants](https://arxiv.org/abs/2311.12983) is useful because it resists the temptation to make evaluation too neat. It mixes reasoning, tool use, information gathering, and multimodal work in a way that feels closer to assistant reality.
+
+That is a good model for internal harnesses too.
+
+The harness should ask the system to do tasks that are:
+
+- small enough to score,
+- rich enough to require multiple steps,
+- messy enough that shortcuts stop working.
+
+If every test can be passed by pattern-matching the prompt, you are not measuring an assistant. You are measuring prompt luck.
+
+## Good tasks create resistance
+
+A useful harness case should push back a little. It should require the system to gather information, make a choice, and survive the possibility that the first path is wrong. Without that resistance, it becomes too easy for a model to look capable by sounding capable.
+
+This is what I like about GAIA as a reference point. It treats assistant work as something broader than isolated reasoning. The assistant has to operate, not just answer.
+
+## Multi-step work is the real surface area
+
+Most assistants become interesting only when they need to combine several behaviors:
+
+- retrieve something,
+- use a tool,
+- inspect intermediate state,
+- finish with a verifiable answer.
+
+A harness that removes those transitions removes a big portion of the actual risk. Many failures live in the handoffs between steps, not in any single step on its own.
+
+## Score what matters
+
+The trick is to keep tasks hard enough to be honest without making them impossible to grade. That usually means designing cases with clear evidence of success while preserving enough messiness that shortcuts stop working.
+
+That balance is worth the effort. If the tasks fight back a little, the results are much more believable. And believable results are what let teams trust an assistant enough to give it more room to work.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Harnesses Should Observe the OS}
+\begin{verbatim}
+---
+title: Harnesses Should Observe the OS
+date: 2026-05-03
+slug: good-harnesses-watch-the-whole-operating-system
+summary: Desktop and multimodal agents need execution harnesses that see the same operating system complexity the user sees.
+tags: harness, osworld, multimodal
+---
+
+The right environment can make an average agent look impressive or make a strong agent fail honestly.
+
+[OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments](https://arxiv.org/abs/2404.07972) is valuable because it evaluates agents in real desktop settings rather than collapsing everything into a synthetic task wrapper.
+
+That is the bar harness engineers should aim for. If your agent acts inside an operating system, your evaluation should capture:
+
+- window state,
+- clipboard and file effects,
+- long action sequences,
+- recovery after mistakes.
+
+The more your harness reflects the real environment, the less likely you are to ship a demo that falls apart the moment a user clicks somewhere unexpected.
+
+## The operating system is part of the task
+
+Desktop and multimodal agents do not act in a vacuum. They act in an environment with windows, focus changes, files, delays, and all the messy state that ordinary users barely notice until something goes wrong.
+
+A harness that trims that away may be easier to manage, but it also stops measuring the thing the user will actually experience.
+
+## State is where many failures hide
+
+Operating system tasks are difficult partly because the agent has to maintain awareness across a longer chain of effects. A single wrong click can change focus. A clipboard action can overwrite an assumption. A file operation can succeed but still leave the system in the wrong place for the next step.
+
+That is why it helps to capture the broader environment, not just the final answer.
+
+## Honest environments create honest confidence
+
+OSWorld is useful because it pushes evaluation toward the real surface area of desktop interaction. The lesson is not that every harness must copy the benchmark exactly. The lesson is that environment fidelity matters.
+
+If the product is supposed to work across the operating system, the harness should watch the operating system too. Otherwise the team risks learning the wrong lesson from a passing score.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Harness Engineering: Go for Reliable Pipelines}
+\begin{verbatim}
+---
+title: Harness Engineering: Go for Reliable Pipelines
+date: 2026-03-24
+slug: go-is-good-for-harness-pipelines
+summary: Harness engineering is fundamentally about building repeatable, trustworthy evaluation pipelines that can scale with complexity. This post explores why Go is a practical choice for these systems, focusing on its strengths in concurrency, static binaries, and predictable tooling. We discuss common failure modes in harnesses, the operational requirements for robust evaluation, and how Go’s simplicity helps teams avoid clever but fragile solutions. Readers will gain a clear understanding of how language and tooling choices impact the reliability and maintainability of evaluation infrastructure, with actionable insights for designing harnesses that scale.
+tags: golang, harness, evaluation
+---
+
+Harness engineering is often less about model math and more about repeatable pipelines.
+
+[SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) and [GAIA: a benchmark for General AI Assistants](https://arxiv.org/abs/2311.12983) both reinforce the same operational point: serious evaluation requires a lot of plumbing around the model.
+
+That plumbing usually includes:
+
+- work queues,
+- sandbox orchestration,
+- artifact capture,
+- metric aggregation,
+- reproducible CLI entrypoints.
+
+Go is not the only way to build those pieces, but it is a very good way to keep them understandable. For harness code, that matters more than cleverness.
+
+## Harnesses fail in ordinary ways
+
+People sometimes talk about evaluation as if the hard part is inventing the benchmark. In practice, a lot of pain comes from less glamorous problems: task runners that wedge, artifact paths that drift, workers that become hard to reason about, and support scripts that only one engineer wants to touch.
+
+That is why the language and tooling choice for the harness actually matters. The harness is the thing telling you whether the model improved. It should not be the least trustworthy part of the stack.
+
+## Why Go works well here
+
+Go tends to be a good fit for harness pipelines because it handles routine infrastructure cleanly:
+
+- concurrent workers without a lot of ceremony,
+- static binaries that are easy to ship into controlled environments,
+- predictable CLIs for repeatable runs,
+- code that stays readable when the pipeline grows new branches.
+
+That does not make Go magical. It just makes it a practical tool for a class of problems where operational clarity pays off.
+
+Papers like SWE-bench and GAIA make the case that evaluation should get closer to real tasks. Once you accept that, you also accept more harness complexity. My bias is to meet that complexity with boring tools and explicit pipelines, not with a pile of clever glue code that becomes its own benchmark failure.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Appendix: Full post — Task Harness Engineering}
+\begin{verbatim}
+---
+title: "Task Harness Engineering: how it compares to Eval and Agent Harnesses"
+date: 2026-05-17
+slug: task-harness-engineering
+summary: "A practical guide to building task harnesses and how they differ from evaluation and agent harnesses (informed by the referenced talk)."
+tags: [harness, evaluation, agents]
+---
+
+Task harnesses are the scaffolding that turn a high-level engineering question—"Can this system finish a real task?"—into reproducible, debuggable experiments. This post explains what "Task Harness Engineering" means, how it differs from Eval harnesses (benchmarks) and Agent harnesses (integration + environment tests), and practical recommendations for building one.
+
+[![Harness Engineering talk (YouTube)](https://img.youtube.com/vi/C_GG5g38vLU/hqdefault.jpg)](https://www.youtube.com/watch?v=C_GG5g38vLU)
+
+Source: Harness Engineering (YouTube), referenced for conceptual framing and examples (video id: C_GG5g38vLU).
+
+What is a harness?
+
+- A harness is code and infra that runs a task, measures outcomes, and records what happened. Harnesses range from small unit-test-like runners to complex environment orchestrators that start services, browsers, or VM sandboxes.
+
+Task Harness Engineering
+
+- Goal: exercise an agent or system with realistic tasks that capture the operational surface area you care about.
+- Characteristics: stateful, often non-deterministic, reliant on external systems or realistic mocks, and focused on end-to-end success rather than a single scalar metric.
+- Example tasks: finish a multi-step research workflow, triage a bug in a real repo, navigate a web app and complete a purchase flow, or orchestrate tools to solve a programming prompt with tests.
+- Measurements: success/failure, retries, time-to-completion, observability traces, logs, and qualitative artifacts (replays/screenshots).
+
+Eval Harness (what it is and how it’s different)
+
+- Eval harnesses run static, dataset-driven evaluations (datasets, metrics, automated scorers).
+- Characteristics: deterministic or quasi-deterministic, high throughput, designed to compute reproducible aggregates (accuracy, F1, BLEU, etc.).
+- Strengths: clear comparisons, statistical rigor, fast iteration.
+- Weaknesses vs Task Harness: lower realism (benchmarks are proxies), brittle to specification differences, and limited visibility into long-horizon or environment-level failures.
+
+Agent Harness (what it is and how it’s different)
+
+- Agent harnesses focus on agents interacting with environments (simulated worlds, browsers, shells, APIs) and on integration points: tool calls, state persistence, safety checks.
+- Characteristics: emphasizes sandboxing, step-level instrumentation, and emergent behaviors across many steps.
+- Overlap with Task Harness: agent harnesses are often the runtime that executes task harnesses when the subject is an agent; agent harnesses add concerns like action validation, safety guards, and tool interfaces.
+
+Key axes of difference
+
+- Realism: Task >> Eval. Agent harness sits between and often provides the runtime for tasks that exercise agents.
+- Determinism: Eval (high) > Agent (medium) > Task (low).
+- Metrics: Eval focuses on aggregated scalars; Task harnesses capture a richer set (end-to-end success, observability, human judgments). Agent harnesses must capture both step-level and end-to-end signals.
+- Infrastructure: Task harnesses require orchestration of real or high-fidelity mocks (browsers, CLIs, repos). Eval harnesses only need fast scoring pipelines. Agent harnesses require safe sandboxes and tool shims.
+
+Practical engineering patterns
+
+- Instrumentation-first: log inputs, decisions, tool calls, and environment responses. Design for replay.
+- Replayability: capture transcripts and environment snapshots so failed runs can be replayed deterministically when possible.
+- Tasks that "fight back": design tasks that surface edge cases, race conditions, and adversarial inputs instead of only happy paths.
+- Hybrid approach: use eval harnesses for fast filtering, then escalate promising models to task harnesses for realism tests, and run agent harnesses in parallel to validate tool integrations.
+- Isolation and safety: run untrusted code in sandboxes; for web/OS interaction prefer ephemeral VMs/containers and recorded interactions.
+- Observability and triage: attach lightweight traces (request ids, timestamps) to link model internals to external failures.
+
+When to use each harness
+
+- Use Eval harness when you need fast, repeatable comparisons during model iteration.
+- Use Task harness when your priority is real-world behavior, end-to-end failure modes, or human-facing UX outcomes.
+- Use Agent harness when validating tool use, stateful interactions, or safety boundaries across many steps.
+
+Conclusion and recommendations
+
+Task Harness Engineering complements, not replaces, eval and agent harnesses. The right pipeline uses them together: evaluate cheaply, validate realistically, and instrument deeply. Start with a minimal task harness for the most critical user journeys, make reproducible recordings, and iterate: increase realism until the harness meaningfully predicts production failure modes.
+
+Notes and references
+
+- Video source (conceptual reference): https://www.youtube.com/watch?v=C_GG5g38vLU (video id: C_GG5g38vLU)
+- Encourage readers to run the referenced talk for additional context and examples.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
+\begin{itemize}
+  \item \href{https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents}{Harness Engineering Best Practices}
+  \item \href{https://blog.hackspree.com/#coding-agent-harnesses-need-real-repositories}{Coding Harnesses Need Real Repos}
+  \item \href{https://blog.hackspree.com/#harnesses-need-real-browsers-not-polite-demos}{Harnesses Need Real Browsers}
+  \item \href{https://blog.hackspree.com/#agent-harnesses-need-tasks-that-fight-back}{Harnesses Need Tasks That Fight Back}
+  \item \href{https://blog.hackspree.com/#good-harnesses-watch-the-whole-operating-system}{Harnesses Should Observe the OS}
+  \item \href{https://blog.hackspree.com/#go-is-good-for-harness-pipelines}{Harness Engineering: Go for Reliable Pipelines}
+  \item \href{https://blog.hackspree.com/#task-harness-engineering}{Task Harness Engineering}
+\end{itemize}
+\end{frame}
+
 \end{document}

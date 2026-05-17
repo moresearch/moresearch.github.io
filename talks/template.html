@@ -11,7 +11,7 @@
     :root { color-scheme: dark; }
     html,body{height:100%;margin:0;background:#000;color:#fff;font-family: 'IBM Plex Mono', monospace;}
     .wrap{min-height:100vh;display:flex;align-items:start;justify-content:center;padding:32px;box-sizing:border-box}
-    .layout{width:min(1200px,100%);display:grid;grid-template-columns:minmax(200px,220px) 1fr;gap:36px;align-items:start}
+    .layout{width:min(1200px,100%);display:grid;grid-template-columns:minmax(200px,220px) minmax(0,220px) 1fr;gap:36px;align-items:start}
     @media (max-width:900px){.layout{grid-template-columns:1fr;padding:16px;gap:20px}}
 
     /* Left logo rail */
@@ -79,10 +79,13 @@
               <img src="/logo.png" alt="Hackspree logo" class="logo" />
             </a>
           </div>
-          <!-- left rail only shows the logo; action icons moved to the right column bottom -->
+          <!-- left rail only shows the logo; reserved space -->
           <div style="height:36px"></div>
         </div>
       </aside>
+
+      <!-- middle empty column -->
+      <div aria-hidden="true"></div>
 
       <section class="content-side">
         <div class="content">

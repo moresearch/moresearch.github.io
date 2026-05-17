@@ -13,6 +13,7 @@ Implementation
 - Accessibility: presentation entries must include accessible anchors and `time` elements with `datetime` and `data-utc` attributes.
 
 Validation
-- `/talks/001.pdf` and `/talks/002.pdf` must return 200 in the network tab.
-- The talks index must render two article entries at minimum (001, 002) with valid links and metadata.
+- `/talks/001.pdf` must return 200 in the network tab.
+- The talks index renders a single preview card for talk 001 with an inline PDF preview and action icons (Open, Fullscreen, Download). The post-list should include at least the article entry linking to `./001.pdf` with valid metadata.
+- The page reuses the blog homepage fonts and logo slot, includes Font Awesome for icons, and has a small fullscreen JS helper to present the preview.
 - Mobile stacks cleanly and no horizontal overflow occurs.

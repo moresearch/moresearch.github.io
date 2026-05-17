@@ -144,5 +144,5 @@
 - Talks pages now use a strict two-column layout with a left identity rail and a dominant PDF viewer. See talks/specs.md for details and validation checklist.
 
 ### Talks: index listing
-- The /talks/ page is the canonical talks index and lists presentations as posts (a `.post-list` of `<article class="post">` entries). Each entry links directly to its PDF (e.g., `./001.pdf`, `./002.pdf`) and includes metadata and a short summary. See talks/specs.md for canonical implementation details and validation.
+- The /talks/ page is the canonical talks index and lists presentations as posts (a `.post-list` of `<article class="post">` entries). The index currently renders a single preview card for talk 001 with an inline PDF preview and action icons; each entry should link directly to its PDF (e.g., `./001.pdf`) and include metadata and a short summary. See talks/specs.md for canonical implementation details and validation.
 - Fullscreen behavior: the Fullscreen control should requestFullscreen() on the talk viewer container ('.talk-preview' or '.pdf-frame'), hide action controls using :fullscreen CSS, and support double-click-to-present on the viewer.

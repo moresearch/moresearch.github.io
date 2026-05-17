@@ -48,6 +48,7 @@
     <section class="talk-preview" aria-label="Talk preview">
       <nav class="talk-actions" aria-label="Talk actions">
         <a class="icon-btn" href="./001.pdf" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="icon-btn" href="#" id="fullscreen-btn" aria-label="Fullscreen" title="Fullscreen"><i class="fa-solid fa-expand" aria-hidden="true"></i></a>
         <a class="icon-btn" href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
       </nav>
 
@@ -56,5 +57,20 @@
       </a>
     </section>
   </main>
+<script>
+  (function(){
+    var btn = document.getElementById('fullscreen-btn');
+    if(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var el = document.querySelector('.preview-link') || document.querySelector('.preview-image') || document.querySelector('.talk-preview');
+        if(!el) return;
+        if(el.requestFullscreen) el.requestFullscreen();
+        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if(el.msRequestFullscreen) el.msRequestFullscreen();
+      });
+    }
+  })();
+</script>
 </body>
 </html>

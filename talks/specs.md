@@ -1,15 +1,15 @@
-# Talks (single-preview)
+# Talks specs (generated)
 
-This page documents the current /talks/ behavior: the page reuses the blog homepage shell (fonts, logo, layout) and displays a single presentation preview card (Talk 001).
+- /talks/ is a generated index of talks produced by the Makefile from talks/*.pdf and metadata extraction.
+- For each talk PDF the following must be generated and tracked:
+  - {{id}}.pdf
+  - {{id}}-page-1.webp, {{id}}-page-2.webp, ...
+  - {{id}}.meta.json with keys: id (string), title (string), date (ISO8601 string), page_count (integer)
+- The index page lists each talk as a card with: time, title (h2), first-page preview image, and three icon-only actions (open, download, fullscreen).
+- Fullscreen viewer is an overlay that consumes keyboard events while active and uses the -page-N.webp images for navigation.
+- Font Awesome used only for icons; do not change typography or the homepage logo implementation.
 
-Requirements:
-- Reuse exact homepage logo markup and visual treatment.
-- Show only one presentation card with first-page preview image (./001-page-1.webp).
-- Icon-only controls: Open PDF (opens ./001.pdf), Download PDF (downloads ./001.pdf), Fullscreen preview (requestFullscreen on #talk-preview-frame).
-- Do not include a Back button; logo links to https://hackspree.com/.
-
-Validation:
-- /talks/ renders visually similar to / with identical logo appearance.
-- Preview image and PDF return 200.
-- Fullscreen hides controls and expands the preview.
-- Mobile stacks cleanly and no horizontal overflow.
+Validation checklist:
+- talks/*.meta.json exists and contains correct page_count
+- talks/{{id}}-page-1.webp exists and is referenced by index.html
+- Fullscreen navigation works across common browsers

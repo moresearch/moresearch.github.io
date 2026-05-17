@@ -35,26 +35,25 @@
     .logo{display:block;width:auto;height:auto;max-width:156vh;max-height:117%;transform:rotate(-90deg) scale(1.15);transform-origin:center center}
 
     .content-side{display:flex;align-items:flex-start;justify-content:flex-start;padding:48px 48px 48px 8px;min-width:0}
-    .content{width:100%;max-width:640px;margin:0}
+    .content{width:100%;max-width:840px;margin:0}
 
     /* talk-card styles (minimal) */
-    .talk-card{display:grid;gap:1.5rem;background:transparent}
+    .talk-card{display:grid;gap:1.5rem;background:transparent;border-bottom:1px solid rgba(255,255,255,0.03);padding:28px 0}
     .talk-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
     .talk-card-header > div{flex:1}
-    .talk-card .post-meta{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase;font-size:0.56rem}
-    .talk-card h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin:6px 0}
-    .talk-card .summary{color:#bcbcbc;margin:0}
+    .post-meta{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase;font-size:0.6rem}
+    .talk-card h2{font-size:clamp(1rem,1.5vw,1.25rem);margin:6px 0}
 
     .talk-actions{display:inline-flex;align-items:center;gap:0.5rem;flex:0 0 auto}
     .talk-actions a,.talk-actions button{width:2.5rem;height:2.5rem;display:inline-grid;place-items:center;border:1px solid rgba(255,255,255,0.12);background:transparent;color:inherit;text-decoration:none;cursor:pointer;border-radius:6px}
     .talk-actions i{font-size:16px}
 
-    .talk-preview-frame{margin:0;width:100%;display:grid;place-items:center}
-    .talk-preview-image{display:block;width:100%;max-width:100%;max-height:calc(100dvh - 14rem);object-fit:contain;border:1px solid rgba(255,255,255,0.12);background:#111}
+    .talk-preview-image{display:block;width:100%;max-width:100%;max-height:calc(70dvh);object-fit:contain;border:1px solid rgba(255,255,255,0.12);background:#111;margin-top:12px}
 
-    /* fullscreen tweaks */
-    .talk-preview-frame:fullscreen{background:#000;padding:2rem}
-    .talk-preview-frame:fullscreen .talk-preview-image{width:100%;height:100%;max-height:100%;object-fit:contain}
+    /* fullscreen viewer overlay */
+    #presentation-viewer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#000;z-index:9999}
+    #presentation-viewer.active{display:grid}
+    #presentation-slide{max-width:100%;max-height:100%;object-fit:contain;border:0}
 
     @media (max-width:700px){
       .talk-card-header{flex-direction:column}
@@ -62,7 +61,6 @@
       .talk-preview-image{max-height:none}
     }
 
-    /* minimal nav-side placeholder */
     .nav-side{display:flex;align-items:center;justify-content:center;padding:16px}
   </style>
 </head>
@@ -81,93 +79,129 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-            <article class="post talk-card" id="talk-001">
+
+            <article class="post talk-card" data-talk-id="001">
               <header class="talk-card-header">
                 <div>
-                  <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC">1779000000</time></p>
-                  <h1>Talk 001 — Presentation title</h1>
-                  <p class="summary">First presentation. Open, download, or view the first page fullscreen.</p>
+                  <time class="post-meta" datetime="2026-05-17">1779000000</time>
+                  <h2>Talk 001 — Presentation title</h2>
                 </div>
 
-                <nav class="talk-actions" aria-label="Talk actions">
+                <nav class="talk-actions" aria-label="Talk 001 actions">
                   <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
                   <a href="./001.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
-                  <button type="button" class="fullscreen-button" aria-label="Fullscreen preview" title="Fullscreen preview"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
+                  <button type="button" class="presentation-button" aria-label="Fullscreen presentation" title="Fullscreen presentation" data-talk-id="001"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
                 </nav>
               </header>
 
-              <figure class="talk-preview-frame">
-                <a href="./001.pdf" target="_blank" rel="noopener" aria-label="Open PDF">
-                  <img class="talk-preview-image" src="./001-page-1.webp" alt="First page preview of Talk 001" loading="eager">
-                </a>
-              </figure>
+              <img class="talk-preview-image" src="./001-page-1.webp" alt="Talk 001 first page preview" loading="lazy">
             </article>
 
-            <article class="post talk-card" id="talk-002">
+            <article class="post talk-card" data-talk-id="002">
               <header class="talk-card-header">
                 <div>
-                  <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC">1779000000</time></p>
-                  <h1>Talk 002 — Presentation title</h1>
-                  <p class="summary">Second presentation. Open, download, or view the first page fullscreen.</p>
+                  <time class="post-meta" datetime="2026-05-17">1779000000</time>
+                  <h2>Talk 002 — Presentation title</h2>
                 </div>
 
-                <nav class="talk-actions" aria-label="Talk actions">
+                <nav class="talk-actions" aria-label="Talk 002 actions">
                   <a href="./002.pdf" target="_blank" rel="noopener" aria-label="Open PDF" title="Open PDF"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i></a>
                   <a href="./002.pdf" download aria-label="Download PDF" title="Download PDF"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i></a>
-                  <button type="button" class="fullscreen-button" aria-label="Fullscreen preview" title="Fullscreen preview"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
+                  <button type="button" class="presentation-button" aria-label="Fullscreen presentation" title="Fullscreen presentation" data-talk-id="002"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
                 </nav>
               </header>
 
-              <figure class="talk-preview-frame">
-                <a href="./002.pdf" target="_blank" rel="noopener" aria-label="Open PDF">
-                  <img class="talk-preview-image" src="./002-page-1.webp" alt="First page preview of Talk 002" loading="eager">
-                </a>
-              </figure>
+              <img class="talk-preview-image" src="./002-page-1.webp" alt="Talk 002 first page preview" loading="lazy">
             </article>
+
           </div>
         </div>
       </section>
 
       <aside class="nav-side" aria-label="Site navigation">
-        <!-- left as homepage-like shell; kept minimal -->
+        <!-- kept minimal to match homepage shell -->
       </aside>
     </div>
   </main>
 
+  <div id="presentation-viewer" aria-hidden="true">
+    <img id="presentation-slide" alt="presentation slide">
+  </div>
+
   <script>
     (function(){
-      function enterFullscreen(target, fallbackUrl){
-        if(!target){ if(fallbackUrl) window.open(fallbackUrl, '_blank'); return; }
-        var req = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
-        if(req){
-          try { req.call(target); }
-          catch(err){ console.warn('fullscreen failed', err); if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
-        } else { if(fallbackUrl) window.open(fallbackUrl, '_blank'); }
+      async function fetchMeta(id){
+        try{
+          const res = await fetch(`./${id}.meta.json`);
+          if(!res.ok) throw new Error('no meta');
+          return await res.json();
+        }catch(e){
+          return { id:id, title: `Talk ${id}`, page_count: 1 };
+        }
       }
 
-      document.querySelectorAll('.post.talk-card').forEach(function(card){
-        var btn = card.querySelector('.fullscreen-button');
-        var frame = card.querySelector('.talk-preview-frame');
-        var linkEl = card.querySelector('.talk-preview-frame a');
-        var linkHref = linkEl ? linkEl.href : null;
-        if(btn && frame){
-          btn.addEventListener('click', function(e){
+      function showSlide(id, page){
+        const img = document.getElementById('presentation-slide');
+        img.src = `./${id}-page-${page}.webp`;
+        img.alt = `${id} — slide ${page}`;
+      }
+
+      function openViewer(id, meta){
+        const viewer = document.getElementById('presentation-viewer');
+        const slide = document.getElementById('presentation-slide');
+        let page = 1;
+        const pageCount = (meta && meta.page_count) ? meta.page_count : 1;
+        function update(){ showSlide(id, page); }
+        update();
+        viewer.classList.add('active');
+        viewer.removeAttribute('aria-hidden');
+
+        // try to request fullscreen on the viewer
+        const req = viewer.requestFullscreen || viewer.webkitRequestFullscreen || viewer.msRequestFullscreen;
+        if(req){ req.call(viewer).catch(function(){ /* ignore */ }); }
+
+        function onKey(e){
+          if(e.key === 'ArrowRight' || e.key === ' '){
             e.preventDefault();
-            enterFullscreen(frame, linkHref);
-          });
+            if(page < pageCount){ page++; update(); }
+          } else if(e.key === 'ArrowLeft'){
+            e.preventDefault();
+            if(page > 1){ page--; update(); }
+          } else if(e.key === 'Escape'){
+            e.preventDefault();
+            if(document.fullscreenElement) document.exitFullscreen();
+            hideViewer();
+          }
         }
-        if(frame){
-          frame.addEventListener('dblclick', function(){ enterFullscreen(frame, linkHref); });
+
+        function onFsChange(){
+          if(!document.fullscreenElement){ hideViewer(); }
         }
+
+        function hideViewer(){
+          viewer.classList.remove('active');
+          viewer.setAttribute('aria-hidden','true');
+          slide.src = '';
+          document.removeEventListener('keydown', onKey);
+          document.removeEventListener('fullscreenchange', onFsChange);
+        }
+
+        document.addEventListener('keydown', onKey);
+        document.addEventListener('fullscreenchange', onFsChange);
+
+        // close on click when not fullscreen
+        viewer.onclick = function(e){ if(!document.fullscreenElement){ hideViewer(); } };
+      }
+
+      document.querySelectorAll('.presentation-button').forEach(function(btn){
+        btn.addEventListener('click', async function(e){
+          e.preventDefault();
+          const id = btn.dataset.talkId;
+          const meta = await fetchMeta(id);
+          openViewer(id, meta);
+        });
       });
 
-      function onFsChange(){
-        var el = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-        document.body.classList.toggle('is-presenting', !!el);
-      }
-      document.addEventListener('fullscreenchange', onFsChange);
-      document.addEventListener('webkitfullscreenchange', onFsChange);
-      document.addEventListener('msfullscreenchange', onFsChange);
     })();
   </script>
 </body>

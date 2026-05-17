@@ -72,6 +72,7 @@
 ## Implementation rules
 
 - The root Makefile must build all .tex files in a presentations/ directory into PDFs using a standard beamer template, outputting them as zero-padded files (e.g., 001.pdf, 002.pdf) into a public/slides/ directory.
+- The root Makefile must include a 'talks' target that depends on 'slides' and generates per-talk viewer pages. The target should create /talks/NNN/, copy public/slides/NNN.pdf to /talks/NNN/NNN.pdf (or ensure the iframe path resolves correctly), and write /talks/NNN/index.html by replacing a {{ID}} placeholder in talks/template.html with the zero-padded talk ID (NNN). Generated talk pages and PDFs must be committed to the repository so GitHub Pages can serve them.
 - The site generator or static file config must serve /talks/NNN/NNN.pdf and /talks/NNN/index.html from the repository root, so that /talks/NNN/NNN.pdf and /talks/NNN/ work on GitHub Pages.
 - /talks/NNN/ serves an HTML page with an embedded PDF viewer for NNN.pdf, including a fullscreen button for presentations, so /talks/NNN/ always works as a user-friendly link.
 - Every /talks/NNN/ page must include a small, minimally spaced "Talks" link (not "Back to Talks") at the top of the main content, styled with #ff9800 and the correct font, to return to /talks/. The text above and below the PDF viewer must be visually minimal and small (smaller font, less spacing).
@@ -86,7 +87,7 @@
 - The logo in /talks/NNN/ must be visually identical in position, size, and style to hackspree.com, including rotation, margin, and centering. Concretely, copy the `.logo` CSS rules from the site root `index.html` (e.g., `max-width: 156vh; max-height: 117%; transform: rotate(-90deg) scale(1.15);`) so the rendered size matches the canonical site. The HTML and CSS for the logo rail must match `index.html` exactly.
 - No dev comments or stray CSS should appear in the output HTML of /talks/NNN/.
 - The color theme for all talks pages must be white/grey on black, matching hackspree.com, with no orange or other accent colors except where specified for navigation or icons.
-- The workflow for adding a new presentation: add a .tex file to presentations/, run make, commit the resulting PDF in public/slides/.
+- The workflow for adding a new presentation: add a .tex file to presentations/, run `make slides && make talks`, verify the generated `/talks/NNN/index.html` and `/talks/NNN/NNN.pdf`, then commit the generated files and directories to the repository so GitHub Pages serves them.
 - The LaTeX template for presentations must be standardized and documented in the repo.
 - /slides/NNN links must not appear in navigation or post listings.
 

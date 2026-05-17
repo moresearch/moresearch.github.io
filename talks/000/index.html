@@ -10,9 +10,9 @@
     /* Minimal, self-contained template CSS matching site layout */
     :root { color-scheme: dark; }
     html,body{height:100%;margin:0;background:#000;color:#fff;font-family: 'IBM Plex Mono', monospace;}
-    .wrap{min-height:calc(100vh - 32px);max-height:calc(100vh - 32px);display:flex;align-items:start;justify-content:center;padding:32px;box-sizing:border-box;overflow:hidden}
-    .layout{width:min(1200px,100%);display:grid;grid-template-columns:240px 1fr;gap:36px;align-items:start}
-    @media (max-width:900px){.layout{grid-template-columns:1fr;padding:16px;gap:20px}}
+    .wrap{min-height:100dvh;display:flex;align-items:start;justify-content:center;padding:32px;box-sizing:border-box;overflow:visible}
+    .layout{width:min(1440px,100%);display:grid;grid-template-columns:360px minmax(0,1fr);gap:40px;align-items:start}
+    @media (max-width:900px){.layout{grid-template-columns:1fr;padding:16px;gap:20px}.logo-side,.content-side{width:100%;min-width:0;justify-content:center;position:static;transform:none}.logo-side{min-height:28vh;padding:24px 16px 8px}.logo{transform:none;max-width:252px;max-height:206px}}
 
     /* Left logo rail */
     .logo-side {
@@ -32,26 +32,25 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       min-height: calc(100vh - 64px);
       padding-top: 12px;
       padding-bottom: 12px;
       box-sizing: border-box;
     }
-    .logo-box{width:200px;height:200px;display:flex;align-items:center;justify-content:center;overflow:visible;margin-bottom:36px;background:#000;padding:8px;border-radius:6px}
+    .logo-box{width:320px;height:320px;display:flex;align-items:center;justify-content:center;overflow:visible;margin-bottom:36px;background:#000;padding:8px;border-radius:6px}
     .logo {
       display: block;
       width: auto;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
+      height: auto;
+      max-width: 156vh;
+      max-height: 117%;
       transform: rotate(-90deg) scale(1.15);
       transform-origin: center center;
-      object-fit: contain;
     }
 
     /* Main content */
-    .content-side{padding:24px 8px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:100vh}
+    .content-side{padding:24px 8px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:100vh;min-width:0}
     .content{max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 120px);position:relative}
     .back-to-talks{color:#ff9800;font-family:'IBM Plex Mono',monospace;font-size:0.85em;text-transform:uppercase;display:inline-block;margin-bottom:8px}
 

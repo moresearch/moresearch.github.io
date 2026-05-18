@@ -45,3 +45,4 @@
 
 ## Change log:
 - Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" (source: YouTube C_GG5g38vLU).
+- Added post 2026-05-17-harness-engineering-fowler.md: "Harness Engineering (Martin Fowler)" (source: https://martinfowler.com/articles/harness-engineering.html).

@@ -894,6 +894,20 @@ func loadPosts(inputDir string) ([]post, error) {
 			continue
 		}
 
+		// read front matter early to allow draft skipping
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return nil, fmt.Errorf("read %s: %w", path, err)
+		}
+		meta, _, err := parseFrontMatter(path, string(content))
+		if err != nil {
+			return nil, err
+		}
+		if strings.ToLower(strings.TrimSpace(meta["draft"])) == "true" || strings.ToLower(strings.TrimSpace(meta["draft"])) == "yes" {
+			// skip draft posts
+			continue
+		}
+
 		post, err := loadPost(path)
 		if err != nil {
 			return nil, err

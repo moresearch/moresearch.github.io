@@ -1,4 +1,5 @@
 ---
+draft: true
 title: Coding Harnesses Need Real Repos
 date: 2026-04-11
 slug: coding-agent-harnesses-need-real-repositories
@@ -6,6 +7,7 @@ summary: Coding-agent quality becomes measurable when the harness uses actual re
 tags: harness, coding-agents, swe-bench
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 [SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) changed the conversation because it moved coding evaluation closer to the work people actually do: read a real issue, edit a real repo, and satisfy a real test suite.
 
 That is also the right pattern for harness design inside product teams.

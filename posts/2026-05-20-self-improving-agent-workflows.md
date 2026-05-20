@@ -1,10 +1,12 @@
 ---
+draft: true
 title: Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space
 date: 2026-05-20
 summary: A practical recipe that combines SEP's self‑improving skill loop with OpenDev's terminal harness architecture and an empirical survey of harness design choices.
 tags: [agents, harness, workflow, research]
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 TL;DR
 
 Combine SEP's simple "read lessons → do work → reflect → write lessons" skill loop with OpenDev's harness-level practices (multi-model routing, context compaction, safety layers) and the empirical design-space findings from an architecture survey. Start with one skill and one loop; let usage generate the data you need to grow a robust harness.

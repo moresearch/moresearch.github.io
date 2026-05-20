@@ -1,4 +1,5 @@
 ---
+draft: true
 title: Harnesses Need Tasks That Fight Back
 date: 2026-04-27
 slug: agent-harnesses-need-tasks-that-fight-back
@@ -6,6 +7,7 @@ summary: Strong assistants are easier to trust when they are tested on tasks tha
 tags: harness, gaia, evaluation
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 [GAIA: a benchmark for General AI Assistants](https://arxiv.org/abs/2311.12983) is useful because it resists the temptation to make evaluation too neat. It mixes reasoning, tool use, information gathering, and multimodal work in a way that feels closer to assistant reality.
 
 That is a good model for internal harnesses too.

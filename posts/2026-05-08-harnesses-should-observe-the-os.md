@@ -1,4 +1,5 @@
 ---
+draft: true
 title: Harnesses Should Observe the OS
 date: 2026-05-03
 slug: good-harnesses-watch-the-whole-operating-system
@@ -6,6 +7,7 @@ summary: Desktop and multimodal agents need execution harnesses that see the sam
 tags: harness, osworld, multimodal
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 The right environment can make an average agent look impressive or make a strong agent fail honestly.
 
 [OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments](https://arxiv.org/abs/2404.07972) is valuable because it evaluates agents in real desktop settings rather than collapsing everything into a synthetic task wrapper.

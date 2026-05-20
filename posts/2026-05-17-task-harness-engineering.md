@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "Task Harness Engineering: how it compares to Eval and Agent Harnesses"
 date: 2026-05-17
 slug: task-harness-engineering
@@ -6,6 +7,7 @@ summary: "A practical guide to building task harnesses and how they differ from 
 tags: [harness, evaluation, agents]
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 Task harnesses are the scaffolding that turn a high-level engineering question—"Can this system finish a real task?"—into reproducible, debuggable experiments. This post explains what "Task Harness Engineering" means, how it differs from Eval harnesses (benchmarks) and Agent harnesses (integration + environment tests), and practical recommendations for building one.
 
 [![Harness Engineering talk (YouTube)](https://img.youtube.com/vi/C_GG5g38vLU/hqdefault.jpg)](https://www.youtube.com/watch?v=C_GG5g38vLU)

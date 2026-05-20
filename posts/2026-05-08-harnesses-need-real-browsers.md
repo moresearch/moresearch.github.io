@@ -1,4 +1,5 @@
 ---
+draft: true
 title: Harnesses Need Real Browsers
 date: 2026-04-19
 slug: harnesses-need-real-browsers-not-polite-demos
@@ -6,6 +7,7 @@ summary: Web agent evaluation gets more useful when the harness runs against rea
 tags: harness, agents, browser
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 If an agent claims it can use the web, the harness should make it prove it on the web.
 
 That is why [WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models](https://arxiv.org/abs/2401.13919) matters. The paper pushes evaluation into realistic browser tasks instead of stopping at tidy prompt-response examples.

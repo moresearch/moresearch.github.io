@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "Harness Engineering (Martin Fowler)"
 date: 2026-05-17
 slug: harness-engineering-fowler
@@ -6,6 +7,7 @@ summary: "Reflection and practical takeaways from Martin Fowler's 'Harness Engin
 tags: [harness, synthesis, martin-fowler]
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 Martin Fowler's essay "Harness Engineering" reframes the problem of trustworthy coding agents as a control-engineering task: the harness is the set of guides and sensors that steer, test, and correct agent behavior so humans can rely on the outputs.
 
 This post summarizes the article and extracts practical recommendations teams can start applying today.

@@ -1,4 +1,5 @@
 ---
+draft: true
 title: Harness Engineering: Go for Reliable Pipelines
 date: 2026-03-24
 slug: go-is-good-for-harness-pipelines
@@ -6,6 +7,7 @@ summary: Harness engineering is fundamentally about building repeatable, trustwo
 tags: golang, harness, evaluation
 ---
 
+This post has been consolidated into [Harness Engineering: Best Practices for Reliable Agent Systems](#harness-engineering-best-practices-for-ai-agents). See that canonical post for the full, merged guidance.
 Harness engineering is often less about model math and more about repeatable pipelines.
 
 [SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) and [GAIA: a benchmark for General AI Assistants](https://arxiv.org/abs/2311.12983) both reinforce the same operational point: serious evaluation requires a lot of plumbing around the model.

@@ -1,9 +1,9 @@
 ---
-title: Harness Engineering Best Practices
-date: 2026-04-02
+title: Harness Engineering: Best Practices for Reliable Agent Systems
+date: 2026-05-20
 slug: harness-engineering-best-practices-for-ai-agents
-summary: Strong agent systems depend on strong harnesses: repeatable tasks, realistic tool simulations, and clear pass-fail signals that expose bad behavior early.
-tags: ai-agents, evaluation, harness
+summary: Consolidated best practices and practical guidance for building evaluation, task, and agent harnesses that produce reliable, replayable results.
+tags: harness, agents, evaluation
 ---
 
 Agent quality is rarely limited by model intelligence alone. Most failures show up in the harness around the model: weak fixtures, vague success criteria, missing tool mocks, and no clean way to replay a bad run.
@@ -36,7 +36,7 @@ Every one of those should become a permanent evaluation case.
 
 > The best harnesses turn yesterday's incident into tomorrow's baseline.
 
-## Prefer observable steps over giant end-to-end guesses
+## Prefer observable steps over layered checks
 
 End-to-end tests matter, but they are not enough on their own. Agent systems benefit from layered checks:
 
@@ -58,8 +58,54 @@ For each harness case, define:
 
 That discipline matters more as agents gain more tools and more autonomy. The wider the action space, the more valuable a narrow, repeatable harness becomes.
 
-## The goal is faster learning, not more ceremony
+---
 
-A strong harness is not valuable because it looks rigorous on a slide. It is valuable because it shortens the distance between failure and understanding. When an agent regresses, the team should be able to see what changed, replay it, and decide what to fix without heroic investigation.
+## Browser tasks: run against real pages
 
-Harness engineering is not glamorous work, but it is one of the highest-leverage disciplines in applied AI. It is how teams turn agent behavior from a demo into a system they can trust.
+If an agent claims it can use the web, the harness should make it prove it on the web. Use real interfaces, preserve the messy interaction sequence, and score outcomes with concrete checks.
+
+Real pages expose real weaknesses: buttons move, forms span multiple steps, state must persist across actions, and success depends on the whole sequence, not one isolated click. Polite demos can be useful for unit tests, but a serious claim about browser competence should survive an honest environment.
+
+## Coding harnesses: use real repositories
+
+Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.
+
+Prefer messy repositories over perfect examples, failing tests over vague grading, and issue-driven tasks over isolated snippets. Tests are better than vibes: failing tests produce clear, automatable signals that scale.
+
+## Tasks that fight back
+
+A harness should ask the system to do tasks that require tools, retrieval, and real-world messiness. Useful harness cases are:
+
+- small enough to score,
+- rich enough to require multiple steps,
+- messy enough that shortcuts stop working.
+
+If every test can be passed by pattern-matching the prompt, you are not measuring the assistant — you are measuring prompt luck.
+
+## Observe the whole operating system when relevant
+
+Desktop and multimodal agents need execution harnesses that see the same OS complexity users experience: window state, clipboard and file effects, long action sequences, and recovery after mistakes. Honest environments create honest confidence.
+
+## Go for reliable pipelines
+
+Harness engineering is fundamentally about building repeatable, trustworthy evaluation pipelines that can scale with complexity. Use boring, predictable tools and explicit pipelines to manage worker queues, sandboxes, artifact capture, and metric aggregation. Go is a practical choice for many of these pieces because of its concurrency model, static binaries, and clear CLIs.
+
+## Task harness engineering (practical pattern)
+
+Task harnesses turn high-level engineering questions—"Can this system finish a real task?"—into reproducible, debuggable experiments. They are stateful, often non-deterministic, and rely on high-fidelity mocks or real infra. Use eval harnesses for filtering, then escalate to task harnesses for realism and agent harnesses for tool integration checks.
+
+## Fowler's view: guides + sensors
+
+Treat the harness as a control system of guides (feedforward) and sensors (feedback). Start with cheap computational controls (linters, unit tests), add fast feedback (CI, structural tests), and layer inferential sensors (LLM-based reviewers) only where they measurably reduce supervision cost. Capture incidents and convert them into lasting harness cases.
+
+## Self-improving harness workflows
+
+Combine short skill loops (read lessons → do work → reflect → write lessons) with harness practices: instrument runs, compact context when needed, and route workloads by role. Let usage data drive which harness cases matter most.
+
+## How to consolidate posts
+
+When consolidating multiple related posts, create a canonical merged post with a clear, focused title and stable slug. In the original files add `draft: true` and a one-line note pointing to the canonical post. The generator will skip draft files.
+
+## Conclusion
+
+A harness is the way a team learns whether its agents are improving. Make harnesses observable, replayable, and concrete. Use layered checks to keep failures legible and prefer boring, robust pipelines that scale with real-world complexity.

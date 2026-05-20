@@ -1,0 +1,357 @@
+
+\documentclass[aspectratio=169]{beamer}
+
+% =====================================================
+% Fonts
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault]{sourcesanspro}
+\renewcommand{\familydefault}{\sfdefault}
+\usefonttheme{professionalfonts}
+
+% =====================================================
+% Packages
+% =====================================================
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+\usetheme{default}
+
+% =====================================================
+% Assets
+% =====================================================
+\newcommand{\logoBig}{semeia.png}
+
+% =====================================================
+% Metadata
+% =====================================================
+\newcommand{\DeckTitle}{\textbf{SEMEIA System Engineering: Briefing \& Roadmap}}
+\newcommand{\PresenterName}{META-3 Coordination: Prof. Bruno}
+\newcommand{\PresenterEmail}{Automation Tech Lead: Antonio}
+\newcommand{\OrgLine}{AI Tech Lead: Mohamed}
+
+% =====================================================
+% Colors
+% =====================================================
+\definecolor{mdagrey}{RGB}{70,70,70}
+\definecolor{mdalightgrey}{RGB}{170,170,170}
+\definecolor{accentorange}{RGB}{230,90,40}
+
+\setbeamercolor{frametitle}{fg=mdagrey}
+\setbeamercolor{normal text}{fg=black}
+
+% =====================================================
+% Large content
+% =====================================================
+\setbeamerfont{normal text}{size=\large}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{itemize/enumerate body}{size=\large}
+
+% =====================================================
+% Square bullets
+% =====================================================
+\setbeamertemplate{itemize item}{\color{mdagrey}$\blacksquare$}
+
+% =====================================================
+% Focus line
+% =====================================================
+\newcommand{\focusline}[1]{%
+{\color{accentorange}\Large\bfseries #1}
+}
+
+% =====================================================
+% Two column macro
+% =====================================================
+\newcommand{\twocolslide}[4]{%
+\begin{frame}
+\frametitle{#1}
+\begin{columns}
+\begin{column}{0.38\textwidth}
+\textbf{#2}
+\vspace{0.3em}
+
+#3
+\end{column}
+\begin{column}{0.58\textwidth}
+#4
+\end{column}
+\end{columns}
+\end{frame}
+}
+
+% =====================================================
+% Outline Separator (UPDATED)
+% =====================================================
+\newcommand{\outlineseparator}[1]{%
+\begin{frame}
+\frametitle{Outline}
+\centering
+\vfill
+{\Large
+\ifnum#1=1 \textbf{SEMEIA Overview}\else{\color{mdalightgrey}SEMEIA Overview}\fi\\[0.6em]
+\ifnum#1=2 \textbf{SEMEIA UI}\else{\color{mdalightgrey}SEMEIA UI}\fi\\[0.6em]
+\ifnum#1=3 \textbf{SEMEIA UI Gateway}\else{\color{mdalightgrey}SEMEIA UI Gateway}\fi\\[0.6em]
+\ifnum#1=4 \textbf{SEMEIA Backend AI System}\else{\color{mdalightgrey}SEMEIA Backend AI System}\fi\\[0.6em]
+\ifnum#1=5 \textbf{SEMEIA Integration Gateway}\else{\color{mdalightgrey}SEMEIA Integration Gateway}\fi
+}
+\vfill
+\end{frame}
+}
+
+% =====================================================
+% Document
+% =====================================================
+\begin{document}
+
+
+% =====================================================
+% Title Slide
+% =====================================================
+\begin{frame}[plain]
+\centering
+
+\vspace{0.5cm}
+
+\includegraphics[width=0.80\textwidth]{figs/\logoBig}
+
+\vspace{0.1cm}
+
+{\LARGE\bfseries \DeckTitle}
+
+\vspace{0.4cm}
+
+{\Large
+\PresenterName\\
+\PresenterEmail\\
+\OrgLine
+}
+
+\end{frame}
+
+
+% =====================================================
+% SECTION 1 – SEMEIA OVERVIEW (NEW)
+% =====================================================
+\outlineseparator{1}
+
+
+% =====================================================
+% Architectural Overview Slide
+% =====================================================
+\begin{frame}[plain]
+\frametitle{SEMEIA Overview}
+\centering
+
+\vspace{1.0cm}
+
+\includegraphics[width=0.45\textwidth]{figs/\logoBig}
+
+\vspace{0.6cm}
+
+{\color{accentorange}\Large\bfseries
+}
+
+\end{frame}
+
+
+% =====================================================
+% =====================================================
+\outlineseparator{2}
+
+\twocolslide
+{SEMEIA UI: Operational \& Architectural Requirements}
+{}
+{
+\focusline{SEMEIA UI enable low-friction prototyping while aiming for for a premium domain-driven UX.}
+}
+{
+\begin{itemize}
+\item \textbf{R1} – High-Velocity Iteration
+\item \textbf{R2} – Familiarity and Convenience
+\item \textbf{R3} – Bespoke MDA User Experience 
+\item \textbf{R4} – Easy to Replace 
+\item \textbf{R5} – Easy to Customize 
+\end{itemize}
+}
+
+\begin{frame}[plain]
+\frametitle{SEMEIA UI: Current}
+\centering
+
+\vspace{0.0cm}
+
+\includegraphics[width=0.55\textwidth]{figs/demo1.png}
+
+\vspace{0.1cm}
+
+{\color{accentorange}\Large\bfseries
+openWebUI enables high-velocity iteration.
+}
+
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{SEMEIA UI: Roadmap}
+\centering
+
+\vspace{0.0cm}
+
+\includegraphics[width=0.7\textwidth]{figs/demo2.png}
+
+\vspace{0.1cm}
+
+{\color{accentorange}\Large\bfseries
+Transitioning to a bespoke UI for a superior UX.
+}
+
+\end{frame}
+
+
+
+% =====================================================
+% SECTION 3 – UI GATEWAY (UNCHANGED)
+% =====================================================
+\outlineseparator{3}
+
+\twocolslide
+{SEMEIA UI Gateway: Operational \& Architectural Requirements}
+{}
+{
+\focusline{SEMEIA UI Gateway should offer OpenAI-compatible API as well as custom endpoints.}
+}
+{
+\begin{itemize}
+\item \textbf{R1} – OpenAI-comptiable API endpoints 
+\item \textbf{R2} – Custom endpoints for specific features 
+\item \textbf{R3} – Authentication and Authroization  
+\end{itemize}
+}
+
+\begin{frame}
+\frametitle{SEMEIA UI Gateway – Current State}
+\centering
+\IfFileExists{figs/uigw.png}{
+\includegraphics[width=0.9\textwidth]{figs/uigw.png}
+}{
+\includegraphics[width=0.6\textwidth]{figs/semeia.png}
+}
+\end{frame}
+
+\twocolslide
+{SEMEIA UI Gateway: Roadmap}
+{}
+{
+\focusline{SEMEIA UI Gateway will evolve to support UI functions.}
+}
+
+% =====================================================
+% SECTION 4 – BACKEND AI (UNCHANGED)
+% =====================================================
+\outlineseparator{4}
+
+\twocolslide
+{SEMEIA Backend AI System: Operational \& Architectural Requirements}
+{}
+{
+\vfill
+\focusline{SEMEIA Backend AI is a compound AI system, not a model!}
+}
+{
+\begin{itemize}
+\item \textbf{R1} – User-Agent Mapping: Who is this? 
+\item \textbf{R2} – Context: What do we do? 
+\item \textbf{R3} – Orchasteration: What should we do? 
+\item \textbf{R4} – Governance: Is it allowed and safe?  
+\item \textbf{R5} – Execution: How do we do it? 
+\item \textbf{R6} – Quality: Did we do it correctly?
+\end{itemize}
+}
+
+\begin{frame}
+\frametitle{SEMEIA Backend AI – Current State}
+\centering
+\IfFileExists{figs/backend_ai.png}{
+\includegraphics[width=0.9\textwidth]{figs/backend_ai.png}
+}{
+\includegraphics[width=0.6\textwidth]{figs/demo3.png}
+}
+\end{frame}
+
+\twocolslide
+{SEMEIA Backend AI: Roadmap}
+{}
+{
+\focusline{Building User-specific custom Agents.}
+}
+
+% =====================================================
+% SECTION 5 – IGW (UNCHANGED)
+% =====================================================
+\outlineseparator{5}
+
+
+\twocolslide
+{SEMEIA Integration Gateway: Operational \& Architectural Requirements}
+{}
+{
+\begin{itemize}
+\item \textbf{Configuration-based approach}
+\item \textbf{Developer Experiance Matters}
+\item \textbf{Automate but Verify} 
+\end{itemize}
+\focusline{Gov APIs are not created equal, Act accordingly!}
+}
+{
+\begin{itemize}
+\item \textbf{R1} – Handle well-documented gov APIs via Automation
+\item \textbf{R2} – Handle bad gov API via custom development  
+\item \textbf{R3} – Enable configuration-based Developer Experiance
+\item \textbf{R4} – GraphQL-based Gateway to aid Agent Usage 
+\end{itemize}
+}
+
+\begin{frame}
+\frametitle{SEMEIA Integration Gateway – Current State}
+\centering
+\IfFileExists{figs/igw.png}{
+\includegraphics[width=0.9\textwidth]{figs/igw.png}
+}{
+\includegraphics[width=0.6\textwidth]{figs/semeia.png}
+}
+\end{frame}
+
+\twocolslide
+{SEMEIA Integration Gateway: Roadmap}
+{}
+{
+\focusline{End-to-end UX testing of a real process.}
+}
+
+% =====================================================
+% Thank You
+% =====================================================
+\begin{frame}[plain]
+\begin{columns}
+\begin{column}{0.55\textwidth}
+{\LARGE\bfseries \DeckTitle}
+
+\vspace{0.8cm}
+{\Large\bfseries Thank you}
+
+\vspace{0.6cm}
+{\Large
+\PresenterName\\
+\PresenterEmail\\
+\OrgLine}
+\end{column}
+
+\begin{column}{0.45\textwidth}
+\includegraphics[width=\linewidth]{figs/\logoBig}
+\end{column}
+\end{columns}
+\end{frame}
+
+\end{document}

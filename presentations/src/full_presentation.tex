@@ -1,0 +1,857 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[sfdefault,light]{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+\usefonttheme{professionalfonts}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage[strings]{underscore}
+
+\usetheme{default}
+
+% =====================================================
+% Brand (MDA / Núcleo de Inteligência Artificial)
+% Files live in: figs/
+% =====================================================
+\newcommand{\logoSmall}{mda.jpg}
+\newcommand{\logoBig}{semeia.png}
+\newcommand{\brandshort}{META-3 | SEMEIA}
+
+% =====================================================
+% Placeholders (edit these)
+% =====================================================
+\newcommand{\DeckTitle}{\textbf{SEMEIA Systems Engineering: Briefing \& Roadmap}}
+\newcommand{\DeckSubtitle}{} % set to empty {} if you want none
+\newcommand{\PresenterName}{META-3 Coordination Prof. Bruno}
+\newcommand{\PresenterEmail}{Automation Tech lead: Antonio}
+\newcommand{\OrgLine}{AI Tech Lead: Mohamed}
+\newcommand{\DateLine}{}
+
+% Colors
+\definecolor{mdagrey}{RGB}{90,90,90}
+\definecolor{mdalightgrey}{RGB}{200,200,200}
+\definecolor{accentorange}{RGB}{230,90,40}
+
+% Base text and titles
+\setbeamerfont{normal text}{size=8pt}
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries}
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+\setbeamercolor{title}{fg=accentorange}
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+% Compact bullets
+\setbeamerfont{itemize/enumerate body}{size=\scriptsize}
+\setbeamertemplate{itemize item}{}
+\setlength{\leftmargini}{1.2em}
+\setlength{\itemsep}{0.28em}
+
+% Margins
+\setbeamersize{text margin left=1.35cm, text margin right=1.35cm}
+\setlength{\columnsep}{0.9cm}
+
+% =====================================================
+% Graphics macro (expands macros like \logoBig)
+% =====================================================
+\makeatletter
+\newcommand{\deckgraphic}[2][]{%
+  \begingroup
+  \edef\dg@file{#2}%
+  \IfFileExists{figs/\dg@file}{%
+    \includegraphics[
+      width=\linewidth,
+      height=0.82\textheight,
+      keepaspectratio,
+      #1
+    ]{figs/\dg@file}%
+  }{%
+    {\color{red}\fbox{\scriptsize Missing: figs/\dg@file}}%
+  }%
+  \endgroup
+}
+\makeatother
+
+\newcommand{\focusline}[1]{%
+  \vspace{0.25em}%
+  {\color{accentorange}\footnotesize\bfseries #1}%
+}
+
+% Footer reference (per-slide citation footer)
+\newcommand{\insertframeref}{}
+\newcommand{\frameref}[1]{\gdef\insertframeref{#1}}
+
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=1.6ex,dp=0.5ex,leftskip=0.3cm]{footline}%
+      {\color{mdagrey}\fontsize{6pt}{4.8pt}\selectfont\insertframeref}%
+    \end{beamercolorbox}%
+  }%
+}
+\setbeamertemplate{navigation symbols}{}
+
+% Header row with small logo at right
+\setbeamertemplate{frametitle}{%
+  \vspace*{0.05cm}%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=0.6ex,leftskip=0.35cm,rightskip=0.35cm]{frametitle}%
+    {\fontsize{6pt}{7pt}\selectfont
+      \color{mdagrey}%
+      \makebox[0.30\paperwidth][l]{\insertframetitle}%
+      \makebox[0.40\paperwidth][c]{\brandshort}%
+      \makebox[0.30\paperwidth][c]{\hspace*{-0.1cm}\deckgraphic[height=0.5cm]{\logoSmall}}%
+    }%
+  \end{beamercolorbox}%
+  \vspace{0.15cm}%
+}
+
+% Two-column slide macro
+\newcommand{\twocolslide}[5]{%
+  \begin{frame}
+    \frametitle{#2}%
+    \frameref{#1}%
+    \begin{columns}[c,onlytextwidth]
+      \begin{column}{0.38\textwidth}
+        \textbf{#3}
+        \vspace{0.3em}
+        #4
+      \end{column}
+      \begin{column}{0.58\textwidth}
+        #5
+      \end{column}
+    \end{columns}
+  \end{frame}
+}
+
+% =====================================================
+% Outline separator macro (5 sections total)
+% =====================================================
+\newcommand{\outlineseparator}[1]{%
+  \begin{frame}
+    \frametitle{Outline}%
+    \frameref{}%
+    \centering
+    \vfill
+    {\Large
+      \ifnum#1=1 \textbf{SEMEIA Overview (incl.\ UX)}\else {\color{mdalightgrey}SEMEIA Overview (incl.\ UX)}\fi \\[0.55em]
+      \ifnum#1=2 \textbf{SEMEIA UI Gateway}\else {\color{mdalightgrey}SEMEIA UI Gateway}\fi \\[0.55em]
+      \ifnum#1=3 \textbf{SEMEIA Backend AI System}\else {\color{mdalightgrey}SEMEIA Backend AI System}\fi \\[0.55em]
+      \ifnum#1=4 \textbf{SEMEIA Integration Gateway}\else {\color{mdalightgrey}SEMEIA Integration Gateway}\fi \\[0.55em]
+      \ifnum#1=5 \textbf{SEMEIA Evolution}\else {\color{mdalightgrey}SEMEIA Evolution}\fi
+    }
+    \vfill
+  \end{frame}
+}
+
+% Title info
+\title[\DeckTitle]{\DeckTitle}
+\institute{%
+  \texttt{\PresenterName}\\[0.15em]
+  \texttt{\PresenterEmail}\\[0.15em]
+  \texttt{\OrgLine}\\[0.15em]
+  \texttt{\DateLine}\\[0.15em]
+}
+\date{}
+
+\begin{document}
+
+% -----------------------------------------------------
+% Slide 1 – Title
+% -----------------------------------------------------
+\begin{frame}[plain]
+  \frameref{}%
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.62\textwidth}
+      \vspace{0.85cm}
+      {\LARGE\bfseries \DeckTitle\par}
+
+      \ifthenelse{\equal{\DeckSubtitle}{}}{}{%
+        \vspace{0.30cm}
+        {\large \DeckSubtitle\par}
+      }
+
+      \vspace{0.85cm}
+      {\small \insertinstitute\par}
+    \end{column}
+
+    \begin{column}{0.38\textwidth}
+      \vspace{0.20cm}
+      \hfill
+      \deckgraphic[height=0.86\textheight]{\logoBig}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% -----------------------------------------------------
+% Section 1
+% -----------------------------------------------------
+\outlineseparator{1}
+
+% =====================================================
+% 1) SEMEIA Overview (incl. UX)
+% =====================================================
+
+\begin{frame}
+  \frametitle{SEMEIA Overview}
+  \frameref{}%
+  \centering
+  \IfFileExists{figs/overview.png}{
+    \includegraphics[
+      width=0.95\textwidth,
+      height=0.85\textheight,
+      keepaspectratio
+    ]{figs/overview.png}
+  }{
+    {\color{mdagrey}\scriptsize Add figs/overview.png (optional) to display the overview poster.}
+  }
+\end{frame}
+
+\twocolslide
+  {}
+  {SEMEIA Overview}
+  {Mission}
+  {
+    \begin{itemize}
+      \item Reduce operational burden via automation
+      \item Improve service delivery quality
+      \item Standardize workflows across systems
+    \end{itemize}
+  }
+  {
+    \focusline{SEMEIA is a systems program: UX + AI + integration + governance.}
+  }
+
+% --- Conversational AI framing
+\twocolslide
+  {%
+    1.~Atlassian (Conversational AI) \href{https://www.atlassian.com/blog/artificial-intelligence/conversation-ai}{atlassian.com/blog/artificial-intelligence/conversation-ai}
+  }
+  {SEMEIA Overview}
+  {SEMEIA as Conversational AI}
+  {
+    \begin{itemize}
+      \item SEMEIA is a \textbf{conversational AI system}\textsuperscript{1}
+      \item Primary interface: \textbf{chat} (natural language)
+      \item Executes workflows through controlled gateways
+    \end{itemize}
+    \vfill
+    \focusline{Conversation = interface + workflow engine.}
+  }
+  {
+    \begin{itemize}
+      \item Supports:
+        \begin{itemize}
+          \item multi-turn context
+          \item clarification loops
+          \item structured outputs (forms, drafts)
+          \item tool execution with auditability
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- REST vs GraphQL
+\twocolslide
+  {%
+    1.~Fielding (2000) REST dissertation \href{https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm}{ics.uci.edu/\textasciitilde fielding/...};\;
+    2.~GraphQL Spec \href{https://spec.graphql.org/}{spec.graphql.org}
+  }
+  {SEMEIA Overview}
+  {REST vs.\ GraphQL (Contract Strategy)}
+  {
+    \begin{itemize}
+      \item \textbf{REST}\textsuperscript{1}: stable resources + caching
+      \item \textbf{GraphQL}\textsuperscript{2}: UI/agent-friendly query surface
+      \item SEMEIA uses \textbf{contracts} as governance
+    \end{itemize}
+    \vfill
+    \focusline{GraphQL is the interface; persisted ops are the guardrail.}
+  }
+  {
+    \begin{itemize}
+      \item Design target:
+        \begin{itemize}
+          \item REST-like stable execution endpoints
+          \item GraphQL for orchestration / data shaping
+          \item no ad-hoc upstream access by agents
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- LLM history
+\twocolslide
+  {%
+    1.~Vaswani et al.\ (2017) Transformers \href{https://arxiv.org/abs/1706.03762}{arxiv.org/abs/1706.03762}
+  }
+  {SEMEIA Overview}
+  {LLMs History (High-level)}
+  {
+    \begin{itemize}
+      \item Transformers enabled scalable attention\textsuperscript{1}
+      \item Large-scale pretraining $\rightarrow$ general language competence
+      \item Instruction tuning $\rightarrow$ usable assistants
+    \end{itemize}
+    \vfill
+    \focusline{LLMs changed UX: natural language became a control plane.}
+  }
+  {
+    \begin{itemize}
+      \item SEMEIA impact:
+        \begin{itemize}
+          \item drafting automation
+          \item information extraction
+          \item orchestration via tools
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- Agents / learning framing
+\twocolslide
+  {}
+  {SEMEIA Overview}
+  {Autonomous Agents vs.\ Learning Agents}
+  {
+    \begin{itemize}
+      \item \textbf{Autonomous agent}: plans + executes via tools
+      \item \textbf{Learning agent}: improves via feedback + data
+      \item Public sector requires \textbf{HITL approval}
+    \end{itemize}
+    \vfill
+    \focusline{Autonomy without governance is operational risk.}
+  }
+  {
+    \begin{itemize}
+      \item SEMEIA approach:
+        \begin{itemize}
+          \item controlled action space (persisted ops)
+          \item audit logs and explainability
+          \item human approvals for sensitive actions
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- MCP vs Skills
+\twocolslide
+  {%
+    1.~Block/Goose (2025-12-22) \href{https://block.github.io/goose/blog/2025/12/22/agent-skills-vs-mcp/}{block.github.io/goose/...}
+  }
+  {SEMEIA Overview}
+  {MCP Server vs.\ Skills for Agents}
+  {
+    \begin{itemize}
+      \item \textbf{MCP}\textsuperscript{1}: capabilities layer (tools)
+      \item \textbf{Skills}\textsuperscript{1}: behavior layer (how to use tools)
+    \end{itemize}
+    \vfill
+    \focusline{MCP gives abilities; Skills teach safe usage.}
+  }
+  {
+    \begin{itemize}
+      \item Key idea:
+        \begin{itemize}
+          \item skills without MCP = instructions only
+          \item MCP without skills = power without guidance
+        \end{itemize}
+    \end{itemize}
+  }
+
+% =====================================================
+% UX content INSIDE Overview (improved)
+% =====================================================
+
+\begin{frame}
+  \frametitle{SEMEIA UX (within Overview)}
+  \frameref{}%
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \IfFileExists{figs/ui.png}{
+      \includegraphics[width=\linewidth,keepaspectratio]{figs/ui.png}
+    }{
+      {\color{mdagrey}\scriptsize Add figs/ui.png}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \IfFileExists{figs/sei.jpg}{
+      \includegraphics[width=\linewidth,keepaspectratio]{figs/sei.jpg}
+    }{
+      {\color{mdagrey}\scriptsize Add figs/sei.jpg (optional)}
+    }
+  \end{minipage}
+\end{frame}
+
+\twocolslide
+  {}
+  {SEMEIA Overview}
+  {UX Goals (Improved)}
+  {
+    \begin{itemize}
+      \item Reduce cognitive load (user does not learn the bureaucracy)
+      \item Reduce context switching (SEI/TransfereGov/etc.)
+      \item Convert policies into guided steps
+      \item Default to ``ask-back'' for missing inputs
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item UX outcomes:
+        \begin{itemize}
+          \item fewer incorrect requests
+          \item faster completion
+          \item higher trust in automation
+        \end{itemize}
+    \end{itemize}
+    \vspace{0.3em}
+    \focusline{Simplicity is not aesthetics; it is operational efficiency.}
+  }
+
+\twocolslide
+  {}
+  {SEMEIA Overview}
+  {UX Architecture Requirements}
+  {
+    \begin{itemize}
+      \item Multi-step workflows with state
+      \item Explainability in UI (why this step?)
+      \item ``Preview before execute'' for actions
+      \item Evidence view (sources, IDs, logs)
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item Failure-handling UX:
+        \begin{itemize}
+          \item retries with reasons
+          \item clear responsibility handoffs
+          \item partial results are allowed
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- Overview roadmap
+\twocolslide
+  {}
+  {SEMEIA Overview}
+  {Roadmap (Overview)}
+  {
+    \begin{itemize}
+      \item \textbf{Now (0--2 weeks)}
+        \begin{itemize}
+          \item scope + glossary freeze
+          \item UX journey mapping + ownership
+          \item integration dependency registry
+        \end{itemize}
+      \item \textbf{Next (2--6 weeks)}
+        \begin{itemize}
+          \item architecture blueprint
+          \item workflow MVP definitions
+        \end{itemize}
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item \textbf{Later (6+ weeks)}
+        \begin{itemize}
+          \item governance playbook + approvals
+          \item KPI dashboards
+        \end{itemize}
+      \item \textbf{Risks}: unclear contracts; cross-system UX ambiguity
+    \end{itemize}
+  }
+
+% -----------------------------------------------------
+% Section 2
+% -----------------------------------------------------
+\outlineseparator{2}
+
+% =====================================================
+% 2) SEMEIA UI Gateway
+% =====================================================
+
+\begin{frame}
+  \frametitle{SEMEIA UI Gateway (UIGW)}
+  \frameref{}%
+  \centering
+  \vfill
+  {\Large\bfseries UI Gateway / BFF Layer}
+  \vspace{1em}
+
+  {\small\color{mdagrey}
+  UX-friendly API layer for SEMEIA UI + caching + permissions + orchestration}
+  \vfill
+\end{frame}
+
+\twocolslide
+  {}
+  {SEMEIA UI Gateway}
+  {What is UIGW?}
+  {
+    \begin{itemize}
+      \item UIGW = Backend-for-Frontend (BFF)
+      \item Converts workflows into UI-friendly contracts
+      \item Aggregates multiple backend calls
+    \end{itemize}
+  }
+  {
+    \focusline{UIGW optimizes for UX without exposing provider complexity.}
+  }
+
+% -----------------------------------------------------
+% Requirements slide (EXACT STYLE requested)
+% -----------------------------------------------------
+\twocolslide
+  {%
+    1.~Fielding (2000) REST dissertation \href{https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm}{ics.uci.edu/\textasciitilde fielding/...};\;
+    2.~Nygard (2007) \textit{Release It!};\;
+    3.~Google SRE Book (2016) \href{https://sre.google/sre-book/table-of-contents/}{sre.google/sre-book}
+  }
+  {SEMEIA UI Gateway}
+  {Operational \& Architectural Requirements}
+  {
+    \begin{itemize}
+      \item \textbf{Design principles:} stable screen contracts + separation (UI vs integration)\textsuperscript{1}
+      \item \textbf{Why:} protect UX from backend volatility and failures\textsuperscript{2}
+    \end{itemize}
+    \vfill
+    \focusline{UIGW is the UX reliability boundary.}
+  }
+  {
+    \centering
+    \begin{itemize}
+      \item \textbf{R1} – Screen-oriented APIs (BFF): \textit{what the UI needs}
+      \item \textbf{R2} – RBAC enforcement aligned with UI actions
+      \item \textbf{R3} – Response shaping: stable view models
+      \item \textbf{R4} – Caching policy (TTL per endpoint; per-user keys)
+      \item \textbf{R5} – Rate limiting + payload caps (UI safety)
+      \item \textbf{R6} – Degrade gracefully (partial responses allowed)\textsuperscript{3}
+      \item \textbf{R7} – Observability: request\_id, structured logs, per-route metrics\textsuperscript{3}
+    \end{itemize}
+  }
+
+\twocolslide
+  {}
+  {SEMEIA UI Gateway}
+  {Roadmap (UIGW)}
+  {
+    \begin{itemize}
+      \item \textbf{Now (0--2 weeks)}: define screen contracts, error model
+      \item \textbf{Next (2--6 weeks)}: implement dashboard/task APIs + caching
+      \item \textbf{Later (6+ weeks)}: performance tuning + incident tooling
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item Owners: UI backend engineers + Tech Lead
+      \item Risks: RBAC mismatches; UI scope drift
+    \end{itemize}
+  }
+
+% -----------------------------------------------------
+% Section 3
+% -----------------------------------------------------
+\outlineseparator{3}
+
+% =====================================================
+% 3) SEMEIA Backend AI System
+% =====================================================
+
+\begin{frame}
+  \frametitle{SEMEIA Backend AI System}
+  \frameref{}%
+  \centering
+  \vfill
+  {\Large\bfseries AI Services + Orchestration + Governance}
+  \vspace{1em}
+
+  {\small\color{mdagrey}
+  Models, prompts, tools, evaluation, monitoring}
+  \vfill
+\end{frame}
+
+\twocolslide
+  {}
+  {SEMEIA Backend AI}
+  {Core Components}
+  {
+    \begin{itemize}
+      \item Orchestrator (agent runtime)
+      \item Skill library + tools
+      \item Retrieval (KB/search)
+      \item Evaluation harness
+    \end{itemize}
+  }
+  {
+    \focusline{Backend AI is a system, not a model.}
+  }
+
+\twocolslide
+  {%
+    1.~Manning: \textit{Build a Large Language Model (From Scratch)};\;
+    2.~Manning: \textit{Build a Reasoning Large Language Model (From Scratch)}
+  }
+  {SEMEIA Backend AI}
+  {LLMs vs.\ Reasoning LLMs}
+  {
+    \begin{itemize}
+      \item \textbf{LLMs}\textsuperscript{1}: drafting, summarizing, extraction
+      \item \textbf{Reasoning LLMs}\textsuperscript{2}: planning, decomposition, multi-step workflows
+      \item SEMEIA requires both: conversation + execution correctness
+    \end{itemize}
+    \vfill
+    \focusline{Reasoning must be engineered: tools, checks, and guardrails.}
+  }
+  {
+    \begin{itemize}
+      \item Impact on SEMEIA:
+        \begin{itemize}
+          \item workflow completion reliability
+          \item fewer hallucinated parameters
+          \item stronger tool orchestration
+        \end{itemize}
+    \end{itemize}
+  }
+
+% --- Mitchell quote slide
+\twocolslide
+  {%
+    1.~Tom M. Mitchell (1997) \textit{Machine Learning}
+  }
+  {SEMEIA Backend AI}
+  {What is Machine Learning? (Mitchell)}
+  {
+    \begin{itemize}
+      \item Learning loops require:
+        \begin{itemize}
+          \item feedback collection
+          \item test sets and regression checks
+          \item measurable improvement criteria
+        \end{itemize}
+    \end{itemize}
+    \vfill
+    \focusline{Learning is a lifecycle, not a feature.}
+  }
+  {
+    \vfill
+    {\footnotesize
+    ``The field of machine learning is concerned with the question of how to construct computer programs that automatically improve with experience.''\textsuperscript{1}}
+    \vfill
+  }
+
+% -----------------------------------------------------
+% Requirements slide (EXACT STYLE requested)
+% -----------------------------------------------------
+\twocolslide
+  {%
+    1.~Mitchell (1997) \textit{Machine Learning};\;
+    2.~Vaswani et al.\ (2017) Transformers \href{https://arxiv.org/abs/1706.03762}{arxiv.org/abs/1706.03762};\;
+    3.~Google SRE Book (2016) \href{https://sre.google/sre-book/table-of-contents/}{sre.google/sre-book}
+  }
+  {SEMEIA Backend AI System}
+  {Operational \& Architectural Requirements}
+  {
+    \begin{itemize}
+      \item \textbf{Design principles:} measurable learning + reliability via engineered pipelines\textsuperscript{1}
+      \item \textbf{Why:} LLM behavior changes; system must remain stable\textsuperscript{2}
+    \end{itemize}
+    \vfill
+    \focusline{The AI system must be reproducible, observable, and governable.}
+  }
+  {
+    \centering
+    \begin{itemize}
+      \item \textbf{R1} – Controlled action space (persisted ops only)
+      \item \textbf{R2} – Human-in-the-loop approvals for sensitive actions
+      \item \textbf{R3} – Evaluation harness: regression tests for prompts/tools
+      \item \textbf{R4} – Data governance: sources, freshness, provenance
+      \item \textbf{R5} – Prompt/skill versioning + change management
+      \item \textbf{R6} – Observability: traces, tool call logs, cost/latency metrics\textsuperscript{3}
+      \item \textbf{R7} – Safe failure modes (ask-back, stop, escalate)
+    \end{itemize}
+  }
+
+\twocolslide
+  {}
+  {SEMEIA Backend AI}
+  {Roadmap (AI System)}
+  {
+    \begin{itemize}
+      \item \textbf{Now}: define skill library + tool registry + eval baseline
+      \item \textbf{Next}: implement top workflows + approvals
+      \item \textbf{Later}: drift monitoring + full regression suite
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item Owners: AI Eng + MLOps + Tech Lead
+      \item Risks: unclear approval boundaries; tool misuse
+    \end{itemize}
+  }
+
+% -----------------------------------------------------
+% Section 4
+% -----------------------------------------------------
+\outlineseparator{4}
+
+% =====================================================
+% 4) SEMEIA Integration Gateway
+% =====================================================
+
+\begin{frame}
+  \frametitle{SEMEIA Integration Gateway Requirements}
+  \frameref{}%
+  \centering
+  \vfill
+  {\Large\bfseries Operational \& Architectural Requirements}
+  \vspace{1em}
+
+  {\small\color{mdagrey}
+  Gateway + Adapters + Persisted Ops + Observability + Security}
+  \vfill
+\end{frame}
+
+\twocolslide
+  {}
+  {SEMEIA Integration Gateway (IGW)}
+  {What is IGW?}
+  {
+    \begin{itemize}
+      \item Policy boundary between agents and external systems
+      \item Executes \textbf{persisted operations} only
+      \item Standard error model + schema validation
+      \item Auditable calls (IDs, logs, metrics)
+    \end{itemize}
+  }
+  {
+    \focusline{IGW prevents ad-hoc API access by agents.}
+  }
+
+% -----------------------------------------------------
+% Requirements slide (EXACT STYLE requested)
+% -----------------------------------------------------
+\twocolslide
+  {%
+    1.~Nygard (2007) \textit{Release It!};\;
+    2.~Google SRE Book (2016) \href{https://sre.google/sre-book/table-of-contents/}{sre.google/sre-book};\;
+    3.~GraphQL Spec \href{https://spec.graphql.org/}{spec.graphql.org}
+  }
+  {SEMEIA Integration Gateway (IGW)}
+  {Operational \& Architectural Requirements}
+  {
+    \begin{itemize}
+      \item \textbf{Design principles:} guardrails-first integration boundary\textsuperscript{3}
+      \item \textbf{Why:} integration failures are inevitable; system must isolate faults\textsuperscript{1}
+    \end{itemize}
+    \vfill
+    \focusline{Persisted ops are the governance primitive of SEMEIA integrations.}
+  }
+  {
+    \centering
+    \begin{itemize}
+      \item \textbf{R1} – Persisted ops only (no arbitrary upstream calls)
+      \item \textbf{R2} – Config-driven routing + strict versioning
+      \item \textbf{R3} – Deterministic schema validation (JSONSchema)
+      \item \textbf{R4} – Standard error model + retry policy classes
+      \item \textbf{R5} – Fault isolation (adapter failures never crash gateway)\textsuperscript{1}
+      \item \textbf{R6} – Observability: request\_id everywhere + metrics\textsuperscript{2}
+      \item \textbf{R7} – Security: secrets never in specs; least privilege
+    \end{itemize}
+  }
+
+\twocolslide
+  {}
+  {SEMEIA Integration Gateway (IGW)}
+  {Roadmap (IGW)}
+  {
+    \begin{itemize}
+      \item \textbf{Now}: spec freeze + skeleton + logs
+      \item \textbf{Next}: onboard providers + schema enforcement
+      \item \textbf{Later}: circuit breaker + governance CI
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item Owners: Platform Eng + Integration Eng
+      \item Risks: upstream contract drift; ops explosion
+    \end{itemize}
+  }
+
+% -----------------------------------------------------
+% Section 5
+% -----------------------------------------------------
+\outlineseparator{5}
+
+% =====================================================
+% 5) SEMEIA Evolution
+% =====================================================
+
+\twocolslide
+  {}
+  {SEMEIA Evolution}
+  {Incremental Development}
+  {
+    \begin{itemize}
+      \item Iterative rollout (MVP $\rightarrow$ expansions)
+      \item Governance and safety mature over time
+      \item Backward compatibility is mandatory
+    \end{itemize}
+  }
+  {
+    \focusline{Evolution must preserve operational stability.}
+  }
+
+\twocolslide
+  {}
+  {SEMEIA Evolution}
+  {Roadmap (Evolution)}
+  {
+    \begin{itemize}
+      \item \textbf{Now}: roadmap governance cadence + KPI baseline
+      \item \textbf{Next}: expand pilot workflows + runbooks
+      \item \textbf{Later}: scale integrations + institutionalize evaluation
+    \end{itemize}
+  }
+  {
+    \begin{itemize}
+      \item Owners: Tech Lead + Product + Ops
+      \item Risks: demand growth > capacity; ops burden
+    \end{itemize}
+  }
+
+% -----------------------------------------------------
+% Final slide – Thank you
+% -----------------------------------------------------
+\begin{frame}[plain]
+  \frameref{}%
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.62\textwidth}
+      \vspace{0.85cm}
+      {\LARGE\bfseries \DeckTitle\par}
+
+      \vspace{0.95cm}
+      {\Large\bfseries Thank you!}
+
+      \vspace{0.95cm}
+      {\small
+        \texttt{\PresenterName}\\[0.15em]
+        \texttt{\PresenterEmail}\\[0.15em]
+        \texttt{\OrgLine}\\[0.15em]
+      }
+    \end{column}
+
+    \begin{column}{0.38\textwidth}
+      \vspace{0.20cm}
+      \hfill
+      \deckgraphic[height=0.86\textheight]{\logoBig}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\end{document}

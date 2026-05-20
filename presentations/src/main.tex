@@ -1,0 +1,96 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Modern developer-friendly fonts
+\usepackage[sfdefault,light]{FiraSans}  % main text font (sans-serif)
+\usepackage[scaled=0.9]{inconsolata}    % monospace font for verbatim/code
+\renewcommand{\familydefault}{\sfdefault}
+
+% Page layout
+\usepackage{geometry}
+\geometry{margin=1in}
+
+% Line spacing
+\usepackage{setspace}
+\onehalfspacing
+
+% Better lists
+\usepackage{enumitem}
+
+% Graphics (for logos)
+\usepackage{graphicx}
+
+% Header/footer with logo on all non-title pages
+\usepackage{fancyhdr}
+\setlength{\headheight}{30pt} % make room for the header
+\fancyhf{} % clear all header/footer fields
+
+% Small logo on the right side of the header, page number centered in footer
+\fancyhead[R]{\includegraphics[height=1cm]{figs/mda.jpg}}
+\fancyfoot[C]{\thepage}
+
+% Hyperlinks
+\usepackage{hyperref}
+
+% --------------------------------------------------------------------
+% Metadata (edit these when you copy this file to create a new document)
+% --------------------------------------------------------------------
+\title{Document Title}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+
+% =========================
+% Custom title page with centered logo
+% =========================
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace*{2cm}
+
+    % Title page logo (edit figs/titlepage.png if needed)
+    \includegraphics[width=0.35\textwidth]{figs/titlepage.png}\\[1.5cm]
+
+    {\LARGE Document Title\\[0.5cm]}
+    {\large Subtitle (optional)}\\[2cm]
+
+    {\large Author Name}\\[0.5cm]
+    {\large \today}
+
+    \vfill
+  \end{center}
+\end{titlepage}
+
+% Enable header/footer (with small logo) for the rest of the document
+\pagestyle{fancy}
+
+\tableofcontents
+
+% =========================
+% Example structure (replace or remove)
+% =========================
+
+\chapter{Introduction}
+\label{chap:introduction}
+
+% Your introduction text goes here.
+
+\section{Background}
+\label{sec:background}
+
+% Background content.
+
+\section{Scope}
+\label{sec:scope}
+
+% Scope and goals of the document.
+
+\chapter{Main Content}
+\label{chap:main-content}
+
+% Add more chapters and sections as needed.
+
+\end{document}

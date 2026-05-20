@@ -11,7 +11,7 @@
 - Post source files must use the `.md` extension.
 - `posts/specs.md` is reserved for contributor guidance and is never published as a post.
 - Each post must start with front matter delimited by `---` lines.
-- Required front matter fields are `title` and `date`.
+- Required front matter fields are `title` and `date`. Keys are case-sensitive and must be lowercase.
 - Optional front matter fields are `slug`, `summary`, and `tags`.
 - `date` must use ISO-8601 calendar format (`YYYY-MM-DD`).
 - The source `date` remains ISO-8601 in front matter even though the published site renders it as a larger Unix timestamp with a UTC hover tooltip.

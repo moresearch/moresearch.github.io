@@ -24,6 +24,8 @@ Validation:
 - No horizontal overflow on desktop/mobile
 
 Change log:
+- Blog posts: Each post in posts/ must start with YAML front matter (---) with required fields `title` and `date` (YYYY-MM-DD). The generator fails on missing or mis-cased keys; keep keys lowercase. See posts/specs.md for details.
+
 - Added talk 003 (Harness Engineering): generated PDF and preview assets must be present at talks/003.pdf and talks/003-page-1.webp and referenced from /talks/.
 - Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" describing Task vs Eval vs Agent harnesses (source: YouTube C_GG5g38vLU).
 - Updated talk 003 (Harness Engineering): appended full content of harness-related blog posts into slides and added a References slide linking to the posts (harness-engineering-best-practices-for-ai-agents, coding-agent-harnesses-need-real-repositories, harnesses-need-real-browsers-not-polite-demos, agent-harnesses-need-tasks-that-fight-back, good-harnesses-watch-the-whole-operating-system, go-is-good-for-harness-pipelines, task-harness-engineering).

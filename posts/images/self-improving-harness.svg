@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="380" viewBox="0 0 1000 380">
+  <style>
+    .box { fill:#f4f6f8; stroke:#0b3c5d; stroke-width:2 }
+    .small { font: 12px/1.2 sans-serif; fill:#0b3c5d }
+    .title { font: 16px/1.2 sans-serif; fill:#0b3c5d; font-weight:600 }
+    .arrow { stroke:#0b3c5d; stroke-width:2; fill:none; marker-end:url(#arrow) }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b3c5d" />
+    </marker>
+  </defs>
+
+  <!-- Skill loop -->
+  <rect x="30" y="40" width="340" height="220" class="box" rx="8"/>
+  <text x="200" y="70" text-anchor="middle" class="title">Self‑Improving Skill (loop)</text>
+  <text x="200" y="100" text-anchor="middle" class="small">Read lessons → Execute steps → Reflect & catalog → Write lessons</text>
+
+  <!-- arrows inside loop -->
+  <path d="M110 140 Q200 180 290 140" class="arrow" />
+  <text x="200" y="160" text-anchor="middle" class="small">repeat & improve</text>
+
+  <!-- Harness layers -->
+  <rect x="430" y="20" width="520" height="320" class="box" rx="8"/>
+  <text x="690" y="50" text-anchor="middle" class="title">Agent Harness / Terminal Architecture</text>
+
+  <g>
+    <rect x="460" y="80" width="460" height="48" fill="#ffffff" stroke="#0b3c5d" stroke-width="1.5" rx="4"/>
+    <text x="690" y="110" text-anchor="middle" class="small">Entry & UI (CLI/TUI/Web)</text>
+
+    <rect x="460" y="140" width="460" height="48" fill="#ffffff" stroke="#0b3c5d" stroke-width="1.5" rx="4"/>
+    <text x="690" y="170" text-anchor="middle" class="small">Agent Layer (planning ↔ execution; multi-model)</text>
+
+    <rect x="460" y="200" width="460" height="48" fill="#ffffff" stroke="#0b3c5d" stroke-width="1.5" rx="4"/>
+    <text x="690" y="230" text-anchor="middle" class="small">Tool & Context (skills, tool registry, compaction)</text>
+
+    <rect x="460" y="260" width="460" height="48" fill="#ffffff" stroke="#0b3c5d" stroke-width="1.5" rx="4"/>
+    <text x="690" y="290" text-anchor="middle" class="small">Persistence (session store, lessons, audit)</text>
+  </g>
+
+  <!-- arrows between loop and harness -->
+  <path d="M370 150 L430 150" class="arrow" />
+  <text x="410" y="140" text-anchor="end" class="small">invokes</text>
+
+  <path d="M550 320 L520 340 L340 340" class="arrow" />
+  <text x="460" y="355" text-anchor="middle" class="small">lessons learned → shared repo</text>
+
+  <text x="200" y="340" text-anchor="middle" class="small">(This diagram synthesizes SEP's skill loop with OpenDev-style harness layers and the design dimensions survey.)</text>
+</svg>

@@ -40,7 +40,7 @@
 ## Constraints and invariants
 
 - Two posts must never resolve to the same slug.
-- Draft handling is out of scope until explicitly added; every valid post source Markdown file in `posts/` is published.
+- Draft handling: Posts may include optional front matter `draft: true` to exclude them from the published archive. When consolidating posts, create a canonical merged post (with a stable slug) and mark original files with `draft: true` and a short note linking to the canonical post. The generator will skip files marked `draft: true`. 
 - Post bodies may include standard Markdown links, lists, headings, blockquotes, and fenced code blocks.
 
 ## Change log:

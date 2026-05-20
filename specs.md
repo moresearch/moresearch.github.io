@@ -24,7 +24,7 @@ Validation:
 - No horizontal overflow on desktop/mobile
 
 Change log:
-- Blog posts: Each post in posts/ must start with YAML front matter (---) with required fields `title` and `date` (YYYY-MM-DD). The generator fails on missing or mis-cased keys; keep keys lowercase. See posts/specs.md for details.
+- Blog posts: Each post in posts/ must start with YAML front matter (---) with required fields `title` and `date` (YYYY-MM-DD). The generator fails on missing or mis-cased keys; keep keys lowercase. Posts may include an optional `draft: true` front-matter key to exclude a file from the published archive when consolidating content. When consolidating, create a canonical merged post with a stable slug, and mark original files with `draft: true` and a short note pointing to the canonical post. See posts/specs.md for details.
 
 - Added talk 003 (Harness Engineering): generated PDF and preview assets must be present at talks/003.pdf and talks/003-page-1.webp and referenced from /talks/.
 - Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" describing Task vs Eval vs Agent harnesses (source: YouTube C_GG5g38vLU).

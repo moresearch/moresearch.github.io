@@ -11,6 +11,10 @@ Neste post, apresento um resumo dos eixos principais, ações destacadas e refle
 
 ## Principais eixos do PBIA
 
+[![PBIA diagrama](images/pbia-diagram.jpg)](https://www.gov.br/governodigital/pt-br/infraestrutura-nacional-de-dados/inteligencia-artificial-1)
+
+
+
 O PBIA organiza-se em cinco eixos estruturantes:
 
 - Eixo 1 — Infraestrutura e desenvolvimento de IA: construção de capacidade computacional, promoção de data centers sustentáveis e investimento em infraestrutura nacional (incluindo ambição por supercomputadores de classe mundial).

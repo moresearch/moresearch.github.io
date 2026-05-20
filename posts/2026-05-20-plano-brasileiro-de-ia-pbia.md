@@ -13,6 +13,9 @@ Neste post, apresento um resumo dos eixos principais, ações destacadas e refle
 
 [![PBIA diagrama](images/pbia-diagram.jpg)](https://www.gov.br/governodigital/pt-br/infraestrutura-nacional-de-dados/inteligencia-artificial-1)
 
+<p><a href="files/pbia.pdf" target="_blank" rel="noopener noreferrer">Abrir/baixar o PDF completo (PBIA — MCTI 2025)</a> • <a href="https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/transformacaodigital/plano-brasileiro-de-inteligencia-artificial-pbia-_vf.pdf" target="_blank" rel="noopener noreferrer">Versão original (MCTI)</a></p>
+
+<div style="max-width:100%; margin:16px 0;"><iframe src="files/pbia.pdf" width="100%" height="720" style="border:1px solid rgba(255,255,255,0.08);" title="PBIA PDF"></iframe></div>
 
 
 O PBIA organiza-se em cinco eixos estruturantes:

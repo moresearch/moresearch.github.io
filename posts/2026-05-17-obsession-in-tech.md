@@ -1,9 +1,7 @@
-# Startups: Obsession as an engine
-
-Date: 2026-05-17
-
-Summary: Obsession—a focused, near-messianic attention to a single problem—accelerates mastery and product-market fit. Using Christopher Nolan's The Prestige and Damien Chazelle's Whiplash as parables, this post argues founders should be deliberately obsessive about the right problem and offers guardrails to keep obsession productive rather than destructive.
-
+---
+title: Startups: Obsession as an engine
+date: 2026-05-17
+summary: Obsession—a focused, near-messianic attention to a single problem—accelerates mastery and product-market fit. Using Christopher Nolan's The Prestige and Damien Chazelle's Whiplash as parables, this post argues founders should be deliberately obsessive about the right problem and offers guardrails to keep obsession productive rather than destructive.
 ---
 
 Obsession is the nitro that accelerates craft. In startups it shows up as founders and small teams who refuse to accept 'good enough' because a specific user problem is still broken, or a core metric refuses to budge. That intensity drives the repeated, focused experiments that produce breakthroughs: rapid iteration, fierce prioritization, and the kind of domain expertise that becomes a defensible advantage.

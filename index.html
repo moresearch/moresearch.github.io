@@ -4,21 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Single-page writing log built from Markdown sources.">
+  <meta name="description" content="Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/fontawesome.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/regular.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-  <link rel="shortcut icon" href="/favicon/favicon.ico">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <meta name="theme-color" content="#000000">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
@@ -302,44 +294,6 @@
     .nav-head {
       display: grid;
       gap: 8px;
-    }
-
-    .blog-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .blog-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .blog-nav-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      display: inline-grid;
-      place-items: center;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .blog-nav-icon:hover,
-    .blog-nav-icon:focus-visible {
-      opacity: 0.72;
-    }
-
-    .blog-nav-icon i {
-      font-size: 1.15rem;
-      line-height: 1;
-    }
-
-    .blog-nav-top {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 18px;
     }
 
     .posts-nav-empty,
@@ -696,12 +650,315 @@
       </aside>
       <section class="content-side">
         <div class="content">
-          <nav class="blog-nav blog-nav-top" aria-label="Blog navigation">
-            <a class="blog-nav-icon" href="/talks/" aria-label="Talks" title="Talks">
-              <i class="fa-regular fa-rectangle-list" aria-hidden="true"></i>
-            </a>
-          </nav>
           <div class="post-list">
+      <article class="post" id="process-mining-with-python-and-solving-real-world-data-science-tasks">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
+          <h2><a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a></h2><p class="post-summary">Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.</p>
+          <div class="tags"><span class="tag">data-science</span><span class="tag">process-mining</span><span class="tag">python</span><span class="tag">tutorial</span>
+          </div>
+        </header>
+        <div class="post-body"><p>TL;DR</p>
+<p>Process mining turns event data into process models and performance insights; Python (pandas + PM4Py) makes it accessible. Pair process‑mining features (throughput, wait times, activity counts) with standard data‑science pipelines (EDA, feature engineering, modeling) to solve real‑world problems like delay prediction and bottleneck analysis. This post synthesizes practical steps and code pointers inspired by two Medium articles: &quot;Process Mining with Python&quot; and &quot;Solving a real‑world data science task with Python.&quot; Links in References.</p>
+<p>Introduction</p>
+<p>Two approachable Medium posts highlight hands‑on ways to extract insights from logs and run pragmatic data‑science projects from end to end. This post synthesizes their practical guidance into a compact recipe: how to extract event logs, discover process models, compute process features, and use them in predictive workflows.</p>
+<ol>
+<li>From raw events to an event log</li>
+</ol>
+<p>Key columns: case id (process instance), activity name, timestamp. Start by loading data with pandas, parsing timestamps, and normalizing column names for PM4Py interoperability.</p>
+<p>Example:</p>
+<pre><code class="language-python">import pandas as pd
+from pm4py.objects.conversion.log import factory as log_converter
+
+df = pd.read_csv('events.csv', parse_dates=['timestamp'])
+# rename columns for PM4Py
+df = df.rename(columns={'case_id':'case:concept:name', 'activity':'concept:name', 'timestamp':'time:timestamp'})
+log = log_converter.apply(df)
+</code></pre>
+<ol start="2">
+<li>Discovering process models and visualizing</li>
+</ol>
+<p>Use discovery algorithms (e.g., Inductive Miner, Heuristics Miner) to build models. PM4Py supports several miners and visualization backends.</p>
+<pre><code class="language-python">from pm4py.algo.discovery.inductive import factory as inductive_miner
+from pm4py.visualization.petrinet import factory as pn_vis
+
+net, im, fm = inductive_miner.apply(log)
+gviz = pn_vis.apply(net, im, fm)
+pn_vis.view(gviz)
+</code></pre>
+<ol start="3">
+<li>Feature engineering for ML</li>
+</ol>
+<p>Process mining yields rich features per case: total throughput time, activity counts, time between specific activities, resource load, and frequency of rare paths. These make strong predictors when combined with static attributes from the business data.</p>
+<p>Practical features:</p>
+<ul>
+<li>case_duration = max(timestamp) - min(timestamp)</li>
+<li>activity_counts: how many times each activity appears per case</li>
+<li>waiting_times: mean/median time between consecutive activities</li>
+<li>path_signature: compressed representation of the activity sequence</li>
+</ul>
+<ol start="4">
+<li>A pragmatic modeling loop</li>
+</ol>
+<p>Apply typical data‑science steps: split by case, build features, train/test, and validate with time‑aware splitting to avoid leakage. For production, monitor model drift and re-run process feature extraction as logs evolve.</p>
+<ol start="5">
+<li>Putting process mining inside a real project</li>
+</ol>
+<p>The Medium examples emphasize real‑world concerns: messy timestamps, missing case identifiers, and schema drift. Good practices:</p>
+<ul>
+<li>validate and canonicalize timestamps early</li>
+<li>infer case IDs when absent (grouping heuristics)</li>
+<li>keep a reproducible ETL script for event extraction</li>
+</ul>
+<ol start="6">
+<li>When to use process features vs raw sequence models</li>
+</ol>
+<p>Simple tabular models with hand‑crafted process features are often more interpretable and cheaper to maintain than sequence models. Use sequence models (RNNs/transformers over activities) when history encoding clearly improves predictive performance and the team can maintain the complexity.</p>
+<p>Checklist to get started</p>
+<ul>
+<li><input disabled="" type="checkbox"> Identify the event sources and the case id column</li>
+<li><input disabled="" type="checkbox"> Export a sample CSV with: case_id, activity, timestamp, and any static attributes</li>
+<li><input disabled="" type="checkbox"> Run PM4Py discovery on the sample; inspect model and logs for obvious issues</li>
+<li><input disabled="" type="checkbox"> Create per‑case features and run exploratory modeling (time‑aware CV)</li>
+<li><input disabled="" type="checkbox"> Add monitoring: data schema checks and drift detection</li>
+</ul>
+<p>Skill curation and SkillOS: making pipelines live</p>
+<p>Google's SkillOS thread (explained in AVB's Paper Breakdown) describes a two-part architecture: a frozen executor that solves tasks by loading reusable &quot;skills&quot; from a SkillRepo, and a trainable Curator that observes executor trajectories and issues structured edits to the SkillRepo (insert/update/delete). The Curator is trained with a group-based curriculum and a composite reward that measures downstream task success, function-call validity, information compression, and content quality.</p>
+<p>For process‑mining pipelines the Curator can distill robust ETL and feature‑engineering recipes into SKILL.md files (frontmatter + concise description used for BM25 retrieval, step‑by‑step workflow, worked example, and &quot;when not to use&quot;). Example skills: <code>extract_event_log</code>, <code>feature_engineer_case_features</code>, <code>build_delay_model</code>.</p>
+<p>Benefits: repeated runs produce distilled, versioned recipes that accelerate reproducible pipelines and improve executor reliability while keeping instructions modular and auditable.</p>
+<p>Operational notes: require human review before promoting automated updates; avoid embedding dataset‑specific constants; maintain test tasks to evaluate curator changes.</p>
+<p>References</p>
+<ul>
+<li>Hussam Alhumsi: &quot;Process Mining with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6">https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6</a></li>
+<li>İ. Cem Özçelik: &quot;Solving a Real‑World Data Science Task with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1">https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1</a></li>
+<li>AVB (SkillOS thread / breakdown): <a target="_blank" rel="noopener noreferrer" href="https://x.com/neural_avb/status/2053873358853591435?s=20">https://x.com/neural_avb/status/2053873358853591435?s=20</a></li>
+</ul>
+<p>Notes: This post paraphrases and synthesizes practical advice from the referenced Medium posts and general process‑mining best practices. For full, article‑level detail, consult the original posts.</p>
+</div>
+      </article>
+      <article class="post" id="self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
+          <h2><a href="#self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space</a></h2><p class="post-summary">A practical recipe that combines SEP&#39;s self‑improving skill loop with OpenDev&#39;s terminal harness architecture and an empirical survey of harness design choices.</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">harness</span><span class="tag">workflow</span><span class="tag">research</span>
+          </div>
+        </header>
+        <div class="post-body"><p>TL;DR</p>
+<p>Combine SEP's simple &quot;read lessons → do work → reflect → write lessons&quot; skill loop with OpenDev's harness-level practices (multi-model routing, context compaction, safety layers) and the empirical design-space findings from an architecture survey. Start with one skill and one loop; let usage generate the data you need to grow a robust harness.</p>
+<p>Introduction</p>
+<p>SEP's &quot;The workflow that teaches itself&quot; proposes a minimal, practical loop: make each task a stepwise skill that reads past lessons at start and writes new lessons at the end. Over time the skill improves itself from real failures and fixes. This is a low-friction way to bootstrap reliable agent behavior without designing heavyweight infrastructure first.</p>
+<p>Why mix SEP with system papers</p>
+<p>Two recent arXiv reports make complementary points.</p>
+<ul>
+<li>OpenDev (arXiv:2603.05344v1) argues for a compound, multi-model terminal harness with explicit context compaction, dual-agent planning/execution separation, and layered safety. Those practices solve long-running, token-budgeted CLI agent problems.</li>
+<li>An empirical architecture survey (arXiv:2604.18071v1) catalogs recurring harness design dimensions: subagent structure, context management, tool systems, safety, and orchestration. It shows which choices tend to co-occur across real projects.</li>
+</ul>
+<p>Bringing them together</p>
+<p>SEP gives a practical, incrementally deployable loop. OpenDev and the survey show the harness patterns that emerge as those loops scale and as teams demand reliability, safety, and multi-model efficiency.</p>
+<ul>
+<li>Start small: implement a skill with steps and a lessons file (team + personal). Let runs accumulate real failure modes.</li>
+<li>When recurring issues appear, promote lessons into explicit rules inside the skill or into harness-level hooks (e.g., automatic retries, sandboxing checks).</li>
+<li>Use the survey's design dimensions as a checklist when a skill grows into a subsystem: do we need subagent decomposition, a tool registry, stronger context persistence, or a governance layer?</li>
+<li>Apply OpenDev tactics for long-running terminal agents: separate planning from execution, compact context proactively, route workloads to models by role, and add staged safety vetoes.</li>
+</ul>
+<p>Figures</p>
+<p><img src="https://sep.com/wp-content/uploads/2026/05/visual-01-knowledge-first-vs-path-first-1024x683.jpg" alt="Knowledge‑first vs Path‑first">
+<em>Figure 1 — SEP: path‑first thinking (name the step, confine the scope).</em></p>
+<p><img src="https://sep.com/wp-content/uploads/2026/05/visual-02-core-learning-loop-1024x683.jpg" alt="Core learning loop">
+<em>Figure 2 — SEP: attach learning to the path (read lessons … write lessons).</em></p>
+<p><img src="images/self-improving-harness.svg" alt="Synthesis diagram">
+<em>Figure 3 — Synthesis: skill loop (left) invokes harness layers (right). The harness implements the tool registry, context compaction, safety layers, and persistence the skill depends on as it scales.</em></p>
+<p>A short getting‑started checklist</p>
+<ol>
+<li>Pick one repeatable task (dev DB reset, data import, report generation).</li>
+<li>Write it as a stepwise skill with: 1) read lessons, 2) execute steps, 3) reflect, 4) write lessons.</li>
+<li>Store team lessons in the repo and user lessons in a gitignored file.</li>
+<li>Run the skill often; catalogue recurring failure modes.</li>
+<li>When failures repeat, promote durable lessons into explicit handlers or harness hooks.</li>
+<li>Use the survey's five design dimensions (subagents, context, tools, safety, orchestration) to plan harness upgrades.</li>
+</ol>
+<p>Why this approach works</p>
+<ul>
+<li>Low friction: you get actionable telemetry before investing in big harness projects.</li>
+<li>Composability: skills remain small and learn inside their lanes; orchestrators and harness layers coordinate them at scale.</li>
+<li>Evidence driven: empirical architecture patterns (2604.18071v1) guide which harness investments pay off across projects.</li>
+</ul>
+<p>References</p>
+<ul>
+<li>SEP: The workflow that teaches itself — <a target="_blank" rel="noopener noreferrer" href="https://sep.com/blog/the-workflow-that-teaches-itself-a-self-improving-agent-workflow/">https://sep.com/blog/the-workflow-that-teaches-itself-a-self-improving-agent-workflow/</a></li>
+<li>OpenDev (compound CLI agent): <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/html/2603.05344v1">https://arxiv.org/html/2603.05344v1</a></li>
+<li>Agent harness design-space survey: <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/html/2604.18071v1">https://arxiv.org/html/2604.18071v1</a></li>
+</ul>
+<hr>
+<p>Notes: Figures 1–2 are from SEP's public blog (linked above). Figure 3 is a synthesized diagram included in this post to show how SEP's skill loop maps to harness layers described in the OpenDev paper and the architecture survey.</p>
+</div>
+      </article>
+      <article class="post" id="harness-engineering-fowler">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1778976000</time></p>
+          <h2><a href="#harness-engineering-fowler">&#34;Harness Engineering (Martin Fowler)&#34;</a></h2><p class="post-summary">&#34;Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.&#34;</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">synthesis</span><span class="tag">martin-fowler</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Martin Fowler's essay &quot;Harness Engineering&quot; reframes the problem of trustworthy coding agents as a control-engineering task: the harness is the set of guides and sensors that steer, test, and correct agent behavior so humans can rely on the outputs.</p>
+<p>This post summarizes the article and extracts practical recommendations teams can start applying today.</p>
+<p>Key idea: harness = guides + sensors</p>
+<ul>
+<li>Guides (feedforward controls) shape agent behavior before it acts: clear instructions, bootstrapping docs, templates, and computational tooling that bias the agent toward desirable outputs.</li>
+<li>Sensors (feedback controls) observe results and enable self-correction: linters, tests, static analysis, and higher-level inferential judges (AI reviewers) that can produce signals optimized for the agent.</li>
+</ul>
+<p>Computational vs inferential</p>
+<ul>
+<li>Computational controls are deterministic and fast (linters, unit tests, static analysis). They are cheap enough to run on every change and give reliable results.</li>
+<li>Inferential controls are semantic, non-deterministic, and more expensive (LLM-based code review, AI judges). They add richness and can catch problems that structural checks miss, but they should be used judiciously.</li>
+</ul>
+<p>Steering loop and timing</p>
+<p>Fowler emphasizes the human role: the team must &quot;steer&quot; the harness by iterating on guides and sensors whenever recurring failures are observed. A practical cadence is:</p>
+<ul>
+<li>Shift cheap, computational checks as far left as possible (pre-commit, IDE/LSP, early CI).</li>
+<li>Run heavier inferential sensors in integration or post-merge pipelines.</li>
+<li>Use continuous drift detection (coverage, dependency analyses, runtime SLO sampling) outside the commit lifecycle to surface gradual regressions.</li>
+</ul>
+<p>Three regulation categories</p>
+<p>Fowler proposes thinking of harness objectives in three orthogonal dimensions:</p>
+<ul>
+<li>Maintainability harness — tools that regulate code quality and internal consistency (duplicate code, complexity, coverage).</li>
+<li>Architecture fitness harness — fitness functions and structural checks that enforce architectural constraints and observable patterns.</li>
+<li>Behaviour harness — the hardest: verifying that the system functionally does what users need; often needs a mix of tests, approved fixtures, and human checks.</li>
+</ul>
+<p>Harnessability and templates</p>
+<p>Not every codebase is equally easy to harness. Greenfield projects can bake harnessability in (types, clear module boundaries); legacy codebases may need incremental investments. To scale effort, organizations can capture common topologies as harness templates — bundles of guides and sensors tailored to a topology — while being mindful of version drift and maintenance costs.</p>
+<p>Role of humans</p>
+<p>Humans bring tacit knowledge, social accountability, and judgement that agents lack. Harnesses are partly an attempt to externalize that experience; they should therefore aim to reduce repetitive oversight while leaving nuanced judgement where people add the most value.</p>
+<p>Practical checklist</p>
+<ul>
+<li>Start with computational feedforward controls: LSPs, linters, and targeted pre-commit hooks.</li>
+<li>Add fast feedback: unit tests, structural tests, policy linters that run in CI.</li>
+<li>Design inferential sensors only where they measurably reduce supervision cost; run them at lower frequency or post-merge.</li>
+<li>Prioritize harness cases that map to production failures — convert incidents into permanent harness cases.</li>
+<li>Instrument for replay and for agent-friendly error messages so sensors can be used as correction signals.</li>
+<li>Monitor continuous drift and add sensors that surface slowly accumulating problems.</li>
+</ul>
+<p>Conclusion</p>
+<p>Fowler's framework makes the abstract idea of &quot;a harness&quot; actionable: treat it as a system of guides and sensors that you iteratively improve, and prefer cheap deterministic controls left in the pipeline while layering inferential checks where they add value. Harness engineering is not a one-off project; it's an ongoing practice that makes coding agents a practical part of the engineering workflow.</p>
+<p>References</p>
+<ul>
+<li>Martin Fowler, &quot;Harness Engineering&quot; — <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/articles/harness-engineering.html">https://martinfowler.com/articles/harness-engineering.html</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="startups-obsession-as-an-engine">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1778976000</time></p>
+          <h2><a href="#startups-obsession-as-an-engine">Startups: Obsession as an engine</a></h2><p class="post-summary">Obsession—a focused, near-messianic attention to a single problem—accelerates mastery and product-market fit. Using Christopher Nolan&#39;s The Prestige and Damien Chazelle&#39;s Whiplash as parables, this post argues founders should be deliberately obsessive about the right problem and offers guardrails to keep obsession productive rather than destructive.</p>
+        </header>
+        <div class="post-body"><p>Obsession is the nitro that accelerates craft. In startups it shows up as founders and small teams who refuse to accept 'good enough' because a specific user problem is still broken, or a core metric refuses to budge. That intensity drives the repeated, focused experiments that produce breakthroughs: rapid iteration, fierce prioritization, and the kind of domain expertise that becomes a defensible advantage.</p>
+<p>But obsession is a double-edged sword. Two films—Christopher Nolan's The Prestige and Damien Chazelle's Whiplash—offer stark parables about what obsession does to excellence and to people.</p>
+<h2 id="the-prestige-the-prestige-and-the-cost">The Prestige: the prestige and the cost</h2>
+<p>In The Prestige, two magicians (Angier and Borden) allow rivalry and obsession to dictate their choices. The filmmaker Sam Langan wrote a useful analysis of the film's theme of obsession and identity: <a target="_blank" rel="noopener noreferrer" href="https://samlangan.wordpress.com/2011/10/31/obsession-in-christopher-nolans-the-prestige/">https://samlangan.wordpress.com/2011/10/31/obsession-in-christopher-nolans-the-prestige/</a>.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=88_6SQKuTHk"><img src="https://img.youtube.com/vi/88_6SQKuTHk/hqdefault.jpg" alt="The Prestige — 'Transported' scene thumbnail"></a></p>
+<p>Angier's pursuit of the perfect effect (the &quot;prestige&quot;) drives him to use Tesla's machine, and he pays an escalating human cost to protect the illusion. The movie makes an important point for founders: obsession can manufacture a unique, memorable experience (the &quot;wow&quot;), but it can also blind you to ethical costs and brittle trade-offs. Angier succeeds in producing an astonishing trick, but he does so by creating a process that's fragile, secretive, and morally fraught.</p>
+<p>Applied to startups: obsession about a core user problem can produce a signature feature that customers remember. But if the obsession focuses on appearance rather than durable utility (a prettier demo over a solved problem), it will lead to brittle decisions and hidden technical debt.</p>
+<h2 id="whiplash-deliberate-practice-turned-extreme">Whiplash: deliberate practice turned extreme</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=Vnr-PFs7dEQ"><img src="https://img.youtube.com/vi/Vnr-PFs7dEQ/hqdefault.jpg" alt="Whiplash — final performance thumbnail"></a></p>
+<p>Whiplash dramatizes deliberate practice: Andrew's relentless, often brutal rehearsals are the crucible that forges mastery. Fletcher's pedagogy is abusive, but the film asks a hard question: can excellence be produced without pressure? Founders should take from Whiplash the value of concentrated, feedback-rich practice—while rejecting Fletcher's cruelty.</p>
+<p>In engineering terms, obsessive iteration looks like relentless bug-fixing, focused performance tuning, or shipping hundreds of tiny experiments until the retention curve moves. It is not heroics; it is disciplined repetition aimed at a measurable outcome.</p>
+<h2 id="what-founders-should-borrow-from-these-stories">What founders should borrow from these stories</h2>
+<ul>
+<li>Obsess about the problem, not vanity. Let metrics and user behaviour decide whether a thing is valuable.</li>
+<li>Use deliberate practice: set tight learning cycles, measure progress, and iterate. Like Whiplash, it demands repetition; unlike Fletcher, keep it humane.</li>
+<li>Build a &quot;prestige&quot; only if it solves a real user need. The Prestige shows how an impressive surface with no structural value is fragile.</li>
+</ul>
+<h2 id="guardrails-to-keep-obsession-productive">Guardrails to keep obsession productive</h2>
+<ol>
+<li>Obsess about outcomes, not output. Track the metric that represents the user problem, and stop when it moves.</li>
+<li>Timebox intensity. Run focused sprints (1–4 weeks) of high-intensity work, then recover and review.</li>
+<li>Make obsession social. Share your thesis and experiments with trusted advisors and early users to test delusions early.</li>
+<li>Instrument everything. Obsession without data is superstition.</li>
+<li>Avoid martyrdom culture. Reward sustainable craftsmanship and systems that make excellence repeatable.</li>
+</ol>
+<h2 id="concrete-rituals">Concrete rituals</h2>
+<ul>
+<li>Weekly 90-minute &quot;problem deep-dive&quot;: stop roadmap talk and interrogate one user problem with data and customer quotes.</li>
+<li>&quot;Fail fast&quot; sandbox: require a small experiment before a big feature bet.</li>
+<li>Postmortem for &quot;hero moves&quot;: when someone burns out, perform a blameless review and fix the systemic causes.</li>
+<li>Deliberate-practice sessions: engineers/PMs pick one micro-skill and practice it in 30–60 minute focused sessions.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Obsession concentrates talent and reduces the noise between idea and feedback. The Prestige and Whiplash teach complementary lessons: one shows how obsession creates unforgettable, high-impact outcomes at a cost; the other shows how brutal practice produces technical mastery. For founders, the task is simple but hard: be obsessively curious about the right problem, instrument progress, share the work, and protect the people who do the work.</p>
+<p>References</p>
+<ul>
+<li>Sam Langan, &quot;Obsession in Christopher Nolan's The Prestige&quot;: <a target="_blank" rel="noopener noreferrer" href="https://samlangan.wordpress.com/2011/10/31/obsession-in-christopher-nolans-the-prestige/">https://samlangan.wordpress.com/2011/10/31/obsession-in-christopher-nolans-the-prestige/</a></li>
+<li>The Prestige (scene): <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=88_6SQKuTHk">https://www.youtube.com/watch?v=88_6SQKuTHk</a></li>
+<li>Whiplash (film clip): <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=Vnr-PFs7dEQ">https://www.youtube.com/watch?v=Vnr-PFs7dEQ</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="task-harness-engineering">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1778976000</time></p>
+          <h2><a href="#task-harness-engineering">&#34;Task Harness Engineering: how it compares to Eval and Agent Harnesses&#34;</a></h2><p class="post-summary">&#34;A practical guide to building task harnesses and how they differ from evaluation and agent harnesses (informed by the referenced talk).&#34;</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">evaluation</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Task harnesses are the scaffolding that turn a high-level engineering question—&quot;Can this system finish a real task?&quot;—into reproducible, debuggable experiments. This post explains what &quot;Task Harness Engineering&quot; means, how it differs from Eval harnesses (benchmarks) and Agent harnesses (integration + environment tests), and practical recommendations for building one.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=C_GG5g38vLU"><img src="https://img.youtube.com/vi/C_GG5g38vLU/hqdefault.jpg" alt="Harness Engineering talk (YouTube)"></a></p>
+<p>Source: Harness Engineering (YouTube), referenced for conceptual framing and examples (video id: C_GG5g38vLU).</p>
+<p>What is a harness?</p>
+<ul>
+<li>A harness is code and infra that runs a task, measures outcomes, and records what happened. Harnesses range from small unit-test-like runners to complex environment orchestrators that start services, browsers, or VM sandboxes.</li>
+</ul>
+<p>Task Harness Engineering</p>
+<ul>
+<li>Goal: exercise an agent or system with realistic tasks that capture the operational surface area you care about.</li>
+<li>Characteristics: stateful, often non-deterministic, reliant on external systems or realistic mocks, and focused on end-to-end success rather than a single scalar metric.</li>
+<li>Example tasks: finish a multi-step research workflow, triage a bug in a real repo, navigate a web app and complete a purchase flow, or orchestrate tools to solve a programming prompt with tests.</li>
+<li>Measurements: success/failure, retries, time-to-completion, observability traces, logs, and qualitative artifacts (replays/screenshots).</li>
+</ul>
+<p>Eval Harness (what it is and how it’s different)</p>
+<ul>
+<li>Eval harnesses run static, dataset-driven evaluations (datasets, metrics, automated scorers).</li>
+<li>Characteristics: deterministic or quasi-deterministic, high throughput, designed to compute reproducible aggregates (accuracy, F1, BLEU, etc.).</li>
+<li>Strengths: clear comparisons, statistical rigor, fast iteration.</li>
+<li>Weaknesses vs Task Harness: lower realism (benchmarks are proxies), brittle to specification differences, and limited visibility into long-horizon or environment-level failures.</li>
+</ul>
+<p>Agent Harness (what it is and how it’s different)</p>
+<ul>
+<li>Agent harnesses focus on agents interacting with environments (simulated worlds, browsers, shells, APIs) and on integration points: tool calls, state persistence, safety checks.</li>
+<li>Characteristics: emphasizes sandboxing, step-level instrumentation, and emergent behaviors across many steps.</li>
+<li>Overlap with Task Harness: agent harnesses are often the runtime that executes task harnesses when the subject is an agent; agent harnesses add concerns like action validation, safety guards, and tool interfaces.</li>
+</ul>
+<p>Key axes of difference</p>
+<ul>
+<li>Realism: Task &gt;&gt; Eval. Agent harness sits between and often provides the runtime for tasks that exercise agents.</li>
+<li>Determinism: Eval (high) &gt; Agent (medium) &gt; Task (low).</li>
+<li>Metrics: Eval focuses on aggregated scalars; Task harnesses capture a richer set (end-to-end success, observability, human judgments). Agent harnesses must capture both step-level and end-to-end signals.</li>
+<li>Infrastructure: Task harnesses require orchestration of real or high-fidelity mocks (browsers, CLIs, repos). Eval harnesses only need fast scoring pipelines. Agent harnesses require safe sandboxes and tool shims.</li>
+</ul>
+<p>Practical engineering patterns</p>
+<ul>
+<li>Instrumentation-first: log inputs, decisions, tool calls, and environment responses. Design for replay.</li>
+<li>Replayability: capture transcripts and environment snapshots so failed runs can be replayed deterministically when possible.</li>
+<li>Tasks that &quot;fight back&quot;: design tasks that surface edge cases, race conditions, and adversarial inputs instead of only happy paths.</li>
+<li>Hybrid approach: use eval harnesses for fast filtering, then escalate promising models to task harnesses for realism tests, and run agent harnesses in parallel to validate tool integrations.</li>
+<li>Isolation and safety: run untrusted code in sandboxes; for web/OS interaction prefer ephemeral VMs/containers and recorded interactions.</li>
+<li>Observability and triage: attach lightweight traces (request ids, timestamps) to link model internals to external failures.</li>
+</ul>
+<p>When to use each harness</p>
+<ul>
+<li>Use Eval harness when you need fast, repeatable comparisons during model iteration.</li>
+<li>Use Task harness when your priority is real-world behavior, end-to-end failure modes, or human-facing UX outcomes.</li>
+<li>Use Agent harness when validating tool use, stateful interactions, or safety boundaries across many steps.</li>
+</ul>
+<p>Conclusion and recommendations</p>
+<p>Task Harness Engineering complements, not replaces, eval and agent harnesses. The right pipeline uses them together: evaluate cheaply, validate realistically, and instrument deeply. Start with a minimal task harness for the most critical user journeys, make reproducible recordings, and iterate: increase realism until the harness meaningfully predicts production failure modes.</p>
+<p>Notes and references</p>
+<ul>
+<li>Video source (conceptual reference): <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=C_GG5g38vLU">https://www.youtube.com/watch?v=C_GG5g38vLU</a> (video id: C_GG5g38vLU)</li>
+<li>Encourage readers to run the referenced talk for additional context and examples.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="alphago-from-scratch-eric-jang">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-16" data-utc="May 16, 2026 UTC" aria-label="May 16, 2026 UTC" tabindex="0">1778889600</time></p>
@@ -2254,18 +2511,15 @@ type Logger interface {
       <aside class="nav-side">
         <div class="nav-rail">
           <div class="nav-head">
-            <div class="blog-header">
-              <h1>Engineering blog</h1>
-
-              <nav class="blog-nav" aria-label="Blog navigation">
-                <a class="blog-nav-icon" href="/talks/" aria-label="Talks" title="Talks">
-                  <i class="fa-regular fa-rectangle-list" aria-hidden="true"></i>
-                </a>
-              </nav>
-            </div>
+            <h1>Engineering blog</h1>
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a>
+              <a href="#self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space</a>
+              <a href="#harness-engineering-fowler">&#34;Harness Engineering (Martin Fowler)&#34;</a>
+              <a href="#startups-obsession-as-an-engine">Startups: Obsession as an engine</a>
+              <a href="#task-harness-engineering">&#34;Task Harness Engineering: how it compares to Eval and Agent Harnesses&#34;</a>
               <a href="#alphago-from-scratch-eric-jang">&#34;Building AlphaGo from scratch – Eric Jang&#34;</a>
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#startup-lessons-the-two-task-rule">Startup Lessons: The Two-Task Rule</a>

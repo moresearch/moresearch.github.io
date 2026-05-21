@@ -28,6 +28,8 @@ Change log:
 
 - Added talk 003 (Harness Engineering): generated PDF and preview assets must be present at talks/003.pdf and talks/003-page-1.webp and referenced from /talks/.
 - Added talk 004 (Defense): imported defense.pdf as talks/004.pdf; previews and meta.json placeholder created — run `make previews` to generate preview images and high-res fullscreen images and to update .meta.json with correct page_count.
+- Removed talks 001 and 002: PDFs and preview assets removed to streamline the talks index; run `make previews` to regenerate assets and ensure no orphan metadata remains.
+- Improved talk 003 (Harness Engineering): added references to related blog posts (see talks/003.meta.json -> references) and updated slide presentation metadata — run `make previews` if slides are recompiled.
 - Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" describing Task vs Eval vs Agent harnesses (source: YouTube C_GG5g38vLU).
 - Updated talk 003 (Harness Engineering): appended full content of harness-related blog posts into slides and added a References slide linking to the posts (harness-engineering-best-practices-for-ai-agents, coding-agent-harnesses-need-real-repositories, harnesses-need-real-browsers-not-polite-demos, agent-harnesses-need-tasks-that-fight-back, good-harnesses-watch-the-whole-operating-system, go-is-good-for-harness-pipelines, task-harness-engineering).
 - Added post 2026-05-17-harness-engineering-fowler.md: "Harness Engineering (Martin Fowler)" summarizing and reflecting on Martin Fowler's article (https://martinfowler.com/articles/harness-engineering.html).

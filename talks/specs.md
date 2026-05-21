@@ -18,3 +18,5 @@ Validation checklist:
 Change log:
 - Added talk 003 (Harness Engineering): metadata and page images generated during build.
 - Added talk 004 (Defense): imported defense.pdf as talks/004.pdf; placeholder .meta.json created — run `make previews` to generate preview images and update page_count.
+- Removed talks 001 and 002: deleted PDFs and preview assets to streamline the talks index. Run `make previews` to regenerate assets and ensure no orphan metadata.
+- Improved talk 003 (Harness Engineering): references to related blog posts added to talks/003.meta.json; template updated to render references on the talk page.

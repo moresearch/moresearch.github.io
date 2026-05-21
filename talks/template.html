@@ -98,6 +98,34 @@
     document.addEventListener('fullscreenchange', onFsChange);
     document.addEventListener('webkitfullscreenchange', onFsChange);
     document.addEventListener('msfullscreenchange', onFsChange);
+
+    // load metadata (references, etc.) and render if present
+    fetch('{{ID}}.meta.json').then(function(res){ if(!res.ok) throw res; return res.json(); }).then(function(meta){
+      if(meta && Array.isArray(meta.references) && meta.references.length){
+        var section = document.querySelector('.talk-preview');
+        if(section){
+          var refs = document.createElement('div');
+          refs.className = 'talk-references';
+          refs.style.cssText = 'position:absolute;left:12px;bottom:12px;right:12px;color:#ddd;font-size:14px;padding:12px;background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.45));border-radius:8px;border:1px solid rgba(255,255,255,0.06);max-width:calc(100% - 24px);';
+          var title = document.createElement('div'); title.textContent = 'References'; title.style.fontWeight='600'; title.style.marginBottom='6px';
+          refs.appendChild(title);
+          var ul = document.createElement('ul');
+          ul.style.margin='0'; ul.style.padding='0 0 0 18px';
+          meta.references.forEach(function(u){
+            var li = document.createElement('li');
+            li.style.marginBottom='4px';
+            var a = document.createElement('a');
+            a.href = u; a.target='_blank'; a.rel='noopener noreferrer';
+            a.textContent = u.replace(/^https?:\/\/blog\.hackspree\.com\//, '');
+            a.style.color = '#9fd3ff';
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          refs.appendChild(ul);
+          section.appendChild(refs);
+        }
+      }
+    }).catch(function(){});
   })();
 </script>
 </body>

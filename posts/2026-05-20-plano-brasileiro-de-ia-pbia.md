@@ -17,6 +17,14 @@ Neste post, apresento um resumo dos eixos principais, ações destacadas e refle
 
 <div style="max-width:100%; margin:16px 0;"><iframe src="files/pbia.pdf" width="100%" height="720" style="border:1px solid rgba(255,255,255,0.08);" title="PBIA PDF"></iframe></div>
 
+## Portal oficial e notas do MCTI
+
+A página oficial do MCTI para o PBIA (2024–2028) resume o plano lançado na 5ª Conferência Nacional de Ciência, Tecnologia e Inovação e destaca metas e números centrais: um investimento previsto de aproximadamente R$ 23 bilhões ao longo de quatro anos; a ambição de implantar um supercomputador Top‑5 mundial movido por energias renováveis; o desenvolvimento de modelos de linguagem em português com dados nacionais; e programas de formação e requalificação em larga escala. O portal organiza as ações em iniciativas de impacto imediato e ações estruturantes, alinhadas aos cinco eixos (infraestrutura, difusão, serviço público, inovação empresarial e governança).
+
+Veja a página oficial do MCTI para o PBIA: https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/transformacaodigital/plano-brasileiro-de-inteligencia-artificial
+
+**Minhas reflexões (curtas)**: a ênfase no investimento, na infraestrutura e na formação sinaliza que o PBIA busca combinar soberania tecnológica (infraestrutura e modelos em língua portuguesa) com objetivos de inclusão social e modernização do setor público. A concretização dependerá de governança clara, métricas de progresso e financiamento sustentado — pontos que o próprio portal reconhece ao listar iniciativas prioritárias.
+
 
 O PBIA organiza-se em cinco eixos estruturantes:
 

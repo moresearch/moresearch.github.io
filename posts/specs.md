@@ -47,3 +47,4 @@
 - Added post 2026-05-17-task-harness-engineering.md: "Task Harness Engineering" (source: YouTube C_GG5g38vLU).
 - Added post 2026-05-17-harness-engineering-fowler.md: "Harness Engineering (Martin Fowler)" (source: https://martinfowler.com/articles/harness-engineering.html).
 - Added post 2026-06-06-ai-sovereignty-or-ai-colony.md: "AI sovereignty or AI colony: why domestic capability matters" (source: https://thenextweb.com/news/japan-risks-becoming-an-ai-colony-its-digital-minister-warns).
+- Updated post 2026-06-06-ai-sovereignty-or-ai-colony.md to include the requested article photo: https://media.thenextweb.com/2026/06/Hisashi-Matsumoto.avif.

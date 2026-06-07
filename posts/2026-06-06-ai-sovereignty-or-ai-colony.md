@@ -8,6 +8,8 @@ tags: ai, policy, sovereignty, geopolitics
 
 A country that cannot build its own AI capabilities does not stay neutral — it becomes dependent on systems and rules designed elsewhere.
 
+[![Hisashi Matsumoto](https://media.thenextweb.com/2026/06/Hisashi-Matsumoto.avif)](https://thenextweb.com/news/japan-risks-becoming-an-ai-colony-its-digital-minister-warns)
+
 That is why the warning from Japan's digital minister matters: without domestic capability, even advanced economies risk becoming an "AI colony" where strategic choices are constrained by external providers and standards.
 
 In practice, this dependency appears across three layers:

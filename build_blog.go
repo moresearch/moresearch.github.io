@@ -885,8 +885,6 @@ func loadPosts(inputDir string) ([]post, error) {
 		return nil, fmt.Errorf("glob posts: %w", err)
 	}
 
-	sort.Strings(paths)
-
 	posts := make([]post, 0, len(paths))
 	seen := make(map[string]struct{}, len(paths))
 	for _, path := range paths {
@@ -920,11 +918,8 @@ func loadPosts(inputDir string) ([]post, error) {
 		posts = append(posts, post)
 	}
 
-	sort.Slice(posts, func(i, j int) bool {
-		if !posts[i].Date.Equal(posts[j].Date) {
-			return posts[i].Date.After(posts[j].Date)
-		}
-		return posts[i].Slug < posts[j].Slug
+	sort.SliceStable(posts, func(i, j int) bool {
+		return posts[i].Date.After(posts[j].Date)
 	})
 
 	return posts, nil

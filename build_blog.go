@@ -846,6 +846,7 @@ type post struct {
 	Summary      string
 	Tags         []string
 	BodyHTML     template.HTML
+	ModTime      time.Time
 }
 
 type pageData struct {
@@ -911,6 +912,10 @@ func loadPosts(inputDir string) ([]post, error) {
 			return nil, err
 		}
 
+		if info, statErr := os.Stat(path); statErr == nil {
+			post.ModTime = info.ModTime()
+		}
+
 		if _, exists := seen[post.Slug]; exists {
 			return nil, fmt.Errorf("duplicate slug %q", post.Slug)
 		}
@@ -919,7 +924,10 @@ func loadPosts(inputDir string) ([]post, error) {
 	}
 
 	sort.SliceStable(posts, func(i, j int) bool {
-		return posts[i].Date.After(posts[j].Date)
+		if !posts[i].Date.Equal(posts[j].Date) {
+			return posts[i].Date.After(posts[j].Date)
+		}
+		return posts[i].ModTime.After(posts[j].ModTime)
 	})
 
 	return posts, nil

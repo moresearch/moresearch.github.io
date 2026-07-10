@@ -205,6 +205,86 @@ Because DBOS does not replay workflow code — it checkpoints step *outputs* and
 
 The tradeoff is clear. Temporal guarantees that your workflow code produces the same decisions given the same history — a strong correctness property, paid for with a constrained programming model. DBOS guarantees that completed steps are never re-executed — a weaker property, but one that lets you write regular Go. If your workflows are straightforward chains of API calls with compensation on failure, DBOS's model is sufficient and less constraining. If your workflows contain complex branching, signals, or state machines where replay divergence would mean incorrect business outcomes, Temporal's enforcement is worth the ceremony.
 
+## Four stories
+
+Abstract comparisons only go so far. Here are four concrete scenarios — each drawn from real architectural choices — that show how the tradeoffs play out.
+
+### Story 1: The two-person startup
+
+Maya and Carlos are building a billing platform. Their stack is Go, Postgres, and a few Lambda functions. They need order processing to be durable — a customer signs up, a Stripe charge must succeed, a provisioning call to a third-party API must complete, and an invoice must be generated. If any step fails mid-flight, the whole thing must recover without double-charging.
+
+They evaluate Temporal first. The programming model looks great. Then they read the deployment guide: Temporal server, MySQL or PostgreSQL, Elasticsearch for visibility, multi-service setup for production. They have two people and a managed Postgres instance. Running Temporal themselves is a non-starter, and Temporal Cloud adds a line item they cannot justify at this stage.
+
+They try DBOS. `go get github.com/dbos-inc/dbos-transact-golang`, point it at their existing Postgres instance, and they have durable workflows by the end of the day. The order processing saga — three steps with compensation on failure — is 40 lines of Go. They ship within the week.
+
+**What happened:** DBOS won because the operational cost of Temporal exceeded the value of its additional capabilities. For a small team, "just a library" is the right abstraction. The constraint they accepted — bounded by a single Postgres instance — is irrelevant at their scale. If they grow to need Temporal later, the workflow logic ports across because the concepts (steps, compensation, idempotency) are the same.
+
+### Story 2: The enterprise polyglot migration
+
+FinServCo is migrating a monolith to microservices. They have teams writing Go, Java, and Python. Their core business process — account opening — spans 14 steps across 6 services: identity verification (Go), fraud check (Java), credit check (Python), account creation (Go), card issuance (Java), and welcome kit dispatch (Python). The saga must handle partial failures with compensating transactions at each step. It must be visible in a single dashboard. It must survive any individual service going down.
+
+They prototype the saga in DBOS on a single Go service. It works. Then they realize: every non-Go step needs an HTTP wrapper, every service needs to expose a compensation endpoint, and the DBOS workflow becomes a fragile orchestration hub that must coordinate everything over the network. The simplicity they gained by embedding the workflow engine they lose in the integration layer.
+
+They switch to Temporal. Each team writes their step in their own language as a Temporal Activity. The Go service hosts the workflow, but the activities are polyglot — Temporal's SDK handles the cross-service communication. The Temporal UI gives them a single pane of glass across all 14 steps, with retry status, input/output inspection, and stack traces on failure. When the credit check service goes down during a deploy, in-flight account openings pause and resume automatically.
+
+**What happened:** Temporal won because polyglot orchestration and visibility mattered more than operational simplicity. DBOS would have worked technically, but the integration tax of wrapping every non-Go service as an HTTP endpoint would have erased the simplicity advantage. Temporal's architecture — separate server, polyglot workers, unified visibility — matched the organizational structure of the problem.
+
+### Story 3: The team already running Temporal
+
+PlatformCo has run Temporal in production for two years. They have 40 workflow types, a dedicated infrastructure team managing the Temporal cluster, and engineers who know the SDK cold. But they are tired.
+
+Tired of the upgrade cycles. Tired of the Elasticsearch index falling over during traffic spikes. Tired of explaining to new hires why `time.Now()` inside a workflow is a compile error. Tired of the determinism debugging sessions where someone accidentally closed over a map and the replay diverged three weeks later.
+
+They start a new service — a simple notification pipeline (ingest event → enrich with user data → route to channel → record delivery). Four steps, no branching, no signals, no complex state machines. It does not need Temporal's full power. They build it in DBOS. The Temporal cluster stays for the complex 14-step account provisioning sagas. The new service ships faster, debugs easier, and has zero new infrastructure.
+
+**What happened:** They did not migrate off Temporal. They stopped using it for problems that did not need it. The sweet spot for DBOS is the 80% of workflows that are linear chains of API calls with compensation. The sweet spot for Temporal is the 20% that involve branching, signals, child workflows, or cross-service coordination. The platforms coexist.
+
+### Story 4: The 72-hour approval workflow
+
+RegTech builds a compliance review system. A case is submitted. A human must approve or reject within 72 hours. If no response, the case auto-escalates. During those 72 hours, the workflow must survive process restarts, deploys, and database failovers. After approval, the case moves to archival. After rejection, it moves to remediation.
+
+They build it in DBOS first:
+
+```go
+func ComplianceReview(ctx dbos.DBOSContext, caseID string) error {
+    // Assign reviewer and notify
+    reviewer, _ := dbos.RunAsStep(ctx, func(ctx context.Context) (string, error) {
+        return assignReviewer(ctx, caseID)
+    }, dbos.WithStepName("assign"))
+    dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+        return nil, notifyReviewer(ctx, reviewer, caseID)
+    }, dbos.WithStepName("notify"))
+
+    // Wait for human approval — 72h timeout, survives everything
+    result, err := dbos.Recv[string](ctx, "approval."+caseID, 72*time.Hour)
+    if err != nil {
+        dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+            return nil, escalate(ctx, caseID)
+        })
+        return nil
+    }
+
+    if result == "approved" {
+        dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+            return nil, archive(ctx, caseID)
+        })
+    } else {
+        dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+            return nil, remediate(ctx, caseID)
+        })
+    }
+    return nil
+}
+```
+
+The `dbos.Recv` call pauses the workflow for up to 72 hours. The wake-up time is checkpointed in Postgres. If the server restarts during those three days, the workflow resumes with the timer intact. When the reviewer's HTTP endpoint calls `dbos.Send(ctx, workflowID, "approved", "approval."+caseID)`, the workflow wakes up and continues. No external timer service, no scheduled-job table, no cron polling.
+
+They could build this in Temporal too — with signals and timers. The Temporal version would be equally durable and more scalable. But they would need to run a Temporal cluster for a workflow that fires a few hundred times a day and sleeps for three days each time. The infrastructure-to-business-logic ratio is backward.
+
+**What happened:** DBOS won specifically because of the sleep pattern. `dbos.Sleep` and `dbos.Recv` turn "wait for something, survive anything" into a single function call persisted in Postgres. Temporal does this too, but the operational overhead is harder to amortize when the workflow is mostly waiting.
+
+## Head-to-head
+
 | | Temporal | DBOS |
 |---|---|---|
 | **Architecture** | External server + workers | Embedded library + Postgres |

@@ -18,7 +18,58 @@ Temporal is a distributed orchestration engine. You deploy a Temporal server (or
 
 The determinism constraint is the defining tradeoff. Because Temporal replays workflow code against event history to rebuild state after a crash, your workflow code must produce the same sequence of decisions given the same history. This means no `time.Now()`, no random numbers, no direct database calls inside a workflow. Non-deterministic work goes into Activities — functions that Temporal calls outside the replay sandbox, with configurable retries and timeouts.
 
-The Go SDK (v1.44.0 as of mid-2026) is mature. Recent additions include Standalone Activities (run durable activities without a parent workflow — effectively durable job processing), Worker Versioning for safe deploys of workflow code changes, and Nexus for cross-service orchestration. The programming model is well-documented and the tooling (`workflowcheck` for static analysis, replay tests) helps catch determinism violations early.
+The Go SDK (v1.44.0 as of mid-2026) is mature. Here is a user onboarding workflow — charge a customer, provision services, send a welcome email — with configurable retries and timeouts:
+
+```go
+// Workflow: deterministic coordination logic
+func OnboardingWorkflow(ctx workflow.Context, input OnboardingInput) error {
+    ao := workflow.ActivityOptions{
+        StartToCloseTimeout: 30 * time.Second,
+        RetryPolicy: &temporal.RetryPolicy{
+            InitialInterval:    time.Second,
+            BackoffCoefficient: 2.0,
+            MaximumAttempts:    3,
+        },
+    }
+    ctx = workflow.WithActivityOptions(ctx, ao)
+
+    // Step 1: Charge payment
+    var chargeID string
+    if err := workflow.ExecuteActivity(ctx, ChargeCustomer, input.CustomerID, input.Amount).Get(ctx, &chargeID); err != nil {
+        return fmt.Errorf("charge failed: %w", err)
+    }
+
+    // Step 2: Provision resources
+    var resourceIDs []string
+    if err := workflow.ExecuteActivity(ctx, ProvisionResources, input.Plan, input.Region).Get(ctx, &resourceIDs); err != nil {
+        // Compensation: refund if provisioning fails
+        if refundErr := workflow.ExecuteActivity(ctx, RefundCharge, chargeID).Get(ctx, nil); refundErr != nil {
+            return fmt.Errorf("provision failed, refund also failed: %w", refundErr)
+        }
+        return fmt.Errorf("provision failed, refunded: %w", err)
+    }
+
+    // Step 3: Send welcome email (fire-and-forget with short timeout)
+    emailCtx := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+        StartToCloseTimeout: 10 * time.Second,
+        RetryPolicy:         &temporal.RetryPolicy{MaximumAttempts: 5},
+    })
+    if err := workflow.ExecuteActivity(emailCtx, SendWelcomeEmail, input.Email, resourceIDs).Get(ctx, nil); err != nil {
+        workflow.GetLogger(ctx).Warn("welcome email failed, not fatal", "error", err)
+    }
+
+    return nil
+}
+
+// Activity: non-deterministic code — safe to call external APIs
+func ChargeCustomer(ctx context.Context, customerID string, amount int) (string, error) {
+    return billingClient.CreateCharge(ctx, customerID, amount)
+}
+```
+
+Each `ExecuteActivity` call checkpoints progress in Temporal's event history. If the worker crashes after `ChargeCustomer` succeeds but before `ProvisionResources` starts, the workflow resumes from the charge — it does not double-charge. The compensation logic (refund on provision failure) is explicit in the workflow code, not buried in infrastructure config.
+
+Recent SDK additions include Standalone Activities (durable job processing without a parent workflow), Worker Versioning for safe deploys of workflow code changes, and Nexus for cross-service orchestration. The tooling — `workflowcheck` for static analysis of determinism violations, replay tests for verifying workflow code against historical event histories — helps catch issues before they reach production.
 
 Running Temporal means running a Temporal server. This is a non-trivial operational commitment. The server requires a database (MySQL or PostgreSQL), an Elasticsearch instance for visibility, and a multi-service deployment for production. Temporal Cloud exists, but it is a paid service with its own pricing model. For teams already running significant infrastructure, this is manageable. For small teams or single-service deployments, it is overhead that must be justified.
 
@@ -26,7 +77,40 @@ Running Temporal means running a Temporal server. This is a non-trivial operatio
 
 DBOS takes the opposite approach. There is no external server to deploy. You add `dbos-transact-golang` to your Go module, point it at a PostgreSQL database, and you have durable workflows. All state — inputs, outputs, step progress, sleep timers, queue positions, notifications — is checkpointed in Postgres. If your process crashes, on restart all workflows automatically resume from the last completed step.
 
-The programming model is simpler than Temporal's because there is no replay. Workflows are regular Go functions. Non-deterministic operations (API calls, database queries, random numbers) are wrapped in steps via `dbos.RunAsStep()`. Steps are checkpointed to Postgres. If the workflow crashes and resumes, completed steps are never re-executed. The constraint is that workflow functions themselves should be deterministic, but the enforcement is convention rather than a runtime sandbox — the SDK does not replace `time.Now()` or `go` statements because it does not replay.
+The programming model is simpler than Temporal's because there is no replay. Workflows are regular Go functions. Non-deterministic operations go into steps via `dbos.RunAsStep()`. Here is the same user onboarding workflow in DBOS:
+
+```go
+func OnboardingWorkflow(ctx dbos.DBOSContext, input OnboardingInput) error {
+    // Step 1: Charge payment (wrapped — output is checkpointed)
+    chargeID, err := dbos.RunAsStep(ctx, func(ctx context.Context) (string, error) {
+        return billingClient.CreateCharge(ctx, input.CustomerID, input.Amount)
+    }, dbos.WithStepName("charge"), dbos.WithStepMaxRetries(3))
+    if err != nil {
+        return fmt.Errorf("charge failed: %w", err)
+    }
+
+    // Step 2: Provision resources
+    resourceIDs, err := dbos.RunAsStep(ctx, func(ctx context.Context) ([]string, error) {
+        return provisioningClient.CreateResources(ctx, input.Plan, input.Region)
+    }, dbos.WithStepName("provision"), dbos.WithStepMaxRetries(3))
+    if err != nil {
+        // Compensation: refund
+        dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+            return nil, billingClient.Refund(ctx, chargeID)
+        }, dbos.WithStepMaxRetries(5))
+        return fmt.Errorf("provision failed, refunded: %w", err)
+    }
+
+    // Step 3: Send welcome email (fire-and-forget, best-effort)
+    dbos.RunAsStep(ctx, func(ctx context.Context) (any, error) {
+        return nil, emailClient.SendWelcome(ctx, input.Email, resourceIDs)
+    }, dbos.WithStepName("email"), dbos.WithStepMaxRetries(5))
+
+    return nil
+}
+```
+
+Each `RunAsStep` checkpoint its return value to Postgres. If the process crashes after charging but before provisioning, the workflow resumes from the next step — the charge is never duplicated. The compensation path is explicit in application code. No separate activity registration, no SDK replacement for `time.Now()`, no sandbox. Just Go functions with step-wrapped I/O and Postgres as the durability layer.
 
 This simplicity extends across the feature set. Durable queues give you concurrency control and rate limiting without a message broker:
 
@@ -42,7 +126,84 @@ Durable sleep persists wake-up time to Postgres — a workflow can `dbos.Sleep(c
 
 The cost is scale. DBOS is bounded by a single Postgres instance (or cluster). Temporal scales horizontally across workers and partitions. For most applications this distinction is theoretical — a well-tuned Postgres instance handles millions of workflow steps — but for the largest deployments, Temporal's distributed architecture is the right call.
 
-## Head-to-head
+## Setup side by side
+
+The difference in operational commitment is visible even at the setup stage.
+
+**Temporal** requires worker registration, activity registration, and a running Temporal server. A minimal worker binary looks like this:
+
+```go
+func main() {
+    c, _ := temporalclient.NewClient(temporalclient.Options{})
+    defer c.Close()
+
+    w := worker.New(c, "onboarding-queue", worker.Options{})
+    w.RegisterWorkflow(OnboardingWorkflow)
+    w.RegisterActivity(ChargeCustomer)
+    w.RegisterActivity(ProvisionResources)
+    w.RegisterActivity(RefundCharge)
+    w.RegisterActivity(SendWelcomeEmail)
+
+    if err := w.Run(worker.InterruptCh()); err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+Workflows, activities, and the worker are three distinct concerns. You register each activity by name. Temporal's type system enforces the separation — `workflow.Context` for workflows, `context.Context` for activities — which prevents you from accidentally calling non-deterministic code inside a workflow.
+
+**DBOS** collapses this into a single lifecycle block:
+
+```go
+func main() {
+    ctx, _ := dbos.NewDBOSContext(context.Background(), dbos.Config{
+        AppName:     "onboarding",
+        DatabaseURL: os.Getenv("DBOS_SYSTEM_DATABASE_URL"),
+    })
+
+    dbos.RegisterWorkflow(ctx, OnboardingWorkflow)
+    queue := dbos.NewWorkflowQueue(ctx, "onboarding-queue",
+        dbos.WithWorkerConcurrency(10))
+
+    if err := dbos.Launch(ctx); err != nil {
+        log.Fatal(err)
+    }
+    defer dbos.Shutdown(ctx, 30*time.Second)
+}
+```
+
+No separate activity registration. No external server URL. The database connection string is the only infrastructure dependency. The `Launch` call starts the worker loop, and `Shutdown` drains in-flight work gracefully.
+
+The difference is not just lines of code. It is the number of things you need to have running before the code works. Temporal needs a server, a database, and your worker. DBOS needs a database and your binary. For a team evaluating durable execution for the first time, that gap determines whether they ship or shelve.
+
+## The determinism constraint, concretely
+
+The sharpest practical difference is how each system handles non-deterministic Go code inside a workflow. Consider a workflow that needs the current time:
+
+**Temporal** — this fails:
+
+```go
+// INSIDE A WORKFLOW — WRONG
+now := time.Now() // Non-deterministic! Replay will see a different value.
+```
+
+Temporal enforces this at multiple levels. The SDK documentation lists the allowed API surface inside workflows. The `workflowcheck` linter catches violations at build time. The replay test framework re-executes your workflow against recorded event histories and fails if the code path diverges. You must use `workflow.Now()` instead, which returns the timestamp from the event history rather than the system clock:
+
+```go
+// CORRECT inside a Temporal workflow
+now := workflow.Now(ctx)
+```
+
+**DBOS** — this works fine:
+
+```go
+// Inside a DBOS workflow — fine, no replay ambiguity
+now := time.Now()
+```
+
+Because DBOS does not replay workflow code — it checkpoints step *outputs* and resumes from the last checkpoint — `time.Now()` inside a workflow is harmless. The workflow runs once forward. If it crashes after step 3, it resumes by re-executing the workflow function from the top, but `dbos.RunAsStep` returns the cached output for steps 1–3 without re-executing their bodies. The non-deterministic code inside the step closure is never re-run.
+
+The tradeoff is clear. Temporal guarantees that your workflow code produces the same decisions given the same history — a strong correctness property, paid for with a constrained programming model. DBOS guarantees that completed steps are never re-executed — a weaker property, but one that lets you write regular Go. If your workflows are straightforward chains of API calls with compensation on failure, DBOS's model is sufficient and less constraining. If your workflows contain complex branching, signals, or state machines where replay divergence would mean incorrect business outcomes, Temporal's enforcement is worth the ceremony.
 
 | | Temporal | DBOS |
 |---|---|---|

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents.&#34;">
+  <meta name="description" content="&#34;Temporal gives you a battle-tested orchestration platform with event-sourced replay. DBOS gives you durable workflows in a single Postgres-backed binary. Which one fits your Go stack?&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -651,6 +651,133 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="temporal-vs-dbos-golang">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-10" data-utc="Jul 10, 2026 UTC" aria-label="Jul 10, 2026 UTC" tabindex="0">1783641600</time></p>
+          <h2><a href="#temporal-vs-dbos-golang">&#34;Temporal vs DBOS for Go: two paths to durable execution&#34;</a></h2><p class="post-summary">&#34;Temporal gives you a battle-tested orchestration platform with event-sourced replay. DBOS gives you durable workflows in a single Postgres-backed binary. Which one fits your Go stack?&#34;</p>
+          <div class="tags"><span class="tag">go</span><span class="tag">temporal</span><span class="tag">dbos</span><span class="tag">durable-execution</span><span class="tag">workflows</span><span class="tag">postgres</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Durable execution — the guarantee that a workflow runs to completion even if the process crashes, the machine dies, or the network partitions — is becoming table stakes for backend systems. Two projects in the Go ecosystem take fundamentally different paths to the same destination: Temporal and DBOS.</p>
+<p>Temporal is the incumbent. Separate infrastructure, event-sourced replay, a mature SDK that replaces Go's concurrency primitives with deterministic equivalents. DBOS is the challenger. PostgreSQL-native, checkpoint-based, a thin layer over your existing database that gives you durable workflows, queues, and scheduling without deploying anything new.</p>
+<p>Choosing between them is not about which one is &quot;better.&quot; It is about which architecture matches your operational constraints.</p>
+<h2 id="temporal-the-platform">Temporal: the platform</h2>
+<p>Temporal is a distributed orchestration engine. You deploy a Temporal server (or use Temporal Cloud), and your Go workers connect to it. Workflows are deterministic functions that use Temporal's SDK replacements for Go primitives: <code>workflow.Sleep()</code> instead of <code>time.Sleep()</code>, <code>workflow.Go()</code> instead of <code>go</code>, <code>workflow.Channel()</code> instead of <code>chan</code>, <code>workflow.Selector()</code> instead of <code>select</code>.</p>
+<p>The determinism constraint is the defining tradeoff. Because Temporal replays workflow code against event history to rebuild state after a crash, your workflow code must produce the same sequence of decisions given the same history. This means no <code>time.Now()</code>, no random numbers, no direct database calls inside a workflow. Non-deterministic work goes into Activities — functions that Temporal calls outside the replay sandbox, with configurable retries and timeouts.</p>
+<p>The Go SDK (v1.44.0 as of mid-2026) is mature. Recent additions include Standalone Activities (run durable activities without a parent workflow — effectively durable job processing), Worker Versioning for safe deploys of workflow code changes, and Nexus for cross-service orchestration. The programming model is well-documented and the tooling (<code>workflowcheck</code> for static analysis, replay tests) helps catch determinism violations early.</p>
+<p>Running Temporal means running a Temporal server. This is a non-trivial operational commitment. The server requires a database (MySQL or PostgreSQL), an Elasticsearch instance for visibility, and a multi-service deployment for production. Temporal Cloud exists, but it is a paid service with its own pricing model. For teams already running significant infrastructure, this is manageable. For small teams or single-service deployments, it is overhead that must be justified.</p>
+<h2 id="dbos-the-embedded-alternative">DBOS: the embedded alternative</h2>
+<p>DBOS takes the opposite approach. There is no external server to deploy. You add <code>dbos-transact-golang</code> to your Go module, point it at a PostgreSQL database, and you have durable workflows. All state — inputs, outputs, step progress, sleep timers, queue positions, notifications — is checkpointed in Postgres. If your process crashes, on restart all workflows automatically resume from the last completed step.</p>
+<p>The programming model is simpler than Temporal's because there is no replay. Workflows are regular Go functions. Non-deterministic operations (API calls, database queries, random numbers) are wrapped in steps via <code>dbos.RunAsStep()</code>. Steps are checkpointed to Postgres. If the workflow crashes and resumes, completed steps are never re-executed. The constraint is that workflow functions themselves should be deterministic, but the enforcement is convention rather than a runtime sandbox — the SDK does not replace <code>time.Now()</code> or <code>go</code> statements because it does not replay.</p>
+<p>This simplicity extends across the feature set. Durable queues give you concurrency control and rate limiting without a message broker:</p>
+<pre><code class="language-go">queue := dbos.NewWorkflowQueue(ctx, &quot;task_queue&quot;,
+    dbos.WithWorkerConcurrency(5),
+    dbos.WithRateLimiter(&amp;dbos.RateLimiter{
+        Limit: 100, Period: 60 * time.Second,
+    }))
+</code></pre>
+<p>Durable sleep persists wake-up time to Postgres — a workflow can <code>dbos.Sleep(ctx, 48*time.Hour)</code> and survive process restarts across those two days. Cron scheduling is a single option on workflow registration. Send/Recv provides durable notifications between workflows with exactly-once semantics. These are not add-ons. They are part of the same library.</p>
+<p>The cost is scale. DBOS is bounded by a single Postgres instance (or cluster). Temporal scales horizontally across workers and partitions. For most applications this distinction is theoretical — a well-tuned Postgres instance handles millions of workflow steps — but for the largest deployments, Temporal's distributed architecture is the right call.</p>
+<h2 id="head-to-head">Head-to-head</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Temporal</th>
+<th>DBOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Architecture</strong></td>
+<td>External server + workers</td>
+<td>Embedded library + Postgres</td>
+</tr>
+<tr>
+<td><strong>Persistence model</strong></td>
+<td>Event-sourced, replay-based</td>
+<td>Checkpoint-based, step-level</td>
+</tr>
+<tr>
+<td><strong>Determinism guarantee</strong></td>
+<td>Enforced by SDK + static analysis</td>
+<td>Convention, not enforced</td>
+</tr>
+<tr>
+<td><strong>Go primitives</strong></td>
+<td>Must use SDK replacements</td>
+<td>Regular Go, wrap I/O in steps</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Temporal server + DB + ES</td>
+<td>Your binary + Postgres</td>
+</tr>
+<tr>
+<td><strong>Scaling</strong></td>
+<td>Horizontal (workers + partitions)</td>
+<td>Vertical (Postgres) + horizontal workers</td>
+</tr>
+<tr>
+<td><strong>Queues</strong></td>
+<td>Task queues built in</td>
+<td><code>NewWorkflowQueue</code></td>
+</tr>
+<tr>
+<td><strong>Scheduling</strong></td>
+<td>Via client API / external cron</td>
+<td>Built-in cron expressions</td>
+</tr>
+<tr>
+<td><strong>Sleep</strong></td>
+<td><code>workflow.Sleep()</code></td>
+<td><code>dbos.Sleep()</code></td>
+</tr>
+<tr>
+<td><strong>Resumability</strong></td>
+<td>Automatic via event replay</td>
+<td>Automatic via checkpoint</td>
+</tr>
+<tr>
+<td><strong>Maturity</strong></td>
+<td>Battle-tested since 2020</td>
+<td>GA since ~2024</td>
+</tr>
+<tr>
+<td><strong>Go SDK</strong></td>
+<td><code>go.temporal.io/sdk</code> v1.44</td>
+<td><code>dbos-transact-golang</code> v0.18</td>
+</tr>
+<tr>
+<td><strong>License</strong></td>
+<td>MIT</td>
+<td>MIT</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-to-choose-temporal">When to choose Temporal</h2>
+<p><strong>You already run Temporal.</strong> If your organization has a Temporal deployment, the operational cost is sunk. Adding new workflows in Go is the path of least resistance.</p>
+<p><strong>You need horizontal scale.</strong> Temporal's worker pools and partitioned task queues handle throughput that would overwhelm a single Postgres instance. If you are building the control plane for a high-volume system, Temporal's architecture is designed for that.</p>
+<p><strong>You want enforced determinism.</strong> Temporal's SDK catches non-deterministic patterns at development time. The replay model means your workflow code is tested against real event histories. If correctness under failure is your primary concern, Temporal's constraints are features, not bugs.</p>
+<p><strong>You are multi-language.</strong> Temporal has mature SDKs for Go, Java, TypeScript, Python, and .NET. If your workflows span services in different languages, Temporal's polyglot support matters.</p>
+<h2 id="when-to-choose-dbos">When to choose DBOS</h2>
+<p><strong>You want zero new infrastructure.</strong> If you already run Postgres, you already run DBOS. There is no server to deploy, no new database to provision, no additional service to monitor. The operational simplicity is the primary value proposition.</p>
+<p><strong>Your team is small.</strong> Three developers with a Postgres database should not be running a Temporal cluster. DBOS turns durable execution from an infrastructure problem into a library problem. This is the right abstraction level for most teams.</p>
+<p><strong>You want deadline-driven sleep.</strong> <code>dbos.Sleep(ctx, 48*time.Hour)</code> works across process restarts and redeploys. Temporal's <code>workflow.Sleep()</code> does the same, but the ergonomics of colocating your sleep logic with your workflow code in a single binary are simpler with DBOS.</p>
+<p><strong>You are building a Go-native service.</strong> DBOS feels like Go. No two-function split between workflow and activity. No SDK replacements for <code>time.Now()</code>. Just regular Go functions with step-wrapped I/O. The learning curve is a fraction of Temporal's.</p>
+<h2 id="the-deeper-split">The deeper split</h2>
+<p>The choice between Temporal and DBOS reflects a broader tension in backend infrastructure: platform vs library. Temporal is a platform — separate, powerful, operationally significant, and extremely capable. DBOS is a library — embedded, simpler, and limited by the constraints of the database it sits on.</p>
+<p>Neither is wrong. The platform approach wins when the problem is large enough to justify the operational cost. The library approach wins when the problem is important but the infrastructure overhead is not. Durable execution is too valuable to skip entirely. The question is whether you want to run a platform for it, or just import a library.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://pkg.go.dev/go.temporal.io/sdk">Temporal Go SDK</a> — <code>go.temporal.io/sdk</code> v1.44</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/dbos-inc/dbos-transact-golang">DBOS Transact Golang</a> — <code>dbos-transact-golang</code> v0.18</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.dbos.dev/golang/tutorials/workflow-tutorial">DBOS Go Workflow Tutorial</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://temporal.io/blog/standalone-activities-durable-job-processing-now-in-public-preview">Temporal Standalone Activities</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="dot-files-dark-factories">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-08" data-utc="Jul 08, 2026 UTC" aria-label="Jul 08, 2026 UTC" tabindex="0">1783468800</time></p>
@@ -2757,6 +2884,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#temporal-vs-dbos-golang">&#34;Temporal vs DBOS for Go: two paths to durable execution&#34;</a>
               <a href="#dot-files-dark-factories">&#34;Why DOT files work for dark factories&#34;</a>
               <a href="#dark-factory-economics">&#34;The economics of the dark factory: what happens when code is free&#34;</a>
               <a href="#dark-factory-complexity">&#34;The dark factory doesn&#39;t eliminate complexity — it moves it&#34;</a>

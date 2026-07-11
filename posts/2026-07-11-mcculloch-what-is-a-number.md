@@ -101,6 +101,24 @@ McCulloch's lecture is easy to misread. It looks like a ramble through the histo
 
 The lecture is McCulloch's intellectual testament. He died nine years later. The question in its title is still worth sitting with: not because we lack answers, but because the answers we have reveal how much we still do not understand about how a physical system — a brain, a body, a network of fallible cells — comes to know that 7 and 3 are 10, and always have been, and always will be.
 
+## The question, sixty-five years later
+
+In February 2025, a paper appeared on arXiv with a title that would have made McCulloch smile: **"What is a Number, That a Large Language Model May Know It?"** Raja Marjieh, Veniamin Veselovsky, Thomas Griffiths, and Ilia Sucholutsky picked up McCulloch's question and pointed it at the system that has come closest to realizing his vision of a thinking machine.
+
+Their finding is both elegant and troubling. LLMs represent numbers through an **entangled representation** — a blend of string-based similarity (Levenshtein edit distance) and numerical magnitude (log-linear distance). The digit sequence "911" activates both its string properties (it looks like "191" and "119") and its quantity properties (it is close to 910 and 912). These two representations are not cleanly separable in the model's latent embeddings. Context can reduce the entanglement but cannot eliminate it.
+
+This is not how humans know numbers. McCulloch's distinction between perceptibles (1–6, shared with beasts, grounded in dedicated neural circuitry for quantity) and countables (larger integers, requiring symbolic convention and one-to-one correspondence) describes a cognitive architecture with clean boundaries. The biological brain has specialized circuits for numerosity. The LLM has a single set of weights that must simultaneously learn that digits are symbols with edit distances and quantities with magnitudes. The two forms of knowledge bleed into each other.
+
+The practical consequences are real. The paper shows that representational confusion propagates into downstream decisions. Ask an LLM to reason about numbers and it may be influenced by how similar the digit strings *look* rather than what they *mean*. This is a category error in silicon — exactly the kind of failure that McCulloch's careful distinction between natural terms and conventional terms was designed to prevent.
+
+The deeper point is that McCulloch's question was always about **architecture**. What kind of system can know a number? His answer was specific: a system with propositional units (neurons), temporal invariants (memory loops), and a mechanism for computing invariants under groups of transformations (universals). The LLM is a different architecture — a stack of attention layers trained on next-token prediction — and it knows numbers differently as a result. The entanglement that Marjieh et al. document is not a bug in the training data. It is a consequence of the architecture.
+
+McCulloch would have been fascinated. He would have recognized the paper as empirical epistemology in his own tradition — asking, experimentally, how a particular kind of knower represents number. And he would have noted, with some satisfaction, that sixty-five years after his lecture, the question he asked Rufus Jones still organizes a research program.
+
+> "What is a number, that a man may know it, and a man, that he may know a number?" — Warren McCulloch (1961)
+
 ---
 
 **Reference:** Warren S. McCulloch, "What Is a Number, that a Man May Know It, and a Man, that He May Know a Number?" Alfred Korzybski Memorial Lecture, 1960. Published in *General Semantics Bulletin*, No. 26/27, 1960, pp. 7–18. [Full text (PDF)](https://www.nsl.com/k/parry/mcculloch_what-is-a-number.pdf).
+
+**Related:** Raja Marjieh, Veniamin Veselovsky, Thomas L. Griffiths, Ilia Sucholutsky. ["What is a Number, That a Large Language Model May Know It?"](https://arxiv.org/abs/2502.01540) arXiv:2502.01540, February 2025.

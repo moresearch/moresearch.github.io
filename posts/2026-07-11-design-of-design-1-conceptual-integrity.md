@@ -20,7 +20,11 @@ The sentence is a thesis statement for his entire career. Note the tradeoff: omi
 
 **Orthogonality.** Concepts should not overlap or conflict. Each function in the system should be achievable in exactly one way. If there are two ways to do something, users must learn both, must decide which to use, and will encounter inconsistencies between them. Orthogonality is not about minimalism — it is about non-redundancy. A design can be rich and still orthogonal.
 
-**Propriety.** The design should include only what is necessary, and what is included should be transparent to the user. Propriety is parsimony with a purpose: every element earns its place. This is harder than it sounds. It requires saying no — repeatedly, to smart people with good arguments — and having the authority to make the no stick.
+**Propriety.** The design should include only what is necessary, and what is included should be transparent to the user. Propriety is parsimony with a purpose: every element earns its place.
+
+> "The essential skill of the designer is saying no — repeatedly, to smart people with good arguments — and having the authority to make it stick. Every added feature is a subtraction from all existing features, for it adds complexity without corresponding benefit."
+
+This is harder than it sounds. It requires saying no — repeatedly, to smart people with good arguments — and having the authority to make the no stick. Every feature you add makes every other feature harder to find, learn, and use.
 
 **Generality.** Within its chosen scope, the design should be complete. It should not have arbitrary limits that the user must work around. A design with generality handles the cases the designer anticipated and the ones they did not, because the primitives compose. Generality without orthogonality produces a kitchen-sink system. Orthogonality without generality produces a toy.
 
@@ -28,9 +32,13 @@ A system with all three properties has conceptual integrity. The user forms a co
 
 ## The Reims Cathedral
 
-Brooks uses architecture to make the point visual. The Reims Cathedral was built over eight generations of architects. The original architect drew the plan, and every successor — across centuries — stuck to it. The result is a unified work, coherent in every detail, that happens to have been built by many hands.
+Brooks uses architecture to make the point visual.
 
-Most cathedrals are not like this. Most cathedrals have conflicting concepts: a Gothic nave with a Renaissance facade, a Baroque chapel grafted onto a Romanesque transept. Each generation of builders had a vision and nobody had the authority to enforce continuity. The result is architectural chaos — individually interesting, collectively incoherent.
+> "Reims Cathedral has conceptual integrity. Built over eight generations of architects, each stuck to the original plan. The result is a unified work, coherent in every detail. Most cathedrals are not like this; their conflicting concepts produce architectural chaos — individually interesting, collectively incoherent."
+
+The Reims Cathedral was built over eight generations of architects. The original architect drew the plan, and every successor — across centuries — stuck to it. The result is a unified work, coherent in every detail, that happens to have been built by many hands.
+
+Most cathedrals have conflicting concepts: a Gothic nave with a Renaissance facade, a Baroque chapel grafted onto a Romanesque transept. Each generation of builders had a vision and nobody had the authority to enforce continuity. The result is architectural chaos — individually interesting, collectively incoherent.
 
 Software systems are cathedrals built over decades. The systems with conceptual integrity — Unix, Lisp, Go, the original Macintosh — feel like Reims. The systems without it feel like the architectural equivalent of a patchwork quilt. Everyone who has maintained enterprise software knows the second kind.
 
@@ -68,13 +76,17 @@ This is the basis of Brooks's Law — "adding people to a late software project 
 
 > "For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies."
 
-The interface is the system. Everything the user knows about your software comes through the interface. If the interface lacks conceptual integrity, the system lacks it — regardless of how clean the internal architecture is. This is why Brooks is especially insistent that the user interface must be "tightly controlled by one mind." You can distribute the backend. You cannot distribute the user's mental model.
+The interface is the system. Everything the user knows about your software comes through the interface. If the interface lacks conceptual integrity, the system lacks it — regardless of how clean the internal architecture is. You can distribute the backend. You cannot distribute the user's mental model.
 
 ## The protection of the designer
 
 If conceptual integrity requires one mind, and organizations contain many minds, the practical question becomes: how do you protect the designer?
 
-Brooks's answer is rooted in his IBM experience. The System/360 architecture — one of the most influential computer architectures ever designed — was controlled by a small group with Brooks and Gene Amdahl at the center. They had the authority to say no. More importantly, they were *protected* from the organizational forces that would have diluted the design: feature requests from field sales, compatibility demands from existing customers, performance optimizations that would have compromised the clean abstraction.
+Brooks's answer is rooted in his IBM experience.
+
+> "On System/360, a small team — Brooks, Amdahl, Blaauw — controlled the architecture. We had the authority to say no. More importantly, we were protected from the organizational forces that dilute design: feature requests from field sales, compatibility demands, performance optimizations that compromise clean abstraction."
+
+The System/360 architecture — one of the most influential computer architectures ever designed — was controlled by a small group with Brooks and Gene Amdahl at the center. They had the authority to say no. More importantly, they were *protected* from the organizational forces that would have diluted the design: feature requests from field sales, compatibility demands from existing customers, performance optimizations that would have compromised the clean abstraction.
 
 This protection is not about giving designers autonomy. It is about giving them the *right kind* of constraint: clear overriding objectives, a schedule with urgency, and the freedom to make design decisions within those bounds. The worst outcome — and the most common — is a designer with no real authority, overseen by a committee that can override any decision but takes responsibility for none.
 

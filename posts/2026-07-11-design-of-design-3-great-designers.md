@@ -32,7 +32,11 @@ Brooks was one of the early advocates for the dual ladder — the idea that tech
 
 The problem is well-known: organizations promote their best technical people into management. The best engineer becomes the engineering manager. The best architect becomes the head of architecture. This removes them from hands-on design work — the thing they were best at — and puts them in a role they may be mediocre at. The organization loses a great designer and gains a mediocre manager.
 
-The dual ladder is the solution in principle. In practice, Brooks observes, it almost never works as intended. The managerial ladder is always more prestigious, better compensated, and seen as the "real" path to influence. The technical ladder becomes a consolation prize for people who cannot or will not manage.
+The dual ladder is the solution in principle. In practice, Brooks observes, it almost never works as intended.
+
+> "The dual ladder is everywhere espoused and nowhere practiced. The managerial ladder remains the path to power, prestige, and pay. The technical ladder is too often a consolation prize — a place to park brilliant people who won't or can't manage."
+
+The managerial ladder is always more prestigious, better compensated, and seen as the "real" path to influence. The technical ladder becomes a consolation prize for people who cannot or will not manage.
 
 Brooks's advice for making the dual ladder real:
 
@@ -47,9 +51,17 @@ Brooks argues that design talent is not purely innate. It can be grown, and orga
 
 His prescriptions:
 
-**Recruit for design sense, not just interview performance.** The standard technical interview measures algorithm knowledge, coding speed, and system design on a whiteboard. None of these measure design taste. Brooks recommends looking at past work: what has the candidate actually designed? Does it show conceptual integrity? Do the abstractions make sense? Would you use it?
+**Recruit for design sense, not just interview performance.** The standard technical interview measures algorithm knowledge, coding speed, and system design on a whiteboard. None of these measure design taste.
 
-**Provide mentors.** Great designers learn from other great designers. The master-apprentice relationship — explicit in architecture, implicit in software — is how design judgment gets transmitted. A junior designer working under a senior one absorbs not just knowledge but taste: what to optimize for, what to ignore, when to fight and when to concede.
+> "Hire for demonstrated design ability, not for interview prowess. Look at what the candidate has built. Does it show conceptual integrity? Do the abstractions make sense? Would you want to use it? Past performance in design is the best predictor of future performance."
+
+Brooks recommends looking at past work: what has the candidate actually designed? Does it show conceptual integrity? Do the abstractions make sense? Would you use it?
+
+**Provide mentors.** Great designers learn from other great designers.
+
+> "Design judgment is not taught; it is caught. The master-apprentice relationship — explicit in architecture, mostly informal in software — is how taste transmits. A junior working under a senior absorbs not just technique but judgment: what to optimize for, what to ignore, when to fight and when to concede."
+
+The master-apprentice relationship — explicit in architecture, implicit in software — is how design judgment gets transmitted. A junior designer working under a senior one absorbs not just knowledge but taste: what to optimize for, what to ignore, when to fight and when to concede.
 
 **Rotate experiences.** A designer who has only built one kind of system in one domain with one set of constraints has a narrow foundation. Rotating across domains — from infrastructure to product, from backend to frontend, from systems to tools — builds the pattern recognition that distinguishes good designers from great ones.
 
@@ -95,7 +107,11 @@ Brooks argues that this gap is partly cultural and partly practical. Culturally,
 
 > "The job control language JCL for OS/360 is, in my opinion, the worst computer language ever devised, a triumph of committee design over conceptual integrity."
 
-The second-system effect — the tendency to over-engineer the successor to a successful first system — is one of Brooks's most enduring contributions. OS/360, with its thousand-man team and its committee-designed interfaces, was his cautionary example. JCL was the scar he carried from that project.
+The second-system effect — the tendency to over-engineer the successor to a successful first system — is one of Brooks's most enduring contributions.
+
+> "The second is the most dangerous system a designer ever builds. Having succeeded with the first, he loads the second with every feature he omitted from the first, every embellishment suggested by users, every capability the hardware now permits. The result is a bloated, over-budget, late disaster."
+
+OS/360, with its thousand-man team and its committee-designed interfaces, was his cautionary example. JCL was the scar he carried from that project.
 - **His beach house** — designed by Brooks himself, an amateur architect. The house — which he calls "View/360" in a nod to IBM — is a case study in how a designer works in an unfamiliar medium, and how the principles of conceptual integrity, empiricism, and iteration transfer across domains.
 - **His kitchen renovation** — a smaller case study that illustrates the difference between designing for yourself (where you are the user, the client, and the builder) and designing for others.
 - **A book design** — Brooks co-authored *Computer Architecture: Concepts and Evolution* and designed its structure. The case study shows how book design — chapter organization, cross-referencing, indexing — follows the same principles as software design.

@@ -28,6 +28,10 @@ The client cannot articulate what they want until they see something. Once they 
 
 This co-evolution of problem and solution is not a bug in the rational model. It is a fact about the world that the rational model cannot accommodate.
 
+> "Requirements and design co-evolve. The act of designing changes the designer's understanding of the problem. As the design emerges, the requirements change. This is not failure; it is discovery."
+
+Brooks calls this the co-evolution model. It is not that requirements exist fully formed in the client's mind, waiting to be extracted. The requirements are *produced* through the act of designing. Each iteration of the design teaches the client something about what they actually need. The process ends not when the design matches the requirements, but when the requirements and the design have co-evolved to a point of mutual stability.
+
 ## The empiricist alternative
 
 Brooks declares himself:
@@ -44,6 +48,10 @@ This is the methodology that drove the scientific revolution, and Brooks argues 
 4. **Test it with real users** — watch what they do, not what they say
 5. **Iterate** — use what you learned to improve the design
 6. **Build incrementally** — grow the system in steps, testing at each step
+
+> "The prototype is the pivot of the design process. It makes ideas concrete and thereby falsifiable. A prototype that fails teaches more than a specification that pleases."
+
+The prototype is not a draft of the final product. It is a question posed to reality: does this work? does this make sense? does this solve the problem? A failed prototype is not wasted effort — it is the fastest way to discover what the requirements actually are.
 
 This is not agile methodology, though it shares the same philosophical roots. It is a deeper claim about the nature of design knowledge. Design knowledge is empirical, not deductive. You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints.
 

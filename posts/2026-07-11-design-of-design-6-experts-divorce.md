@@ -1,12 +1,12 @@
 ---
-title: "Brooks on design, part 6: why experts get it wrong"
+title: "why experts get it wrong"
 date: 2026-07-11
 slug: brooks-design-experts-divorce
-summary: "Novice mistakes are easy to spot. Expert mistakes are comprehensively, systematically wrong. And the divorce of designers from builders and users makes both harder to catch."
+summary: "Novice mistakes are easy to spot. Expert mistakes are comprehensively, systematically wrong. The divorce of designers from builders and users makes both harder to catch."
 tags: design, fred-brooks, expertise, paradigm-trap, feedback
 ---
 
-Parts 4-5: design is empirical. Part 6: two forces that undermine empiricism.
+Design is empirical. Two forces undermine empiricism.
 
 ## Definitions
 
@@ -14,7 +14,7 @@ Parts 4-5: design is empirical. Part 6: two forces that undermine empiricism.
 
 Novices make technical mistakes. Wrong data structure. Missed edge case. Tests catch these. The system breaks visibly.
 
-Experts make a different mistake. Their designs are **comprehensively, systematically wrong.** Internally consistent. Well-executed. Every part fits. And it solves the wrong problem. Or uses assumptions from a previous era. Or optimizes for a constraint that no longer exists.
+Experts make a different mistake. Designs that are **comprehensively, systematically wrong.** Internally consistent. Well-executed. Every part fits. And it solves the wrong problem. Or uses assumptions from a previous era. Or optimizes for a constraint that no longer exists.
 
 > "The expert's very expertise becomes a liability when the paradigm shifts. The habits that served him well in one era mislead him systematically in the next. He is not making small errors; he is solving yesterday's problem with today's tools."
 
@@ -40,6 +40,6 @@ Connects to Part 3. The designer needs protection — and contact with reality. 
 
 ---
 
-**Part 6 of 7.** [← Part 5](https://blog.hackspree.com/#brooks-design-empiricist-alternative) · [Part 7 →](https://blog.hackspree.com/#brooks-design-great-designers)
+[← Part 5](https://blog.hackspree.com/#brooks-design-empiricist-alternative) · [Part 1](https://blog.hackspree.com/#brooks-design-conceptual-integrity) · [Part 2](https://blog.hackspree.com/#brooks-design-one-mind-rule) · [Part 3](https://blog.hackspree.com/#brooks-design-protecting-designer) · [Part 4](https://blog.hackspree.com/#brooks-design-rational-model) · [Part 7 →](https://blog.hackspree.com/#brooks-design-great-designers)
 
-**References:** Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver Bullet* (1986), *The Design of Design* (2010). Brooks & Blaauw, *Computer Architecture: Concepts and Evolution* (1997).
+Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver Bullet* (1986), *The Design of Design* (2010). Brooks & Blaauw, *Computer Architecture: Concepts and Evolution* (1997).

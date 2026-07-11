@@ -43,12 +43,12 @@ This connects to Part 3. The designer needs protection, yes — but also contact
 ---
 
 **This is part 6 of a 7-part series on Fred Brooks' *The Design of Design*.**
-- [Part 1: Conceptual integrity — the most important property](/posts/brooks-design-conceptual-integrity)
-- [Part 2: Why one mind must rule the design](/posts/brooks-design-one-mind-rule)
-- [Part 3: How to protect designers from their organizations](/posts/brooks-design-protecting-designer)
-- [Part 4: The waterfall model is wrong and harmful](/posts/brooks-design-rational-model)
-- [Part 5: Build, test, iterate — the empiricist method](/posts/brooks-design-empiricist-alternative)
-- [Part 7: Great designs come from great designers — not great processes](/posts/brooks-design-great-designers)
+- [Part 1: Conceptual integrity — the most important property](https://blog.hackspree.com/#brooks-design-conceptual-integrity)
+- [Part 2: Why one mind must rule the design](https://blog.hackspree.com/#brooks-design-one-mind-rule)
+- [Part 3: How to protect designers from their organizations](https://blog.hackspree.com/#brooks-design-protecting-designer)
+- [Part 4: The waterfall model is wrong and harmful](https://blog.hackspree.com/#brooks-design-rational-model)
+- [Part 5: Build, test, iterate — the empiricist method](https://blog.hackspree.com/#brooks-design-empiricist-alternative)
+- [Part 7: Great designs come from great designers — not great processes](https://blog.hackspree.com/#brooks-design-great-designers)
 
 **References:**
 - Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)

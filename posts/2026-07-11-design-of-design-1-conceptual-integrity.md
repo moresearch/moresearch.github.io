@@ -51,12 +51,12 @@ The next part takes up the practical question: if integrity requires one mind, h
 ---
 
 **This is part 1 of a 7-part series on Fred Brooks' *The Design of Design*.**
-- [Part 2: Why one mind must rule the design](/posts/brooks-design-one-mind-rule)
-- [Part 3: How to protect designers from their organizations](/posts/brooks-design-protecting-designer)
-- [Part 4: The waterfall model is wrong and harmful](/posts/brooks-design-rational-model)
-- [Part 5: Build, test, iterate — the empiricist method](/posts/brooks-design-empiricist-alternative)
-- [Part 6: Why experts design the wrong thing beautifully](/posts/brooks-design-experts-divorce)
-- [Part 7: Great designs come from great designers — not great processes](/posts/brooks-design-great-designers)
+- [Part 2: Why one mind must rule the design](https://blog.hackspree.com/#brooks-design-one-mind-rule)
+- [Part 3: How to protect designers from their organizations](https://blog.hackspree.com/#brooks-design-protecting-designer)
+- [Part 4: The waterfall model is wrong and harmful](https://blog.hackspree.com/#brooks-design-rational-model)
+- [Part 5: Build, test, iterate — the empiricist method](https://blog.hackspree.com/#brooks-design-empiricist-alternative)
+- [Part 6: Why experts design the wrong thing beautifully](https://blog.hackspree.com/#brooks-design-experts-divorce)
+- [Part 7: Great designs come from great designers — not great processes](https://blog.hackspree.com/#brooks-design-great-designers)
 
 **References:**
 - Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)

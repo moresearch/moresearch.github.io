@@ -470,8 +470,9 @@ var (
     .post-body blockquote {
       max-width: 34ch;
       padding-left: 18px;
-      border-left: 2px solid rgba(255, 255, 255, 0.14);
-      color: #949aa4;
+      border-left: 2px solid rgba(255, 255, 255, 0.42);
+      color: #fff;
+      font-weight: 600;
     }
 
     .post-body code {

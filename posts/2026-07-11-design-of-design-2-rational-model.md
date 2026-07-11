@@ -53,7 +53,11 @@ This is the methodology that drove the scientific revolution, and Brooks argues 
 
 The prototype is not a draft of the final product. It is a question posed to reality: does this work? does this make sense? does this solve the problem? A failed prototype is not wasted effort — it is the fastest way to discover what the requirements actually are.
 
-This is not agile methodology, though it shares the same philosophical roots. It is a deeper claim about the nature of design knowledge. Design knowledge is empirical, not deductive. You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints.
+This is not agile methodology, though it shares the same philosophical roots. It is a deeper claim about the nature of design knowledge. Design knowledge is empirical, not deductive.
+
+> "Formal methods — proving programs correct — represent rationalism's last stand in software. They work in principle for small, well-specified modules. They cannot scale to large, complex, evolving systems. No other design discipline even attempts formal correctness proofs. Architects do not prove buildings will stand; they build them and test them."
+
+You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints. This is true of buildings, bridges, airplanes, and software. The rationalist dream — design from first principles, correct by construction — is alive only in computer science departments. Every other design discipline abandoned it centuries ago.
 
 ## Constraints are friends
 
@@ -71,7 +75,11 @@ This is a critique of clients — and internal stakeholders — who confuse requ
 
 This is the designer's real job. Not translating requirements into blueprints. Helping the client discover what the requirements are. Every hour spent clarifying the problem saves ten hours of building the wrong solution. The tools change. This doesn't.
 
-This connects back to the empiricist model. The process of proposing a design and having the client react to it is how the what gets discovered. The client says "that's not what I want" and the designer says "what specifically is wrong?" and the answer refines the requirements. This is not failure. It is the process working as designed.
+This connects back to the empiricist model. The process of proposing a design and having the client react to it is how the what gets discovered. The client says "that's not what I want" and the designer says "what specifically is wrong?" and the answer refines the requirements.
+
+> "Brooks tells of a military helicopter whose requirements committee, after months of careful work, added as a final requirement: 'It shall be capable of flying itself across the Atlantic.' This contradicted every prior constraint. But it was in the requirements document, so it had to be honored. The rational model has no defense against a late-breaking absurdity, because it treats all requirements as equally valid once documented."
+
+This is not failure. It is the process working as designed — but only if the process allows requirements to be challenged. The rational model doesn't. Requirements are inputs. Design is output. The feedback loop is broken.
 
 ## User models: better wrong than vague
 

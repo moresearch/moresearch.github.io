@@ -50,7 +50,11 @@ Brooks is explicit about this. Great designs are attributed to individuals or pa
 
 > "The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair."
 
-He doubles down. The 1975 position was that the *implementation* could be done by teams but the *architecture* needed one mind. The 2010 position eliminates even that qualification. If two people work in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply they function as one — that can work. Three cannot.
+He doubles down. The 1975 position was that the *implementation* could be done by teams but the *architecture* needed one mind. The 2010 position sharpens this further.
+
+> "Two people can serve as one mind only if they are in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply that each knows what the other would decide. Three cannot."
+
+If two people work in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply they function as one — that can work. Three cannot. The resonance required is rare. Brooks found it with Gerrit Blaauw on System/360. Most designer pairs never achieve it.
 
 This is not an argument against collaboration. Brooks devotes two chapters to collaboration and is careful to distinguish its uses. Teams are valuable for requirements elicitation — more people means more perspectives, more edge cases, more domain knowledge surfaced. Teams are valuable for exploring the design space — brainstorming, design competitions, alternatives analysis. Teams are valuable for implementation — decomposing the work, parallelizing effort, reviewing each other's code.
 
@@ -96,7 +100,11 @@ The one-mind rule is uncomfortable in an industry that valorizes collaboration. 
 
 The practical implications are clear. Every project of any complexity should have a single person — or a tight pair — who owns the conceptual design. That person reviews every interface, every abstraction, every user-visible decision. They have the authority to say no without escalation. They are not the team lead, not the engineering manager, not the product manager — though they may wear those hats too. They are the design owner, and their primary responsibility is conceptual integrity.
 
-This role is hard to fill. It requires someone who can hold the entire system in their head, who has taste, who is willing to say no repeatedly to smart people, and who the organization trusts enough to give real authority. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
+This role is hard to fill. It requires someone who can hold the entire system in their head, who has taste, who is willing to say no repeatedly to smart people, and who the organization trusts enough to give real authority.
+
+> "The architecture must be separated from implementation. This was the key organizational insight of System/360: a small architecture team defines what the machine is; a large implementation team builds it. The architecture team must be protected; the implementation team must be coordinated. The roles are distinct and must be staffed differently."
+
+This is Brooks's most practical organizational pattern. Separate the design authority from the build workforce. Give the design authority real power over the what. Give the build workforce the scale to execute. The industry sort of does this — architects, tech leads, staff engineers — but rarely with enough separation that the design owner can actually say no to the VP who wants a feature. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
 
 Brooks's argument, forty years after *The Mythical Man-Month* and sixteen years after *The Design of Design*, is still waiting to be taken seriously.
 

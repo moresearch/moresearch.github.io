@@ -63,7 +63,11 @@ Brooks recommends looking at past work: what has the candidate actually designed
 
 The master-apprentice relationship — explicit in architecture, implicit in software — is how design judgment gets transmitted. A junior designer working under a senior one absorbs not just knowledge but taste: what to optimize for, what to ignore, when to fight and when to concede.
 
-**Rotate experiences.** A designer who has only built one kind of system in one domain with one set of constraints has a narrow foundation. Rotating across domains — from infrastructure to product, from backend to frontend, from systems to tools — builds the pattern recognition that distinguishes good designers from great ones.
+**Rotate experiences.** A designer who has only built one kind of system in one domain with one set of constraints has a narrow foundation.
+
+> "The designer who has worked in only one domain, with one set of constraints, has a narrow base of pattern recognition. Breadth of experience — across domains, technologies, and constraints — builds the repertoire from which great designs are synthesized."
+
+Rotating across domains — from infrastructure to product, from backend to frontend, from systems to tools — builds the pattern recognition that distinguishes good designers from great ones. Brooks himself designed in five media; he didn't think it was a coincidence.
 
 **Protect them from management.** This is the hardest one. The reward for being a great designer is usually more meetings, more management responsibility, and less time designing. Breaking this cycle requires active intervention: someone in the organization with the authority to say "no, this person's highest-value activity is designing, not managing."
 
@@ -102,7 +106,11 @@ Brooks argues that this gap is partly cultural and partly practical. Culturally,
 
 *The Design of Design* is structured around case studies, and they are worth reading in full. Brooks draws on:
 
-- **IBM System/360** — the architecture that established the modern mainframe. Brooks was the project manager, and his account of the design decisions — why 8-bit bytes, why 32-bit words, why the clean separation between architecture and implementation — is a master class in making irreversible decisions under uncertainty.
+- **IBM System/360** — the architecture that established the modern mainframe. Brooks was the project manager, and his account of the design decisions is a master class in making irreversible decisions under uncertainty.
+
+> "Why an 8-bit byte? Why 32-bit words? Why a clean separation between architecture and implementation? Each of these decisions was made by a small group, debated intensely, and then locked. Once locked, they could not be reopened. This discipline — decide, commit, don't revisit — is the only way to ship a coherent architecture."
+
+The decisions — 8-bit bytes, 32-bit words, the architecture/implementation split — shaped computing for decades. They were not obviously correct at the time. They became correct because a small team with real authority made them and refused to reopen them.
 - **IBM OS/360** — the operating system that taught Brooks about the second-system effect and the limits of coordination. He is candid about its failures:
 
 > "The job control language JCL for OS/360 is, in my opinion, the worst computer language ever devised, a triumph of committee design over conceptual integrity."

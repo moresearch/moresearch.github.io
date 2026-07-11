@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 5: the empiricist alternative"
+title: "Brooks on design, part 5: build, test, iterate — the empiricist method"
 date: 2026-07-11
 slug: brooks-design-empiricist-alternative
 summary: "Brooks declares himself a hard-core empiricist: we cannot think our way to a correct design. We must build, test, and iterate. Prototyping, constraints, and user models are the tools of the trade."
@@ -42,6 +42,8 @@ This is not agile methodology, though the philosophical roots overlap. It is a d
 You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints. This is true of buildings, bridges, airplanes, and software. The rationalist dream — design from first principles, correct by construction — survives only in computer science departments. Every other design discipline abandoned it centuries ago.
 
 Brooks's entire body of work is an argument that software should join them. In *No Silver Bullet* (1986), he argued there is no single breakthrough that will eliminate the essential difficulty of software design. In *Computer Architecture: Concepts and Evolution* (1997, with Gerrit Blaauw), he showed that even computer instruction sets — among the most rigorously specified artifacts ever designed — evolved through trial, error, and market selection, not deduction from first principles.
+
+Richard Hamming, another giant of that generation, put it in his own aphoristic way: "The purpose of computing is insight, not numbers." Brooks would add: the purpose of designing is insight, not specifications. You build to learn. The learning is the point. The artifact is the byproduct.
 
 ## Constraints are friends
 

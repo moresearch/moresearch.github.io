@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 4: the rational model is wrong"
+title: "Brooks on design, part 4: the waterfall model is wrong and harmful"
 date: 2026-07-11
 slug: brooks-design-rational-model
 summary: "Fred Brooks argues that the rational model of design — requirements first, design second, implementation third — is fundamentally wrong. You don't know the goal at the start, and requirements co-evolve with the design."

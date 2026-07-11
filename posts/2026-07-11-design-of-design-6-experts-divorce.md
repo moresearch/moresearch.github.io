@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 6: how experts go wrong and the divorce of design"
+title: "Brooks on design, part 6: why experts design the wrong thing beautifully"
 date: 2026-07-11
 slug: brooks-design-experts-divorce
 summary: "Brooks observes that novice mistakes are easy to spot and fix, but expert mistakes are comprehensively, systematically wrong. And the growing separation between designers, builders, and users makes both kinds of error harder to catch."
@@ -14,7 +14,7 @@ Novices make technical mistakes. They forget edge cases, choose the wrong data s
 
 Experts make a different kind of mistake. They produce designs that are **comprehensively, systematically wrong**. The design is internally consistent. It is well-executed. Every part fits with every other part. And it solves the wrong problem. Or it solves the right problem using assumptions from a previous era. Or it optimizes for a constraint that no longer exists.
 
-Brooks's explanation is the paradigm trap. An expert has deep experience in one paradigm — one way of seeing problems, one set of solutions, one intuition for what works. That depth is their strength.
+Brooks's explanation is the paradigm trap. The term is borrowed from Thomas Kuhn's *The Structure of Scientific Revolutions* (1962), which argued that scientific progress occurs not through accumulation but through paradigm shifts — and that the established practitioners of an old paradigm are often the last to see the new one. Brooks applies the same logic to design. An expert has deep experience in one paradigm — one way of seeing problems, one set of solutions, one intuition for what works. That depth is their strength.
 
 > "The expert's very expertise becomes a liability when the paradigm shifts. The habits that served him well in one era mislead him systematically in the next. He is not making small errors; he is solving yesterday's problem with today's tools."
 

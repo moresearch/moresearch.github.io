@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 3: protecting the designer"
+title: "Brooks on design, part 3: how to protect designers from their organizations"
 date: 2026-07-11
 slug: brooks-design-protecting-designer
 summary: "If conceptual integrity requires one mind, the practical question is how to protect that mind from the organizational forces that dilute design. Brooks's answer: real authority, organizational backing, and a clean separation between architecture and implementation."

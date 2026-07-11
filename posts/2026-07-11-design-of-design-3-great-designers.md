@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 7: growing great designers"
+title: "Brooks on design, part 7: great designs come from great designers — not great processes"
 date: 2026-07-11
 slug: brooks-design-great-designers
 summary: "Brooks argues that great designs come from great designers, not great processes — and that organizations must deliberately grow, protect, and retain design talent rather than smothering it in process."
@@ -16,7 +16,7 @@ This is an unfashionable claim. The modern engineering organization invests heav
 
 The two sentences are in tension with everything the industry has built since 2010. We have invested in process — agile, code review, CI/CD, architecture review boards — as if better process produces better design. Brooks says it doesn't. Process raises the floor. Talent raises the ceiling. Conflating the two is the central mistake of engineering management.
 
-This insight was shared across Brooks's generation. Knuth took a decade away from *The Art of Computer Programming* to invent TeX because he believed the typesetting problem required one mind's full attention, not a committee. Alan Kay described the best software as "a single person's vision carried through." C.A.R. Hoare, in his 1980 Turing lecture, warned that "the most dangerous of all is the error of believing that the application of better tools and more systematic methods can replace the need for individual insight." The whole generation agreed: process supports. Talent creates.
+This insight was shared across Brooks's generation. Knuth took a decade away from *The Art of Computer Programming* to invent TeX because he believed the typesetting problem required one mind's full attention. Alan Kay described the best software as "a single person's vision carried through." C.A.R. Hoare, in his 1980 Turing lecture, warned that "the most dangerous of all is the error of believing that the application of better tools and more systematic methods can replace the need for individual insight." J.C.R. Licklider, whose 1960 paper on "Man-Computer Symbiosis" launched the field of interactive computing, argued that the goal was not to automate thought but to couple human intuition with machine power — a coupling that only works if the human's vision is clear. The whole generation agreed: process supports. Talent creates.
 
 ## Process is not a substitute for talent
 

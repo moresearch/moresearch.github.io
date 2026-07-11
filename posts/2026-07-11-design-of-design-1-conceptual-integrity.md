@@ -1,9 +1,9 @@
 ---
-title: "Brooks on design, part 1: conceptual integrity and the Reims Cathedral"
+title: "Brooks on design, part 1: conceptual integrity — the most important property"
 date: 2026-07-11
 slug: brooks-design-conceptual-integrity
-summary: "Fred Brooks' 'The Design of Design' argues that the most important property of any system is conceptual integrity — and that integrity requires a single mind, or at most two, controlling the design."
-tags: design, fred-brooks, conceptual-integrity, software-architecture, collaboration
+summary: "Conceptual integrity is the most important consideration in system design.' Everything else — process, tools, team structure, schedules — serves this property, or should."
+tags: design, fred-brooks, conceptual-integrity, orthogonality, reims
 ---
 
 In 2010, thirty-five years after *The Mythical Man-Month*, Fred Brooks published *The Design of Design: Essays from a Computer Scientist*. It is a quieter book — less urgent, more reflective — and it was met with less fanfare. That is a mistake. It contains the most distilled thinking on what makes design work from someone who spent six decades designing across five media: computer architecture, software, houses, books, and organizations.
@@ -32,7 +32,9 @@ Every feature you add makes every other feature harder to find, learn, and use. 
 
 A system with all three properties feels like it came from one mind. The user forms a coherent mental model. They can predict how the system will behave in situations they haven't yet encountered. This is not an aesthetic preference. It is the difference between a tool and an obstacle course.
 
-Brooks was not alone in valuing coherence. Knuth, his contemporary, argued that the best programs possess a "literate" quality — readable by humans, not just executable by machines. Dijkstra insisted that elegance was a practical property: an elegant program contains fewer bugs because its structure is transparent. Kernighan and Plauger catalogued the small decisions that distinguish clarity from muddle in *The Elements of Programming Style* (1974). The whole generation agreed that integrity matters. Brooks's contribution was identifying its *structural precondition*: one mind must control the design.
+Brooks was not alone in valuing coherence. Knuth, his contemporary, argued that the best programs possess a "literate" quality — readable by humans, not just executable by machines. Dijkstra insisted that elegance was a practical property: an elegant program contains fewer bugs because its structure is transparent. Kernighan and Plauger catalogued the small decisions that distinguish clarity from muddle in *The Elements of Programming Style* (1974). Niklaus Wirth designed Pascal and Modula-2 as deliberate exercises in conceptual integrity — each language the vision of one mind, each with a coherent set of primitives that composed cleanly. Butler Lampson, reflecting on the Alto and the birth of the GUI, observed that the best interfaces came from a single designer making decisions about what to include and — crucially — what to leave out.
+
+The whole generation agreed that integrity matters. Brooks's contribution was identifying its *structural precondition*: one mind must control the design. And in *Computer Architecture: Concepts and Evolution* (1997), he and Gerrit Blaauw demonstrated that this principle governed even the most rigorously engineered artifacts — instruction set architectures — where orthogonality of operations, data types, and addressing modes was the explicit design goal.
 
 ## The Reims Cathedral
 

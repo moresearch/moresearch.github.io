@@ -654,7 +654,7 @@
       <article class="post" id="brooks-design-great-designers">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-great-designers">&#34;Brooks on design, part 7: growing great designers&#34;</a></h2><p class="post-summary">&#34;Brooks argues that great designs come from great designers, not great processes — and that organizations must deliberately grow, protect, and retain design talent rather than smothering it in process.&#34;</p>
+          <h2><a href="#brooks-design-great-designers">&#34;Brooks on design, part 7: great designs come from great designers — not great processes&#34;</a></h2><p class="post-summary">&#34;Brooks argues that great designs come from great designers, not great processes — and that organizations must deliberately grow, protect, and retain design talent rather than smothering it in process.&#34;</p>
           <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">great-designers</span><span class="tag">engineering-culture</span><span class="tag">mentorship</span>
           </div>
         </header>
@@ -665,7 +665,7 @@
 <p>&quot;Great designs come from great designers. Process can make a good design better; it cannot make a bad designer good.&quot;</p>
 </blockquote>
 <p>The two sentences are in tension with everything the industry has built since 2010. We have invested in process — agile, code review, CI/CD, architecture review boards — as if better process produces better design. Brooks says it doesn't. Process raises the floor. Talent raises the ceiling. Conflating the two is the central mistake of engineering management.</p>
-<p>This insight was shared across Brooks's generation. Knuth took a decade away from <em>The Art of Computer Programming</em> to invent TeX because he believed the typesetting problem required one mind's full attention, not a committee. Alan Kay described the best software as &quot;a single person's vision carried through.&quot; C.A.R. Hoare, in his 1980 Turing lecture, warned that &quot;the most dangerous of all is the error of believing that the application of better tools and more systematic methods can replace the need for individual insight.&quot; The whole generation agreed: process supports. Talent creates.</p>
+<p>This insight was shared across Brooks's generation. Knuth took a decade away from <em>The Art of Computer Programming</em> to invent TeX because he believed the typesetting problem required one mind's full attention. Alan Kay described the best software as &quot;a single person's vision carried through.&quot; C.A.R. Hoare, in his 1980 Turing lecture, warned that &quot;the most dangerous of all is the error of believing that the application of better tools and more systematic methods can replace the need for individual insight.&quot; J.C.R. Licklider, whose 1960 paper on &quot;Man-Computer Symbiosis&quot; launched the field of interactive computing, argued that the goal was not to automate thought but to couple human intuition with machine power — a coupling that only works if the human's vision is clear. The whole generation agreed: process supports. Talent creates.</p>
 <h2 id="process-is-not-a-substitute-for-talent">Process is not a substitute for talent</h2>
 <p>Brooks's position is blunt:</p>
 <blockquote>
@@ -786,106 +786,10 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="brooks-design-rational-model">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-rational-model">&#34;Brooks on design, part 4: the rational model is wrong&#34;</a></h2><p class="post-summary">&#34;Fred Brooks argues that the rational model of design — requirements first, design second, implementation third — is fundamentally wrong. You don&#39;t know the goal at the start, and requirements co-evolve with the design.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">rational-model</span><span class="tag">waterfall</span><span class="tag">co-evolution</span><span class="tag">peter-naur</span>
-          </div>
-        </header>
-        <div class="post-body"><p>If part 1 of Brooks's argument is about <em>who</em> should design — one mind, or at most two — part 2 is about <em>how</em> design actually works. His conclusion is blunt: the dominant model of design in software engineering is not just a simplification. It is a misrepresentation.</p>
-<p>The rational model — called the waterfall model in its software variant — says: gather requirements, produce a design, implement, test, ship. Each phase finishes before the next begins. The design proceeds logically from known premises to a correct conclusion. It is clean. It is orderly. It is wrong.</p>
-<blockquote>
-<p>&quot;The Waterfall Model is wrong and harmful; we must outgrow it. What is wrong is that it is an essentially rational model, and for wicked problems, the rational model is simply the wrong model.&quot;</p>
-</blockquote>
-<p>He doesn't hedge. Not &quot;sometimes inappropriate.&quot; Not &quot;useful in certain domains.&quot; <em>Wrong and harmful.</em> The problem is structural: the model demands decisions at the point of maximum ignorance — the beginning — and then forbids revisiting them. That is not how any complex design has ever succeeded.</p>
-<h2 id="the-fatal-flaw">The fatal flaw</h2>
-<p>The rational model assumes the designer knows the goal at the start. This assumption is demonstrably false.</p>
-<p>In Herbert Simon's classic formulation, design is systematic search through a combinatorial space. You have goals, utility functions, constraints, and resources. You search for a solution that satisfies the constraints and maximizes the utility. If the space is tractable, the result is optimal. The theory is beautiful.</p>
-<p>The practice is that <strong>nobody knows the goal</strong> — not the designer, not the client. Brooks captures this in the line every experienced designer recognizes: <em>&quot;That's what I asked for, but that's not what I want.&quot;</em> A client cannot articulate what they need until they see something. Once they see it, they can tell you what's wrong. But they cannot tell you what's right before anything exists. This is not a failure of communication. It is a property of design problems.</p>
-<p>The act of designing changes the designer's understanding of the problem. The new understanding changes the requirements. The new requirements change the design. This is co-evolution, and it is not a bug in the rational model. It is a fact about reality that the model cannot accommodate.</p>
-<blockquote>
-<p>&quot;Requirements and design co-evolve. The act of designing changes the designer's understanding of the problem. As the design emerges, the requirements change. This is not failure; it is discovery.&quot;</p>
-</blockquote>
-<p>Brooks names this the co-evolution model. Requirements do not sit fully formed in the client's mind, waiting for extraction. They are <em>produced</em> through the act of designing. Each iteration teaches the client something about what they actually need. The process ends not when the design matches the requirements, but when the two have reached mutual stability — when further iteration produces diminishing returns on new understanding.</p>
-<p>Peter Naur reached the same conclusion from a different direction. In <em>Programming as Theory Building</em> (1985), Naur argued that a program is not its code but the theory its builders hold of the problem it solves. That theory cannot be extracted upfront; it is built through the act of designing. Brooks's co-evolution and Naur's theory-building are one insight from two traditions: the real product of design is understanding, and understanding emerges through the work.</p>
-<p>The next part takes up the positive alternative: if we can't reason our way to a correct design, what do we do instead?</p>
-<hr>
-<p><strong>This is part 4 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-conceptual-integrity">Part 1: Conceptual integrity and the Reims Cathedral</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-one-mind-rule">Part 2: The one-mind rule</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-protecting-designer">Part 3: Protecting the designer</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-empiricist-alternative">Part 5: The empiricist alternative</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-experts-divorce">Part 6: How experts go wrong and the divorce of design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-great-designers">Part 7: Growing great designers</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Fred Brooks, <em>The Mythical Man-Month: Essays on Software Engineering</em>, Addison-Wesley, 1975. (Anniversary Edition with <em>No Silver Bullet</em>, 1995.)</li>
-<li>Fred Brooks, <em>No Silver Bullet: Essence and Accident in Software Engineering</em>, 1986.</li>
-<li>Fred Brooks and Gerrit A. Blaauw, <em>Computer Architecture: Concepts and Evolution</em>, Addison-Wesley, 1997.</li>
-<li>Fred Brooks, <em>The Design of Design: Essays from a Computer Scientist</em>, Addison-Wesley, 2010.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="brooks-design-conceptual-integrity">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-conceptual-integrity">&#34;Brooks on design, part 1: conceptual integrity and the Reims Cathedral&#34;</a></h2><p class="post-summary">&#34;Fred Brooks&#39; &#39;The Design of Design&#39; argues that the most important property of any system is conceptual integrity — and that integrity requires a single mind, or at most two, controlling the design.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span><span class="tag">software-architecture</span><span class="tag">collaboration</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In 2010, thirty-five years after <em>The Mythical Man-Month</em>, Fred Brooks published <em>The Design of Design: Essays from a Computer Scientist</em>. It is a quieter book — less urgent, more reflective — and it was met with less fanfare. That is a mistake. It contains the most distilled thinking on what makes design work from someone who spent six decades designing across five media: computer architecture, software, houses, books, and organizations.</p>
-<p>The central argument is that <strong>conceptual integrity is the most important consideration in system design</strong>. Everything else — process, tools, team structure, schedules — serves this property, or should.</p>
-<h2 id="what-conceptual-integrity-is">What conceptual integrity is</h2>
-<p>Brooks first defined the concept in <em>The Mythical Man-Month</em> (1975), sharpened it in <em>No Silver Bullet</em> (1986) and the <em>Anniversary Edition</em> (1995), then devoted <em>The Design of Design</em> (2010) to exploring it as a universal property of all designed things:</p>
-<blockquote>
-<p>&quot;I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
-</blockquote>
-<p>The sentence is a thesis statement for his career, and it turns on a hard tradeoff: omit useful features to preserve coherence. Most designers agree with this in principle. Most violate it in practice the moment someone proposes a good feature that doesn't fit — because saying yes is easier than explaining why a good idea makes the whole worse.</p>
-<p>Brooks decomposes conceptual integrity into three properties:</p>
-<p><strong>Orthogonality.</strong> Concepts should not overlap. Each function should be achievable in exactly one way. Two paths to the same result force the user to learn both, decide which to use, and absorb the inconsistencies between them. Orthogonality is not minimalism. It is non-redundancy. A design can be rich and still orthogonal.</p>
-<p><strong>Propriety.</strong> The design should include only what is necessary, and what is included should be transparent.</p>
-<blockquote>
-<p>&quot;The essential skill of the designer is saying no — repeatedly, to smart people with good arguments — and having the authority to make it stick. Every added feature is a subtraction from all existing features, for it adds complexity without corresponding benefit.&quot;</p>
-</blockquote>
-<p>Every feature you add makes every other feature harder to find, learn, and use. The cost is not additive. It is multiplicative. Saying no is the designer's highest-leverage act, and it requires an organizational structure that backs the no.</p>
-<p><strong>Generality.</strong> Within its chosen scope, the design should be complete — no arbitrary limits the user must work around. A design with generality handles the cases the designer anticipated and the ones they didn't, because the primitives compose. Generality without orthogonality is a kitchen sink. Orthogonality without generality is a toy.</p>
-<p>A system with all three properties feels like it came from one mind. The user forms a coherent mental model. They can predict how the system will behave in situations they haven't yet encountered. This is not an aesthetic preference. It is the difference between a tool and an obstacle course.</p>
-<p>Brooks was not alone in valuing coherence. Knuth, his contemporary, argued that the best programs possess a &quot;literate&quot; quality — readable by humans, not just executable by machines. Dijkstra insisted that elegance was a practical property: an elegant program contains fewer bugs because its structure is transparent. Kernighan and Plauger catalogued the small decisions that distinguish clarity from muddle in <em>The Elements of Programming Style</em> (1974). The whole generation agreed that integrity matters. Brooks's contribution was identifying its <em>structural precondition</em>: one mind must control the design.</p>
-<h2 id="the-reims-cathedral">The Reims Cathedral</h2>
-<p>Brooks uses architecture to make the point undeniable.</p>
-<blockquote>
-<p>&quot;Reims Cathedral has conceptual integrity. Built over eight generations of architects, each stuck to the original plan. The result is a unified work, coherent in every detail. Most cathedrals are not like this; their conflicting concepts produce architectural chaos — individually interesting, collectively incoherent.&quot;</p>
-</blockquote>
-<p>Reims worked because the original architect's plan had authority that outlived him. Every successor — across two centuries — submitted to it. The result is a unified work built by many hands. It should not exist. That it does is evidence for Brooks's thesis.</p>
-<p>Most cathedrals are the other kind: Gothic nave, Renaissance facade, Baroque chapel grafted onto a Romanesque transept. Each generation had a vision and nobody had the authority to enforce continuity. The result is architectural chaos — individually interesting, collectively incoherent.</p>
-<p>Software systems are cathedrals built over decades. Unix (Ken Thompson and Dennis Ritchie, one resonant pair), Lisp (John McCarthy, one mind), Go (Thompson, Pike, Griesemer, a tight trio), the original Macintosh (Jobs channeling a singular vision) — these are Reims. Everything else is a patchwork quilt. Thompson captured the Brooksian ethic perfectly: &quot;One of my most productive days was throwing away 1,000 lines of code.&quot; Saying no to your own complexity is the act that preserves conceptual integrity.</p>
-<p>The next part takes up the practical question: if integrity requires one mind, how do you achieve that in an organization of many minds?</p>
-<hr>
-<p><strong>This is part 1 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-one-mind-rule">Part 2: The one-mind rule</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-protecting-designer">Part 3: Protecting the designer</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-rational-model">Part 4: The rational model is wrong</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-empiricist-alternative">Part 5: The empiricist alternative</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-experts-divorce">Part 6: How experts go wrong and the divorce of design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-great-designers">Part 7: Growing great designers</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Fred Brooks, <em>The Mythical Man-Month: Essays on Software Engineering</em>, Addison-Wesley, 1975. (Anniversary Edition with <em>No Silver Bullet</em>, 1995.)</li>
-<li>Fred Brooks, <em>No Silver Bullet: Essence and Accident in Software Engineering</em>, 1986.</li>
-<li>Fred Brooks and Gerrit A. Blaauw, <em>Computer Architecture: Concepts and Evolution</em>, Addison-Wesley, 1997.</li>
-<li>Fred Brooks, <em>The Design of Design: Essays from a Computer Scientist</em>, Addison-Wesley, 2010.</li>
-</ul>
-</div>
-      </article>
       <article class="post" id="brooks-design-experts-divorce">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-experts-divorce">&#34;Brooks on design, part 6: how experts go wrong and the divorce of design&#34;</a></h2><p class="post-summary">&#34;Brooks observes that novice mistakes are easy to spot and fix, but expert mistakes are comprehensively, systematically wrong. And the growing separation between designers, builders, and users makes both kinds of error harder to catch.&#34;</p>
+          <h2><a href="#brooks-design-experts-divorce">&#34;Brooks on design, part 6: why experts design the wrong thing beautifully&#34;</a></h2><p class="post-summary">&#34;Brooks observes that novice mistakes are easy to spot and fix, but expert mistakes are comprehensively, systematically wrong. And the growing separation between designers, builders, and users makes both kinds of error harder to catch.&#34;</p>
           <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">expertise</span><span class="tag">paradigm-trap</span><span class="tag">feedback-loops</span>
           </div>
         </header>
@@ -893,7 +797,7 @@
 <h2 id="how-expert-designers-go-wrong">How expert designers go wrong</h2>
 <p>Novices make technical mistakes. They forget edge cases, choose the wrong data structure, build something that doesn't scale under load. These errors are visible and usually fixable. A code review catches them. A load test catches them. The system breaks in a way that points to the problem.</p>
 <p>Experts make a different kind of mistake. They produce designs that are <strong>comprehensively, systematically wrong</strong>. The design is internally consistent. It is well-executed. Every part fits with every other part. And it solves the wrong problem. Or it solves the right problem using assumptions from a previous era. Or it optimizes for a constraint that no longer exists.</p>
-<p>Brooks's explanation is the paradigm trap. An expert has deep experience in one paradigm — one way of seeing problems, one set of solutions, one intuition for what works. That depth is their strength.</p>
+<p>Brooks's explanation is the paradigm trap. The term is borrowed from Thomas Kuhn's <em>The Structure of Scientific Revolutions</em> (1962), which argued that scientific progress occurs not through accumulation but through paradigm shifts — and that the established practitioners of an old paradigm are often the last to see the new one. Brooks applies the same logic to design. An expert has deep experience in one paradigm — one way of seeing problems, one set of solutions, one intuition for what works. That depth is their strength.</p>
 <blockquote>
 <p>&quot;The expert's very expertise becomes a liability when the paradigm shifts. The habits that served him well in one era mislead him systematically in the next. He is not making small errors; he is solving yesterday's problem with today's tools.&quot;</p>
 </blockquote>
@@ -935,7 +839,7 @@
       <article class="post" id="brooks-design-empiricist-alternative">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-empiricist-alternative">&#34;Brooks on design, part 5: the empiricist alternative&#34;</a></h2><p class="post-summary">&#34;Brooks declares himself a hard-core empiricist: we cannot think our way to a correct design. We must build, test, and iterate. Prototyping, constraints, and user models are the tools of the trade.&#34;</p>
+          <h2><a href="#brooks-design-empiricist-alternative">&#34;Brooks on design, part 5: build, test, iterate — the empiricist method&#34;</a></h2><p class="post-summary">&#34;Brooks declares himself a hard-core empiricist: we cannot think our way to a correct design. We must build, test, and iterate. Prototyping, constraints, and user models are the tools of the trade.&#34;</p>
           <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">empiricism</span><span class="tag">prototyping</span><span class="tag">constraints</span><span class="tag">formal-methods</span>
           </div>
         </header>
@@ -968,6 +872,7 @@
 </blockquote>
 <p>You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints. This is true of buildings, bridges, airplanes, and software. The rationalist dream — design from first principles, correct by construction — survives only in computer science departments. Every other design discipline abandoned it centuries ago.</p>
 <p>Brooks's entire body of work is an argument that software should join them. In <em>No Silver Bullet</em> (1986), he argued there is no single breakthrough that will eliminate the essential difficulty of software design. In <em>Computer Architecture: Concepts and Evolution</em> (1997, with Gerrit Blaauw), he showed that even computer instruction sets — among the most rigorously specified artifacts ever designed — evolved through trial, error, and market selection, not deduction from first principles.</p>
+<p>Richard Hamming, another giant of that generation, put it in his own aphoristic way: &quot;The purpose of computing is insight, not numbers.&quot; Brooks would add: the purpose of designing is insight, not specifications. You build to learn. The learning is the point. The artifact is the byproduct.</p>
 <h2 id="constraints-are-friends">Constraints are friends</h2>
 <p>One of Brooks's most counterintuitive insights: a problem with no constraints has no criteria for excellence. When anything is possible, nothing is good.</p>
 <p>Constraints reduce the search space. They make the problem tractable. A designer without constraints faces infinite possibility and is paralyzed by it. A designer with clear constraints — budget, schedule, weight, power, compatibility, regulatory requirements — has a defined field. The creativity lies in finding an elegant solution within the boundaries, not in pretending the boundaries do not exist.</p>
@@ -1008,10 +913,114 @@
 </ul>
 </div>
       </article>
+      <article class="post" id="brooks-design-one-mind-rule">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-one-mind-rule">&#34;Brooks on design, part 2: why one mind must rule the design&#34;</a></h2><p class="post-summary">&#34;Fred Brooks argues that conceptual integrity requires a single mind — or at most a resonant pair — controlling the design. Committees produce compromises, not coherence.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span><span class="tag">one-mind</span><span class="tag">collaboration</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Part 1 established what conceptual integrity is and why it matters. This part is about the mechanism that produces it — and why that mechanism is so uncomfortable.</p>
+<p>The rule is simple and unpopular: <strong>the design must proceed from one mind, or from a very small number of agreeing resonant minds.</strong></p>
+<h2 id="the-case-for-one-mind">The case for one mind</h2>
+<p>Brooks is explicit. Great designs are attributed to individuals or pairs. Not committees. Not teams. Not &quot;the community.&quot; The list of counterexamples — designs that emerged from large groups and achieved integrity — is, by his accounting, empty.</p>
+<blockquote>
+<p>&quot;The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair.&quot;</p>
+</blockquote>
+<p>In <em>The Mythical Man-Month</em> (1975), Brooks allowed that <em>implementation</em> could be done by teams if the <em>architecture</em> belonged to one mind. By 2010, he had sharpened even that. The architecture itself, he now argues, can have at most two authors — and only if they are genuinely resonant.</p>
+<blockquote>
+<p>&quot;Two people can serve as one mind only if they are in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply that each knows what the other would decide. Three cannot.&quot;</p>
+</blockquote>
+<p>Resonance at this depth is rare. Brooks found it with Gerrit Blaauw on System/360. They shared a mental model so complete that either could speak for the architecture. Most designer pairs never achieve this. The default case is not a resonant pair but a committee — and committees produce what committees always produce.</p>
+<h2 id="the-committee-problem">The committee problem</h2>
+<blockquote>
+<p>&quot;Design by committee produces designs that offend no one and satisfy no one. Each member's wish list is accommodated, each objection smoothed over, until the result is a feature-laden compromise lacking any coherent vision.&quot;</p>
+</blockquote>
+<p>The mechanism is structural. Every additional mind brings new assumptions, preferences, and mental models. These must be reconciled. Reconciliation produces compromises. Each compromise chips away at conceptual integrity. The committee didn't make the design better. It made it safer. Safety is the enemy of coherence.</p>
+<p>Brooks is careful to say what this is <em>not</em>. It is not an argument against collaboration in general. Teams are valuable for requirements elicitation — more perspectives surface more edge cases. Teams are valuable for exploring the design space — brainstorming, design competitions, alternatives analysis. Teams are valuable for implementation — decomposing work, parallelizing effort, reviewing code.</p>
+<p>But the <em>conceptual design</em> — the core abstractions, the primitives and their relationships, the mental model presented to the user — must be controlled by one person. Or at most two.</p>
+<h2 id="the-cost-of-collaboration">The cost of collaboration</h2>
+<p>Brooks quantifies this in terms familiar to readers of <em>The Mythical Man-Month</em>:</p>
+<p><strong>Learning cost.</strong> Each new person must acquire the shared vision. If the vision lives in one designer's head, transferring it to <em>n</em> people takes <em>n × l</em> effort — the teaching burden of the original designer. It does not scale. For a team of ten, the designer spends more time teaching than designing.</p>
+<p><strong>Communication cost.</strong> <em>n</em> people have <em>n(n−1)/2</em> communication paths. For five designers, ten paths. For ten, forty-five. For a hundred, 4,950. Each path is a channel through which misunderstandings flow and compromises are negotiated. The communication overhead grows quadratically while design throughput grows, at best, linearly.</p>
+<p><strong>Change control cost.</strong> As contributors multiply, changing any design decision becomes exponentially harder. More people to consult, more objections to address, more downstream effects to trace. The design calcifies. What began as a living vision becomes a frozen specification that nobody can change and nobody fully owns.</p>
+<blockquote>
+<p>&quot;Adding manpower to a late software project makes it later.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
+</blockquote>
+<p>Brooks's Law was originally about scheduling — the n(n−1)/2 communication paths that make adding people counterproductive on a late project. But the same mathematics applies to design. Adding designers dilutes the design. Each additional designer is not just a new contributor. They are a new source of divergence from the conceptual center.</p>
+<p>In <em>No Silver Bullet</em> (1986), Brooks extended this logic to the full software process. He distinguished <em>essential</em> complexity — inherent in the problem, no matter what tools you use — from <em>accidental</em> complexity — imposed by our tools and methods. The rational model treats all complexity as accidental, as if better process or more people could eliminate it. Brooks argued that essential complexity remains no matter what you do. Conceptual integrity is how you manage it: one voice in the design, even if a hundred hands build the implementation.</p>
+<h2 id="the-structural-necessity">The structural necessity</h2>
+<p>The one-mind rule is not a personality preference. It is a structural requirement. A design is a set of interdependent decisions. Each decision constrains the others. When different people make different decisions, the constraints conflict. The system acquires multiple personalities. The user suffers.</p>
+<p>This is why Brooks insists that even the <em>idea</em> of &quot;design by community&quot; is incoherent. A community has no single vision. It has many visions, overlapping and conflicting. The output of a community process is not a design. It is a negotiated settlement. Settlements can govern societies. They cannot produce coherent software.</p>
+<p>The practical implication: every project of any complexity needs a single person — or a resonant pair — who owns the conceptual design. That person reviews every interface, every abstraction, every user-visible decision. They have the authority to say no without escalation. They are the design owner. Their primary responsibility is conceptual integrity. Everything else follows from this.</p>
+<p>Melvin Conway, Brooks's IBM contemporary, observed in 1968 that &quot;organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations.&quot; Conway's Law is usually cited as a warning. Read alongside Brooks, it becomes something else: a proof that if you want a coherent design, you need a coherent design organization — which means one mind. A committee's communication structure is a complete graph. Its design output will be, too.</p>
+<p>The next part takes up the practical question that follows: how do you protect that person from the organizational forces that will try to dilute their design?</p>
+<hr>
+<p><strong>This is part 2 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-conceptual-integrity">Part 1: Conceptual integrity and the Reims Cathedral</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-protecting-designer">Part 3: Protecting the designer</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-rational-model">Part 4: The rational model is wrong</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-empiricist-alternative">Part 5: The empiricist alternative</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-experts-divorce">Part 6: How experts go wrong and the divorce of design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-great-designers">Part 7: Growing great designers</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Fred Brooks, <em>The Mythical Man-Month: Essays on Software Engineering</em>, Addison-Wesley, 1975. (Anniversary Edition with <em>No Silver Bullet</em>, 1995.)</li>
+<li>Fred Brooks, <em>No Silver Bullet: Essence and Accident in Software Engineering</em>, 1986.</li>
+<li>Fred Brooks and Gerrit A. Blaauw, <em>Computer Architecture: Concepts and Evolution</em>, Addison-Wesley, 1997.</li>
+<li>Fred Brooks, <em>The Design of Design: Essays from a Computer Scientist</em>, Addison-Wesley, 2010.</li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="brooks-design-rational-model">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-rational-model">&#34;Brooks on design, part 4: the waterfall model is wrong and harmful&#34;</a></h2><p class="post-summary">&#34;Fred Brooks argues that the rational model of design — requirements first, design second, implementation third — is fundamentally wrong. You don&#39;t know the goal at the start, and requirements co-evolve with the design.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">rational-model</span><span class="tag">waterfall</span><span class="tag">co-evolution</span><span class="tag">peter-naur</span>
+          </div>
+        </header>
+        <div class="post-body"><p>If part 1 of Brooks's argument is about <em>who</em> should design — one mind, or at most two — part 2 is about <em>how</em> design actually works. His conclusion is blunt: the dominant model of design in software engineering is not just a simplification. It is a misrepresentation.</p>
+<p>The rational model — called the waterfall model in its software variant — says: gather requirements, produce a design, implement, test, ship. Each phase finishes before the next begins. The design proceeds logically from known premises to a correct conclusion. It is clean. It is orderly. It is wrong.</p>
+<blockquote>
+<p>&quot;The Waterfall Model is wrong and harmful; we must outgrow it. What is wrong is that it is an essentially rational model, and for wicked problems, the rational model is simply the wrong model.&quot;</p>
+</blockquote>
+<p>He doesn't hedge. Not &quot;sometimes inappropriate.&quot; Not &quot;useful in certain domains.&quot; <em>Wrong and harmful.</em> The problem is structural: the model demands decisions at the point of maximum ignorance — the beginning — and then forbids revisiting them. That is not how any complex design has ever succeeded.</p>
+<h2 id="the-fatal-flaw">The fatal flaw</h2>
+<p>The rational model assumes the designer knows the goal at the start. This assumption is demonstrably false.</p>
+<p>In Herbert Simon's classic formulation, design is systematic search through a combinatorial space. You have goals, utility functions, constraints, and resources. You search for a solution that satisfies the constraints and maximizes the utility. If the space is tractable, the result is optimal. The theory is beautiful.</p>
+<p>The practice is that <strong>nobody knows the goal</strong> — not the designer, not the client. Brooks captures this in the line every experienced designer recognizes: <em>&quot;That's what I asked for, but that's not what I want.&quot;</em> A client cannot articulate what they need until they see something. Once they see it, they can tell you what's wrong. But they cannot tell you what's right before anything exists. This is not a failure of communication. It is a property of design problems.</p>
+<p>The act of designing changes the designer's understanding of the problem. The new understanding changes the requirements. The new requirements change the design. This is co-evolution, and it is not a bug in the rational model. It is a fact about reality that the model cannot accommodate.</p>
+<blockquote>
+<p>&quot;Requirements and design co-evolve. The act of designing changes the designer's understanding of the problem. As the design emerges, the requirements change. This is not failure; it is discovery.&quot;</p>
+</blockquote>
+<p>Brooks names this the co-evolution model. Requirements do not sit fully formed in the client's mind, waiting for extraction. They are <em>produced</em> through the act of designing. Each iteration teaches the client something about what they actually need. The process ends not when the design matches the requirements, but when the two have reached mutual stability — when further iteration produces diminishing returns on new understanding.</p>
+<p>Peter Naur reached the same conclusion from a different direction. In <em>Programming as Theory Building</em> (1985), Naur argued that a program is not its code but the theory its builders hold of the problem it solves. That theory cannot be extracted upfront; it is built through the act of designing. Brooks's co-evolution and Naur's theory-building are one insight from two traditions: the real product of design is understanding, and understanding emerges through the work.</p>
+<p>The next part takes up the positive alternative: if we can't reason our way to a correct design, what do we do instead?</p>
+<hr>
+<p><strong>This is part 4 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-conceptual-integrity">Part 1: Conceptual integrity and the Reims Cathedral</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-one-mind-rule">Part 2: The one-mind rule</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-protecting-designer">Part 3: Protecting the designer</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-empiricist-alternative">Part 5: The empiricist alternative</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-experts-divorce">Part 6: How experts go wrong and the divorce of design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-great-designers">Part 7: Growing great designers</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Fred Brooks, <em>The Mythical Man-Month: Essays on Software Engineering</em>, Addison-Wesley, 1975. (Anniversary Edition with <em>No Silver Bullet</em>, 1995.)</li>
+<li>Fred Brooks, <em>No Silver Bullet: Essence and Accident in Software Engineering</em>, 1986.</li>
+<li>Fred Brooks and Gerrit A. Blaauw, <em>Computer Architecture: Concepts and Evolution</em>, Addison-Wesley, 1997.</li>
+<li>Fred Brooks, <em>The Design of Design: Essays from a Computer Scientist</em>, Addison-Wesley, 2010.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="brooks-design-protecting-designer">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-protecting-designer">&#34;Brooks on design, part 3: protecting the designer&#34;</a></h2><p class="post-summary">&#34;If conceptual integrity requires one mind, the practical question is how to protect that mind from the organizational forces that dilute design. Brooks&#39;s answer: real authority, organizational backing, and a clean separation between architecture and implementation.&#34;</p>
+          <h2><a href="#brooks-design-protecting-designer">&#34;Brooks on design, part 3: how to protect designers from their organizations&#34;</a></h2><p class="post-summary">&#34;If conceptual integrity requires one mind, the practical question is how to protect that mind from the organizational forces that dilute design. Brooks&#39;s answer: real authority, organizational backing, and a clean separation between architecture and implementation.&#34;</p>
           <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">system-360</span><span class="tag">interface-design</span><span class="tag">architecture</span><span class="tag">parnas</span>
           </div>
         </header>
@@ -1069,51 +1078,45 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="brooks-design-one-mind-rule">
+      <article class="post" id="brooks-design-conceptual-integrity">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-one-mind-rule">&#34;Brooks on design, part 2: the one-mind rule&#34;</a></h2><p class="post-summary">&#34;Fred Brooks argues that conceptual integrity requires a single mind — or at most a resonant pair — controlling the design. Committees produce compromises, not coherence.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span><span class="tag">one-mind</span><span class="tag">collaboration</span>
+          <h2><a href="#brooks-design-conceptual-integrity">&#34;Brooks on design, part 1: conceptual integrity — the most important property&#34;</a></h2><p class="post-summary">&#34;Conceptual integrity is the most important consideration in system design.&#39; Everything else — process, tools, team structure, schedules — serves this property, or should.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span><span class="tag">orthogonality</span><span class="tag">reims</span>
           </div>
         </header>
-        <div class="post-body"><p>Part 1 established what conceptual integrity is and why it matters. This part is about the mechanism that produces it — and why that mechanism is so uncomfortable.</p>
-<p>The rule is simple and unpopular: <strong>the design must proceed from one mind, or from a very small number of agreeing resonant minds.</strong></p>
-<h2 id="the-case-for-one-mind">The case for one mind</h2>
-<p>Brooks is explicit. Great designs are attributed to individuals or pairs. Not committees. Not teams. Not &quot;the community.&quot; The list of counterexamples — designs that emerged from large groups and achieved integrity — is, by his accounting, empty.</p>
+        <div class="post-body"><p>In 2010, thirty-five years after <em>The Mythical Man-Month</em>, Fred Brooks published <em>The Design of Design: Essays from a Computer Scientist</em>. It is a quieter book — less urgent, more reflective — and it was met with less fanfare. That is a mistake. It contains the most distilled thinking on what makes design work from someone who spent six decades designing across five media: computer architecture, software, houses, books, and organizations.</p>
+<p>The central argument is that <strong>conceptual integrity is the most important consideration in system design</strong>. Everything else — process, tools, team structure, schedules — serves this property, or should.</p>
+<h2 id="what-conceptual-integrity-is">What conceptual integrity is</h2>
+<p>Brooks first defined the concept in <em>The Mythical Man-Month</em> (1975), sharpened it in <em>No Silver Bullet</em> (1986) and the <em>Anniversary Edition</em> (1995), then devoted <em>The Design of Design</em> (2010) to exploring it as a universal property of all designed things:</p>
 <blockquote>
-<p>&quot;The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair.&quot;</p>
+<p>&quot;I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
 </blockquote>
-<p>In <em>The Mythical Man-Month</em> (1975), Brooks allowed that <em>implementation</em> could be done by teams if the <em>architecture</em> belonged to one mind. By 2010, he had sharpened even that. The architecture itself, he now argues, can have at most two authors — and only if they are genuinely resonant.</p>
+<p>The sentence is a thesis statement for his career, and it turns on a hard tradeoff: omit useful features to preserve coherence. Most designers agree with this in principle. Most violate it in practice the moment someone proposes a good feature that doesn't fit — because saying yes is easier than explaining why a good idea makes the whole worse.</p>
+<p>Brooks decomposes conceptual integrity into three properties:</p>
+<p><strong>Orthogonality.</strong> Concepts should not overlap. Each function should be achievable in exactly one way. Two paths to the same result force the user to learn both, decide which to use, and absorb the inconsistencies between them. Orthogonality is not minimalism. It is non-redundancy. A design can be rich and still orthogonal.</p>
+<p><strong>Propriety.</strong> The design should include only what is necessary, and what is included should be transparent.</p>
 <blockquote>
-<p>&quot;Two people can serve as one mind only if they are in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply that each knows what the other would decide. Three cannot.&quot;</p>
+<p>&quot;The essential skill of the designer is saying no — repeatedly, to smart people with good arguments — and having the authority to make it stick. Every added feature is a subtraction from all existing features, for it adds complexity without corresponding benefit.&quot;</p>
 </blockquote>
-<p>Resonance at this depth is rare. Brooks found it with Gerrit Blaauw on System/360. They shared a mental model so complete that either could speak for the architecture. Most designer pairs never achieve this. The default case is not a resonant pair but a committee — and committees produce what committees always produce.</p>
-<h2 id="the-committee-problem">The committee problem</h2>
+<p>Every feature you add makes every other feature harder to find, learn, and use. The cost is not additive. It is multiplicative. Saying no is the designer's highest-leverage act, and it requires an organizational structure that backs the no.</p>
+<p><strong>Generality.</strong> Within its chosen scope, the design should be complete — no arbitrary limits the user must work around. A design with generality handles the cases the designer anticipated and the ones they didn't, because the primitives compose. Generality without orthogonality is a kitchen sink. Orthogonality without generality is a toy.</p>
+<p>A system with all three properties feels like it came from one mind. The user forms a coherent mental model. They can predict how the system will behave in situations they haven't yet encountered. This is not an aesthetic preference. It is the difference between a tool and an obstacle course.</p>
+<p>Brooks was not alone in valuing coherence. Knuth, his contemporary, argued that the best programs possess a &quot;literate&quot; quality — readable by humans, not just executable by machines. Dijkstra insisted that elegance was a practical property: an elegant program contains fewer bugs because its structure is transparent. Kernighan and Plauger catalogued the small decisions that distinguish clarity from muddle in <em>The Elements of Programming Style</em> (1974). Niklaus Wirth designed Pascal and Modula-2 as deliberate exercises in conceptual integrity — each language the vision of one mind, each with a coherent set of primitives that composed cleanly. Butler Lampson, reflecting on the Alto and the birth of the GUI, observed that the best interfaces came from a single designer making decisions about what to include and — crucially — what to leave out.</p>
+<p>The whole generation agreed that integrity matters. Brooks's contribution was identifying its <em>structural precondition</em>: one mind must control the design. And in <em>Computer Architecture: Concepts and Evolution</em> (1997), he and Gerrit Blaauw demonstrated that this principle governed even the most rigorously engineered artifacts — instruction set architectures — where orthogonality of operations, data types, and addressing modes was the explicit design goal.</p>
+<h2 id="the-reims-cathedral">The Reims Cathedral</h2>
+<p>Brooks uses architecture to make the point undeniable.</p>
 <blockquote>
-<p>&quot;Design by committee produces designs that offend no one and satisfy no one. Each member's wish list is accommodated, each objection smoothed over, until the result is a feature-laden compromise lacking any coherent vision.&quot;</p>
+<p>&quot;Reims Cathedral has conceptual integrity. Built over eight generations of architects, each stuck to the original plan. The result is a unified work, coherent in every detail. Most cathedrals are not like this; their conflicting concepts produce architectural chaos — individually interesting, collectively incoherent.&quot;</p>
 </blockquote>
-<p>The mechanism is structural. Every additional mind brings new assumptions, preferences, and mental models. These must be reconciled. Reconciliation produces compromises. Each compromise chips away at conceptual integrity. The committee didn't make the design better. It made it safer. Safety is the enemy of coherence.</p>
-<p>Brooks is careful to say what this is <em>not</em>. It is not an argument against collaboration in general. Teams are valuable for requirements elicitation — more perspectives surface more edge cases. Teams are valuable for exploring the design space — brainstorming, design competitions, alternatives analysis. Teams are valuable for implementation — decomposing work, parallelizing effort, reviewing code.</p>
-<p>But the <em>conceptual design</em> — the core abstractions, the primitives and their relationships, the mental model presented to the user — must be controlled by one person. Or at most two.</p>
-<h2 id="the-cost-of-collaboration">The cost of collaboration</h2>
-<p>Brooks quantifies this in terms familiar to readers of <em>The Mythical Man-Month</em>:</p>
-<p><strong>Learning cost.</strong> Each new person must acquire the shared vision. If the vision lives in one designer's head, transferring it to <em>n</em> people takes <em>n × l</em> effort — the teaching burden of the original designer. It does not scale. For a team of ten, the designer spends more time teaching than designing.</p>
-<p><strong>Communication cost.</strong> <em>n</em> people have <em>n(n−1)/2</em> communication paths. For five designers, ten paths. For ten, forty-five. For a hundred, 4,950. Each path is a channel through which misunderstandings flow and compromises are negotiated. The communication overhead grows quadratically while design throughput grows, at best, linearly.</p>
-<p><strong>Change control cost.</strong> As contributors multiply, changing any design decision becomes exponentially harder. More people to consult, more objections to address, more downstream effects to trace. The design calcifies. What began as a living vision becomes a frozen specification that nobody can change and nobody fully owns.</p>
-<blockquote>
-<p>&quot;Adding manpower to a late software project makes it later.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
-</blockquote>
-<p>Brooks's Law was originally about scheduling — the n(n−1)/2 communication paths that make adding people counterproductive on a late project. But the same mathematics applies to design. Adding designers dilutes the design. Each additional designer is not just a new contributor. They are a new source of divergence from the conceptual center.</p>
-<p>In <em>No Silver Bullet</em> (1986), Brooks extended this logic to the full software process. He distinguished <em>essential</em> complexity — inherent in the problem, no matter what tools you use — from <em>accidental</em> complexity — imposed by our tools and methods. The rational model treats all complexity as accidental, as if better process or more people could eliminate it. Brooks argued that essential complexity remains no matter what you do. Conceptual integrity is how you manage it: one voice in the design, even if a hundred hands build the implementation.</p>
-<h2 id="the-structural-necessity">The structural necessity</h2>
-<p>The one-mind rule is not a personality preference. It is a structural requirement. A design is a set of interdependent decisions. Each decision constrains the others. When different people make different decisions, the constraints conflict. The system acquires multiple personalities. The user suffers.</p>
-<p>This is why Brooks insists that even the <em>idea</em> of &quot;design by community&quot; is incoherent. A community has no single vision. It has many visions, overlapping and conflicting. The output of a community process is not a design. It is a negotiated settlement. Settlements can govern societies. They cannot produce coherent software.</p>
-<p>The practical implication: every project of any complexity needs a single person — or a resonant pair — who owns the conceptual design. That person reviews every interface, every abstraction, every user-visible decision. They have the authority to say no without escalation. They are the design owner. Their primary responsibility is conceptual integrity. Everything else follows from this.</p>
-<p>The next part takes up the practical question that follows: how do you protect that person from the organizational forces that will try to dilute their design?</p>
+<p>Reims worked because the original architect's plan had authority that outlived him. Every successor — across two centuries — submitted to it. The result is a unified work built by many hands. It should not exist. That it does is evidence for Brooks's thesis.</p>
+<p>Most cathedrals are the other kind: Gothic nave, Renaissance facade, Baroque chapel grafted onto a Romanesque transept. Each generation had a vision and nobody had the authority to enforce continuity. The result is architectural chaos — individually interesting, collectively incoherent.</p>
+<p>Software systems are cathedrals built over decades. Unix (Ken Thompson and Dennis Ritchie, one resonant pair), Lisp (John McCarthy, one mind), Go (Thompson, Pike, Griesemer, a tight trio), the original Macintosh (Jobs channeling a singular vision) — these are Reims. Everything else is a patchwork quilt. Thompson captured the Brooksian ethic perfectly: &quot;One of my most productive days was throwing away 1,000 lines of code.&quot; Saying no to your own complexity is the act that preserves conceptual integrity.</p>
+<p>The next part takes up the practical question: if integrity requires one mind, how do you achieve that in an organization of many minds?</p>
 <hr>
-<p><strong>This is part 2 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
+<p><strong>This is part 1 of a 7-part series on Fred Brooks' <em>The Design of Design</em>.</strong></p>
 <ul>
-<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-conceptual-integrity">Part 1: Conceptual integrity and the Reims Cathedral</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-one-mind-rule">Part 2: The one-mind rule</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-protecting-designer">Part 3: Protecting the designer</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-rational-model">Part 4: The rational model is wrong</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="/posts/brooks-design-empiricist-alternative">Part 5: The empiricist alternative</a></li>
@@ -3620,13 +3623,13 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#brooks-design-great-designers">&#34;Brooks on design, part 7: growing great designers&#34;</a>
-              <a href="#brooks-design-rational-model">&#34;Brooks on design, part 4: the rational model is wrong&#34;</a>
-              <a href="#brooks-design-conceptual-integrity">&#34;Brooks on design, part 1: conceptual integrity and the Reims Cathedral&#34;</a>
-              <a href="#brooks-design-experts-divorce">&#34;Brooks on design, part 6: how experts go wrong and the divorce of design&#34;</a>
-              <a href="#brooks-design-empiricist-alternative">&#34;Brooks on design, part 5: the empiricist alternative&#34;</a>
-              <a href="#brooks-design-protecting-designer">&#34;Brooks on design, part 3: protecting the designer&#34;</a>
-              <a href="#brooks-design-one-mind-rule">&#34;Brooks on design, part 2: the one-mind rule&#34;</a>
+              <a href="#brooks-design-great-designers">&#34;Brooks on design, part 7: great designs come from great designers — not great processes&#34;</a>
+              <a href="#brooks-design-experts-divorce">&#34;Brooks on design, part 6: why experts design the wrong thing beautifully&#34;</a>
+              <a href="#brooks-design-empiricist-alternative">&#34;Brooks on design, part 5: build, test, iterate — the empiricist method&#34;</a>
+              <a href="#brooks-design-one-mind-rule">&#34;Brooks on design, part 2: why one mind must rule the design&#34;</a>
+              <a href="#brooks-design-rational-model">&#34;Brooks on design, part 4: the waterfall model is wrong and harmful&#34;</a>
+              <a href="#brooks-design-protecting-designer">&#34;Brooks on design, part 3: how to protect designers from their organizations&#34;</a>
+              <a href="#brooks-design-conceptual-integrity">&#34;Brooks on design, part 1: conceptual integrity — the most important property&#34;</a>
               <a href="#mcculloch-what-is-a-number">&#34;McCulloch&#39;s question: what is a number, that a man may know it?&#34;</a>
               <a href="#temporal-vs-dbos-golang">&#34;Temporal vs DBOS for Go: two paths to durable execution&#34;</a>
               <a href="#dot-files-dark-factories">&#34;Why DOT files work for dark factories&#34;</a>

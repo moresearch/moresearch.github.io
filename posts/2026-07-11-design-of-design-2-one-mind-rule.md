@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 2: the one-mind rule"
+title: "Brooks on design, part 2: why one mind must rule the design"
 date: 2026-07-11
 slug: brooks-design-one-mind-rule
 summary: "Fred Brooks argues that conceptual integrity requires a single mind — or at most a resonant pair — controlling the design. Committees produce compromises, not coherence."
@@ -55,6 +55,8 @@ The one-mind rule is not a personality preference. It is a structural requiremen
 This is why Brooks insists that even the *idea* of "design by community" is incoherent. A community has no single vision. It has many visions, overlapping and conflicting. The output of a community process is not a design. It is a negotiated settlement. Settlements can govern societies. They cannot produce coherent software.
 
 The practical implication: every project of any complexity needs a single person — or a resonant pair — who owns the conceptual design. That person reviews every interface, every abstraction, every user-visible decision. They have the authority to say no without escalation. They are the design owner. Their primary responsibility is conceptual integrity. Everything else follows from this.
+
+Melvin Conway, Brooks's IBM contemporary, observed in 1968 that "organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations." Conway's Law is usually cited as a warning. Read alongside Brooks, it becomes something else: a proof that if you want a coherent design, you need a coherent design organization — which means one mind. A committee's communication structure is a complete graph. Its design output will be, too.
 
 The next part takes up the practical question that follows: how do you protect that person from the organizational forces that will try to dilute their design?
 

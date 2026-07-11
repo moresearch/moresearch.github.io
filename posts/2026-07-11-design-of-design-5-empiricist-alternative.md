@@ -1,5 +1,5 @@
 ---
-title: "Brooks on Software Design: build, test, iterate"
+title: "Brooks on Software Design Series: build, test, iterate"
 date: 2026-07-11
 slug: brooks-design-empiricist-alternative
 summary: "If we can't think our way to a correct design, what do we do? Build, test, and iterate. Prototyping, constraints, and user models are the tools."

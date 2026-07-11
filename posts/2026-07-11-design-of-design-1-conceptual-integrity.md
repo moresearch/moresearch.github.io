@@ -1,5 +1,5 @@
 ---
-title: "Brooks on Software Design: conceptual integrity"
+title: "Brooks on Software Design Series: conceptual integrity"
 date: 2026-07-11
 slug: brooks-design-conceptual-integrity
 summary: "The system feels like one mind designed it. The most important property of any designed thing."

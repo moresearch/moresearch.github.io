@@ -32,6 +32,8 @@ This co-evolution of problem and solution is not a bug in the rational model. It
 
 Brooks calls this the co-evolution model. It is not that requirements exist fully formed in the client's mind, waiting to be extracted. The requirements are *produced* through the act of designing. Each iteration of the design teaches the client something about what they actually need. The process ends not when the design matches the requirements, but when the requirements and the design have co-evolved to a point of mutual stability.
 
+This echoes Peter Naur's argument from the same period. In *Programming as Theory Building* (1985), Naur argued that a program is not its code but the theory its builders hold of the problem it solves. That theory is built through designing. It cannot be extracted upfront. Brooks's co-evolution model and Naur's theory-building are the same insight from different traditions: the real product of design is understanding, and understanding emerges through the act of designing.
+
 ## The empiricist alternative
 
 Brooks declares himself:
@@ -40,7 +42,9 @@ Brooks declares himself:
 
 This is not the Brooks of *The Mythical Man-Month*. The younger Brooks believed in planning — the famous "plan to throw one away" was about doing the rational process twice. The older Brooks believes the first plan was never going to be right, no matter how carefully you made it. The shift from "plan better" to "build, test, learn" is the intellectual journey of the book.
 
-This is the methodology that drove the scientific revolution, and Brooks argues it is the only methodology that works for complex design. The steps are:
+This is the methodology that drove the scientific revolution, and Brooks argues it is the only methodology that works for complex design. Compare this with Niklaus Wirth's *stepwise refinement* (1971) — the dominant methodology of the same era. Wirth argued you should decompose a problem into sub-problems, then refine each until it is trivial to code. Brooks's response: stepwise refinement assumes you know the decomposition upfront. You don't. The decomposition emerges through building and testing. Wirth's method works for well-understood problems. Brooks's empiricism works for everything else.
+
+The steps are:
 
 1. **Understand the problem domain** — study the users, the context, the constraints
 2. **Design something** — produce a candidate design, knowing it will be wrong
@@ -66,6 +70,8 @@ This empiricist conviction runs through all of Brooks's work. In *No Silver Bull
 One of Brooks's most counterintuitive insights: a problem with no constraints has no criteria for excellence. When anything is possible, nothing is good.
 
 Constraints reduce the design space. They make the problem tractable. A designer without constraints is paralyzed by infinite possibility. A designer with clear constraints — budget, schedule, weight, power, compatibility, regulatory requirements — has a defined playing field. The creativity comes from finding an elegant solution within the constraints, not from ignoring them.
+
+This inverts the conventional wisdom of Brooks's era. Hoare famously warned that "premature optimization is the root of all evil" — a constraint (performance) should not dominate design decisions too early. Brooks goes further: constraints are not just necessary evils to be deferred. They are the conditions that make design possible at all. Without them, you have infinite search space and no way to evaluate a candidate. With them, the designer's job goes from impossible to merely hard.
 
 Brooks goes further:
 

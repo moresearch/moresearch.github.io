@@ -30,6 +30,8 @@ This is harder than it sounds. It requires saying no — repeatedly, to smart pe
 
 A system with all three properties has conceptual integrity. The user forms a coherent mental model. They can make predictions about how the system will behave in situations they have not yet encountered. The system feels like it came from one mind — because it did.
 
+This is not just Brooks. Knuth, his contemporary, argued that programming is an art and that the best programs possess a "literate" quality — readable by humans, not just executable by machines. Dijkstra insisted that elegance was a practical property, not a decorative one: an elegant program is less likely to contain bugs because its structure is transparent. Kernighan and Plauger's *The Elements of Programming Style* (1974) catalogued the small decisions that distinguish clear code from muddled code. Brooks's originality was not in claiming that integrity matters — the whole generation agreed on that — but in identifying its *structural precondition*: one mind must control the design.
+
 ## The Reims Cathedral
 
 Brooks uses architecture to make the point visual.
@@ -40,7 +42,9 @@ The Reims Cathedral was built over eight generations of architects. The original
 
 Most cathedrals have conflicting concepts: a Gothic nave with a Renaissance facade, a Baroque chapel grafted onto a Romanesque transept. Each generation of builders had a vision and nobody had the authority to enforce continuity. The result is architectural chaos — individually interesting, collectively incoherent.
 
-Software systems are cathedrals built over decades. The systems with conceptual integrity — Unix, Lisp, Go, the original Macintosh — feel like Reims. The systems without it feel like the architectural equivalent of a patchwork quilt. Everyone who has maintained enterprise software knows the second kind.
+Software systems are cathedrals built over decades. The systems with conceptual integrity — Unix (Ken Thompson and Dennis Ritchie, one resonant pair), Lisp (John McCarthy, one mind), Go (Thompson, Pike, Griesemer, a tight trio), the original Macintosh (Steve Jobs channeling a vision) — feel like Reims. The systems without it feel like the architectural equivalent of a patchwork quilt. Everyone who has maintained enterprise software knows the second kind.
+
+Thompson himself described the Unix philosophy in Brooksian terms: "One of my most productive days was throwing away 1,000 lines of code." Saying no to complexity — even your own — is the act that preserves conceptual integrity.
 
 ## The one-mind rule
 
@@ -110,7 +114,7 @@ This role is hard to fill. It requires someone who can hold the entire system in
 
 > "The architecture must be separated from implementation. This was the key organizational insight of System/360: a small architecture team defines what the machine is; a large implementation team builds it. The architecture team must be protected; the implementation team must be coordinated. The roles are distinct and must be staffed differently."
 
-This is Brooks's most practical organizational pattern. Separate the design authority from the build workforce. Give the design authority real power over the what. Give the build workforce the scale to execute. The industry sort of does this — architects, tech leads, staff engineers — but rarely with enough separation that the design owner can actually say no to the VP who wants a feature. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
+This is Brooks's most practical organizational pattern. Separate the design authority from the build workforce. Give the design authority real power over the what. Give the build workforce the scale to execute. David Parnas, working in the same era, reached the same conclusion from a different angle: his principle of information hiding (1972) was about designing modules so that each hides a design decision from the others. You cannot do this with a committee, because hiding requires a single mind to decide what to hide and what to expose. The industry sort of does both — architects, tech leads, staff engineers — but rarely with enough separation that the design owner can actually say no to the VP who wants a feature. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
 
 Brooks's argument, forty years after *The Mythical Man-Month* and sixteen years after *The Design of Design*, is still waiting to be taken seriously. The younger Brooks — the one who wrote *The Mythical Man-Month* — already understood something essential:
 

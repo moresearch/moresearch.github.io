@@ -16,6 +16,8 @@ This is an unfashionable claim. The modern engineering organization invests heav
 
 The two sentences are in tension with everything the industry has built since 2010. We have invested in process — agile, code review, CI/CD, architecture review boards — as if better process produces better design. Brooks says it doesn't. Process raises the floor. Talent raises the ceiling. Conflating the two is the central mistake of engineering management.
 
+This insight was shared across Brooks's generation. Knuth took a decade away from *The Art of Computer Programming* to invent TeX because he believed the typesetting problem required one mind's full attention, not a committee. Alan Kay described the best software as "a single person's vision carried through." C.A.R. Hoare, in his 1980 Turing lecture, warned that "the most dangerous of all is the error of believing that the application of better tools and more systematic methods can replace the need for individual insight." The whole generation agreed: process supports. Talent creates.
+
 ## Process is not a substitute for talent
 
 Brooks's position is blunt:
@@ -49,7 +51,7 @@ Brooks's advice for making the dual ladder real:
 
 ## Growing designers deliberately
 
-Brooks argues that design talent is not purely innate. It can be grown, and organizations that fail to grow it deliberately will be limited by whatever talent walks in the door.
+Brooks argues that design talent is not purely innate. It can be grown, and organizations that fail to grow it deliberately will be limited by whatever talent walks in the door. Gerald Weinberg's *The Psychology of Computer Programming* (1971) had made a similar case: programming ability varies enormously across individuals, but environment shapes whether that ability develops or atrophies. Brooks and Weinberg, working from different disciplines, converged on the same practical conclusion: organizations that treat designers as interchangeable will get interchangeable designs. Organizations that cultivate talent will get designs worth remembering.
 
 His prescriptions:
 

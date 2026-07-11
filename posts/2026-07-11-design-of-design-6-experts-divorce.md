@@ -1,5 +1,5 @@
 ---
-title: "why experts get it wrong"
+title: "Brooks on Software Design: why experts get it wrong"
 date: 2026-07-11
 slug: brooks-design-experts-divorce
 summary: "Novice mistakes are easy to spot. Expert mistakes are comprehensively, systematically wrong. The divorce of designers from builders and users makes both harder to catch."

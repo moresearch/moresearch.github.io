@@ -1,5 +1,5 @@
 ---
-title: "protect the designer"
+title: "Brooks on Software Design: protect the designer"
 date: 2026-07-11
 slug: brooks-design-protecting-designer
 summary: "If conceptual integrity requires one mind, you must protect that mind from the organization. Real authority, organizational backing, separation of architecture from implementation."

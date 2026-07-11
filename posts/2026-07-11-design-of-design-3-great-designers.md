@@ -1,5 +1,5 @@
 ---
-title: "great designers, not great processes"
+title: "Brooks on Software Design: great designers, not great processes"
 date: 2026-07-11
 slug: brooks-design-great-designers
 summary: "Great designs come from great designers, not great processes. Organizations must grow, protect, and retain design talent."

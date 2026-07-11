@@ -53,7 +53,15 @@ One of Brooks's most counterintuitive insights: a problem with no constraints ha
 
 Constraints reduce the design space. They make the problem tractable. A designer without constraints is paralyzed by infinite possibility. A designer with clear constraints — budget, schedule, weight, power, compatibility, regulatory requirements — has a defined playing field. The creativity comes from finding an elegant solution within the constraints, not from ignoring them.
 
-Brooks goes further: **"When you specify something to be designed, tell what properties you need, not how they are to be achieved."** This is a critique of clients — and internal stakeholders — who confuse requirements with implementation. "Use React" is not a requirement. "Must render at 60fps on mobile devices" is a requirement. "Must work offline" is a requirement. "Must be accessible to screen readers" is a requirement. The how is the designer's problem. The what is the client's — and the client often does not know the what until they see a candidate how.
+Brooks goes further:
+
+> "When you specify something to be designed, tell what properties you need, not how they are to be achieved."
+
+This is a critique of clients — and internal stakeholders — who confuse requirements with implementation. "Use React" is not a requirement. "Must render at 60fps on mobile devices" is a requirement. "Must work offline" is a requirement. "Must be accessible to screen readers" is a requirement. The how is the designer's problem. The what is the client's — and the client often does not know the what until they see a candidate how.
+
+> "The hardest part of design is deciding what to design. The chief service of a designer is helping clients discover what they really want."
+
+This is the designer's real job. Not translating requirements into blueprints. Helping the client discover what the requirements are. Every hour spent clarifying the problem saves ten hours of building the wrong solution. The tools change. This doesn't.
 
 This connects back to the empiricist model. The process of proposing a design and having the client react to it is how the what gets discovered. The client says "that's not what I want" and the designer says "what specifically is wrong?" and the answer refines the requirements. This is not failure. It is the process working as designed.
 
@@ -61,7 +69,11 @@ This connects back to the empiricist model. The process of proposing a design an
 
 Brooks makes a practical recommendation that sounds obvious and is almost never done: write down your explicit model of the user. Who are they? What do they know? What do they need? What are their constraints?
 
-The model will be wrong. That is fine. A precise, wrong model is better than a vague model because **a precise model surfaces its own assumptions**. When you write "the user is a domain expert who uses the command line daily," everyone can see the assumption and challenge it. When you write nothing, everyone fills in their own implicit model and nobody realizes they disagree.
+The model will be wrong. That is fine.
+
+> "Better a precise model, even if wrong, than a vague one. A precise model exposes its assumptions and invites correction; a vague one is unfalsifiable and thus unhelpful."
+
+A precise, wrong model surfaces its own assumptions. When you write "the user is a domain expert who uses the command line daily," everyone can see the assumption and challenge it. When you write nothing, everyone fills in their own implicit model and nobody realizes they disagree.
 
 This is the same logic behind personas in UX design, but Brooks arrived at it from engineering rather than design research. The user model is a tool for making implicit assumptions explicit. Once explicit, they become testable. Once testable, they become correctable. This is the empiricist method applied to the most important unknown in any design: who is it for?
 
@@ -71,7 +83,11 @@ One of Brooks's most striking observations is about expertise. Novices make tech
 
 Experts make a different kind of mistake. They produce designs that are **comprehensively, systematically wrong**. The design is internally consistent, well-executed, and solves the wrong problem. Or it solves the right problem using assumptions from a previous era. Or it optimizes for a constraint that no longer exists.
 
-Brooks's explanation is the paradigm trap. An expert designer has deep experience in one paradigm — one way of seeing problems and solutions. That depth is their strength. It is also their vulnerability. When the paradigm shifts — from mainframes to minicomputers, from monoliths to microservices, from deterministic to probabilistic systems — the expert's accumulated intuition becomes systematically misleading. They are not making small errors. They are solving yesterday's problem with today's tools and calling it design.
+Brooks's explanation is the paradigm trap. An expert designer has deep experience in one paradigm — one way of seeing problems and solutions. That depth is their strength. It is also their vulnerability.
+
+> "The expert's very expertise becomes a liability when the paradigm shifts. The habits that served him well in one era mislead him systematically in the next. He is not making small errors; he is solving yesterday's problem with today's tools."
+
+When the paradigm shifts — from mainframes to minicomputers, from monoliths to microservices, from deterministic to probabilistic systems — the expert's accumulated intuition becomes systematically misleading. They are not making small errors. They are solving yesterday's problem with today's tools and calling it design.
 
 The empiricist method is the defense against this. An expert who tests their designs against reality — who prototypes, who watches users, who iterates based on evidence — will discover that their assumptions are wrong. An expert who designs from first principles and never tests will ship a beautiful, coherent, wrong system. The industry is full of examples of the second kind.
 

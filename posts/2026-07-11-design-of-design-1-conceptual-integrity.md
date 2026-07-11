@@ -48,7 +48,11 @@ This is not an argument against collaboration. Brooks devotes two chapters to co
 
 But the *conceptual design* — the core set of abstractions, the primitives and their relationships, the mental model presented to the user — must be controlled by one person. Or at most two, working in tight resonance.
 
-The reason is structural. Every additional mind involved in the conceptual design introduces a new set of assumptions, preferences, and mental models. These must be reconciled. The reconciliation process produces compromises — and each compromise chips away at conceptual integrity. The result is a design that offends no one and satisfies no one. The committee didn't make the design better. It made it safer. And safety is the enemy of coherence.
+The reason is structural.
+
+> "Design by committee produces designs that offend no one and satisfy no one. Each member's wish list is accommodated, each objection smoothed over, until the result is a feature-laden compromise lacking any coherent vision."
+
+Every additional mind involved in the conceptual design introduces a new set of assumptions, preferences, and mental models. These must be reconciled. The reconciliation process produces compromises — and each compromise chips away at conceptual integrity. The committee didn't make the design better. It made it safer. And safety is the enemy of coherence.
 
 ## The cost of collaboration
 
@@ -61,6 +65,10 @@ Brooks quantifies this in terms that will be familiar to readers of *The Mythica
 **Change control cost.** As the number of contributors grows, the cost of changing any design decision grows with it. More people must be consulted, more objections must be addressed, more downstream effects must be traced. The design calcifies.
 
 This is the basis of Brooks's Law — "adding people to a late software project makes it later" — but applied to design rather than implementation. Adding designers to a design effort dilutes the design.
+
+> "For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies."
+
+The interface is the system. Everything the user knows about your software comes through the interface. If the interface lacks conceptual integrity, the system lacks it — regardless of how clean the internal architecture is. This is why Brooks is especially insistent that the user interface must be "tightly controlled by one mind." You can distribute the backend. You cannot distribute the user's mental model.
 
 ## The protection of the designer
 

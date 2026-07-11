@@ -61,7 +61,11 @@ The line is vintage Brooks — aphoristic, hierarchical, and correct. A great de
 
 ## Esthetics and style
 
-Brooks includes a chapter on esthetics in technical design — a topic that makes many engineers uncomfortable. But his argument is practical: even invisible designs have an aesthetic dimension. We talk about "clean" architectures, "elegant" APIs, "beautiful" abstractions. These are not metaphors. They are judgments about the coherence and fitness of a design, and they are made by people with taste.
+Brooks includes a chapter on esthetics in technical design — a topic that makes many engineers uncomfortable. But his argument is practical: even invisible designs have an aesthetic dimension.
+
+> "We speak of 'clean' machines, 'elegant' languages, 'beautiful' proofs. These are not mere metaphors. They denote a real property: the fitness, coherence, and economy of a design, as judged by those with taste."
+
+We talk about "clean" architectures, "elegant" APIs, "beautiful" abstractions. These are not metaphors. They are judgments about the coherence and fitness of a design, and they are made by people with taste.
 
 His prescription for developing taste:
 
@@ -72,7 +76,11 @@ His prescription for developing taste:
 
 ## The exemplar gap
 
-One of Brooks's sharpest criticisms of software engineering as a discipline is that we do not study exemplars. Architects study buildings. Composers study scores. Writers study books. Software designers... write software. They rarely study existing systems in depth, and when they do, it is usually to understand how to use them, not why they were designed the way they were.
+One of Brooks's sharpest criticisms of software engineering as a discipline is that we do not study exemplars.
+
+> "Architects study buildings; composers study scores; writers study books; painters visit museums. Software designers too rarely study existing software designs, and when they do, it is to learn how to use the system, not to understand why it was designed as it was."
+
+Architects study buildings. Composers study scores. Writers study books. Software designers... write software. They rarely study existing systems in depth, and when they do, it is usually to understand how to use them, not why they were designed the way they were.
 
 This is a loss. Great designs contain lessons that cannot be conveyed in principles or patterns — only in the specific sequence of decisions that produced a specific result. Reading the source code of the Unix kernel, studying the architecture of TeX, understanding why Go's concurrency model works the way it does — these are the software equivalents of an architect studying the Pantheon.
 
@@ -83,7 +91,11 @@ Brooks argues that this gap is partly cultural and partly practical. Culturally,
 *The Design of Design* is structured around case studies, and they are worth reading in full. Brooks draws on:
 
 - **IBM System/360** — the architecture that established the modern mainframe. Brooks was the project manager, and his account of the design decisions — why 8-bit bytes, why 32-bit words, why the clean separation between architecture and implementation — is a master class in making irreversible decisions under uncertainty.
-- **IBM OS/360** — the operating system that taught Brooks about the second-system effect and the limits of coordination. He is candid about its failures, including JCL, which he calls "the worst computer language ever."
+- **IBM OS/360** — the operating system that taught Brooks about the second-system effect and the limits of coordination. He is candid about its failures:
+
+> "The job control language JCL for OS/360 is, in my opinion, the worst computer language ever devised, a triumph of committee design over conceptual integrity."
+
+The second-system effect — the tendency to over-engineer the successor to a successful first system — is one of Brooks's most enduring contributions. OS/360, with its thousand-man team and its committee-designed interfaces, was his cautionary example. JCL was the scar he carried from that project.
 - **His beach house** — designed by Brooks himself, an amateur architect. The house — which he calls "View/360" in a nod to IBM — is a case study in how a designer works in an unfamiliar medium, and how the principles of conceptual integrity, empiricism, and iteration transfer across domains.
 - **His kitchen renovation** — a smaller case study that illustrates the difference between designing for yourself (where you are the user, the client, and the builder) and designing for others.
 - **A book design** — Brooks co-authored *Computer Architecture: Concepts and Evolution* and designed its structure. The case study shows how book design — chapter organization, cross-referencing, indexing — follows the same principles as software design.

@@ -8,6 +8,8 @@ tags: design, fred-brooks, great-designers, engineering-culture, mentorship
 
 The first two parts of this series covered Brooks's arguments about conceptual integrity and the empiricist model of design. This third part addresses the uncomfortable conclusion that follows from both: **great designs come from great designers, not from great processes.**
 
+This argument runs through all of Brooks's major works. In *The Mythical Man-Month* (1975), it appears as the insistence on a chief architect. In *No Silver Bullet* (1986), it is the argument that better tools alone cannot produce better design — only better designers can. In *Computer Architecture: Concepts and Evolution* (1997, with Gerrit Blaauw), it is the demonstration that every great machine architecture traces to one or two minds. In *The Design of Design* (2010), it becomes the book's organizing thesis.
+
 This is an unfashionable claim. The modern engineering organization invests heavily in process: code review, design review, architecture review, RFCs, ADRs, planning poker, retrospectives. These are not bad practices. But Brooks argues they are supporting structures, not substitutes. Process can prevent bad design from shipping. It cannot produce good design. For that, you need individual brilliance — recognized, nurtured, and protected.
 
 > "Great designs come from great designers. Process can make a good design better; it cannot make a bad designer good."
@@ -115,16 +117,16 @@ The decisions — 8-bit bytes, 32-bit words, the architecture/implementation spl
 
 > "The job control language JCL for OS/360 is, in my opinion, the worst computer language ever devised, a triumph of committee design over conceptual integrity."
 
-The second-system effect — the tendency to over-engineer the successor to a successful first system — is one of Brooks's most enduring contributions.
+The second-system effect — the tendency to over-engineer the successor to a successful first system — is one of Brooks's most enduring contributions, first described in *The Mythical Man-Month* (1975):
 
-> "The second is the most dangerous system a designer ever builds. Having succeeded with the first, he loads the second with every feature he omitted from the first, every embellishment suggested by users, every capability the hardware now permits. The result is a bloated, over-budget, late disaster."
+> "The second is the most dangerous system a designer ever builds. Having succeeded with the first, he loads the second with every feature he omitted from the first, every embellishment suggested by users, every capability the hardware now permits. The result is a bloated, over-budget, late disaster." — *The Mythical Man-Month*, 1975
 
 OS/360, with its thousand-man team and its committee-designed interfaces, was his cautionary example. JCL was the scar he carried from that project.
 - **His beach house** — designed by Brooks himself, an amateur architect. The house — which he calls "View/360" in a nod to IBM — is a case study in how a designer works in an unfamiliar medium, and how the principles of conceptual integrity, empiricism, and iteration transfer across domains.
 - **His kitchen renovation** — a smaller case study that illustrates the difference between designing for yourself (where you are the user, the client, and the builder) and designing for others.
 - **A book design** — Brooks co-authored *Computer Architecture: Concepts and Evolution* and designed its structure. The case study shows how book design — chapter organization, cross-referencing, indexing — follows the same principles as software design.
 
-The case studies are uneven — the house and kitchen chapters feel self-indulgent to some readers — but they serve Brooks's purpose. He is demonstrating, not just asserting, that design principles are invariant across media. The same lessons that produced System/360 also produce a good beach house.
+The case studies are uneven — the house and kitchen chapters feel self-indulgent to some readers — but they serve Brooks's purpose. He is demonstrating, not just asserting, that design principles are invariant across media. The same lessons that produced System/360 also produce a good beach house. If you want the deeper treatment of System/360's design decisions — the full rationale for 8-bit bytes, 32-bit words, and the architecture/implementation split — *Computer Architecture: Concepts and Evolution* (1997, with Blaauw) is the book-length version of what *The Design of Design* sketches in a chapter.
 
 > "I have designed in five media: computer architecture, software, houses, books, and organizations. This book draws lessons from all five. The principles of design are independent of the medium."
 
@@ -144,4 +146,8 @@ Most organizations answer no to all three. Brooks spent six decades explaining w
 - [Part 1: Conceptual integrity and the one-mind rule](/posts/brooks-design-conceptual-integrity)
 - [Part 2: The rational model is wrong](/posts/brooks-design-rational-model)
 
-**Reference:** Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.
+**References:**
+- Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)
+- Fred Brooks, *No Silver Bullet: Essence and Accident in Software Engineering*, 1986.
+- Fred Brooks and Gerrit A. Blaauw, *Computer Architecture: Concepts and Evolution*, Addison-Wesley, 1997.
+- Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.

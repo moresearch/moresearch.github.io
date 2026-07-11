@@ -59,6 +59,8 @@ This is not agile methodology, though it shares the same philosophical roots. It
 
 You cannot derive a good design from axioms. You must discover it through interaction with the problem, the users, and the constraints. This is true of buildings, bridges, airplanes, and software. The rationalist dream — design from first principles, correct by construction — is alive only in computer science departments. Every other design discipline abandoned it centuries ago.
 
+This empiricist conviction runs through all of Brooks's work. In *No Silver Bullet* (1986), he argued there is no single breakthrough that will eliminate the essential difficulty of software design. In *Computer Architecture: Concepts and Evolution* (1997, with Gerrit Blaauw), he showed that even the most rigorously specified designs — computer instruction sets — evolved through trial, error, and market selection, not deduction from first principles.
+
 ## Constraints are friends
 
 One of Brooks's most counterintuitive insights: a problem with no constraints has no criteria for excellence. When anything is possible, nothing is good.
@@ -127,4 +129,8 @@ Brooks's prescription is to shorten the feedback loops. Designers should build. 
 - [Part 1: Conceptual integrity and the one-mind rule](/posts/brooks-design-conceptual-integrity)
 - [Part 3: Growing great designers](/posts/brooks-design-great-designers)
 
-**Reference:** Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.
+**References:**
+- Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)
+- Fred Brooks, *No Silver Bullet: Essence and Accident in Software Engineering*, 1986.
+- Fred Brooks and Gerrit A. Blaauw, *Computer Architecture: Concepts and Evolution*, Addison-Wesley, 1997.
+- Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.

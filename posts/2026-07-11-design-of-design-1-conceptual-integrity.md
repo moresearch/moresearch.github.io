@@ -12,9 +12,9 @@ The book's central argument is that **conceptual integrity is the most important
 
 ## What conceptual integrity is
 
-Brooks defines conceptual integrity through three principles he first articulated in *The Mythical Man-Month*:
+Brooks first defined conceptual integrity in *The Mythical Man-Month* (1975), then sharpened it across *No Silver Bullet* (1986) and the *Anniversary Edition* (1995), before devoting *The Design of Design* (2010) to exploring it as a universal property of all designed objects.
 
-> "I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas."
+> "I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas." — *The Mythical Man-Month*, 1975
 
 The sentence is a thesis statement for his entire career. Note the tradeoff: omit useful features to preserve coherence. This is the hard part. Most designers agree with conceptual integrity in principle and violate it in practice the moment someone proposes a good feature that doesn't fit.
 
@@ -76,7 +76,13 @@ Brooks quantifies this in terms that will be familiar to readers of *The Mythica
 
 **Change control cost.** As the number of contributors grows, the cost of changing any design decision grows with it. More people must be consulted, more objections must be addressed, more downstream effects must be traced. The design calcifies.
 
-This is the basis of Brooks's Law — "adding people to a late software project makes it later" — but applied to design rather than implementation. Adding designers to a design effort dilutes the design.
+This is the basis of Brooks's Law:
+
+> "Adding manpower to a late software project makes it later." — *The Mythical Man-Month*, 1975
+
+The law was originally about scheduling, but it applies equally to design. Adding designers to a design effort dilutes the design. The same n(n−1)/2 communication paths that doom late projects also doom committee-designed architectures.
+
+In *No Silver Bullet* (1986), Brooks extended this reasoning to the entire software development process. He distinguished *essential* complexity — inherent in the problem — from *accidental* complexity — imposed by our tools and methods. The rational model treats all complexity as accidental, as if better process could eliminate it. Brooks argued that the essential complexity remains no matter what tools we use. Conceptual integrity is how you manage it: by ensuring the design speaks with one voice, even when the implementation requires many hands.
 
 > "For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies."
 
@@ -106,7 +112,11 @@ This role is hard to fill. It requires someone who can hold the entire system in
 
 This is Brooks's most practical organizational pattern. Separate the design authority from the build workforce. Give the design authority real power over the what. Give the build workforce the scale to execute. The industry sort of does this — architects, tech leads, staff engineers — but rarely with enough separation that the design owner can actually say no to the VP who wants a feature. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
 
-Brooks's argument, forty years after *The Mythical Man-Month* and sixteen years after *The Design of Design*, is still waiting to be taken seriously.
+Brooks's argument, forty years after *The Mythical Man-Month* and sixteen years after *The Design of Design*, is still waiting to be taken seriously. The younger Brooks — the one who wrote *The Mythical Man-Month* — already understood something essential:
+
+> "Plan to throw one away; you will, anyhow." — *The Mythical Man-Month*, 1975
+
+The older Brooks of *The Design of Design* sharpened this into a full empiricist philosophy. The first version will be wrong. Accept it. Build it. Learn from it. Then build the right one. This is the bridge to Part 2.
 
 > "The building of a design, indeed, is the forcing of the will of one upon the stuff of the world."
 
@@ -118,4 +128,8 @@ A design is not a consensus. It is an imposition. The designer imposes coherence
 - [Part 2: The rational model is wrong](/posts/brooks-design-rational-model)
 - [Part 3: Growing great designers](/posts/brooks-design-great-designers)
 
-**Reference:** Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.
+**References:**
+- Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)
+- Fred Brooks, *No Silver Bullet: Essence and Accident in Software Engineering*, 1986.
+- Fred Brooks and Gerrit A. Blaauw, *Computer Architecture: Concepts and Evolution*, Addison-Wesley, 1997.
+- Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.

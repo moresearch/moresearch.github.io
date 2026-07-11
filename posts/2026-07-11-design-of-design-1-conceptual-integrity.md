@@ -14,6 +14,10 @@ The book's central argument is that **conceptual integrity is the most important
 
 Brooks defines conceptual integrity through three principles he first articulated in *The Mythical Man-Month*:
 
+> "I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas."
+
+The sentence is a thesis statement for his entire career. Note the tradeoff: omit useful features to preserve coherence. This is the hard part. Most designers agree with conceptual integrity in principle and violate it in practice the moment someone proposes a good feature that doesn't fit.
+
 **Orthogonality.** Concepts should not overlap or conflict. Each function in the system should be achievable in exactly one way. If there are two ways to do something, users must learn both, must decide which to use, and will encounter inconsistencies between them. Orthogonality is not about minimalism — it is about non-redundancy. A design can be rich and still orthogonal.
 
 **Propriety.** The design should include only what is necessary, and what is included should be transparent to the user. Propriety is parsimony with a purpose: every element earns its place. This is harder than it sounds. It requires saying no — repeatedly, to smart people with good arguments — and having the authority to make the no stick.
@@ -35,6 +39,10 @@ Software systems are cathedrals built over decades. The systems with conceptual 
 The mechanism that produces conceptual integrity is simple and unpopular: **the design must proceed from one mind, or from a very small number of agreeing resonant minds.**
 
 Brooks is explicit about this. Great designs are attributed to individuals or pairs. Not committees. Not teams. Not "the community." The list of counterexamples — designs that emerged from large groups and achieved integrity — is vanishingly short.
+
+> "The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair."
+
+He doubles down. The 1975 position was that the *implementation* could be done by teams but the *architecture* needed one mind. The 2010 position eliminates even that qualification. If two people work in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply they function as one — that can work. Three cannot.
 
 This is not an argument against collaboration. Brooks devotes two chapters to collaboration and is careful to distinguish its uses. Teams are valuable for requirements elicitation — more people means more perspectives, more edge cases, more domain knowledge surfaced. Teams are valuable for exploring the design space — brainstorming, design competitions, alternatives analysis. Teams are valuable for implementation — decomposing the work, parallelizing effort, reviewing each other's code.
 
@@ -71,6 +79,10 @@ The practical implications are clear. Every project of any complexity should hav
 This role is hard to fill. It requires someone who can hold the entire system in their head, who has taste, who is willing to say no repeatedly to smart people, and who the organization trusts enough to give real authority. The industry does not train for this role. It does not reward it in hiring pipelines. It does not protect it in organizational structures. And then it wonders why most systems feel like patchwork quilts.
 
 Brooks's argument, forty years after *The Mythical Man-Month* and sixteen years after *The Design of Design*, is still waiting to be taken seriously.
+
+> "The building of a design, indeed, is the forcing of the will of one upon the stuff of the world."
+
+A design is not a consensus. It is an imposition. The designer imposes coherence on a medium that has no opinion about coherence. This is uncomfortable language — "forcing," "will," "one upon the world" — and Brooks means it to be. Design is an act of authority.
 
 ---
 

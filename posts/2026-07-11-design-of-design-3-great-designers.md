@@ -10,6 +10,10 @@ The first two parts of this series covered Brooks's arguments about conceptual i
 
 This is an unfashionable claim. The modern engineering organization invests heavily in process: code review, design review, architecture review, RFCs, ADRs, planning poker, retrospectives. These are not bad practices. But Brooks argues they are supporting structures, not substitutes. Process can prevent bad design from shipping. It cannot produce good design. For that, you need individual brilliance — recognized, nurtured, and protected.
 
+> "Great designs come from great designers. Process can make a good design better; it cannot make a bad designer good."
+
+The two sentences are in tension with everything the industry has built since 2010. We have invested in process — agile, code review, CI/CD, architecture review boards — as if better process produces better design. Brooks says it doesn't. Process raises the floor. Talent raises the ceiling. Conflating the two is the central mistake of engineering management.
+
 ## Process is not a substitute for talent
 
 Brooks's position is blunt:
@@ -51,6 +55,10 @@ His prescriptions:
 
 **Protect them from management.** This is the hardest one. The reward for being a great designer is usually more meetings, more management responsibility, and less time designing. Breaking this cycle requires active intervention: someone in the organization with the authority to say "no, this person's highest-value activity is designing, not managing."
 
+> "The proper office of the manager is to protect his great designers from managing."
+
+The line is vintage Brooks — aphoristic, hierarchical, and correct. A great designer's highest-value activity is designing. Every hour they spend in a status meeting is an hour the organization loses their best work. The manager's job is not to manage the designer. It is to manage *everything else* so the designer can design.
+
 ## Esthetics and style
 
 Brooks includes a chapter on esthetics in technical design — a topic that makes many engineers uncomfortable. But his argument is practical: even invisible designs have an aesthetic dimension. We talk about "clean" architectures, "elegant" APIs, "beautiful" abstractions. These are not metaphors. They are judgments about the coherence and fitness of a design, and they are made by people with taste.
@@ -80,7 +88,11 @@ Brooks argues that this gap is partly cultural and partly practical. Culturally,
 - **His kitchen renovation** — a smaller case study that illustrates the difference between designing for yourself (where you are the user, the client, and the builder) and designing for others.
 - **A book design** — Brooks co-authored *Computer Architecture: Concepts and Evolution* and designed its structure. The case study shows how book design — chapter organization, cross-referencing, indexing — follows the same principles as software design.
 
-The case studies are uneven — the house and kitchen chapters feel self-indulgent to some readers — but they serve Brooks's purpose: demonstrating that design principles are invariant across media. The same lessons that produced System/360 also produce a good beach house.
+The case studies are uneven — the house and kitchen chapters feel self-indulgent to some readers — but they serve Brooks's purpose. He is demonstrating, not just asserting, that design principles are invariant across media. The same lessons that produced System/360 also produce a good beach house.
+
+> "I have designed in five media: computer architecture, software, houses, books, and organizations. This book draws lessons from all five. The principles of design are independent of the medium."
+
+This is the book's methodological bet. If you can show that the same principles that govern a computer architecture also govern a kitchen renovation, you have shown something deeper than a software engineering methodology. You have shown a theory of design.
 
 ## The argument, taken seriously
 

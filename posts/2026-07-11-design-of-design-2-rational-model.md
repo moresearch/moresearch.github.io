@@ -10,7 +10,11 @@ If part 1 of Brooks's argument is about *who* should design — one mind, or at 
 
 The rational model — sometimes called the waterfall model in its software variant — says: gather requirements, produce a design, implement the design, test the implementation, ship. Each phase completes before the next begins. The design is rational in the sense that it proceeds logically from known premises to a correct conclusion.
 
-Brooks calls this model "wrong and harmful; we must outgrow it." He is not being dramatic. He is being empirical.
+Brooks calls it "wrong and harmful":
+
+> "The Waterfall Model is wrong and harmful; we must outgrow it. What is wrong is that it is an essentially rational model, and for wicked problems, the rational model is simply the wrong model."
+
+He doesn't hedge. Not "sometimes inappropriate." Not "useful but limited." *Wrong and harmful.* The waterfall model is not a simplification of how design works — it is a misrepresentation. Following it damages projects because it demands decisions at the point of maximum ignorance.
 
 ## The rational model's fatal flaw
 
@@ -26,7 +30,11 @@ This co-evolution of problem and solution is not a bug in the rational model. It
 
 ## The empiricist alternative
 
-Brooks declares himself "a hard-core empiricist." The empiricist approach to design says: humans make mistakes. We cannot reason our way to a correct design any more than we can reason our way to a correct scientific theory. We must **build, test, learn, and iterate**.
+Brooks declares himself:
+
+> "I am a hard-core empiricist, in design as in science. I don't believe we can think our way to a correct design; we must build, test, and iterate."
+
+This is not the Brooks of *The Mythical Man-Month*. The younger Brooks believed in planning — the famous "plan to throw one away" was about doing the rational process twice. The older Brooks believes the first plan was never going to be right, no matter how carefully you made it. The shift from "plan better" to "build, test, learn" is the intellectual journey of the book.
 
 This is the methodology that drove the scientific revolution, and Brooks argues it is the only methodology that works for complex design. The steps are:
 
@@ -71,7 +79,11 @@ The empiricist method is the defense against this. An expert who tests their des
 
 Brooks identifies a trend that has only accelerated since 2010: the separation of designers from implementers and implementers from users.
 
-Historically, designers were also builders. The Wright brothers designed *and* built *and* flew their aircraft. Henry Ford designed *and* built *and* drove his cars. When the designer is also the builder and the user, feedback is immediate and brutal. A bad design decision shows up in the workshop that afternoon.
+Brooks puts the point with characteristic bluntness:
+
+> "The designer who does not build, and the builder who does not use, are both crippled."
+
+This is not a suggestion about career development. It is a claim about epistemology. If you don't build, you don't know whether your design works. If you don't use, you don't know what "works" means. Each handoff in the chain — designer to implementer to user — is a site where knowledge is lost. The only fix is to collapse the chain into one person, or at least ensure that everyone in it has done every role at some point. When the designer is also the builder and the user, feedback is immediate and brutal. A bad design decision shows up in the workshop that afternoon.
 
 Modern software development has broken this connection. Designers produce specifications. Implementers produce code. Users produce bug reports. Each handoff is a loss of information, a loss of accountability, and a loss of the rapid feedback that drives empirical improvement. The architect who never writes code designs abstractions that are elegant on paper and unbuildable in practice. The developer who never talks to users builds features that are technically impressive and functionally useless.
 

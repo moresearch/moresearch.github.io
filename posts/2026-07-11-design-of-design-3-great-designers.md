@@ -1,12 +1,12 @@
 ---
-title: "Brooks on design, part 3: growing great designers"
+title: "Brooks on design, part 7: growing great designers"
 date: 2026-07-11
 slug: brooks-design-great-designers
 summary: "Brooks argues that great designs come from great designers, not great processes — and that organizations must deliberately grow, protect, and retain design talent rather than smothering it in process."
 tags: design, fred-brooks, great-designers, engineering-culture, mentorship
 ---
 
-The first two parts of this series covered Brooks's arguments about conceptual integrity and the empiricist model of design. This third part addresses the uncomfortable conclusion that follows from both: **great designs come from great designers, not from great processes.**
+The preceding six parts covered Brooks's arguments about conceptual integrity, the one-mind rule, protecting the designer, the critique of the rational model, the empiricist alternative, and the forces that undermine empiricism. This final part addresses the uncomfortable conclusion that follows from all of them: **great designs come from great designers, not from great processes.**
 
 This argument runs through all of Brooks's major works. In *The Mythical Man-Month* (1975), it appears as the insistence on a chief architect. In *No Silver Bullet* (1986), it is the argument that better tools alone cannot produce better design — only better designers can. In *Computer Architecture: Concepts and Evolution* (1997, with Gerrit Blaauw), it is the demonstration that every great machine architecture traces to one or two minds. In *The Design of Design* (2010), it becomes the book's organizing thesis.
 
@@ -144,9 +144,13 @@ Most organizations answer no to all three. Brooks spent six decades explaining w
 
 ---
 
-**This is part 3 of a 3-part series on Fred Brooks' *The Design of Design*.**
-- [Part 1: Conceptual integrity and the one-mind rule](/posts/brooks-design-conceptual-integrity)
-- [Part 2: The rational model is wrong](/posts/brooks-design-rational-model)
+**This is part 7 of a 7-part series on Fred Brooks' *The Design of Design*.**
+- [Part 1: Conceptual integrity and the Reims Cathedral](/posts/brooks-design-conceptual-integrity)
+- [Part 2: The one-mind rule](/posts/brooks-design-one-mind-rule)
+- [Part 3: Protecting the designer](/posts/brooks-design-protecting-designer)
+- [Part 4: The rational model is wrong](/posts/brooks-design-rational-model)
+- [Part 5: The empiricist alternative](/posts/brooks-design-empiricist-alternative)
+- [Part 6: How experts go wrong and the divorce of design](/posts/brooks-design-experts-divorce)
 
 **References:**
 - Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)

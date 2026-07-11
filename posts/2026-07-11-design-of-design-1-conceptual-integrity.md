@@ -1,5 +1,5 @@
 ---
-title: "Brooks on design, part 1: conceptual integrity and the one-mind rule"
+title: "Brooks on design, part 1: conceptual integrity and the Reims Cathedral"
 date: 2026-07-11
 slug: brooks-design-conceptual-integrity
 summary: "Fred Brooks' 'The Design of Design' argues that the most important property of any system is conceptual integrity — and that integrity requires a single mind, or at most two, controlling the design."
@@ -46,87 +46,18 @@ Most cathedrals are the other kind: Gothic nave, Renaissance facade, Baroque cha
 
 Software systems are cathedrals built over decades. Unix (Ken Thompson and Dennis Ritchie, one resonant pair), Lisp (John McCarthy, one mind), Go (Thompson, Pike, Griesemer, a tight trio), the original Macintosh (Jobs channeling a singular vision) — these are Reims. Everything else is a patchwork quilt. Thompson captured the Brooksian ethic perfectly: "One of my most productive days was throwing away 1,000 lines of code." Saying no to your own complexity is the act that preserves conceptual integrity.
 
-## The one-mind rule
 
-The mechanism is simple and unpopular: **the design must proceed from one mind, or from a very small number of agreeing resonant minds.**
-
-Brooks is explicit. Great designs are attributed to individuals or pairs. Not committees. Not teams. Not "the community." The list of counterexamples — designs that emerged from large groups and achieved integrity — is, by his accounting, empty.
-
-> "The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair."
-
-In 1975, Brooks allowed that *implementation* could be done by teams if the *architecture* belonged to one mind. By 2010, he had sharpened even that. The architecture itself, he now argues, can have at most two authors — and only if they are genuinely resonant.
-
-> "Two people can serve as one mind only if they are in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply that each knows what the other would decide. Three cannot."
-
-Resonance at this depth is rare. Brooks found it with Gerrit Blaauw on System/360. Most designer pairs never achieve it. The default case is not a resonant pair but a committee, and committees produce what committees always produce: compromises. Each additional mind introduces new assumptions, preferences, and mental models. Reconciling them produces a design that offends no one and satisfies no one.
-
-> "Design by committee produces designs that offend no one and satisfy no one. Each member's wish list is accommodated, each objection smoothed over, until the result is a feature-laden compromise lacking any coherent vision."
-
-The committee didn't make the design better. It made it safer. Safety is the enemy of coherence.
-
-Brooks is not arguing against collaboration in general. Teams are valuable for requirements elicitation — more perspectives surface more edge cases. Teams are valuable for exploring the design space — brainstorming, design competitions, alternatives analysis. Teams are valuable for implementation — decomposing work, parallelizing effort, reviewing code. But the *conceptual design* — the core abstractions, the primitives and their relationships, the mental model presented to the user — must be controlled by one person. Or at most two.
-
-## The cost of collaboration
-
-Brooks quantifies this in terms familiar to readers of *The Mythical Man-Month*:
-
-**Learning cost.** Each new person must acquire the shared vision. If the vision lives in one designer's head, transferring it to *n* people takes *n × l* effort — the teaching burden of the original designer. It does not scale.
-
-**Communication cost.** *n* people have *n(n−1)/2* communication paths. For five designers, ten paths. For ten, forty-five. For a hundred, 4,950. Each path is a channel through which misunderstandings flow and compromises are negotiated.
-
-**Change control cost.** As contributors multiply, changing any design decision becomes harder. More people to consult, more objections to address, more downstream effects to trace. The design calcifies.
-
-> "Adding manpower to a late software project makes it later." — *The Mythical Man-Month*, 1975
-
-Brooks's Law was originally about scheduling, but the mechanism is the same: the n(n−1)/2 communication paths that doom late projects also doom committee-designed architectures. Adding designers dilutes the design.
-
-In *No Silver Bullet* (1986), Brooks extended this logic to the full software process. He distinguished *essential* complexity — inherent in the problem — from *accidental* complexity — imposed by our tools and methods. The rational model treats all complexity as accidental, as if better process could eliminate it. Brooks argued that essential complexity remains no matter what tools you use. Conceptual integrity is how you manage it: one voice in the design, even if a hundred hands build it.
-
-## The interface is the system
-
-> "For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies."
-
-Everything the user knows about your software comes through the interface. If it lacks conceptual integrity, the system lacks it — however clean the internals. You can distribute the backend across a hundred services. You cannot distribute the user's mental model across multiple personalities and expect coherence.
-
-This is why Brooks insists the interface must be "tightly controlled by one mind." The interface owner needs the authority to veto — to say no to the feature that makes sense for one backend team but would fracture the user's experience. That authority must be real, not advisory. Advisory authority means the VP who wants a feature overrides the designer who says it would break coherence. The VP wins, the user loses, and the system joins the patchwork quilt.
-
-## The protection of the designer
-
-If conceptual integrity requires one mind, and organizations contain many minds, the practical question becomes: how do you protect the designer?
-
-> "On System/360, a small team — Brooks, Amdahl, Blaauw — controlled the architecture. We had the authority to say no. More importantly, we were protected from the organizational forces that dilute design: feature requests from field sales, compatibility demands, performance optimizations that compromise clean abstraction."
-
-The authority to say no mattered. The *protection* to exercise it without being overruled mattered more. System/360 succeeded because the architecture team was shielded from the forces that would have compromised it. Field sales wanted features for specific customers. Existing customers demanded backward compatibility. Performance engineers wanted to optimize the hot paths. Each request was individually reasonable. Collectively, they would have destroyed the machine's coherence. Brooks, Amdahl, and Blaauw had the power to say no, and the organizational backing to make it stick.
-
-This is not autonomy for its own sake. It is autonomy within the right constraints: clear overriding objectives, a schedule with urgency, and the freedom to make design decisions within those bounds. The worst outcome — and the most common — is a designer with no real authority, overseen by a committee that can override any decision but takes responsibility for none. The designer gets the blame when the design fails. The committee never does.
-
-## What this means for teams today
-
-The one-mind rule is uncomfortable in an industry that valorizes collaboration. Brooks's point is not that teams are bad. It is that teams need a *real* design authority.
-
-Every project of any complexity should have a single person, or a tight pair, who owns the conceptual design. That person reviews every interface, every abstraction, every user-visible decision. They can say no without escalation. They are not the team lead, the engineering manager, or the product manager — though they may wear those hats. They are the design owner. Their primary responsibility is conceptual integrity.
-
-> "The architecture must be separated from implementation. This was the key organizational insight of System/360: a small architecture team defines what the machine is; a large implementation team builds it. The architecture team must be protected; the implementation team must be coordinated. The roles are distinct and must be staffed differently."
-
-This is Brooks's most practical pattern: separate the design authority from the build workforce. Give the design authority real power over the *what*. Give the build workforce the scale to execute the *how*. David Parnas, working independently in the same era, reached the same conclusion from a different angle. His principle of information hiding (1972) requires modules to conceal design decisions from each other. You cannot do this with a committee, because hiding requires a single mind to decide what to expose and what to bury.
-
-The industry sort of does both — architects, tech leads, staff engineers — but rarely with enough separation that the design owner can say no to the VP who wants a feature. We do not train for this role. We do not reward it in hiring. We do not protect it in organizational structures. And then we wonder why most systems feel like patchwork quilts.
-
-This role is hard to fill. It requires someone who can hold the entire system in their head, who has taste, who is willing to say no repeatedly to smart people — and who the organization trusts enough to give real authority. Brooks spent six decades arguing that everything else is secondary. The industry is still not taking him seriously.
-
-> "Plan to throw one away; you will, anyhow." — *The Mythical Man-Month*, 1975
-
-The younger Brooks already understood that the first version would be wrong. The older Brooks of *The Design of Design* sharpened this into a full empiricist philosophy. Accept that you will be wrong. Build anyway. Learn. Then build the right thing. This is the bridge to Part 2.
-
-> "The building of a design, indeed, is the forcing of the will of one upon the stuff of the world."
-
-A design is not a consensus. It is an imposition. The designer imposes coherence on a medium that has no opinion about coherence. This is uncomfortable language — "forcing," "will," "one upon the world" — and Brooks means it to be uncomfortable. Design is an act of authority. The question is whether your organization has the nerve to grant it.
+The next part takes up the practical question: if integrity requires one mind, how do you achieve that in an organization of many minds?
 
 ---
 
-**This is part 1 of a 3-part series on Fred Brooks' *The Design of Design*.**
-- [Part 2: The rational model is wrong](/posts/brooks-design-rational-model)
-- [Part 3: Growing great designers](/posts/brooks-design-great-designers)
+**This is part 1 of a 7-part series on Fred Brooks' *The Design of Design*.**
+- [Part 2: The one-mind rule](/posts/brooks-design-one-mind-rule)
+- [Part 3: Protecting the designer](/posts/brooks-design-protecting-designer)
+- [Part 4: The rational model is wrong](/posts/brooks-design-rational-model)
+- [Part 5: The empiricist alternative](/posts/brooks-design-empiricist-alternative)
+- [Part 6: How experts go wrong and the divorce of design](/posts/brooks-design-experts-divorce)
+- [Part 7: Growing great designers](/posts/brooks-design-great-designers)
 
 **References:**
 - Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)

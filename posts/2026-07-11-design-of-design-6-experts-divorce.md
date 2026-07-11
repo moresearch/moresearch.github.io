@@ -1,57 +1,45 @@
 ---
-title: "Brooks on design, part 6: why experts design the wrong thing beautifully"
+title: "Brooks on design, part 6: why experts get it wrong"
 date: 2026-07-11
 slug: brooks-design-experts-divorce
-summary: "Brooks observes that novice mistakes are easy to spot and fix, but expert mistakes are comprehensively, systematically wrong. And the growing separation between designers, builders, and users makes both kinds of error harder to catch."
-tags: design, fred-brooks, expertise, paradigm-trap, feedback-loops
+summary: "Novice mistakes are easy to spot. Expert mistakes are comprehensively, systematically wrong. And the divorce of designers from builders and users makes both harder to catch."
+tags: design, fred-brooks, expertise, paradigm-trap, feedback
 ---
 
-Parts 4-5 established that design is empirical — you learn by building, testing, and iterating. This part examines two forces that undermine empiricism.
+Parts 4-5: design is empirical. Part 6: two forces that undermine empiricism.
 
-## Definition: the paradigm trap
+## Definitions
 
-**Paradigm trap.** An expert's deep experience in one paradigm becomes a liability when the paradigm shifts. Their intuition, built over years, now points systematically in the wrong direction.
+**Paradigm trap.** Deep expertise in one paradigm becomes a liability when the paradigm shifts. Intuition points systematically wrong.
 
-Novices make technical mistakes. They forget edge cases. They pick the wrong data structure. These errors are visible and fixable. A test catches them. The system breaks in a way that points to the problem.
+Novices make technical mistakes. Wrong data structure. Missed edge case. Tests catch these. The system breaks visibly.
 
-Experts make a different kind of mistake. They produce designs that are **comprehensively, systematically wrong**. The design is internally consistent. Every part fits. It is well-executed. And it solves the wrong problem. Or it solves the right problem using assumptions from a previous era. Or it optimizes for a constraint that no longer exists.
+Experts make a different mistake. Their designs are **comprehensively, systematically wrong.** Internally consistent. Well-executed. Every part fits. And it solves the wrong problem. Or uses assumptions from a previous era. Or optimizes for a constraint that no longer exists.
 
 > "The expert's very expertise becomes a liability when the paradigm shifts. The habits that served him well in one era mislead him systematically in the next. He is not making small errors; he is solving yesterday's problem with today's tools."
 
-The term comes from Thomas Kuhn's *The Structure of Scientific Revolutions* (1962). Kuhn argued that scientific progress happens through paradigm shifts — and the established practitioners of the old paradigm are the last to see the new one. Brooks applies the same logic to design.
+Term from Thomas Kuhn, *The Structure of Scientific Revolutions* (1962). Old-paradigm practitioners are last to see the new one.
 
-When the paradigm shifts — mainframes to minicomputers, monoliths to microservices, deterministic to probabilistic systems — the expert's intuition becomes systematically misleading. And because the design is internally coherent, nobody spots the error until too late. A novice's bug fails a test. An expert's paradigm error passes all the tests. The tests were written within the same paradigm.
+Paradigm shifts: mainframes → minicomputers → microservices → probabilistic systems. Expert intuition becomes misleading. The design is coherent, so nobody spots the error. A novice's bug fails a test. An expert's paradigm error passes all tests — the tests were written within the same paradigm.
 
-The defense is empiricism. An expert who tests designs against reality — who prototypes, watches users, iterates on evidence — discovers their assumptions are wrong before building an entire system on top of them. An expert who designs from first principles and never tests ships a beautiful, coherent, wrong system. Ask: when did you last change a fundamental design decision because of something a user did?
-
-## Definition: the divorce of design
+Defense: empiricism. Test designs against reality. Prototype. Watch users. Iterate on evidence. Ask: when did you last change a fundamental decision because of something a user did?
 
 **Divorce of design.** Designers, builders, and users become separated. Each handoff loses knowledge, accountability, and feedback speed.
 
 > "The designer who does not build, and the builder who does not use, are both crippled."
 
-This is epistemology, not career advice. If you don't build, you don't know if your design works. If you don't use, you don't know what "works" means. Each handoff — designer to implementer to user — is a site where knowledge is lost.
+Epistemology, not career advice. Don't build → don't know if design works. Don't use → don't know what "works" means.
 
-When the designer is also the builder and the user, feedback is immediate. The Wright brothers designed, built, and flew their aircraft. A bad decision showed up in the workshop that afternoon. Modern software has stretched this loop to months. Designers write specifications. Implementers write code. Users file bugs. Each step loses information.
+Wright brothers: designed, built, flew. Bad decision showed up that afternoon. Modern software: months. Designers write specs. Implementers write code. Users file bugs. Each step loses information.
 
-The architect who never codes designs abstractions elegant on paper and unbuildable in practice. The developer who never meets users builds features technically impressive and functionally useless. Each is doing their job as the organization defines it. The organization is wrong.
+Architect who never codes: abstractions elegant on paper, unbuildable in practice. Developer who never meets users: features technically impressive, functionally useless. Each doing their job as defined. The definition is wrong.
 
-Brooks's prescription: shorten the loops. Designers should build. Builders should use. Users should be in the room. The structures that prevent this are design problems — and the hardest kind, because the people who need to solve them benefit from them.
+Fix: shorten the loops. Designers build. Builders use. Users in the room. The structures that prevent this benefit the people who could change them.
 
-This connects to Part 3. The designer needs protection, yes — but also contact with reality. A protected designer who never builds or talks to users is not protected. They are marooned.
+Connects to Part 3. The designer needs protection — and contact with reality. Protected without feedback is marooned.
 
 ---
 
-**This is part 6 of a 7-part series on Fred Brooks' *The Design of Design*.**
-- [Part 1: Conceptual integrity — the most important property](https://blog.hackspree.com/#brooks-design-conceptual-integrity)
-- [Part 2: Why one mind must rule the design](https://blog.hackspree.com/#brooks-design-one-mind-rule)
-- [Part 3: How to protect designers from their organizations](https://blog.hackspree.com/#brooks-design-protecting-designer)
-- [Part 4: The waterfall model is wrong and harmful](https://blog.hackspree.com/#brooks-design-rational-model)
-- [Part 5: Build, test, iterate — the empiricist method](https://blog.hackspree.com/#brooks-design-empiricist-alternative)
-- [Part 7: Great designs come from great designers — not great processes](https://blog.hackspree.com/#brooks-design-great-designers)
+**Part 6 of 7.** [← Part 5](https://blog.hackspree.com/#brooks-design-empiricist-alternative) · [Part 7 →](https://blog.hackspree.com/#brooks-design-great-designers)
 
-**References:**
-- Fred Brooks, *The Mythical Man-Month: Essays on Software Engineering*, Addison-Wesley, 1975. (Anniversary Edition with *No Silver Bullet*, 1995.)
-- Fred Brooks, *No Silver Bullet: Essence and Accident in Software Engineering*, 1986.
-- Fred Brooks and Gerrit A. Blaauw, *Computer Architecture: Concepts and Evolution*, Addison-Wesley, 1997.
-- Fred Brooks, *The Design of Design: Essays from a Computer Scientist*, Addison-Wesley, 2010.
+**References:** Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver Bullet* (1986), *The Design of Design* (2010). Brooks & Blaauw, *Computer Architecture: Concepts and Evolution* (1997).

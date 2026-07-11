@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Kevlin Henney writes, speaks, and thinks about code, patterns, and modularity. His work is the theoretical foundation most microservices adopters skipped. Time to read it.&#34;">
+  <meta name="description" content="&#34;Kevlin Henney never wrote a microservices book. He wrote the books you should have read before adopting microservices. Coupling is shared knowledge. Architecture is measured by cost of change. Modularity is in the relationships, not the services.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -655,147 +655,125 @@
       <article class="post" id="kevlin-henney">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#kevlin-henney">&#34;Kevlin Henney: the books, the talks, and why modularity is not microservices&#34;</a></h2><p class="post-summary">&#34;Kevlin Henney writes, speaks, and thinks about code, patterns, and modularity. His work is the theoretical foundation most microservices adopters skipped. Time to read it.&#34;</p>
-          <div class="tags"><span class="tag">kevlin-henney</span><span class="tag">software-design</span><span class="tag">patterns</span><span class="tag">modularity</span><span class="tag">microservices</span>
+          <h2><a href="#kevlin-henney">&#34;Henney&#39;s Microservices&#34;</a></h2><p class="post-summary">&#34;Kevlin Henney never wrote a microservices book. He wrote the books you should have read before adopting microservices. Coupling is shared knowledge. Architecture is measured by cost of change. Modularity is in the relationships, not the services.&#34;</p>
+          <div class="tags"><span class="tag">kevlin-henney</span><span class="tag">microservices</span><span class="tag">modularity</span><span class="tag">coupling</span><span class="tag">software-architecture</span>
           </div>
         </header>
-        <div class="post-body"><p>Kevlin Henney is the kind of thinker the software industry doesn't produce enough of: someone who has written production code since the late 1980s, who co-authored two volumes of the POSA pattern series, who edited the <em>97 Things</em> books, and who gives conference talks that get half a million views because they're <em>right</em> — not slick, not loud, just correct at a level that makes you uncomfortable about your own code.</p>
-<p>He lives in Bristol. He consults, trains, writes, and speaks. His interests span programming, people, and practice. If you've watched a software conference talk on YouTube, his name has been in the sidebar. If you haven't clicked it, this post is the nudge. If you're building microservices, this post is mandatory reading. Most of what passes for microservices architecture violates principles Henney documented decades ago. The industry skipped the foundations and built the tower. The tower is leaning.</p>
-<h2 id="the-architecture-of-modularity">The architecture of modularity</h2>
-<p>Henney's work on patterns and modularity forms the theoretical spine that microservices — done well — rest on. The problem is that most microservices adopters never read the theory. They split services by database table, called it &quot;bounded context,&quot; and declared victory. Henney would not be impressed.</p>
+        <div class="post-body"><p>Kevlin Henney never wrote a book called <em>Building Microservices</em>. He wrote the books you should have read <em>before</em> adopting microservices — the POSA pattern volumes, <em>97 Things Every Programmer Should Know</em>, and two decades of columns and talks on modularity, coupling, and the cost of change.</p>
+<p>The microservices movement adopted Conway's Law and forgot Parnas. Adopted bounded contexts and forgot coupling. Adopted independent deployability and forgot that deployment independence requires interface stability — and interface stability requires getting the boundaries right. Henney's work explains what went wrong. It also explains what to do instead.</p>
+<h2 id="what-a-module-is">What a module is</h2>
+<p>Before microservices, there were modules. Before modules were a deployment unit, they were a design decision. Henney, drawing on Parnas and the pattern literature, defines modularity in terms of <em>knowledge</em> — not code, not deployment, not team boundaries.</p>
 <blockquote>
 <p>&quot;The modularity of a system cannot be evaluated by examining designs of individual modules in isolation. The goal of modular design is to simplify the relationships between components of a system.&quot;</p>
 </blockquote>
-<p>This is the sentence that indicts most microservices architectures. Teams design services in isolation — one team per service, each optimizing locally — and then wonder why the system as a whole is a distributed mess. The modularity is not in the services. The modularity is in the relationships <em>between</em> the services. If you have twelve services that all call each other in a complete graph, you do not have a modular system. You have a distributed monolith with network latency and serialization overhead. The modularity didn't improve. The deployment got harder.</p>
+<p>This sentence indicts most microservices architectures. Teams design services in isolation — one team per service, optimizing locally — and wonder why the system is a distributed mess. You cannot evaluate modularity by looking at one service. You evaluate it by looking at what happens when one service changes. If the change stays inside the service, the boundary is in the right place. If it propagates, the boundary is decoration. The modularity is not in the service. It is in the relationships <em>between</em> services.</p>
 <blockquote>
 <p>&quot;Coupling is the aspect of a system that defines what knowledge is shared between components of a system. Different ways of coupling components share different types and amounts of knowledge. Some will increase complexity, while others will contribute to modularity.&quot;</p>
 </blockquote>
-<p>Coupling is shared knowledge. Not shared code. Not shared libraries. Shared <em>knowledge</em>. When Service A knows the internal data format of Service B, they are coupled — regardless of whether they communicate via HTTP, gRPC, or a message queue. The transport is irrelevant. The knowledge is the coupling. If Service B changes its schema and Service A breaks, the coupling is real. If Service B changes its schema and Service A doesn't notice, the coupling was imaginary. Most organizations don't know which kind they have because they never tested. They will find out in production.</p>
-<blockquote>
-<p>&quot;The aggressive pursuit of LCHC (low coupling and high cohesion) can ensure that the effect of change is simplified and isolated, rather than traumatic and global. LCHC also simplifies testing, building, versioning, experimentation, optimization, team organization, and pretty much any other development activity you can think of.&quot;</p>
-</blockquote>
-<p>LCHC is the goal. Microservices are one mechanism for achieving it — but only if you get the boundaries right. The boundaries are everything. Henney, channeling Grady Booch, defines architecture precisely:</p>
+<p>Coupling is shared knowledge. Not shared libraries. Not shared databases. Not shared deployment pipelines. Shared <em>knowledge</em>. When Service A knows the internal data format of Service B, they are coupled — regardless of whether they communicate via HTTP, gRPC, or a message queue. The transport is irrelevant. The knowledge is the coupling. If Service B changes its schema and Service A breaks, the coupling is real. If Service B changes and Service A doesn't notice, the coupling was imaginary. Most organizations don't know which kind they have. They find out in production. The finding is expensive.</p>
+<h2 id="the-test-of-architecture">The test of architecture</h2>
+<p>Henney channels Grady Booch for the definition that should be printed above every microservices whiteboard:</p>
 <blockquote>
 <p>&quot;All architecture is design but not all design is architecture. Architecture represents the significant design decisions that shape a system, where significant is measured by cost of change.&quot;</p>
 </blockquote>
-<p>The cost of change. That is the criterion. If changing a decision requires rewriting one service, it was a local design decision. If changing it ripples across seven services, it was an architectural decision — and you either got the boundary wrong or you failed to protect it. Most microservices failures are boundary failures. The services work individually. The boundaries between them are in the wrong places. When the business requirement changes — and it will — the change crosses five service boundaries and requires coordinated deploys. The architecture didn't reduce the cost of change. It increased it. You built a distributed system to make changing your mind <em>more</em> expensive. That is not progress.</p>
+<p>Cost of change. That is the criterion. If changing a decision requires rewriting one service, it was local design. If it ripples across seven services, it was architectural — and you got the boundary wrong. Most microservices failures are boundary failures. The services work individually. The boundaries between them are in the wrong places. When the business requirement changes, the change crosses five service boundaries and requires coordinated deploys. The architecture didn't reduce the cost of change. It increased it. You distributed a system to make changing your mind <em>more</em> expensive. That is not progress.</p>
+<blockquote>
+<p>&quot;The aggressive pursuit of LCHC (low coupling and high cohesion) can ensure that the effect of change is simplified and isolated, rather than traumatic and global. LCHC also simplifies testing, building, versioning, experimentation, optimization, team organization, and pretty much any other development activity you can think of.&quot;</p>
+</blockquote>
+<p>LCHC is the goal. Microservices are one mechanism for achieving it — but only if the boundaries are right. LCHC simplifies everything Henney lists: testing, building, versioning, experimentation, optimization, team organization. If your microservices migration made any of these harder, you didn't achieve LCHC. You achieved distribution without modularity. That is the worst of both worlds: the complexity of a distributed system with the coupling of a monolith. You kept the monolith's problems and added network latency.</p>
 <blockquote>
 <p>&quot;It is possible to simplify the structure of software without losing effective options. It is even possible to do so and increase your options. Now, that sounds worthwhile: simpler and more flexible.&quot;</p>
 </blockquote>
-<p>Simpler and more flexible. This is the test. After your microservices migration, is the system simpler and more flexible than the monolith it replaced? If the answer is no — and it often is — you didn't improve the modularity. You just distributed the monolith across a network. The modularity was the goal. The distribution was a side effect. Confusing them is the central mistake of the microservices era.</p>
-<h2 id="architecture-as-managed-uncertainty">Architecture as managed uncertainty</h2>
-<p>One of Henney's deepest insights is about architectural decision-making under uncertainty — and it directly applies to the &quot;how many services?&quot; question that paralyzes microservices adopters.</p>
+<p>Simpler. More flexible. After your migration, is the system both? If yes, the boundaries are correct. If no — if it's more complex, harder to change, harder to reason about — the modularity didn't improve. The distribution was cosmetic. The coupling was the real structure all along.</p>
+<h2 id="boundaries-under-uncertainty">Boundaries under uncertainty</h2>
+<p>Henney's deepest architectural insight is about decisions you don't yet know how to make:</p>
 <blockquote>
 <p>&quot;When a design decision can reasonably go one of two ways, an architect needs to take a step back. Instead of trying to decide between options A and B, the question becomes 'How do I design so that the choice between A and B is less significant?' The most interesting thing is not actually the choice between A and B, but the fact that there is a choice between A and B.&quot;</p>
 </blockquote>
-<p>The existence of a choice is a signal. It means the boundary is volatile. Instead of picking A or B, design the interface so that A and B are interchangeable behind it. This is Parnas's information hiding applied to architectural decisions: hide the decision behind a stable interface, and the choice becomes less significant because you can change your mind later without telling anyone.</p>
-<p>Applied to microservices: the question is not &quot;should this be one service or two?&quot; The question is &quot;how do I design the interface so that whether it's one or two doesn't matter to the callers?&quot; If you can switch from one to two without the callers changing, you got the interface right. If a service split forces every caller to update, the interface was wrong. The interface was coupled to the deployment topology. That coupling is the problem. The number of services is a distraction.</p>
+<p>The existence of a choice is a signal. It means the boundary is volatile. Don't pick A or B. Design the interface so that A and B are interchangeable behind it. This is Parnas's information hiding applied to architectural decisions: <em>hide the decision behind a stable interface, and the choice becomes less significant because you can change your mind later without telling anyone.</em></p>
+<p>Applied to microservices: don't ask &quot;should this be one service or two?&quot; Ask &quot;how do I design the interface so that whether it's one or two doesn't matter to the callers?&quot; If you can split a service without the callers updating, the interface was right. If splitting forces every caller to redeploy, the interface was coupled to the deployment topology. That coupling is the problem. The service count is a distraction. The interface stability is everything.</p>
 <blockquote>
 <p>&quot;Although we cannot predict the future with any certainty, it is still possible to write code that is graceful and accommodating — rather than troublesome and resistant — in the face of change.&quot;</p>
 </blockquote>
-<p>Graceful in the face of change. That is the definition of good architecture. Not &quot;scales to a million users.&quot; Not &quot;uses the latest framework.&quot; Not &quot;has a beautiful diagram.&quot; Can you change your mind about a decision without rewriting the system? If yes, the architecture is working. If no, the architecture is decoration.</p>
+<p>Graceful in the face of change. Not &quot;scales to a million users.&quot; Not &quot;uses the latest framework.&quot; Can you change your mind about a decision without rewriting the system? If yes, the architecture works. If no, the architecture is decoration with good slides.</p>
 <h2 id="simplicity-before-generality">Simplicity before generality</h2>
-<p>Henney's most quoted principle is a direct challenge to the way most platforms and frameworks are built — and to the way most microservices platforms encourage over-generalization.</p>
+<p>The principle that should govern every microservices platform decision:</p>
 <blockquote>
 <p>&quot;The best route to generality is through understanding known, specific examples and focusing on their essence to find an essential common solution. Simplicity through experience rather than generality through guesswork.&quot;</p>
 </blockquote>
-<p>Build the specific thing first. Make it work. Then, when you have a second specific thing that resembles the first, find the common essence and extract it. This is the opposite of how most microservices platforms are designed. The platform team builds a general-purpose service template with twenty configuration options, five deployment modes, and an abstraction layer that handles every possible use case — most of which never occur. The template is general. It is also heavy, complex, and wrong in ways that only become visible when you try to use it for something the designers didn't anticipate.</p>
+<p>Build the specific service first. Make it work. Then, when you have a <em>second</em> specific service that resembles the first, find the common essence and extract it. This is the opposite of how most microservices platforms are built. The platform team designs a general-purpose service template with twenty configuration options, five deployment modes, and an abstraction layer that handles every possible use case — most of which never occur. That's not architecture. That's prophecy. Prophecy is usually wrong.</p>
 <blockquote>
 <p>&quot;A common problem in component frameworks, class libraries, foundation services, and other infrastructure code is that many are designed to be general purpose without reference to concrete applications. This leads to a dizzying array of options and possibilities that are often unused, misused, or just not useful.&quot;</p>
 </blockquote>
+<p>The microservices platform designed before any services existed. The shared library that abstracts every database. The common logging framework with seventeen configuration levels. These are not solutions. They are options factories. They produce optionality, not functionality. Most of the options are never used. They exist because someone thought they might be needed. They are inventory. Inventory has cost. The cost is paid by every team that has to understand the platform before they can build the service.</p>
 <blockquote>
 <p>&quot;Favoring simplicity before generality acts as a tiebreaker between otherwise equally viable design alternatives. When there are two possible solutions, favor the one that is simpler and based on concrete need rather than the more intricate one that boasts of generality.&quot;</p>
 </blockquote>
-<p>Simplicity first. Generality second. Use before reuse. This is not laziness. It is epistemological humility. You don't know what the general case looks like until you've seen several specific cases. Guessing at generality produces abstractions that fit nothing well and everything poorly. The microservices platform that was designed before any services existed? That's not architecture. That's prophecy. Prophecy is usually wrong.</p>
 <blockquote>
 <p>&quot;The trick to achieving generality is, somewhat counterintuitively, to make the code specific enough to be fit for purpose.&quot;</p>
 </blockquote>
-<p>Specific enough to work. General enough to adapt. Finding that line is the discipline. Most teams err on one side or the other — over-specific code that hardcodes assumptions and breaks when anything changes, or over-general frameworks that handle everything and solve nothing. The middle is where Henney lives. It's harder to get to. It's worth it.</p>
-<h2 id="the-seven-ineffective-habits">The seven ineffective habits</h2>
-<p>Henney's most-watched talk examines coding habits acquired by imitation and never questioned. Each habit has architectural consequences when scaled to a distributed system.</p>
+<p>Specific enough to work. General enough to adapt. Most microservices platforms miss both: too general to be useful for the specific case, too specific to adapt when the case changes. The middle is where Henney operates. It's harder. It's worth it.</p>
+<h2 id="the-seven-habits-distributed">The seven habits, distributed</h2>
+<p>Henney's most-watched talk — <em>Seven Ineffective Coding Habits of Many Programmers</em> — examines patterns acquired by imitation and never questioned. Each habit has a microservices equivalent. Each equivalent is common. Each is wrong.</p>
 <h3 id="1-noisy-code">1. Noisy code</h3>
 <blockquote>
 <p>&quot;Comments should provide additional information that is not readily obtainable from the code itself. They should never parrot the code.&quot;</p>
 </blockquote>
-<p>At the microservices level: documentation that repeats what the API already says. Swagger docs that restate the endpoint name. Architecture decision records that say &quot;we chose Kafka because it scales.&quot; The signal-to-noise ratio is the same whether you're looking at a function or a system. Noise is noise. It obscures. It doesn't inform.</p>
 <blockquote>
 <p>&quot;A common fallacy is to assume authors of incomprehensible code will somehow be able to express themselves lucidly and clearly in comments.&quot;</p>
 </blockquote>
-<p>The service equivalent: assuming that a team that can't design a clean module boundary will somehow design a clean service boundary. The scale changes. The skill doesn't. If you can't modularize a monolith, you can't modularize microservices. You'll just distribute the spaghetti.</p>
-<h3 id="2-unsustainable-spacing--visual-dishonesty">2. Unsustainable spacing / visual dishonesty</h3>
-<p>Code layout must reflect code structure. If the indentation lies, the reader is confused. At the system level: if the service diagram shows clean boundaries but the runtime shows a complete call graph, the diagram lies. The architecture document is visual dishonesty. The system's actual structure is in the call graph, not the whiteboard.</p>
+<p>Distributed: Swagger docs that repeat the endpoint name. Architecture decision records that say &quot;we chose Kafka because it scales.&quot; Documentation that restates what the API already says. Noise is noise at any scale. A team that can't write a clear function won't write a clear service contract. The scale changes. The skill doesn't. If you can't modularize a monolith, you can't modularize microservices. You'll distribute the spaghetti.</p>
+<h3 id="2-visual-dishonesty">2. Visual dishonesty</h3>
+<p>Code layout must reflect code structure. If indentation lies, the reader is confused. Distributed: the architecture diagram shows clean bounded contexts. The runtime call graph shows a complete mesh. The diagram lies. The system's structure is in the call graph, not the whiteboard. Visual dishonesty at the service level is more dangerous because the evidence is harder to see. You have to instrument the system to discover what the code would have told you directly.</p>
 <h3 id="3-lego-naming">3. Lego naming</h3>
 <blockquote>
 <p>&quot;More words is not more meaning.&quot;</p>
 </blockquote>
-<p><code>CustomerProfileServiceManagerFactory</code>. <code>OrderProcessingOrchestrationController</code>. Lego naming at the service level produces names that catalogue rather than distinguish. A service name should tell you what domain function it performs, not what design patterns it implements. The patterns are implementation details. The domain function is the interface.</p>
+<p>Distributed: <code>CustomerProfileServiceManagerFactory</code>. <code>OrderProcessingOrchestrationController</code>. <code>EnterprisePaymentGatewayAdapterImpl</code>. Lego naming at the service level catalogues rather than distinguishes. A service name should say what domain function it performs, not what design patterns it contains. The patterns are implementation. The domain function is the contract.</p>
 <h3 id="4-under-abstraction">4. Under-abstraction</h3>
-<p>Primitive obsession at the function level becomes primitive obsession at the service level. Services that exchange raw JSON with no schema. Services that pass database IDs rather than domain references. Services that expose their internal table structure through &quot;REST&quot; APIs that are really thin wrappers over CRUD. If your service API looks like your database schema with HTTP verbs, you have not abstracted. You have exposed. That's not an API. That's a tunnel into your storage. The coupling is total.</p>
+<p>Primitive obsession scaled to services. Services that exchange raw JSON with no schema. Services that pass database IDs instead of domain references. &quot;REST&quot; APIs that are thin wrappers over CRUD. If your service API mirrors your database schema with HTTP verbs, you have not abstracted. You have exposed a tunnel into your storage. The coupling is total. Every caller is now coupled to your schema. Every schema change is a breaking change. The API didn't abstract the storage. It published it.</p>
 <h3 id="5-unencapsulated-state">5. Unencapsulated state</h3>
-<p>Henney's analogy: wearing your underwear on the outside. At the service level: services that share a database. Services that read each other's tables. Services that depend on another service's internal state transitions rather than its published events. If Service A queries Service B's database directly, Service B has no encapsulation. Its state is public. Any change to B's schema breaks A. The services are not independent. They are co-dependent with extra network hops.</p>
+<p>Henney's analogy: wearing your underwear on the outside. Distributed: services that share a database. Services that read each other's tables. Services that depend on another service's internal state transitions rather than its published events. If Service A queries Service B's database directly, Service B has no encapsulation. Its state is public. Any schema change in B breaks A. The services are not independent. They are co-dependent with extra network hops and a false sense of modularity.</p>
 <h3 id="6-getters-and-setters">6. Getters and setters</h3>
 <blockquote>
-<p>&quot;When it is not necessary to change, it is necessary not to change.&quot; — Lucius Cary, via Henney</p>
+<p>&quot;When it is not necessary to change, it is necessary not to change.&quot; — Lucius Cary</p>
 </blockquote>
-<p>Mindless getter/setter generation becomes mindless CRUD endpoint generation. <code>GET /customers/{id}</code>, <code>PUT /customers/{id}</code>, <code>PATCH /customers/{id}</code>, <code>DELETE /customers/{id}</code>. Generated. Never questioned. The API exposes mutation when mutation should be impossible (do you really need to DELETE a customer, or do you need to <em>close an account</em>?). The API exposes internal structure because the framework generated it from the entity. This is not REST. This is an ORM with a public URL.</p>
+<p>IDE-generated getters and setters become framework-generated CRUD endpoints. <code>GET /customers/{id}</code>, <code>PUT /customers/{id}</code>, <code>DELETE /customers/{id}</code>. Generated. Never questioned. The API exposes mutation where mutation should be a domain event (do you DELETE a customer or <em>close their account</em>?). The API exposes internal structure because the framework generated it from the entity. This is not an API. It is an ORM with a public URL and a false sense of RESTfulness.</p>
 <h3 id="7-uncohesive-tests">7. Uncohesive tests</h3>
 <blockquote>
 <p>&quot;For tests to drive development they must do more than just test that code performs its required functionality: they must clearly express that required functionality to the reader.&quot; — Nat Pryce &amp; Steve Freeman</p>
 </blockquote>
-<p>One test class per production class becomes one integration test per service. Tests that verify internal implementation rather than external behavior. When you refactor a service's internals, the tests break — not because the behavior changed, but because the tests were coupled to the implementation. The same anti-pattern, distributed. Test behavior. Not structure. At every scale.</p>
-<h2 id="code-is-not-an-asset">Code is not an asset</h2>
-<p>One of Henney's most bracing arguments:</p>
+<p>One test class per class becomes one integration test suite per service. Tests that verify internal implementation rather than external behavior. When you refactor a service's internals, the tests break — not because behavior changed, but because tests were coupled to implementation. The same anti-pattern, distributed. Test behavior. Not structure. At every scale. A test suite that prevents refactoring is not a safety net. It is a cage.</p>
+<h2 id="code-is-inventory-not-an-asset">Code is inventory, not an asset</h2>
 <blockquote>
 <p>&quot;Less code, more software. Less code = less bugs.&quot;</p>
 </blockquote>
 <blockquote>
 <p>&quot;Programmers write code: a formal plan of the software, expressing its intent in maximal detail. Software is the end product: in execution it is what the user perceives, interacts with and experiences. Sometimes this difference can be significant.&quot;</p>
 </blockquote>
-<p>Code is the plan. Software is the product. Confusing them — treating the plan as the asset — is why organizations measure productivity in lines of code and celebrate growing codebases. A growing codebase is not an achievement. It is a growing liability. Every line must be tested, maintained, understood, migrated, and eventually deleted. The asset is the solved problem. The code is what it cost to solve it.</p>
+<p>Code is the plan. Software is the product. Confusing them is why organizations measure productivity in lines written and celebrate growing codebases. A growing codebase is a growing liability. Every line must be tested, maintained, understood, migrated, deleted. The asset is the solved problem. The code is what it cost. A microservices migration that produces more total lines of code than the monolith it replaced is not an improvement. It is inventory growth. The problem didn't get bigger. The solution did.</p>
 <blockquote>
 <p>&quot;Duplicate code has a bad smell and violates the DRY principle... Contrary to benighted management belief, more is not better in this case. Every problem has an optimal code size: too short and the code is cryptic line noise; too long and you cannot see the wood for the trees.&quot;</p>
 </blockquote>
-<p>There is an optimal size. Not zero. Not infinite. Somewhere in between, where the code is minimal enough to understand and complete enough to work. Finding that point is the discipline. Most teams never look for it. They add code until the feature works, then stop. The codebase grows monotonically. Nobody's job is deletion. It should be.</p>
-<h2 id="the-books">The books</h2>
-<h3 id="pattern-oriented-software-architecture-volumes-4-and-5-2007">Pattern-Oriented Software Architecture, Volumes 4 and 5 (2007)</h3>
-<p>Co-authored with Frank Buschmann and Doug Schmidt. Volume 4: <em>A Pattern Language for Distributed Computing</em>. Volume 5: <em>On Patterns and Pattern Languages</em>. These are not introductory texts. They are for practitioners who have already encountered the problems that patterns solve and need the vocabulary to reason about them. Volume 4 is directly relevant to anyone building distributed systems — i.e., anyone building microservices. Volume 5 is the meta-level: what makes a pattern a pattern, how patterns compose, how to write them. Henney's contribution places him in the direct lineage of the Gang of Four and the pattern movement. Read Volume 4 before you split another service. The patterns you need are already named and documented. You're discovering them the hard way.</p>
-<h3 id="97-things-every-programmer-should-know-2010">97 Things Every Programmer Should Know (2010)</h3>
-<p>Henney edited this. 97 essays. Two to three pages each. One point per essay. No filler. His own six contributions are worth reading first:</p>
+<p>Optimal size exists. Not zero. Not whatever ships. Somewhere in between. Finding it is the discipline. Most teams never look. They add code until the feature works, then stop. The codebase grows monotonically. Nobody's job is deletion. In a microservices world, the cost of excess code is amplified: every service carries its own surplus, and the surplus in each service compounds across the system. Ten services, each 20% larger than needed, is not 20% waste. It is 20% waste multiplied by ten different maintenance, testing, and deployment pipelines. The overhead is multiplicative. The benefit is imaginary.</p>
+<h2 id="the-books-behind-the-argument">The books behind the argument</h2>
+<p>Henney's microservices-relevant work spans two decades:</p>
+<p><strong>Pattern-Oriented Software Architecture, Volumes 4 &amp; 5</strong> (2007, with Frank Buschmann and Doug Schmidt). Volume 4: <em>A Pattern Language for Distributed Computing</em>. Volume 5: <em>On Patterns and Pattern Languages</em>. Read Volume 4 before you split another service. The patterns you need — distribution, communication, coordination — are already named and documented. You are discovering them the hard way, expensively, in production. The patterns are free. The downtime is not.</p>
+<p><strong>97 Things Every Programmer Should Know</strong> (2010, editor). Henney's six contributions are micro-essays in modularity:</p>
 <ul>
-<li>
-<p><strong>&quot;Comment Only What the Code Cannot Say.&quot;</strong> The code says what. The comment says why. If the code doesn't say what clearly, fix the code, not the comment. A comment that explains bad code is a commitment to keeping the bad code.</p>
-</li>
-<li>
-<p><strong>&quot;Test for Required Behavior, Not Incidental Behavior.&quot;</strong> Test the contract. Not the implementation. If you test the implementation, refactoring becomes a test-breaking exercise and you stop refactoring. That is how codebases rot.</p>
-</li>
-<li>
-<p><strong>&quot;Test Precisely and Concretely.&quot;</strong> Vague tests pass when they should fail. Specific tests fail only when something is wrong. A test that passes in the presence of a bug is worse than no test — it gives false confidence.</p>
-</li>
-<li>
-<p><strong>&quot;Program with GUTs.&quot;</strong> Good Unit Tests. The name is a pun. The practice is not. Tests are code. They deserve the same care, the same review, the same refactoring. Test quality is system quality.</p>
-</li>
-<li>
-<p><strong>&quot;Uncheck Your Exceptions.&quot;</strong> Checked exceptions create coupling across layers. They force catch blocks that do nothing. Henney was arguing this before it was consensus. Now it's obvious. The debate is over. Henney won.</p>
-</li>
-<li>
-<p><strong>&quot;Name the Date.&quot;</strong> Don't write <code>getDate()</code>. Write <code>getExpiryDate()</code>. The extra word is not noise. It is the difference between understanding and guessing. Names are the primary interface between a programmer and a codebase. Every ambiguous name is a small tax paid by every future reader.</p>
-</li>
+<li><strong>&quot;Comment Only What the Code Cannot Say.&quot;</strong> The code says what. The comment says why. At the service level: the API says what. The documentation says why the API exists. Don't document the endpoint. Document the domain decision that created it.</li>
+<li><strong>&quot;Test for Required Behavior, Not Incidental Behavior.&quot;</strong> Test the contract, not the implementation. At the service level: test the API contract, not the internal implementation. If an internal refactor breaks the test suite, the tests were coupled. Decouple them.</li>
+<li><strong>&quot;Test Precisely and Concretely.&quot;</strong> Vague tests are worse than no tests — they give false confidence. A service integration test that passes with a mock is testing the mock, not the service.</li>
+<li><strong>&quot;Name the Date.&quot;</strong> Don't write <code>getDate()</code>. Write <code>getExpiryDate()</code>. Don't name a service <code>data-processor</code>. Name it <code>invoice-generator</code>. The extra word is not noise. It is the contract.</li>
+<li><strong>&quot;Program with GUTs.&quot;</strong> Good Unit Tests. Test code is code. It deserves review, refactoring, the same standards. Service tests that nobody reads are not tests. They are rituals.</li>
+<li><strong>&quot;Uncheck Your Exceptions.&quot;</strong> Checked exceptions create coupling. At the service level: checked exceptions are shared error types that force every caller to depend on every callee's internal error taxonomy. That coupling crosses service boundaries. It shouldn't.</li>
 </ul>
-<h3 id="97-things-every-java-programmer-should-know-2020">97 Things Every Java Programmer Should Know (2020)</h3>
-<p>Co-edited with Trisha Gee. Same format, Java-specific. The editorial voice is the same: practical, opinionated, allergic to received wisdom.</p>
-<p>Henney also contributed to <em>97 Things Every Software Architect Should Know</em> and wrote columns for <em>Better Software</em>, <em>The Register</em>, <em>C/C++ Users Journal</em>, <em>JavaSpektrum</em>, <em>C++ Report</em>, <em>EXE</em>, <em>Overload</em>, and <em>Application Development Advisor</em>. If a programming magazine existed in the 1990s or 2000s, he probably wrote for it. Those columns are still sharper than most things published this morning.</p>
-<h2 id="the-other-talks">The other talks</h2>
-<p>Beyond <em>Seven Ineffective Coding Habits</em>, Henney's talk catalogue is deep:</p>
-<p><strong>Small Is Beautiful.</strong> Less code is empirically better. Smaller modules, smaller functions, smaller interfaces. The evidence is overwhelming and universally ignored. Measure deletions, not additions. The best commit has more red than green.</p>
-<p><strong>Code as Risk.</strong> Every line is a liability. Code is inventory cost, not an asset. The asset is the solved problem. The code is what you paid. Confusing them is why organizations celebrate growing codebases. Growth is not progress if the growth is in inventory, not in solved problems.</p>
-<p><strong>Old Is the New New.</strong> Microservices, event sourcing, functional programming — the ideas that are &quot;new&quot; are old ideas with new names. The industry doesn't lack ideas. It lacks memory. The original papers are still correct. The original authors are still worth reading. Henney traces modern trends back to their 1970s sources. It is humbling. It should be.</p>
-<p><strong>The Way the Future Was.</strong> A meditation on prediction, kept and broken. The promises the industry made. The ones it kept. The ones it forgot it made. Henney has been building software since the late 1980s. He saw the promises. He remembers which ones were real.</p>
-<p><strong>Question-Led Development.</strong> Asking better questions rather than jumping to answers. Most design debates are not about tradeoffs. They are about people who haven't asked the same question answering different questions and wondering why they disagree. Clarify the question. The answer often follows.</p>
-<p><strong>The Architecture of Uncertainty.</strong> How to design when you don't know what will change. The answer: make the choice less significant by hiding it behind a stable interface. This is Parnas updated for the distributed systems era. It is also the best advice you will get about microservices boundaries.</p>
-<h2 id="why-henney-is-the-prerequisite-for-microservices">Why Henney is the prerequisite for microservices</h2>
-<p>The microservices movement adopted Conway's Law and forgot Parnas. It adopted bounded contexts and forgot coupling. It adopted independent deployability and forgot that deployment independence requires interface stability — and interface stability requires getting the boundaries right.</p>
-<p>Henney's work connects all of this. Patterns give you the vocabulary for boundaries. Information hiding gives you the criterion for where to put them. LCHC gives you the measure of whether they work. Architecture as cost-of-change gives you the test of whether the system improved. Simplicity before generality gives you the discipline to stop at the right size.</p>
-<p>Most microservices adopters never read any of this. They split services by entity, called it domain-driven, and moved on. The system is more complex, harder to change, and harder to understand than the monolith it replaced. The deployment is independent. Nothing else is. That is failure dressed in modern infrastructure. Henney's work explains why. It also explains what to do instead. The books are short. The talks are free. The ignorance is expensive.</p>
+<p><strong>97 Things Every Java Programmer Should Know</strong> (2020, co-editor with Trisha Gee). Same format, Java lens. The editorial voice is unchanged: practical, specific, allergic to dogma.</p>
+<h2 id="what-henney-knew">What Henney knew</h2>
+<p>The microservices movement made modularity a deployment concern. Henney's work — and the pattern literature he co-authored — makes modularity a <em>knowledge</em> concern. The deployment follows the knowledge boundary. Not the other way around.</p>
+<p>If you split by knowledge — by what each module knows and hides — the deployment topology emerges naturally. Each knowledge boundary becomes a service boundary. Each hidden decision becomes an internal implementation. Each stable interface becomes an API contract. The services are modular because the knowledge is modular. The deployment is a consequence.</p>
+<p>If you split by database table, by team size, or by &quot;one service per aggregate,&quot; the knowledge boundaries don't match the service boundaries. Knowledge leaks across services. Coupling becomes the runtime reality, regardless of what the diagram shows. The services are not modular. They are fragments of a monolith, communicating over a network, with all the original coupling intact and new failure modes added.</p>
+<p>Henney never wrote <em>Building Microservices</em>. He wrote the theory that explains why most of them fall over. Coupling is shared knowledge. Architecture is measured by cost of change. Modularity lives in the relationships, not the services. Simpler and more flexible is the only test that matters. Most microservices migrations fail that test. Henney's work explains why. It also explains how to pass it. The books are short. The ignorance is expensive.</p>
 <hr>
 <p><strong>References:</strong></p>
 <ul>
@@ -3686,7 +3664,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#kevlin-henney">&#34;Kevlin Henney: the books, the talks, and why modularity is not microservices&#34;</a>
+              <a href="#kevlin-henney">&#34;Henney&#39;s Microservices&#34;</a>
               <a href="#parnas-information-hiding">&#34;Parnas&#39;s Information Hiding&#34;</a>
               <a href="#brooks-design-great-designers">&#34;Brooks on Software Design Series: great designers, not great processes&#34;</a>
               <a href="#brooks-design-experts-divorce">&#34;Brooks on Software Design Series: why experts get it wrong&#34;</a>

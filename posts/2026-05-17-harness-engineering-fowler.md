@@ -66,3 +66,6 @@ References
 
 
 Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.
+
+
+> A harness is not a tool. It is a contract. The contract specifies what the agent can do and how its performance will be measured. The contract is the interface. The interface is the engineering.

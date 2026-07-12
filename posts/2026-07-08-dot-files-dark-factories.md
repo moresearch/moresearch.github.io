@@ -60,3 +60,6 @@ The convergence of Kilroy and Mammoth on DOT is not a coincidence. It is a signa
 - [Kilroy](https://github.com/kilroy/) — English-to-DOT pipeline generation, Git worktree isolation, CXDB event recording
 - [Mammoth](https://github.com/mammoth/) — DOT-based pipeline runner with web UI, checkpointing, MCP server
 - [Graphviz DOT language](https://graphviz.org/doc/info/lang.html)
+
+
+Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.

@@ -45,3 +45,6 @@ If you want cooperation, lengthen the horizon. Stable teams. Long-term ownership
 - Robert Axelrod, *The Evolution of Cooperation*, Basic Books, 1984.
 - Drew Fudenberg and Eric Maskin, "The Folk Theorem in Repeated Games with Discounting or with Incomplete Information," *Econometrica*, 1986.
 - Related posts: [Cooperation is logical](https://blog.hackspree.com/#cooperation-is-logical), [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

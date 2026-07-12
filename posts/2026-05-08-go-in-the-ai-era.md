@@ -50,3 +50,6 @@ That split lets each language do what it is best at. You do not need one languag
 It is easy to talk about AI as if the whole category reduces to model capability. In production, capability is only one layer. Someone still has to make the system dependable, observable, and affordable enough to run every day.
 
 That is why Go keeps surfacing in mature AI products. It helps teams build the unglamorous pieces that decide whether intelligence feels like a feature or like a recurring incident. The more valuable models become, the more valuable that kind of boring infrastructure becomes too.
+
+
+This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.

@@ -90,3 +90,6 @@ But the direction of travel is set. The dark factory is not science fiction. It 
 
 
 Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.
+
+
+> A dark factory is not a tool. It is a production function. The inputs are specifications. The outputs are software. The factory is the mechanism. The mechanism determines the economics.

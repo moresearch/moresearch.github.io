@@ -85,3 +85,6 @@ This is a call to action. If you are building agent infrastructure, the question
 ---
 
 **Reference:** Tianyu Ding, Aditya Nannapaneni, Bingfan Liu, Ling Zhang. [Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents](https://arxiv.org/abs/2606.30306). arXiv:2606.30306, June 2026.
+
+
+Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.

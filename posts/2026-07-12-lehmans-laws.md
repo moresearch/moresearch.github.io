@@ -222,3 +222,6 @@ Lehman's Laws are not despair. They are realism. The laws describe what happens.
 - Edsger W. Dijkstra, "On the cruelty of really teaching computing science," EWD 1036, 1988.
 - Gerald M. Weinberg, *The Psychology of Computer Programming*, Van Nostrand Reinhold, 1971.
 - Adriano Torres, Sebastian Baltes, Christoph Treude, Markus Wagner, "Applying Information Theory to Software Evolution," NLBSE 2023. [arXiv:2303.13729](https://arxiv.org/abs/2303.13729)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

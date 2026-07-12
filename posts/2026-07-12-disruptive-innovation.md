@@ -121,3 +121,6 @@ Schumpeter's gale blows. Christensen's incumbents fall. Thom's catastrophes erup
 - E.C. Zeeman, "Catastrophe Theory," *Scientific American*, Vol. 234, No. 4, April 1976, pp. 65-83.
 - David L. Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM*, Vol. 15, No. 12, December 1972.
 - Related posts: [Brooks on Software Design series](https://blog.hackspree.com/#brooks-design-conceptual-integrity), [Lehman's Software Evolution](https://blog.hackspree.com/#lehmans-laws), [Parnas's Information Hiding](https://blog.hackspree.com/#parnas-information-hiding), [Software dark factories](https://blog.hackspree.com/#software-dark-factories), [Henney's Microservices](https://blog.hackspree.com/#kevlin-henney)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

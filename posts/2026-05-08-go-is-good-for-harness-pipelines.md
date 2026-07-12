@@ -43,3 +43,6 @@ Papers like SWE-bench and GAIA make the case that evaluation should get closer t
 
 
 This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.
+
+
+> A harness is not a test suite. It is an environment. The environment determines what the agent can learn. Design the environment poorly, and the agent learns the wrong lessons. Design it well, and the agent teaches itself.

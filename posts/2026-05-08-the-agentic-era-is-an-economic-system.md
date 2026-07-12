@@ -71,3 +71,6 @@ To me, that is one of the most exciting parts of the whole field. It means softw
 ## Source
 
 - [Mohamed A. Fouad, *Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations*](https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf)
+
+
+Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.

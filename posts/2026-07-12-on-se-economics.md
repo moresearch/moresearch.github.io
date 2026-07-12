@@ -68,3 +68,6 @@ Tony Hoare observed: "There are two ways of constructing a software design: One 
 - David L. Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM*, 1972.
 - M.M. Lehman, "Programs, Life Cycles, and Laws of Software Evolution," *Proceedings of the IEEE*, 1980.
 - Clayton M. Christensen, *The Innovator's Dilemma*, Harvard Business School Press, 1997.
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

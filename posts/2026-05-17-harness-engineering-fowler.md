@@ -63,3 +63,6 @@ References
 
 - Martin Fowler, "Harness Engineering" — https://martinfowler.com/articles/harness-engineering.html
 
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

@@ -45,3 +45,6 @@ Robert Shiller's *Irrational Exuberance* (2000) is not about arbitrage. It is ab
 - Andrei Shleifer and Robert Vishny, "The Limits of Arbitrage," *Journal of Finance*, 1997.
 - AFT 2025, "CEX-DEX Arbitrage on Ethereum: 2023–2025."
 - Related posts: [The Order Book](https://blog.hackspree.com/#dex-trading-order-book), [Automated Market Makers](https://blog.hackspree.com/#dex-trading-amms)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

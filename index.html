@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;The AMM replaced the order book with a formula. xy = k. No counterparties. No order matching. Just a curve and a pool. Uniswap&#39;s constant product formula is the most copied piece of financial mathematics of the 21st century. This post explains why it works, when it breaks, and what came after.&#34;">
+  <meta name="description" content="&#34;Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="dex-trading-arbitrage">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#dex-trading-arbitrage">Arbitrage</a></h2><p class="post-summary">&#34;Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.&#34;</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">arbitrage</span><span class="tag">flash-loans</span><span class="tag">cex-dex</span><span class="tag">mev</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Arbitrage is the purchase and sale of the same asset in different markets to profit from price differences. It is the oldest trading strategy. It is also the purest: if two markets price the same thing differently, an arbitrageur can buy in the cheaper market and sell in the more expensive, pocketing the difference. The trade is riskless in theory — both legs execute at known prices, the profit is locked at execution. In practice, execution risk, latency, and competition make arbitrage a technological arms race.</p>
+<p>The classical definition comes from Gustave de Molinari, a 19th-century French economist, but the practice is older than the definition. Medieval merchants arbitraged between markets separated by geography — buying spices in Venice, selling in Bruges. The internet collapsed geography. The price difference between New York and London narrowed to milliseconds. Crypto collapsed it further. The &quot;markets&quot; are now protocols on the same blockchain. The geography is the mempool. The distance is latency.</p>
+<h2 id="the-functional-origin-the-law-of-one-price">The functional origin: the Law of One Price</h2>
+<p>The Law of One Price states that identical goods should trade at identical prices in efficient markets. If they don't, arbitrageurs will buy the cheaper and sell the dearer until the prices converge. The arbitrageur's profit is the market's mechanism for enforcing the law. The law is not a law of nature. It is an equilibrium condition. The equilibrium is maintained by arbitrageurs. The arbitrageurs are paid for maintaining it. The payment is the spread.</p>
+<p>The Law of One Price was formulated by William Stanley Jevons in <em>The Theory of Political Economy</em> (1871). Jevons observed that &quot;in the same open market, at any one moment, there cannot be two prices for the same kind of article.&quot; The observation was empirical. The mechanism was arbitrage. The mechanism is the same today. The markets are now AMM pools and CEX order books. The Law of One Price is enforced by bots that execute in milliseconds. The bots are paid in extracted spread. The spread is the market's payment for maintaining efficiency.</p>
+<h2 id="arbitrage-in-crypto">Arbitrage in crypto</h2>
+<p>Crypto arbitrage takes several forms. The simplest is <strong>pool arbitrage</strong>: the same token pair trades at different prices in two AMM pools on the same chain. Buy in the cheaper pool, sell in the dearer pool, profit. The trade must be atomic — both legs in the same transaction — because the price will move after the first leg. A flash loan enables atomic execution. Borrow a large amount of token A. Execute the buy in pool 1. Execute the sell in pool 2. Repay the loan plus fee. Keep the profit. If any leg fails, the entire transaction reverts. The loan is never drawn. The risk is zero. The cost is gas + flash loan fee.</p>
+<p><strong>CEX-DEX arbitrage</strong>: a token trades at a different price on Binance than on Uniswap. The arbitrageur must execute on both venues simultaneously. This is not atomic — the CEX leg and the DEX leg are separate transactions on separate systems. The arbitrageur bears execution risk: one leg succeeds, the other fails. The risk is managed by speed — the faster you detect and execute, the less likely the price moves against you. The speed is the edge.</p>
+<p><strong>Cross-chain arbitrage</strong>: the same token trades on two different blockchains. Arbitrage requires bridging — sending the token from one chain to the other. The bridge takes time. During the bridge, the price may move. The arbitrageur bears bridge latency risk. The risk is managed by maintaining inventory on both chains and netting flows rather than bridging each trade.</p>
+<p><strong>Triangular arbitrage</strong>: three tokens. ETH → USDC → BTC → ETH. The product of the three exchange rates should equal one. If it doesn't, there is a triangular arbitrage. The strategy is common in forex. It is also common in crypto. It requires no external price feed. It is pure math on the chain.</p>
+<h2 id="the-empirical-reality">The empirical reality</h2>
+<p>The CEX-DEX arbitrage market on Ethereum, measured from August 2023 to March 2025, extracted $233.8 million. Three searchers captured 75% of the volume. The daily transaction count grew 7.2× over the period. The concentration is extreme. The concentration is structural. The infrastructure cost — colocation with sequencers, low-latency mempool access, private relay connections — creates barriers to entry. The barriers produce concentration. The concentration raises the question: is the Law of One Price being enforced by a competitive market or by a cartel of the fastest?</p>
+<p>The AFT 2025 study of CEX-DEX arbitrage documented a shift: searcher-builder vertical integration is deepening. Integrated searchers operate at lower margins, sometimes negative net profit, subsidized by builder revenue sharing. The subsidy drives out independent searchers. The concentration increases. The market becomes less competitive. The Law of One Price is still enforced. The enforcers are fewer. The fewer enforcers extract more rent. The rent is paid by traders in the form of wider effective spreads. The market is efficient. The efficiency is expensive.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Robert Shiller's <em>Irrational Exuberance</em> (2000) is not about arbitrage. It is about why arbitrage fails to enforce the Law of One Price at scale. Shiller documented persistent mispricings — the dot-com bubble, the housing bubble — that arbitrageurs could not or did not correct. The limits of arbitrage are the subject of Shleifer and Vishny's &quot;The Limits of Arbitrage&quot; (1997): arbitrage is risky, capital is constrained, and arbitrageurs who trade against bubbles can be wiped out before the bubble corrects. The limits are real in traditional markets. In crypto, the limits are different — not capital constraints but latency constraints, gas constraints, and infrastructure constraints. The constraints shape the market structure. The structure is the subject of the posts that follow.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>William Stanley Jevons, <em>The Theory of Political Economy</em>, 1871.</li>
+<li>Andrei Shleifer and Robert Vishny, &quot;The Limits of Arbitrage,&quot; <em>Journal of Finance</em>, 1997.</li>
+<li>AFT 2025, &quot;CEX-DEX Arbitrage on Ethereum: 2023–2025.&quot;</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-order-book">The Order Book</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">Automated Market Makers</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
       <article class="post" id="dex-trading-amms">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2772,38 +2805,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Michael Lewis, <em>Flash Boys: A Wall Street Revolt</em>, W.W. Norton, 2014.</li>
 <li>Flashbots, <a target="_blank" rel="noopener noreferrer" href="https://docs.flashbots.net">docs.flashbots.net</a>.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-order-book">The Order Book</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="dex-trading-arbitrage">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#dex-trading-arbitrage">Arbitrage</a></h2><p class="post-summary">&#34;Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.&#34;</p>
-          <div class="tags"><span class="tag">dex</span><span class="tag">arbitrage</span><span class="tag">flash-loans</span><span class="tag">cex-dex</span><span class="tag">mev</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Arbitrage is the purchase and sale of the same asset in different markets to profit from price differences. It is the oldest trading strategy. It is also the purest: if two markets price the same thing differently, an arbitrageur can buy in the cheaper market and sell in the more expensive, pocketing the difference. The trade is riskless in theory — both legs execute at known prices, the profit is locked at execution. In practice, execution risk, latency, and competition make arbitrage a technological arms race.</p>
-<p>The classical definition comes from Gustave de Molinari, a 19th-century French economist, but the practice is older than the definition. Medieval merchants arbitraged between markets separated by geography — buying spices in Venice, selling in Bruges. The internet collapsed geography. The price difference between New York and London narrowed to milliseconds. Crypto collapsed it further. The &quot;markets&quot; are now protocols on the same blockchain. The geography is the mempool. The distance is latency.</p>
-<h2 id="the-functional-origin-the-law-of-one-price">The functional origin: the Law of One Price</h2>
-<p>The Law of One Price states that identical goods should trade at identical prices in efficient markets. If they don't, arbitrageurs will buy the cheaper and sell the dearer until the prices converge. The arbitrageur's profit is the market's mechanism for enforcing the law. The law is not a law of nature. It is an equilibrium condition. The equilibrium is maintained by arbitrageurs. The arbitrageurs are paid for maintaining it. The payment is the spread.</p>
-<p>The Law of One Price was formulated by William Stanley Jevons in <em>The Theory of Political Economy</em> (1871). Jevons observed that &quot;in the same open market, at any one moment, there cannot be two prices for the same kind of article.&quot; The observation was empirical. The mechanism was arbitrage. The mechanism is the same today. The markets are now AMM pools and CEX order books. The Law of One Price is enforced by bots that execute in milliseconds. The bots are paid in extracted spread. The spread is the market's payment for maintaining efficiency.</p>
-<h2 id="arbitrage-in-crypto">Arbitrage in crypto</h2>
-<p>Crypto arbitrage takes several forms. The simplest is <strong>pool arbitrage</strong>: the same token pair trades at different prices in two AMM pools on the same chain. Buy in the cheaper pool, sell in the dearer pool, profit. The trade must be atomic — both legs in the same transaction — because the price will move after the first leg. A flash loan enables atomic execution. Borrow a large amount of token A. Execute the buy in pool 1. Execute the sell in pool 2. Repay the loan plus fee. Keep the profit. If any leg fails, the entire transaction reverts. The loan is never drawn. The risk is zero. The cost is gas + flash loan fee.</p>
-<p><strong>CEX-DEX arbitrage</strong>: a token trades at a different price on Binance than on Uniswap. The arbitrageur must execute on both venues simultaneously. This is not atomic — the CEX leg and the DEX leg are separate transactions on separate systems. The arbitrageur bears execution risk: one leg succeeds, the other fails. The risk is managed by speed — the faster you detect and execute, the less likely the price moves against you. The speed is the edge.</p>
-<p><strong>Cross-chain arbitrage</strong>: the same token trades on two different blockchains. Arbitrage requires bridging — sending the token from one chain to the other. The bridge takes time. During the bridge, the price may move. The arbitrageur bears bridge latency risk. The risk is managed by maintaining inventory on both chains and netting flows rather than bridging each trade.</p>
-<p><strong>Triangular arbitrage</strong>: three tokens. ETH → USDC → BTC → ETH. The product of the three exchange rates should equal one. If it doesn't, there is a triangular arbitrage. The strategy is common in forex. It is also common in crypto. It requires no external price feed. It is pure math on the chain.</p>
-<h2 id="the-empirical-reality">The empirical reality</h2>
-<p>The CEX-DEX arbitrage market on Ethereum, measured from August 2023 to March 2025, extracted $233.8 million. Three searchers captured 75% of the volume. The daily transaction count grew 7.2× over the period. The concentration is extreme. The concentration is structural. The infrastructure cost — colocation with sequencers, low-latency mempool access, private relay connections — creates barriers to entry. The barriers produce concentration. The concentration raises the question: is the Law of One Price being enforced by a competitive market or by a cartel of the fastest?</p>
-<p>The AFT 2025 study of CEX-DEX arbitrage documented a shift: searcher-builder vertical integration is deepening. Integrated searchers operate at lower margins, sometimes negative net profit, subsidized by builder revenue sharing. The subsidy drives out independent searchers. The concentration increases. The market becomes less competitive. The Law of One Price is still enforced. The enforcers are fewer. The fewer enforcers extract more rent. The rent is paid by traders in the form of wider effective spreads. The market is efficient. The efficiency is expensive.</p>
-<h2 id="the-reference">The reference</h2>
-<p>Robert Shiller's <em>Irrational Exuberance</em> (2000) is not about arbitrage. It is about why arbitrage fails to enforce the Law of One Price at scale. Shiller documented persistent mispricings — the dot-com bubble, the housing bubble — that arbitrageurs could not or did not correct. The limits of arbitrage are the subject of Shleifer and Vishny's &quot;The Limits of Arbitrage&quot; (1997): arbitrage is risky, capital is constrained, and arbitrageurs who trade against bubbles can be wiped out before the bubble corrects. The limits are real in traditional markets. In crypto, the limits are different — not capital constraints but latency constraints, gas constraints, and infrastructure constraints. The constraints shape the market structure. The structure is the subject of the posts that follow.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>William Stanley Jevons, <em>The Theory of Political Economy</em>, 1871.</li>
-<li>Andrei Shleifer and Robert Vishny, &quot;The Limits of Arbitrage,&quot; <em>Journal of Finance</em>, 1997.</li>
-<li>AFT 2025, &quot;CEX-DEX Arbitrage on Ethereum: 2023–2025.&quot;</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-order-book">The Order Book</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">Automated Market Makers</a></li>
 </ul>
 </div>
       </article>
@@ -7407,6 +7408,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#dex-trading-arbitrage">Arbitrage</a>
               <a href="#dex-trading-amms">Automated Market Makers</a>
               <a href="#dex-trading-ai-agents">AI Agents for Trading</a>
               <a href="#game-vickrey-auction">The Vickrey Auction</a>
@@ -7451,7 +7453,6 @@ type Logger interface {
               <a href="#dex-trading-market-making">Market Making</a>
               <a href="#dex-trading-flash-loans">Flash Loans</a>
               <a href="#dex-trading-mev">Maximal Extractable Value</a>
-              <a href="#dex-trading-arbitrage">Arbitrage</a>
               <a href="#dex-trading-order-book">The Order Book</a>
               <a href="#verification-horizon">The Verification Horizon</a>
               <a href="#cosmos-sdk-ai-agents">Cosmos SDK is the substrate for AI agents</a>

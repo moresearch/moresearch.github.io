@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;libp2p began as the networking layer of IPFS. It became the networking layer of Ethereum, Filecoin, and the decentralized web. Its architecture is a masterclass in modular protocol design — identity, transport, security, discovery, and messaging, each a swappable module. The client-server internet is the past. The peer-to-peer internet is already here.&#34;">
+  <meta name="description" content="&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need the frequency. Modularity lives in the difference.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,223 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="nats-pubsub-microservices">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a></h2><p class="post-summary">&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need the frequency. Modularity lives in the difference.&#34;</p>
+          <div class="tags"><span class="tag">nats</span><span class="tag">jetstream</span><span class="tag">pubsub</span><span class="tag">microservices</span><span class="tag">golang</span><span class="tag">rest</span><span class="tag">modularity</span>
+          </div>
+        </header>
+        <div class="post-body"><p>REST is the default for microservices communication. It is the default because it is familiar, not because it is good. Every service exposes HTTP endpoints. Every caller knows every callee's address. The system is a web of explicit dependencies, each hardcoded in configuration or service discovery.</p>
+<p>NATS inverts this. Services publish to subjects. Services subscribe to subjects. No service knows any other service exists. The subject is the interface. The publisher has no idea who is listening. The subscriber has no idea who is publishing. They agree on the subject name and the message schema. Nothing else.</p>
+<p>This is not a preference. It is an architectural difference with measurable consequences for coupling, scalability, and resilience. This post explains what NATS is, how JetStream extends it, why pub/sub produces better modularity than REST, and when each approach makes sense.</p>
+<h2 id="what-nats-is">What NATS is</h2>
+<p>NATS is a messaging system. It is not a message broker in the RabbitMQ sense. It is closer to a network switch for messages. Clients connect to NATS servers. Servers route messages between clients based on subject subscriptions. The core is small, fast, and does one thing: move messages from publishers to subscribers with minimal latency and maximal throughput.</p>
+<p>The protocol is text-based and trivial. A client sends <code>PUB &lt;subject&gt; &lt;size&gt;\r\n&lt;payload&gt;\r\n</code>. A client sends <code>SUB &lt;subject&gt; &lt;sid&gt;\r\n</code>. The server matches subjects to subscribers and delivers the message. That is the core. No persistence. No acknowledgements. No transactions. Just publish, subscribe, deliver.</p>
+<h3 id="subjects-and-wildcards">Subjects and wildcards</h3>
+<p>Subjects are hierarchical tokens separated by dots: <code>orders.created</code>, <code>inventory.updated.us-east</code>, <code>payment.processed.visa</code>. Subscribers can use wildcards:</p>
+<ul>
+<li><code>*</code> matches one token: <code>orders.*</code> matches <code>orders.created</code> and <code>orders.cancelled</code>, not <code>orders.payment.authorized</code></li>
+<li><code>&gt;</code> matches all remaining tokens: <code>orders.&gt;</code> matches <code>orders.created</code>, <code>orders.payment.authorized</code>, <code>orders.items.returned.refund</code></li>
+</ul>
+<p>Wildcards let subscribers express interest in categories of events without knowing every specific subject. A logging service subscribes to <code>&gt;.&gt;</code> and receives everything. An inventory service subscribes to <code>orders.*</code> and receives only order lifecycle events. The subject namespace is the API. The wildcards are the subscriptions. The routing is automatic.</p>
+<h3 id="spatial-decoupling">Spatial decoupling</h3>
+<p>In REST, Service A must know Service B's address. When B moves, A's configuration must change. When B scales to multiple instances, a load balancer must be configured. The load balancer must know all instance addresses. Health checks must be written. The address is the coupling.</p>
+<p>In NATS, Service A publishes to <code>orders.created</code>. Service B subscribes to <code>orders.created</code>. Neither knows the other's address. Neither knows the other exists. The NATS server — or cluster of servers — routes the message. If B moves to a different machine, region, or cloud, nothing changes. The subject is the only address. The subject does not change.</p>
+<h3 id="queue-groups-scale-without-ceremony">Queue groups: scale without ceremony</h3>
+<p>NATS queue groups distribute messages across multiple subscribers without a load balancer:</p>
+<pre><code class="language-go">// Three instances, one queue group, automatic load distribution
+nc.QueueSubscribe(&quot;orders.process&quot;, &quot;order-workers&quot;, func(m *nats.Msg) {
+    processOrder(m)
+})
+</code></pre>
+<p>That is it. No load balancer. No health checks. No instance registry. NATS distributes messages round-robin across queue group members. If an instance crashes, NATS stops routing to it. If a new instance starts, NATS includes it. The publisher never knew how many instances existed. The publisher still doesn't. The subject is the interface. The instances are an implementation detail.</p>
+<h3 id="clustering-and-superclusters">Clustering and superclusters</h3>
+<p>A single NATS server can handle millions of messages per second. For scale beyond one machine, NATS clusters route messages between servers. For scale beyond one datacenter, gateways connect clusters into superclusters.</p>
+<p><strong>Clustering (routes):</strong> Servers within a cluster form a full mesh. Each server connects to every other server. Routes use a dedicated port. Subscription interest is gossiped between servers — a server only forwards messages to peers that have matching subscribers. For N nodes, N(N−1)/2 connections. A three-node cluster: three connections. A five-node cluster: ten. The protocol is designed for this. The overhead is minimal.</p>
+<p><strong>Gateways (superclusters):</strong> Gateways connect entire clusters. Three clusters of five nodes each: a full node-to-node mesh would require 105 connections. With gateways, each node connects to one node in each remote cluster — 30 connections. Interest propagation is cluster-scoped. A message published in Cluster A is only forwarded to Cluster B if Cluster B has expressed interest in that subject. Optimistic forwarding on first message, suppressed thereafter.</p>
+<p><strong>Leaf nodes:</strong> For edge deployments — IoT, retail, remote offices — leaf nodes extend a cluster across security boundaries without requiring bidirectional connectivity. Local clients authenticate locally. The leaf connection acts as a NATS client to the hub, exporting subjects the edge can publish and importing subjects the edge can subscribe to. Local traffic stays local. Remote traffic traverses the leaf. Queue semantics are preserved: local subscribers are preferred before forwarding across the leaf.</p>
+<p>This architecture scales from a developer's laptop (<code>nats-server -js</code>) to a planet-scale messaging fabric. The subject namespace is global. The routing is automatic. The addressing is semantic, not spatial.</p>
+<h2 id="what-jetstream-is">What JetStream is</h2>
+<p>Core NATS is fire-and-forget. If a subscriber is offline, the message is lost. For systems that need persistence, replay, or guaranteed delivery, NATS provides JetStream — a persistence layer built into the NATS server.</p>
+<p>JetStream decouples storage from consumption. <strong>Streams</strong> store messages. <strong>Consumers</strong> read from streams. This separation is the key architectural insight. Multiple consumers can read the same stream independently, each at its own pace, with its own acknowledgement state, filtering by subject, starting from different points in the log.</p>
+<h3 id="streams-the-storage-layer">Streams: the storage layer</h3>
+<p>A stream is a named, append-only log that captures messages published on one or more subjects:</p>
+<pre><code class="language-go">js, _ := jetstream.New(nc)
+
+stream, _ := js.CreateStream(ctx, jetstream.StreamConfig{
+    Name:      &quot;ORDERS&quot;,
+    Subjects:  []string{&quot;orders.&gt;&quot;},
+    Storage:   nats.FileStorage,
+    Replicas:  3,                       // Raft across 3 nodes
+    MaxAge:    7 * 24 * time.Hour,      // Retain 7 days
+    MaxBytes:  10 * 1024 * 1024 * 1024, // 10 GB ceiling
+})
+</code></pre>
+<p>Stream configuration determines retention policy:</p>
+<ul>
+<li><strong>LimitsPolicy</strong> (default): keep messages until count, bytes, or age limits are reached. This is for event sourcing, replay, or audit trails.</li>
+<li><strong>WorkQueuePolicy</strong>: delete each message after it's been acknowledged by <em>any</em> consumer. This is for job queues — process once, discard.</li>
+<li><strong>InterestPolicy</strong>: delete messages only after <em>all</em> consumers have acknowledged them. This is for fan-out where multiple services process the same event.</li>
+</ul>
+<p>Storage can be file-backed (survives restart) or memory-backed (faster, lost on restart). Replication uses Raft across 1, 3, or 5 cluster nodes. Odd numbers for quorum. A three-replica stream tolerates one node failure. A five-replica stream tolerates two.</p>
+<h3 id="consumers-the-read-cursors">Consumers: the read cursors</h3>
+<p>A consumer is a named view into a stream. Multiple consumers read independently. Each has its own position, filter, and acknowledgement state.</p>
+<p><strong>Pull consumers</strong> are the default for work queues. The client explicitly requests messages:</p>
+<pre><code class="language-go">consumer, _ := stream.CreateConsumer(ctx, jetstream.ConsumerConfig{
+    Durable:       &quot;order-processor&quot;,
+    FilterSubject: &quot;orders.created&quot;,
+    AckPolicy:     jetstream.AckExplicitPolicy,
+    AckWait:       30 * time.Second,
+})
+
+// Fetch a batch of 10 messages
+batch, _ := consumer.Fetch(10)
+for msg := range batch.Messages() {
+    process(msg)
+    msg.Ack()       // Explicit acknowledgement
+    msg.AckSync()   // Double-ACK: wait for server confirmation
+}
+</code></pre>
+<p><strong>Push consumers</strong> are for low-latency streaming to a single instance. The server pushes messages to a delivery subject:</p>
+<pre><code class="language-go">consumer, _ := stream.CreateConsumer(ctx, jetstream.ConsumerConfig{
+    Name:          &quot;order-streamer&quot;,
+    DeliverPolicy: jetstream.DeliverNewPolicy,
+    AckPolicy:     jetstream.AckExplicitPolicy,
+})
+
+cc, _ := consumer.Consume(func(msg jetstream.Msg) {
+    process(msg)
+    msg.Ack()
+})
+</code></pre>
+<p>Consumer replay policies determine where to start reading:</p>
+<ul>
+<li><code>all</code>: replay every message from the beginning</li>
+<li><code>last</code>: start with the last message, then follow live</li>
+<li><code>new</code>: only messages arriving after subscription</li>
+<li><code>by_start_sequence</code>: start from a specific sequence number</li>
+<li><code>by_start_time</code>: start from messages at or after a timestamp</li>
+<li><code>last_per_subject</code>: deliver the last message for each unique subject</li>
+</ul>
+<h3 id="exactly-once-semantics">Exactly-once semantics</h3>
+<p>JetStream provides exactly-once through two complementary mechanisms.</p>
+<p><strong>Publish-side deduplication.</strong> Set the <code>Nats-Msg-Id</code> header when publishing. Within the stream's duplicate window (default 2 minutes, configurable), messages with the same ID are silently discarded:</p>
+<pre><code class="language-go">msg := nats.NewMsg(&quot;orders.created&quot;)
+msg.Header.Set(&quot;Nats-Msg-Id&quot;, orderID)
+msg.Data = payload
+js.PublishMsg(ctx, msg)
+</code></pre>
+<p>If the publisher crashes before receiving the publish acknowledgement and re-publishes on restart, the duplicate is suppressed. The publisher retries safely. The stream stores exactly one copy.</p>
+<p>For infinite deduplication beyond the time window, use <code>DiscardNewPerSubject</code> with <code>MaxMessagesPerSubject = 1</code>. Publishing to the same subject with an existing message fails. This behaves like a SQL <code>INSERT</code> with a unique constraint on the subject.</p>
+<p><strong>Consume-side double acknowledgement.</strong> <code>AckSync()</code> sends the ACK with a reply subject and blocks until the server confirms receipt. If the ACK is lost and the consumer crashes before the confirmation, the message is redelivered and must be processed idempotently:</p>
+<pre><code class="language-go">func process(msg jetstream.Msg) error {
+    if alreadyProcessed(msg) {
+        msg.AckSync() // Still ACK — was processed, just not acknowledged
+        return nil
+    }
+    if err := doWork(msg); err != nil {
+        msg.Nak() // Return to queue for retry
+        return err
+    }
+    msg.AckSync() // Guaranteed: server confirmed receipt of ACK
+    return nil
+}
+</code></pre>
+<p>Publish-side deduplication + double-acknowledged consumption + idempotent processing = true end-to-end exactly-once. Messages are never lost. Messages are never duplicated. The guarantee is as strong as any message broker provides and stronger than most.</p>
+<h3 id="temporal-decoupling">Temporal decoupling</h3>
+<p>REST fails when the callee is unavailable. The caller must retry, back off, circuit-break, or fail. Each retry loop is hand-rolled. Each circuit breaker has slightly different thresholds. Reliability is the sum of individually implemented strategies that were never tested together.</p>
+<p>JetStream provides temporal decoupling by default:</p>
+<pre><code class="language-go">// Publisher: fire and forget
+js.Publish(ctx, &quot;orders.created&quot;, event)
+
+// Consumer: receives when ready, even hours later
+consumer.Consume(func(msg jetstream.Msg) {
+    process(msg)
+    msg.Ack()
+})
+</code></pre>
+<p>The publisher publishes and moves on. If no subscriber is online, the message waits in the stream. If the subscriber crashes mid-processing, the message is redelivered after <code>AckWait</code> expires. The publisher doesn't retry. The subscriber doesn't need to be online when the message is published. The infrastructure handles reliability. The services handle business logic.</p>
+<h2 id="the-rest-comparison">The REST comparison</h2>
+<p>Here is an order service calling an inventory service over REST in Go:</p>
+<pre><code class="language-go">func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    body, _ := json.Marshal(ReserveRequest{
+        ProductID: order.ProductID,
+        Quantity:  order.Quantity,
+    })
+    resp, err := http.Post(
+        &quot;http://inventory-service:8080/api/reserve&quot;, // knows address
+        &quot;application/json&quot;,
+        bytes.NewReader(body),
+    )
+    if err != nil {
+        return fmt.Errorf(&quot;inventory unreachable: %w&quot;, err) // knows availability
+    }
+    defer resp.Body.Close()
+    if resp.StatusCode != 200 { // knows success semantics
+        return fmt.Errorf(&quot;reservation failed: %s&quot;, resp.Status)
+    }
+    return s.db.Insert(ctx, order)
+}
+</code></pre>
+<p>The order service knows the inventory service's URL, endpoint path, request format, success semantics, and availability requirement. If the inventory service moves, the order service must be reconfigured. If the inventory service is down, the order fails. If the inventory service's API changes, the order service must be updated. Five types of shared knowledge. Five dimensions of coupling. This is one dependency. A typical microservices system has dozens.</p>
+<p>Here is the same workflow over NATS:</p>
+<pre><code class="language-go">func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    event, _ := json.Marshal(OrderRequested{
+        OrderID:   order.ID,
+        ProductID: order.ProductID,
+        Quantity:  order.Quantity,
+    })
+    // Fire and forget: publish to the stream
+    js.Publish(ctx, &quot;orders.created&quot;, event)
+
+    // Request-reply: ask inventory, don't know who answers
+    msg, err := nc.Request(&quot;inventory.reserve&quot;, event, 5*time.Second)
+    if err != nil {
+        return fmt.Errorf(&quot;reservation failed: %w&quot;, err)
+    }
+    var result ReserveResult
+    json.Unmarshal(msg.Data, &amp;result)
+    if !result.Success {
+        return fmt.Errorf(&quot;reservation denied: %s&quot;, result.Reason)
+    }
+    return s.db.Insert(ctx, order)
+}
+
+// Inventory service: subscribers don't know publishers exist
+func (s *InventoryService) Run() {
+    nc.Subscribe(&quot;inventory.reserve&quot;, func(m *nats.Msg) {
+        var req OrderRequested
+        json.Unmarshal(m.Data, &amp;req)
+        err := s.reserveStock(req.ProductID, req.Quantity)
+        result := ReserveResult{Success: err == nil}
+        if err != nil { result.Reason = err.Error() }
+        reply, _ := json.Marshal(result)
+        nc.Publish(m.Reply, reply)
+    })
+}
+</code></pre>
+<p>The order service knows two subjects: <code>orders.created</code> and <code>inventory.reserve</code>. It does not know the inventory service exists. It does not know how many instances are listening. It does not know where they are deployed. If the inventory service moves — nothing changes. If three more inventory instances start — nothing changes. If the inventory service's internal implementation is rewritten — nothing changes, as long as the subject and schema are preserved. The subject is the contract. The subject is the only coupling.</p>
+<h2 id="what-coupling-actually-means">What coupling actually means</h2>
+<p>Henney defined coupling as shared knowledge between components. REST maximizes shared knowledge. The caller knows the callee's address, API shape, availability window, response semantics, error taxonomy, authentication mechanism, and rate limits. Each is a dimension of coupling. When the callee changes any of these, the caller must adapt or break.</p>
+<p>NATS minimizes shared knowledge. Publisher and subscriber agree on the subject name and the message schema. Neither knows the other exists. Neither knows how many of the other exist. Neither knows where the other is deployed. Neither knows whether the other is currently online. Subject name and schema: that is the total shared knowledge. Everything else is hidden.</p>
+<p>This is Parnas's criterion applied to inter-service communication. Hide the volatile decisions — deployment location, instance count, availability status, internal API changes — behind a stable interface. The subject is the stable interface. The service is the volatile implementation. The subject name doesn't change when the implementation scales, moves, or restarts. The coupling is minimized. The modularity is real.</p>
+<h2 id="when-rest-still-makes-sense">When REST still makes sense</h2>
+<p>REST is not universally wrong. It is appropriate in specific conditions:</p>
+<p><strong>External APIs at the system boundary.</strong> Mobile apps, browsers, third-party integrations speak HTTP. The edge of the system faces outward. The interior of the system should not. Expose REST at the boundary. Use NATS internally. The boundary is where HTTP belongs. The interior is where it doesn't. External clients need synchronous request-reply with standard protocols and well-known ports. Internal services need decoupling and resilience. The two requirements are different. The two protocols should be different.</p>
+<p><strong>Genuinely stable dependencies.</strong> If Service A will always depend on Service B, and B's API is provably stable, and B's deployment will never change in ways that affect A — REST is fine. This condition is rarer than architects assume. Most dependencies that appear stable at design time are unstable at year three. The REST interface hardcodes assumptions that time will invalidate. The NATS subject survives the invalidation because it doesn't encode the assumptions.</p>
+<p>For everything else — internal service communication, event-driven workflows, systems that scale, systems that survive partial failure, systems where the dependency graph will evolve — NATS pub/sub backed by JetStream is not just better. It is what REST pretends to be: modular, decoupled, and resilient. REST shares knowledge by default. NATS hides knowledge by default. Modularity lives in what services don't know about each other. NATS lets them know less. That is the definition of better architecture.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/">NATS Documentation</a> — core concepts, JetStream, clustering</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/nats-io/nats.go">NATS Go Client</a> — <code>nats.go</code> with JetStream v2 API</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://natsbyexample.com/">NATS by Example</a> — runnable patterns across clients</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#parnas-information-hiding">Parnas's Information Hiding</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a></li>
+</ul>
+<p>Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.</p>
+</div>
+      </article>
       <article class="post" id="libp2p">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -4147,222 +4364,6 @@ The difference between knowing a principle and applying it is the difference bet
 </ul>
 </div>
       </article>
-      <article class="post" id="nats-pubsub-microservices">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a></h2><p class="post-summary">&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need the frequency. Modularity lives in the difference.&#34;</p>
-          <div class="tags"><span class="tag">nats</span><span class="tag">jetstream</span><span class="tag">pubsub</span><span class="tag">microservices</span><span class="tag">golang</span><span class="tag">rest</span><span class="tag">modularity</span>
-          </div>
-        </header>
-        <div class="post-body"><p>REST is the default for microservices communication. It is the default because it is familiar, not because it is good. Every service exposes HTTP endpoints. Every caller knows every callee's address. The system is a web of explicit dependencies, each hardcoded in configuration or service discovery.</p>
-<p>NATS inverts this. Services publish to subjects. Services subscribe to subjects. No service knows any other service exists. The subject is the interface. The publisher has no idea who is listening. The subscriber has no idea who is publishing. They agree on the subject name and the message schema. Nothing else.</p>
-<p>This is not a preference. It is an architectural difference with measurable consequences for coupling, scalability, and resilience. This post explains what NATS is, how JetStream extends it, why pub/sub produces better modularity than REST, and when each approach makes sense.</p>
-<h2 id="what-nats-is">What NATS is</h2>
-<p>NATS is a messaging system. It is not a message broker in the RabbitMQ sense. It is closer to a network switch for messages. Clients connect to NATS servers. Servers route messages between clients based on subject subscriptions. The core is small, fast, and does one thing: move messages from publishers to subscribers with minimal latency and maximal throughput.</p>
-<p>The protocol is text-based and trivial. A client sends <code>PUB &lt;subject&gt; &lt;size&gt;\r\n&lt;payload&gt;\r\n</code>. A client sends <code>SUB &lt;subject&gt; &lt;sid&gt;\r\n</code>. The server matches subjects to subscribers and delivers the message. That is the core. No persistence. No acknowledgements. No transactions. Just publish, subscribe, deliver.</p>
-<h3 id="subjects-and-wildcards">Subjects and wildcards</h3>
-<p>Subjects are hierarchical tokens separated by dots: <code>orders.created</code>, <code>inventory.updated.us-east</code>, <code>payment.processed.visa</code>. Subscribers can use wildcards:</p>
-<ul>
-<li><code>*</code> matches one token: <code>orders.*</code> matches <code>orders.created</code> and <code>orders.cancelled</code>, not <code>orders.payment.authorized</code></li>
-<li><code>&gt;</code> matches all remaining tokens: <code>orders.&gt;</code> matches <code>orders.created</code>, <code>orders.payment.authorized</code>, <code>orders.items.returned.refund</code></li>
-</ul>
-<p>Wildcards let subscribers express interest in categories of events without knowing every specific subject. A logging service subscribes to <code>&gt;.&gt;</code> and receives everything. An inventory service subscribes to <code>orders.*</code> and receives only order lifecycle events. The subject namespace is the API. The wildcards are the subscriptions. The routing is automatic.</p>
-<h3 id="spatial-decoupling">Spatial decoupling</h3>
-<p>In REST, Service A must know Service B's address. When B moves, A's configuration must change. When B scales to multiple instances, a load balancer must be configured. The load balancer must know all instance addresses. Health checks must be written. The address is the coupling.</p>
-<p>In NATS, Service A publishes to <code>orders.created</code>. Service B subscribes to <code>orders.created</code>. Neither knows the other's address. Neither knows the other exists. The NATS server — or cluster of servers — routes the message. If B moves to a different machine, region, or cloud, nothing changes. The subject is the only address. The subject does not change.</p>
-<h3 id="queue-groups-scale-without-ceremony">Queue groups: scale without ceremony</h3>
-<p>NATS queue groups distribute messages across multiple subscribers without a load balancer:</p>
-<pre><code class="language-go">// Three instances, one queue group, automatic load distribution
-nc.QueueSubscribe(&quot;orders.process&quot;, &quot;order-workers&quot;, func(m *nats.Msg) {
-    processOrder(m)
-})
-</code></pre>
-<p>That is it. No load balancer. No health checks. No instance registry. NATS distributes messages round-robin across queue group members. If an instance crashes, NATS stops routing to it. If a new instance starts, NATS includes it. The publisher never knew how many instances existed. The publisher still doesn't. The subject is the interface. The instances are an implementation detail.</p>
-<h3 id="clustering-and-superclusters">Clustering and superclusters</h3>
-<p>A single NATS server can handle millions of messages per second. For scale beyond one machine, NATS clusters route messages between servers. For scale beyond one datacenter, gateways connect clusters into superclusters.</p>
-<p><strong>Clustering (routes):</strong> Servers within a cluster form a full mesh. Each server connects to every other server. Routes use a dedicated port. Subscription interest is gossiped between servers — a server only forwards messages to peers that have matching subscribers. For N nodes, N(N−1)/2 connections. A three-node cluster: three connections. A five-node cluster: ten. The protocol is designed for this. The overhead is minimal.</p>
-<p><strong>Gateways (superclusters):</strong> Gateways connect entire clusters. Three clusters of five nodes each: a full node-to-node mesh would require 105 connections. With gateways, each node connects to one node in each remote cluster — 30 connections. Interest propagation is cluster-scoped. A message published in Cluster A is only forwarded to Cluster B if Cluster B has expressed interest in that subject. Optimistic forwarding on first message, suppressed thereafter.</p>
-<p><strong>Leaf nodes:</strong> For edge deployments — IoT, retail, remote offices — leaf nodes extend a cluster across security boundaries without requiring bidirectional connectivity. Local clients authenticate locally. The leaf connection acts as a NATS client to the hub, exporting subjects the edge can publish and importing subjects the edge can subscribe to. Local traffic stays local. Remote traffic traverses the leaf. Queue semantics are preserved: local subscribers are preferred before forwarding across the leaf.</p>
-<p>This architecture scales from a developer's laptop (<code>nats-server -js</code>) to a planet-scale messaging fabric. The subject namespace is global. The routing is automatic. The addressing is semantic, not spatial.</p>
-<h2 id="what-jetstream-is">What JetStream is</h2>
-<p>Core NATS is fire-and-forget. If a subscriber is offline, the message is lost. For systems that need persistence, replay, or guaranteed delivery, NATS provides JetStream — a persistence layer built into the NATS server.</p>
-<p>JetStream decouples storage from consumption. <strong>Streams</strong> store messages. <strong>Consumers</strong> read from streams. This separation is the key architectural insight. Multiple consumers can read the same stream independently, each at its own pace, with its own acknowledgement state, filtering by subject, starting from different points in the log.</p>
-<h3 id="streams-the-storage-layer">Streams: the storage layer</h3>
-<p>A stream is a named, append-only log that captures messages published on one or more subjects:</p>
-<pre><code class="language-go">js, _ := jetstream.New(nc)
-
-stream, _ := js.CreateStream(ctx, jetstream.StreamConfig{
-    Name:      &quot;ORDERS&quot;,
-    Subjects:  []string{&quot;orders.&gt;&quot;},
-    Storage:   nats.FileStorage,
-    Replicas:  3,                       // Raft across 3 nodes
-    MaxAge:    7 * 24 * time.Hour,      // Retain 7 days
-    MaxBytes:  10 * 1024 * 1024 * 1024, // 10 GB ceiling
-})
-</code></pre>
-<p>Stream configuration determines retention policy:</p>
-<ul>
-<li><strong>LimitsPolicy</strong> (default): keep messages until count, bytes, or age limits are reached. This is for event sourcing, replay, or audit trails.</li>
-<li><strong>WorkQueuePolicy</strong>: delete each message after it's been acknowledged by <em>any</em> consumer. This is for job queues — process once, discard.</li>
-<li><strong>InterestPolicy</strong>: delete messages only after <em>all</em> consumers have acknowledged them. This is for fan-out where multiple services process the same event.</li>
-</ul>
-<p>Storage can be file-backed (survives restart) or memory-backed (faster, lost on restart). Replication uses Raft across 1, 3, or 5 cluster nodes. Odd numbers for quorum. A three-replica stream tolerates one node failure. A five-replica stream tolerates two.</p>
-<h3 id="consumers-the-read-cursors">Consumers: the read cursors</h3>
-<p>A consumer is a named view into a stream. Multiple consumers read independently. Each has its own position, filter, and acknowledgement state.</p>
-<p><strong>Pull consumers</strong> are the default for work queues. The client explicitly requests messages:</p>
-<pre><code class="language-go">consumer, _ := stream.CreateConsumer(ctx, jetstream.ConsumerConfig{
-    Durable:       &quot;order-processor&quot;,
-    FilterSubject: &quot;orders.created&quot;,
-    AckPolicy:     jetstream.AckExplicitPolicy,
-    AckWait:       30 * time.Second,
-})
-
-// Fetch a batch of 10 messages
-batch, _ := consumer.Fetch(10)
-for msg := range batch.Messages() {
-    process(msg)
-    msg.Ack()       // Explicit acknowledgement
-    msg.AckSync()   // Double-ACK: wait for server confirmation
-}
-</code></pre>
-<p><strong>Push consumers</strong> are for low-latency streaming to a single instance. The server pushes messages to a delivery subject:</p>
-<pre><code class="language-go">consumer, _ := stream.CreateConsumer(ctx, jetstream.ConsumerConfig{
-    Name:          &quot;order-streamer&quot;,
-    DeliverPolicy: jetstream.DeliverNewPolicy,
-    AckPolicy:     jetstream.AckExplicitPolicy,
-})
-
-cc, _ := consumer.Consume(func(msg jetstream.Msg) {
-    process(msg)
-    msg.Ack()
-})
-</code></pre>
-<p>Consumer replay policies determine where to start reading:</p>
-<ul>
-<li><code>all</code>: replay every message from the beginning</li>
-<li><code>last</code>: start with the last message, then follow live</li>
-<li><code>new</code>: only messages arriving after subscription</li>
-<li><code>by_start_sequence</code>: start from a specific sequence number</li>
-<li><code>by_start_time</code>: start from messages at or after a timestamp</li>
-<li><code>last_per_subject</code>: deliver the last message for each unique subject</li>
-</ul>
-<h3 id="exactly-once-semantics">Exactly-once semantics</h3>
-<p>JetStream provides exactly-once through two complementary mechanisms.</p>
-<p><strong>Publish-side deduplication.</strong> Set the <code>Nats-Msg-Id</code> header when publishing. Within the stream's duplicate window (default 2 minutes, configurable), messages with the same ID are silently discarded:</p>
-<pre><code class="language-go">msg := nats.NewMsg(&quot;orders.created&quot;)
-msg.Header.Set(&quot;Nats-Msg-Id&quot;, orderID)
-msg.Data = payload
-js.PublishMsg(ctx, msg)
-</code></pre>
-<p>If the publisher crashes before receiving the publish acknowledgement and re-publishes on restart, the duplicate is suppressed. The publisher retries safely. The stream stores exactly one copy.</p>
-<p>For infinite deduplication beyond the time window, use <code>DiscardNewPerSubject</code> with <code>MaxMessagesPerSubject = 1</code>. Publishing to the same subject with an existing message fails. This behaves like a SQL <code>INSERT</code> with a unique constraint on the subject.</p>
-<p><strong>Consume-side double acknowledgement.</strong> <code>AckSync()</code> sends the ACK with a reply subject and blocks until the server confirms receipt. If the ACK is lost and the consumer crashes before the confirmation, the message is redelivered and must be processed idempotently:</p>
-<pre><code class="language-go">func process(msg jetstream.Msg) error {
-    if alreadyProcessed(msg) {
-        msg.AckSync() // Still ACK — was processed, just not acknowledged
-        return nil
-    }
-    if err := doWork(msg); err != nil {
-        msg.Nak() // Return to queue for retry
-        return err
-    }
-    msg.AckSync() // Guaranteed: server confirmed receipt of ACK
-    return nil
-}
-</code></pre>
-<p>Publish-side deduplication + double-acknowledged consumption + idempotent processing = true end-to-end exactly-once. Messages are never lost. Messages are never duplicated. The guarantee is as strong as any message broker provides and stronger than most.</p>
-<h3 id="temporal-decoupling">Temporal decoupling</h3>
-<p>REST fails when the callee is unavailable. The caller must retry, back off, circuit-break, or fail. Each retry loop is hand-rolled. Each circuit breaker has slightly different thresholds. Reliability is the sum of individually implemented strategies that were never tested together.</p>
-<p>JetStream provides temporal decoupling by default:</p>
-<pre><code class="language-go">// Publisher: fire and forget
-js.Publish(ctx, &quot;orders.created&quot;, event)
-
-// Consumer: receives when ready, even hours later
-consumer.Consume(func(msg jetstream.Msg) {
-    process(msg)
-    msg.Ack()
-})
-</code></pre>
-<p>The publisher publishes and moves on. If no subscriber is online, the message waits in the stream. If the subscriber crashes mid-processing, the message is redelivered after <code>AckWait</code> expires. The publisher doesn't retry. The subscriber doesn't need to be online when the message is published. The infrastructure handles reliability. The services handle business logic.</p>
-<h2 id="the-rest-comparison">The REST comparison</h2>
-<p>Here is an order service calling an inventory service over REST in Go:</p>
-<pre><code class="language-go">func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
-    body, _ := json.Marshal(ReserveRequest{
-        ProductID: order.ProductID,
-        Quantity:  order.Quantity,
-    })
-    resp, err := http.Post(
-        &quot;http://inventory-service:8080/api/reserve&quot;, // knows address
-        &quot;application/json&quot;,
-        bytes.NewReader(body),
-    )
-    if err != nil {
-        return fmt.Errorf(&quot;inventory unreachable: %w&quot;, err) // knows availability
-    }
-    defer resp.Body.Close()
-    if resp.StatusCode != 200 { // knows success semantics
-        return fmt.Errorf(&quot;reservation failed: %s&quot;, resp.Status)
-    }
-    return s.db.Insert(ctx, order)
-}
-</code></pre>
-<p>The order service knows the inventory service's URL, endpoint path, request format, success semantics, and availability requirement. If the inventory service moves, the order service must be reconfigured. If the inventory service is down, the order fails. If the inventory service's API changes, the order service must be updated. Five types of shared knowledge. Five dimensions of coupling. This is one dependency. A typical microservices system has dozens.</p>
-<p>Here is the same workflow over NATS:</p>
-<pre><code class="language-go">func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
-    event, _ := json.Marshal(OrderRequested{
-        OrderID:   order.ID,
-        ProductID: order.ProductID,
-        Quantity:  order.Quantity,
-    })
-    // Fire and forget: publish to the stream
-    js.Publish(ctx, &quot;orders.created&quot;, event)
-
-    // Request-reply: ask inventory, don't know who answers
-    msg, err := nc.Request(&quot;inventory.reserve&quot;, event, 5*time.Second)
-    if err != nil {
-        return fmt.Errorf(&quot;reservation failed: %w&quot;, err)
-    }
-    var result ReserveResult
-    json.Unmarshal(msg.Data, &amp;result)
-    if !result.Success {
-        return fmt.Errorf(&quot;reservation denied: %s&quot;, result.Reason)
-    }
-    return s.db.Insert(ctx, order)
-}
-
-// Inventory service: subscribers don't know publishers exist
-func (s *InventoryService) Run() {
-    nc.Subscribe(&quot;inventory.reserve&quot;, func(m *nats.Msg) {
-        var req OrderRequested
-        json.Unmarshal(m.Data, &amp;req)
-        err := s.reserveStock(req.ProductID, req.Quantity)
-        result := ReserveResult{Success: err == nil}
-        if err != nil { result.Reason = err.Error() }
-        reply, _ := json.Marshal(result)
-        nc.Publish(m.Reply, reply)
-    })
-}
-</code></pre>
-<p>The order service knows two subjects: <code>orders.created</code> and <code>inventory.reserve</code>. It does not know the inventory service exists. It does not know how many instances are listening. It does not know where they are deployed. If the inventory service moves — nothing changes. If three more inventory instances start — nothing changes. If the inventory service's internal implementation is rewritten — nothing changes, as long as the subject and schema are preserved. The subject is the contract. The subject is the only coupling.</p>
-<h2 id="what-coupling-actually-means">What coupling actually means</h2>
-<p>Henney defined coupling as shared knowledge between components. REST maximizes shared knowledge. The caller knows the callee's address, API shape, availability window, response semantics, error taxonomy, authentication mechanism, and rate limits. Each is a dimension of coupling. When the callee changes any of these, the caller must adapt or break.</p>
-<p>NATS minimizes shared knowledge. Publisher and subscriber agree on the subject name and the message schema. Neither knows the other exists. Neither knows how many of the other exist. Neither knows where the other is deployed. Neither knows whether the other is currently online. Subject name and schema: that is the total shared knowledge. Everything else is hidden.</p>
-<p>This is Parnas's criterion applied to inter-service communication. Hide the volatile decisions — deployment location, instance count, availability status, internal API changes — behind a stable interface. The subject is the stable interface. The service is the volatile implementation. The subject name doesn't change when the implementation scales, moves, or restarts. The coupling is minimized. The modularity is real.</p>
-<h2 id="when-rest-still-makes-sense">When REST still makes sense</h2>
-<p>REST is not universally wrong. It is appropriate in specific conditions:</p>
-<p><strong>External APIs at the system boundary.</strong> Mobile apps, browsers, third-party integrations speak HTTP. The edge of the system faces outward. The interior of the system should not. Expose REST at the boundary. Use NATS internally. The boundary is where HTTP belongs. The interior is where it doesn't. External clients need synchronous request-reply with standard protocols and well-known ports. Internal services need decoupling and resilience. The two requirements are different. The two protocols should be different.</p>
-<p><strong>Genuinely stable dependencies.</strong> If Service A will always depend on Service B, and B's API is provably stable, and B's deployment will never change in ways that affect A — REST is fine. This condition is rarer than architects assume. Most dependencies that appear stable at design time are unstable at year three. The REST interface hardcodes assumptions that time will invalidate. The NATS subject survives the invalidation because it doesn't encode the assumptions.</p>
-<p>For everything else — internal service communication, event-driven workflows, systems that scale, systems that survive partial failure, systems where the dependency graph will evolve — NATS pub/sub backed by JetStream is not just better. It is what REST pretends to be: modular, decoupled, and resilient. REST shares knowledge by default. NATS hides knowledge by default. Modularity lives in what services don't know about each other. NATS lets them know less. That is the definition of better architecture.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/">NATS Documentation</a> — core concepts, JetStream, clustering</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/nats-io/nats.go">NATS Go Client</a> — <code>nats.go</code> with JetStream v2 API</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://natsbyexample.com/">NATS by Example</a> — runnable patterns across clients</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#parnas-information-hiding">Parnas's Information Hiding</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a></li>
-</ul>
-</div>
-      </article>
       <article class="post" id="brooks-design-experts-divorce">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
@@ -7421,6 +7422,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a>
               <a href="#libp2p">libp2p is the internet, rewired</a>
               <a href="#lehmans-laws">Lehman&#39;s Software Evolution</a>
               <a href="#i-pencil">I, Pencil</a>
@@ -7485,7 +7487,6 @@ type Logger interface {
               <a href="#bsd-openbsd-linux">BSD is clean, OpenBSD is cleaner</a>
               <a href="#this-statement-is-false">this statement is false</a>
               <a href="#disruptive-innovation">the electric light was not a better candle</a>
-              <a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a>
               <a href="#brooks-design-experts-divorce">Brooks on Software Design Series: why experts get it wrong</a>
               <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>
               <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>

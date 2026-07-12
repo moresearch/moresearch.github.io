@@ -284,3 +284,6 @@ For everything else — internal service communication, event-driven workflows, 
 - [NATS Go Client](https://github.com/nats-io/nats.go) — `nats.go` with JetStream v2 API
 - [NATS by Example](https://natsbyexample.com/) — runnable patterns across clients
 - Related posts: [Parnas's Information Hiding](https://blog.hackspree.com/#parnas-information-hiding), [Henney's Microservices](https://blog.hackspree.com/#kevlin-henney), [I, Pencil](https://blog.hackspree.com/#i-pencil)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

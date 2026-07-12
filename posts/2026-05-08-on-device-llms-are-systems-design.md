@@ -42,3 +42,6 @@ Weakness in any one of those layers can define the product experience. A great l
 That is why I like the comprehensive-review framing. It encourages a better question than "can we run an LLM on-device?" The better question is "what system are we actually building around local inference?"
 
 That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.
+
+
+Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.

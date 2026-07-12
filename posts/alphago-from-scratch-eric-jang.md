@@ -19,3 +19,6 @@ Eric Jang discusses the process and challenges of building AlphaGo from scratch,
 This talk is a must-watch for anyone interested in the intersection of deep learning, game AI, and research engineering. Jang’s experience highlights the value of hands-on replication for understanding state-of-the-art systems, and the discussion offers practical advice for engineers aiming to bridge the gap between academic papers and robust implementations.
 
 [Watch the full interview on YouTube](https://www.youtube.com/watch?v=X_ZVSPcZhtw)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

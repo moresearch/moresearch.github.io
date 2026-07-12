@@ -165,3 +165,6 @@ Henney never wrote *Building Microservices*. He wrote the theory that explains w
 
 
 Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.
+
+
+> Modularity is not in the services. It is in the relationships between them. A system of twelve services in a complete call graph is not modular. It is a monolith with network latency.

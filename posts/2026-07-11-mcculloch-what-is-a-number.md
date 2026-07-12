@@ -125,3 +125,6 @@ McCulloch would have been fascinated. He would have recognized the paper as empi
 
 
 Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.
+
+
+> A number is not a thing. It is a relation. The relation is one-to-one correspondence. The brain that perceives the relation is a neural circuit. The circuit can be understood. The understanding is epistemology reduced to physiology.

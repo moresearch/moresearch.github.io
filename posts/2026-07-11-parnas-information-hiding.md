@@ -98,3 +98,6 @@ The paper is from 1971. It is fifty-five years old. It was right then. It is rig
 
 
 Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.
+
+
+> A module is not a step in a process. It is a secret keeper. It knows something the other modules don't and reveals only what they need. The interface is the revelation. The implementation is the secret.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;">
+  <meta name="description" content="&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-mechanism-design">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-mechanism-design">Mechanism Design</a></h2><p class="post-summary">&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">incentives</span><span class="tag">hurwicz</span><span class="tag">maskin</span><span class="tag">myerson</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Mechanism design is game theory in reverse. In standard game theory, you are given the rules and you solve for the equilibrium. In mechanism design, you are given the desired outcome and you design the rules that produce it as an equilibrium. You don't ask &quot;what will happen given these incentives?&quot; You ask &quot;what incentives will produce what we want to happen?&quot;</p>
+<p>The field was founded by Leonid Hurwicz, Eric Maskin, and Roger Myerson. They shared the 2007 Nobel Prize. Hurwicz asked the founding question in 1960: how do you design an allocation mechanism that works even when participants have private information and act strategically? The answer: you design the rules so that truthful revelation of private information is the best strategy for each participant, and the outcome given truthful revelation is the one you want.</p>
+<p>The mechanism has four components: a set of participants, each with private information (their type). A set of possible outcomes. A rule that maps reported types to outcomes. And a solution concept — usually dominant-strategy incentive compatibility or Bayesian incentive compatibility. The mechanism is incentive-compatible if truthful reporting is an equilibrium. The mechanism implements the desired outcome if the equilibrium produces it.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Economics (Hurwicz, 1960).</strong> The fundamental question: can a central planner achieve an efficient allocation without knowing individuals' private valuations? The answer: yes, under certain conditions. The Vickrey-Clarke-Groves (VCG) mechanism achieves efficient allocation in quasi-linear environments. Participants report their valuations. The mechanism allocates goods to maximize total reported value and charges each participant the externality they impose on others. Truthful reporting is a dominant strategy. The VCG mechanism is the theoretical foundation of spectrum auctions, online advertising auctions, and compute resource allocation.</p>
+<p><strong>Implementation theory (Maskin, 1977 Nobel 2007).</strong> Maskin answered: which social choice rules can be implemented in Nash equilibrium? The answer involves Monotonicity — if an outcome is selected under one preference profile, and the outcome moves up in everyone's ranking under a new profile, it must still be selected. Monotonicity is necessary and, with no veto power, sufficient for Nash implementation. The mathematics is abstract. The implication is practical: not every desirable outcome can be implemented. The constraints are mathematical, not political.</p>
+<p><strong>Auction theory (Myerson, 1981 Nobel 2007).</strong> Myerson characterized optimal auctions. The revenue-equivalence theorem: any auction that allocates to the highest bidder and gives zero surplus to the lowest type yields the same expected revenue. The optimal auction sets a reserve price and allocates to the highest bidder above the reserve. The reserve price is the mechanism designer's tool for extracting surplus. Myerson applied mechanism design to auctions and showed that auction design is mechanism design.</p>
+<p><strong>Market design (Roth, 2012 Nobel).</strong> Alvin Roth applied mechanism design to markets that didn't exist: matching medical residents to hospitals, matching students to schools, matching kidney donors to recipients. The mechanisms are algorithms that take reported preferences and produce stable matches. Stability means no pair would prefer each other over their current match. The deferred acceptance algorithm (Gale-Shapley) produces stable matches. Roth made it work in practice. Market design is mechanism design implemented.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Automated contract testing.</strong> The desired outcome: services maintain stable API contracts. The mechanism: every CI build runs contract tests. Breaking the contract fails the build. The build failure is immediate, visible, and costly. The cost of defection — changing the API without updating callers — is brought forward to the moment of the change. The mechanism implements the outcome. Truthful revelation — &quot;I changed the API&quot; — is enforced by the test.</p>
+<p><strong>SLAs with penalty clauses.</strong> The desired outcome: services maintain availability targets. The mechanism: an SLA defines the target and the penalty for missing it. The penalty makes degradation costly to the provider. The cost aligns the provider's incentive with the consumer's need. The mechanism implements the outcome. The SLA is the contract. The penalty is the enforcement.</p>
+<p><strong>Deployment gates.</strong> The desired outcome: only tested, reviewed code reaches production. The mechanism: the deployment pipeline requires passing tests, code review approval, and a staging verification period. Each gate is a rule. The rules collectively implement the outcome. Bypassing a gate is possible but visible. Visibility creates accountability. Accountability enforces compliance.</p>
+<p><strong>Code review requirements.</strong> The desired outcome: all code is reviewed before merge. The mechanism: the repository requires an approving review. The mechanism is enforced by the platform. The enforcement is automatic. The automatic enforcement removes the human decision. The removal is mechanism design — design the rules so the desired behavior is the only possible behavior.</p>
+<h2 id="the-designers-question">The designer's question</h2>
+<p>Mechanism design gives the software engineer a question to ask: what outcome do I want, and what rules would produce it? The question is more powerful than &quot;what should we do?&quot; because it acknowledges that people respond to incentives. Telling people to cooperate produces cooperation if people are cooperative. Designing a mechanism where cooperation is the dominant strategy produces cooperation regardless. The mechanism doesn't require virtue. It requires structure. Structure is more reliable than virtue. Design the structure.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Leonid Hurwicz, &quot;Optimality and Informational Efficiency in Resource Allocation Processes,&quot; 1960.</li>
+<li>Eric Maskin, &quot;Nash Equilibrium and Welfare Optimality,&quot; <em>Review of Economic Studies</em>, 1977.</li>
+<li>Roger Myerson, &quot;Optimal Auction Design,&quot; <em>Mathematics of Operations Research</em>, 1981.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-evolutionary">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2950,38 +2983,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Oliver Hart and Bengt Holmström, &quot;The Theory of Contracts,&quot; 1987.</li>
 <li>Michael Jensen and William Meckling, &quot;Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure,&quot; <em>Journal of Financial Economics</em>, 1976.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-mechanism-design">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-mechanism-design">Mechanism Design</a></h2><p class="post-summary">&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">incentives</span><span class="tag">hurwicz</span><span class="tag">maskin</span><span class="tag">myerson</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Mechanism design is game theory in reverse. In standard game theory, you are given the rules and you solve for the equilibrium. In mechanism design, you are given the desired outcome and you design the rules that produce it as an equilibrium. You don't ask &quot;what will happen given these incentives?&quot; You ask &quot;what incentives will produce what we want to happen?&quot;</p>
-<p>The field was founded by Leonid Hurwicz, Eric Maskin, and Roger Myerson. They shared the 2007 Nobel Prize. Hurwicz asked the founding question in 1960: how do you design an allocation mechanism that works even when participants have private information and act strategically? The answer: you design the rules so that truthful revelation of private information is the best strategy for each participant, and the outcome given truthful revelation is the one you want.</p>
-<p>The mechanism has four components: a set of participants, each with private information (their type). A set of possible outcomes. A rule that maps reported types to outcomes. And a solution concept — usually dominant-strategy incentive compatibility or Bayesian incentive compatibility. The mechanism is incentive-compatible if truthful reporting is an equilibrium. The mechanism implements the desired outcome if the equilibrium produces it.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Economics (Hurwicz, 1960).</strong> The fundamental question: can a central planner achieve an efficient allocation without knowing individuals' private valuations? The answer: yes, under certain conditions. The Vickrey-Clarke-Groves (VCG) mechanism achieves efficient allocation in quasi-linear environments. Participants report their valuations. The mechanism allocates goods to maximize total reported value and charges each participant the externality they impose on others. Truthful reporting is a dominant strategy. The VCG mechanism is the theoretical foundation of spectrum auctions, online advertising auctions, and compute resource allocation.</p>
-<p><strong>Implementation theory (Maskin, 1977 Nobel 2007).</strong> Maskin answered: which social choice rules can be implemented in Nash equilibrium? The answer involves Monotonicity — if an outcome is selected under one preference profile, and the outcome moves up in everyone's ranking under a new profile, it must still be selected. Monotonicity is necessary and, with no veto power, sufficient for Nash implementation. The mathematics is abstract. The implication is practical: not every desirable outcome can be implemented. The constraints are mathematical, not political.</p>
-<p><strong>Auction theory (Myerson, 1981 Nobel 2007).</strong> Myerson characterized optimal auctions. The revenue-equivalence theorem: any auction that allocates to the highest bidder and gives zero surplus to the lowest type yields the same expected revenue. The optimal auction sets a reserve price and allocates to the highest bidder above the reserve. The reserve price is the mechanism designer's tool for extracting surplus. Myerson applied mechanism design to auctions and showed that auction design is mechanism design.</p>
-<p><strong>Market design (Roth, 2012 Nobel).</strong> Alvin Roth applied mechanism design to markets that didn't exist: matching medical residents to hospitals, matching students to schools, matching kidney donors to recipients. The mechanisms are algorithms that take reported preferences and produce stable matches. Stability means no pair would prefer each other over their current match. The deferred acceptance algorithm (Gale-Shapley) produces stable matches. Roth made it work in practice. Market design is mechanism design implemented.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Automated contract testing.</strong> The desired outcome: services maintain stable API contracts. The mechanism: every CI build runs contract tests. Breaking the contract fails the build. The build failure is immediate, visible, and costly. The cost of defection — changing the API without updating callers — is brought forward to the moment of the change. The mechanism implements the outcome. Truthful revelation — &quot;I changed the API&quot; — is enforced by the test.</p>
-<p><strong>SLAs with penalty clauses.</strong> The desired outcome: services maintain availability targets. The mechanism: an SLA defines the target and the penalty for missing it. The penalty makes degradation costly to the provider. The cost aligns the provider's incentive with the consumer's need. The mechanism implements the outcome. The SLA is the contract. The penalty is the enforcement.</p>
-<p><strong>Deployment gates.</strong> The desired outcome: only tested, reviewed code reaches production. The mechanism: the deployment pipeline requires passing tests, code review approval, and a staging verification period. Each gate is a rule. The rules collectively implement the outcome. Bypassing a gate is possible but visible. Visibility creates accountability. Accountability enforces compliance.</p>
-<p><strong>Code review requirements.</strong> The desired outcome: all code is reviewed before merge. The mechanism: the repository requires an approving review. The mechanism is enforced by the platform. The enforcement is automatic. The automatic enforcement removes the human decision. The removal is mechanism design — design the rules so the desired behavior is the only possible behavior.</p>
-<h2 id="the-designers-question">The designer's question</h2>
-<p>Mechanism design gives the software engineer a question to ask: what outcome do I want, and what rules would produce it? The question is more powerful than &quot;what should we do?&quot; because it acknowledges that people respond to incentives. Telling people to cooperate produces cooperation if people are cooperative. Designing a mechanism where cooperation is the dominant strategy produces cooperation regardless. The mechanism doesn't require virtue. It requires structure. Structure is more reliable than virtue. Design the structure.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Leonid Hurwicz, &quot;Optimality and Informational Efficiency in Resource Allocation Processes,&quot; 1960.</li>
-<li>Eric Maskin, &quot;Nash Equilibrium and Welfare Optimality,&quot; <em>Review of Economic Studies</em>, 1977.</li>
-<li>Roger Myerson, &quot;Optimal Auction Design,&quot; <em>Mathematics of Operations Research</em>, 1981.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
 </ul>
 </div>
       </article>
@@ -7396,6 +7397,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-mechanism-design">Mechanism Design</a>
               <a href="#game-evolutionary">Evolutionary Game Theory</a>
               <a href="#game-chicken">Chicken</a>
               <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
@@ -7444,7 +7446,6 @@ type Logger interface {
               <a href="#game-repeated-games">Repeated Games and the Folk Theorem</a>
               <a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a>
               <a href="#game-principal-agent">The Principal-Agent Problem</a>
-              <a href="#game-mechanism-design">Mechanism Design</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

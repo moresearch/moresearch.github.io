@@ -45,3 +45,6 @@ Mechanism design gives the software engineer a question to ask: what outcome do 
 - Eric Maskin, "Nash Equilibrium and Welfare Optimality," *Review of Economic Studies*, 1977.
 - Roger Myerson, "Optimal Auction Design," *Mathematics of Operations Research*, 1981.
 - Related posts: [Design the Game](https://blog.hackspree.com/#scarcity-and-mechanism-design), [Field Guide to Scarcity Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

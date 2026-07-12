@@ -97,3 +97,6 @@ The freedom to innovate is not a policy choice. It is a property of a system. Th
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> Innovation is not a process. It is a condition. The condition is freedom from quarterly earnings, freedom from feature requests, freedom to pursue a question for a decade. Bell Labs had that condition. Nobody does now.

@@ -4823,6 +4823,60 @@ The difference between knowing a principle and applying it is the difference bet
 </ul>
 </div>
       </article>
+      <article class="post" id="brooks-design-empiricist-alternative">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a></h2><p class="post-summary">&#34;If we can&#39;t think our way to a correct design, what do we do? Build, test, iterate. The scientific method, applied to the glorious mess of making software.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">empiricism</span><span class="tag">prototyping</span><span class="tag">constraints</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The rational model is wrong. What's the alternative? Science. Not computer science — actual science. Hypothesize, test, learn, repeat. You are not designing a system. You are running experiments on your own ignorance. The experiments will hurt. That's how you know they're working.</p>
+<blockquote>
+<p>&quot;I am a hard-core empiricist, in design as in science. I don't believe we can think our way to a correct design; we must build, test, and iterate.&quot;</p>
+</blockquote>
+<h2 id="definitions">Definitions</h2>
+<p><strong>Empiricist method.</strong> You cannot think your way to a correct design. Build, test, learn, iterate. If this sounds obvious, ask why your team spent three months debating an architecture nobody has prototyped. The debate felt productive. It was not. It was comforting. Comfort is not progress.</p>
+<p>Not the Brooks of <em>The Mythical Man-Month</em>. Younger Brooks believed planning — &quot;plan to throw one away&quot; meant doing the rational process twice. Older Brooks: the first plan was never going to be right. No analysis would have fixed it. The only path runs through being wrong. Intelligence is knowing the design is wrong. Wisdom is shipping anyway to find out why. Seniority is having done this enough times to stop arguing about it.</p>
+<p>Contrast Wirth's <strong>stepwise refinement</strong> (1971): decompose, refine until trivial. Works when you already understand the problem. Brooks: you never do. Decomposition emerges through building and testing. Wirth's method: well-understood problems. Brooks's method: everything else. Which is most of what you get paid for. The easy problems were automated decades ago.</p>
+<p>Six steps: study domain → design (knowing it's wrong) → prototype → test with real users → iterate → build incrementally. Notice &quot;argue about it in Slack&quot; is not a step. Notice &quot;write a design doc and never revisit it&quot; is not a step. Notice &quot;get sign-off from seven stakeholders&quot; is not a step. The steps are hard. That's why they're skipped.</p>
+<p><strong>Prototype.</strong> A concrete version built to be tested and discarded. Not a draft. Not &quot;the MVP we'll refactor later.&quot; A question posed to reality. Reality answers. Reality is usually right. Reality is also usually impolite about it.</p>
+<blockquote>
+<p>&quot;The prototype is the pivot of the design process. It makes ideas concrete and thereby falsifiable. A prototype that fails teaches more than a specification that pleases.&quot;</p>
+</blockquote>
+<p>Specifications are unfalsifiable. Nobody ever looked at a spec and said &quot;this won't work.&quot; They looked at a spec and said &quot;looks good&quot; — which is worse. &quot;Looks good&quot; means &quot;I haven't found the problem yet.&quot; Only running code can be wrong in a way that teaches. Only a crash tells you where the bridge was weak. Specifications don't crash. That's the problem.</p>
+<p><strong>Formal methods.</strong> Proving programs correct by deduction. Works for small modules. Cannot scale. The mathematicians disagree. The mathematicians don't ship software on deadlines with changing requirements.</p>
+<blockquote>
+<p>&quot;Formal methods — proving programs correct — represent rationalism's last stand in software. They work in principle for small, well-specified modules. They cannot scale to large, complex, evolving systems. No other design discipline even attempts formal correctness proofs. Architects do not prove buildings will stand; they build them and test them.&quot;</p>
+</blockquote>
+<p>The rationalist dream — correct by construction — survives only in CS departments and grant proposals. Every other discipline abandoned it centuries ago. Bridge builders test. Aircraft engineers test. The people who build things that kill you if they fail? They test relentlessly. The people who build things that lose your data? They debate formal verification on Hacker News.</p>
+<p><em>No Silver Bullet</em> (1986): no breakthrough eliminates essential difficulty. <em>Computer Architecture</em> (1997): even ISAs evolved through trial and error. Hamming: &quot;The purpose of computing is insight, not numbers.&quot; Designing is insight, not specifications. The spec is the fossil. The prototype is the living thing. Fossils are evidence. They are not alive.</p>
+<h2 id="constraints">Constraints</h2>
+<p><strong>Constraints as friends.</strong> No constraints = no criteria for excellence. Constraints make the problem solvable. &quot;Build anything&quot; is not a brief. It is a cry for help. It is also why your last &quot;greenfield&quot; project was harder than the legacy one.</p>
+<p>Infinite possibility paralyzes. Clear constraints — budget, schedule, weight, power — create a defined field. Creativity: elegant solutions within boundaries. Hoare: &quot;Premature optimization is the root of all evil.&quot; Brooks goes further. Constraints are not deferred evils. They are the conditions that make design possible. Without walls, you're not in a room. You're in a void. People in voids don't design. They drift.</p>
+<blockquote>
+<p>&quot;When you specify something to be designed, tell what properties you need, not how they are to be achieved.&quot;</p>
+</blockquote>
+<p>Clients confuse requirements with implementation. &quot;Use React&quot; is not a requirement. &quot;Renders at 60fps&quot; is. The how is the designer's problem. The what is the client's. Both need to learn which is which. This learning takes years. It cannot be shortcut by a requirements-gathering workshop.</p>
+<blockquote>
+<p>&quot;The hardest part of design is deciding what to design. The chief service of a designer is helping clients discover what they really want.&quot;</p>
+</blockquote>
+<p>Every hour clarifying saves ten building the wrong solution. This ratio is remarkably stable across industries, technologies, and decades. It is either a law of nature or evidence that we are all, collectively, terrible at knowing what we want until we see it. Either way, budget for clarification. It's cheaper than rework. Nobody budgets for it.</p>
+<p>Cautionary tale: helicopter project added &quot;fly across the Atlantic&quot; as a final requirement. Contradicted every constraint. But it was documented. The rational model treats all documented requirements as valid. No defense against absurdity. The helicopter was never built. The requirement lived forever in the document. Some say it still flies there, crossing the Atlantic on PDF pages, untroubled by physics.</p>
+<h2 id="user-models">User models</h2>
+<p><strong>User model.</strong> Write down who the user is, what they know, what they need. It will be wrong. Wrong and precise beats vague. &quot;The user is a domain expert who uses the command line daily&quot; is wrong and useful. &quot;The user wants a good experience&quot; is correct and worthless. One you can test against. The other is a fortune cookie.</p>
+<blockquote>
+<p>&quot;Better a precise model, even if wrong, than a vague one. A precise model exposes its assumptions and invites correction; a vague one is unfalsifiable and thus unhelpful.&quot;</p>
+</blockquote>
+<p>Write nothing: everyone fills in their own model, nobody disagrees. Explicit → testable → correctable. Empiricism applied to the most important unknown. UX designers call these personas. Engineers call them &quot;that thing we should have written down six months ago.&quot; Both are right. The persona would have prevented the rewrite.</p>
+<hr>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">← Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
+<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
+<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
+<blockquote>
+<p>The empiricist method is not about not planning. It is about not trusting the plan. The plan is a hypothesis. The prototype is the experiment. The experiment either confirms the hypothesis or teaches something the plan missed.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="brooks-design-protecting-designer">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
@@ -5101,57 +5155,6 @@ The difference between knowing a principle and applying it is the difference bet
 <p>Connects to Part 3. The designer needs protection — and contact with reality. Protected without feedback is marooned. Marooned designers produce marooned designs. The organization calls it &quot;vision.&quot; It is isolation. Isolation produces coherence with the wrong world. The design is beautiful. The user is baffled. Everyone did their job.</p>
 <hr>
 <p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">← Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7 →</a></p>
-<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
-<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
-</div>
-      </article>
-      <article class="post" id="brooks-design-empiricist-alternative">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a></h2><p class="post-summary">&#34;If we can&#39;t think our way to a correct design, what do we do? Build, test, iterate. The scientific method, applied to the glorious mess of making software.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">empiricism</span><span class="tag">prototyping</span><span class="tag">constraints</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The rational model is wrong. What's the alternative? Science. Not computer science — actual science. Hypothesize, test, learn, repeat. You are not designing a system. You are running experiments on your own ignorance. The experiments will hurt. That's how you know they're working.</p>
-<blockquote>
-<p>&quot;I am a hard-core empiricist, in design as in science. I don't believe we can think our way to a correct design; we must build, test, and iterate.&quot;</p>
-</blockquote>
-<h2 id="definitions">Definitions</h2>
-<p><strong>Empiricist method.</strong> You cannot think your way to a correct design. Build, test, learn, iterate. If this sounds obvious, ask why your team spent three months debating an architecture nobody has prototyped. The debate felt productive. It was not. It was comforting. Comfort is not progress.</p>
-<p>Not the Brooks of <em>The Mythical Man-Month</em>. Younger Brooks believed planning — &quot;plan to throw one away&quot; meant doing the rational process twice. Older Brooks: the first plan was never going to be right. No analysis would have fixed it. The only path runs through being wrong. Intelligence is knowing the design is wrong. Wisdom is shipping anyway to find out why. Seniority is having done this enough times to stop arguing about it.</p>
-<p>Contrast Wirth's <strong>stepwise refinement</strong> (1971): decompose, refine until trivial. Works when you already understand the problem. Brooks: you never do. Decomposition emerges through building and testing. Wirth's method: well-understood problems. Brooks's method: everything else. Which is most of what you get paid for. The easy problems were automated decades ago.</p>
-<p>Six steps: study domain → design (knowing it's wrong) → prototype → test with real users → iterate → build incrementally. Notice &quot;argue about it in Slack&quot; is not a step. Notice &quot;write a design doc and never revisit it&quot; is not a step. Notice &quot;get sign-off from seven stakeholders&quot; is not a step. The steps are hard. That's why they're skipped.</p>
-<p><strong>Prototype.</strong> A concrete version built to be tested and discarded. Not a draft. Not &quot;the MVP we'll refactor later.&quot; A question posed to reality. Reality answers. Reality is usually right. Reality is also usually impolite about it.</p>
-<blockquote>
-<p>&quot;The prototype is the pivot of the design process. It makes ideas concrete and thereby falsifiable. A prototype that fails teaches more than a specification that pleases.&quot;</p>
-</blockquote>
-<p>Specifications are unfalsifiable. Nobody ever looked at a spec and said &quot;this won't work.&quot; They looked at a spec and said &quot;looks good&quot; — which is worse. &quot;Looks good&quot; means &quot;I haven't found the problem yet.&quot; Only running code can be wrong in a way that teaches. Only a crash tells you where the bridge was weak. Specifications don't crash. That's the problem.</p>
-<p><strong>Formal methods.</strong> Proving programs correct by deduction. Works for small modules. Cannot scale. The mathematicians disagree. The mathematicians don't ship software on deadlines with changing requirements.</p>
-<blockquote>
-<p>&quot;Formal methods — proving programs correct — represent rationalism's last stand in software. They work in principle for small, well-specified modules. They cannot scale to large, complex, evolving systems. No other design discipline even attempts formal correctness proofs. Architects do not prove buildings will stand; they build them and test them.&quot;</p>
-</blockquote>
-<p>The rationalist dream — correct by construction — survives only in CS departments and grant proposals. Every other discipline abandoned it centuries ago. Bridge builders test. Aircraft engineers test. The people who build things that kill you if they fail? They test relentlessly. The people who build things that lose your data? They debate formal verification on Hacker News.</p>
-<p><em>No Silver Bullet</em> (1986): no breakthrough eliminates essential difficulty. <em>Computer Architecture</em> (1997): even ISAs evolved through trial and error. Hamming: &quot;The purpose of computing is insight, not numbers.&quot; Designing is insight, not specifications. The spec is the fossil. The prototype is the living thing. Fossils are evidence. They are not alive.</p>
-<h2 id="constraints">Constraints</h2>
-<p><strong>Constraints as friends.</strong> No constraints = no criteria for excellence. Constraints make the problem solvable. &quot;Build anything&quot; is not a brief. It is a cry for help. It is also why your last &quot;greenfield&quot; project was harder than the legacy one.</p>
-<p>Infinite possibility paralyzes. Clear constraints — budget, schedule, weight, power — create a defined field. Creativity: elegant solutions within boundaries. Hoare: &quot;Premature optimization is the root of all evil.&quot; Brooks goes further. Constraints are not deferred evils. They are the conditions that make design possible. Without walls, you're not in a room. You're in a void. People in voids don't design. They drift.</p>
-<blockquote>
-<p>&quot;When you specify something to be designed, tell what properties you need, not how they are to be achieved.&quot;</p>
-</blockquote>
-<p>Clients confuse requirements with implementation. &quot;Use React&quot; is not a requirement. &quot;Renders at 60fps&quot; is. The how is the designer's problem. The what is the client's. Both need to learn which is which. This learning takes years. It cannot be shortcut by a requirements-gathering workshop.</p>
-<blockquote>
-<p>&quot;The hardest part of design is deciding what to design. The chief service of a designer is helping clients discover what they really want.&quot;</p>
-</blockquote>
-<p>Every hour clarifying saves ten building the wrong solution. This ratio is remarkably stable across industries, technologies, and decades. It is either a law of nature or evidence that we are all, collectively, terrible at knowing what we want until we see it. Either way, budget for clarification. It's cheaper than rework. Nobody budgets for it.</p>
-<p>Cautionary tale: helicopter project added &quot;fly across the Atlantic&quot; as a final requirement. Contradicted every constraint. But it was documented. The rational model treats all documented requirements as valid. No defense against absurdity. The helicopter was never built. The requirement lived forever in the document. Some say it still flies there, crossing the Atlantic on PDF pages, untroubled by physics.</p>
-<h2 id="user-models">User models</h2>
-<p><strong>User model.</strong> Write down who the user is, what they know, what they need. It will be wrong. Wrong and precise beats vague. &quot;The user is a domain expert who uses the command line daily&quot; is wrong and useful. &quot;The user wants a good experience&quot; is correct and worthless. One you can test against. The other is a fortune cookie.</p>
-<blockquote>
-<p>&quot;Better a precise model, even if wrong, than a vague one. A precise model exposes its assumptions and invites correction; a vague one is unfalsifiable and thus unhelpful.&quot;</p>
-</blockquote>
-<p>Write nothing: everyone fills in their own model, nobody disagrees. Explicit → testable → correctable. Empiricism applied to the most important unknown. UX designers call these personas. Engineers call them &quot;that thing we should have written down six months ago.&quot; Both are right. The persona would have prevented the rewrite.</p>
-<hr>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">← Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
 <p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
 <p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
 </div>
@@ -8061,13 +8064,13 @@ type Logger interface {
               <a href="#fi-options">Options and DeFi Derivatives</a>
               <a href="#fi-prediction-markets">Prediction Markets</a>
               <a href="#fi-perpetuals">Perpetual Futures</a>
+              <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>
               <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>
               <a href="#brooks-design-great-designers">Brooks on Software Design Series: great designers, not great processes</a>
               <a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a>
               <a href="#brooks-design-one-mind-rule">Brooks on Software Design Series: one mind</a>
               <a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a>
               <a href="#brooks-design-experts-divorce">Brooks on Software Design Series: why experts get it wrong</a>
-              <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>
               <a href="#parnas-information-hiding">Parnas&#39;s Information Hiding</a>
               <a href="#mcculloch-what-is-a-number">McCulloch&#39;s question: what is a number, that a man may know it?</a>
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>

@@ -66,3 +66,6 @@ Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver B
 
 
 Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.
+
+
+> The empiricist method is not about not planning. It is about not trusting the plan. The plan is a hypothesis. The prototype is the experiment. The experiment either confirms the hypothesis or teaches something the plan missed.

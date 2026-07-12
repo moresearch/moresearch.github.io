@@ -84,3 +84,6 @@ The trade-off is economic. The choice among trade-offs is philosophical. The fee
 - Donald E. Knuth, "Computer Programming as an Art," *Communications of the ACM*, 1974.
 - David L. Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM*, 1972.
 - Related posts: [On Scarcity](https://blog.hackspree.com/#scarcity), [The Unix philosophy](https://blog.hackspree.com/#unix-philosophy), [Brooks on Software Design](https://blog.hackspree.com/#brooks-design-conceptual-integrity)
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

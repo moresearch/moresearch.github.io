@@ -36,6 +36,12 @@ The DAO's legal status is also uncertain. A DAO is not a corporation. It has no 
 
 Adam Smith, *The Wealth of Nations* (1776). Smith's analysis of the joint-stock company identified the agency problem that DAOs attempt to solve: the separation of ownership and control. In a joint-stock company, shareholders own the company but directors control it. The directors may pursue their own interests rather than the shareholders'. The agency problem is the cost of professional management. DAOs eliminate the management layer. The shareholders are the directors. The elimination of the agency problem is the theoretical advantage of DAOs. The practical disadvantage is the plutocracy problem and the inefficiency of collective decision-making. The trade-off is the subject of DAO governance research. The research is ongoing.
 
+## The engineering connection
+
+A DAO is a distributed system where the state is the treasury, the transactions are governance proposals, and the consensus mechanism is token-weighted voting. The architecture is identical to a blockchain: proposals are transactions, votes are signatures, execution is a state transition. The DAO is a blockchain with a single application — treasury management — built on top of an existing blockchain. The recursion is elegant: a governance system implemented as smart contracts on a chain that is itself governed by a similar mechanism.
+
+The DAO's core engineering problem is the same as any access control system: who can do what, under what conditions, with what checks and balances. Token-weighted voting is one access control policy — more tokens, more power. Timelocks on execution are another — proposals pass, but execution is delayed, giving stakeholders time to exit if they disagree. Multi-signature execution is a third — multiple parties must approve. These are the same patterns as role-based access control (RBAC), change management windows, and approval workflows in enterprise software. The domain is governance. The patterns are authorization.
+
 ---
 
 **References:**

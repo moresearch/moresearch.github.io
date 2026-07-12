@@ -34,6 +34,12 @@ DeFi structured products automate the same strategies on-chain with full transpa
 
 Peter Bernstein, *Against the Gods: The Remarkable Story of Risk* (1996). Bernstein's book is a history of risk management from the Renaissance to modern finance. The central argument: the quantification of risk — probability theory, statistics, derivatives pricing — is the defining intellectual achievement of modern capitalism. Structured products are the application of that achievement to retail investment products. DeFi structured products are the next iteration. The math is the same. The execution is on-chain. The transparency is the improvement.
 
+## The engineering connection
+
+A structured product is a function composition. A principal-protected note is `bond() + call_option()`. A covered call vault is `hold_asset() + sell_call()`. The product's payoff is the sum of its components' payoffs. The engineering insight: complex financial products can be built by composing simple primitives, the same way complex software systems are built by composing simple functions. The composition is the architecture. The primitives are the modules. The structured product is the application.
+
+The DeFi structured product automates the composition. The vault rebalances, compounds, and rolls positions without human intervention. This is the same automation pattern as a Kubernetes operator: observe state, compare to desired state, execute reconciliation. The vault observes the option's time to expiry, compares to the roll threshold, executes the roll. The control loop is identical. The domain is different. The pattern is the same.
+
 ---
 
 **References:**

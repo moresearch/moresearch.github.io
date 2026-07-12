@@ -30,6 +30,12 @@ Mutual insurance is capital-constrained. The capital in the mutual must cover al
 
 Lloyd's of London, *A History of Lloyd's* (various editions). The history of Lloyd's is the history of insurance. The coffee house. The slip. The Name. The syndicate. The innovation of Lloyd's was the market for risk — bringing together those who had risk and those who would accept it for a price. DeFi insurance protocols are recreating that market on-chain. The market is the same. The technology is different. The principles — pooling, diversification, skin in the game — are unchanged.
 
+## The engineering connection
+
+DeFi insurance is a distributed consensus protocol applied to claims assessment. A claim is filed. Assessors vote. The vote must reach consensus. If the assessors are honest, the correct outcome is reached. If assessors collude, the outcome can be manipulated. The mechanism — stake-weighted voting with economic penalties for incorrect votes — is the same mechanism as proof-of-stake consensus. The validators (assessors) stake tokens on their assessment. If the majority is honest, the honest assessors earn rewards and the dishonest lose their stake. The protocol is a blockchain consensus algorithm applied to a different type of state transition — a claim rather than a block.
+
+The capital constraint — the mutual must hold enough capital to cover all potential claims — is the same constraint as any capacity-planning problem. You have a pool of resources (capital) and a stream of demands (claims). You must size the pool so that the probability of exhaustion is below a threshold. The math is queuing theory. The same math that determines how many servers you need for a web application determines how much capital an insurance mutual needs. The domain is insurance. The math is capacity planning.
+
 ---
 
 **References:**

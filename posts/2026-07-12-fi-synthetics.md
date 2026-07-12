@@ -34,6 +34,12 @@ Synthetic assets enable on-chain exposure to off-chain assets. The oracle report
 
 Synthetix, "Synthetix Litepaper" (2018). The original description of the pooled collateral model and the infinite liquidity exchange. The litepaper is 12 pages. The key insight — pooled collateral enables zero-slippage trading between any synthetic assets — is on page 3. The rest is implementation. The implementation is now managing billions in synthetic asset value. The value is the proof of the concept.
 
+## The engineering connection
+
+A synthetic asset is a data pipeline. The oracle is the data source. The protocol is the transformation layer. The synthetic token is the output. The pipeline ingests a price feed, transforms it into a token with the same economic exposure, and delivers it to the user. The same pattern as an ETL pipeline: extract (oracle price), transform (mint synth at oracle price), load (deliver token to user). The domain is finance. The architecture is data engineering.
+
+The pooled collateral model is a shared-nothing architecture applied to risk. Each synth is backed by the entire collateral pool, not by individual positions. The risk is shared. The sharing eliminates counterparty risk between synth holders but creates systemic risk — if the collateral value crashes, all synths are affected simultaneously. This is the same trade-off as a monolith vs. microservices. The monolith (pooled collateral) is efficient and simple until it fails globally. Microservices (isolated vaults, like MakerDAO) are resilient to individual failures but less capital-efficient. The trade-off is architectural. The domain determines which side is correct.
+
 ---
 
 **References:**

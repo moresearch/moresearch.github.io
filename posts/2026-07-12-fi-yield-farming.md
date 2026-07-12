@@ -42,6 +42,12 @@ The problem: liquidity mining attracts mercenary capital. When yields are high, 
 
 Vitalik Buterin, "On Liquidity Mining" (2020). Buterin argued that liquidity mining is only sustainable if the distributed tokens confer genuine governance rights over a protocol that generates genuine revenue. Otherwise, liquidity mining is a wealth transfer from late buyers of the token to early farmers. The wealth transfer is zero-sum. The zero-sum game ends when the music stops. The music stopped for many protocols in 2022. The protocols that survived had fundamentals. The fundamentals were revenue. The revenue was from fees. The fees were from users. The users were real.
 
+## The engineering connection
+
+Liquidity mining is an incentive design problem — the same class of problem as designing a recommendation algorithm or a caching policy. You have a desired behavior (provide liquidity). You have a budget (protocol tokens). You need to allocate the budget to maximize the behavior while minimizing cost. The solution space is mechanism design. The constraints are Sybil resistance, capital efficiency, and retention of liquidity after the subsidy ends. The engineer who designs a liquidity mining program is designing a market. The same skills — optimization under constraints, adversarial thinking, measurement of outcomes — apply to any incentive system.
+
+The auto-compounding vault (Yearn, Beefy) is an automation pattern: harvest rewards, sell for the underlying, reinvest, repeat. The loop is a cron job implemented as a smart contract. The gas cost per harvest must be less than the rewards gained, or the strategy loses money. The optimization problem is: given gas costs, reward rates, and pool sizes, what is the optimal harvest frequency? The answer is a function of the same variables that determine cache invalidation intervals, batch sizes, and polling frequencies in any distributed system. The domain is yield. The math is operations research.
+
 ---
 
 **References:**

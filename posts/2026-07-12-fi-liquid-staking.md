@@ -30,6 +30,12 @@ The secondary risk: stETH can depeg from ETH. During market stress, stETH holder
 
 J.P. Morgan, "American Depositary Receipts," 1927. Morgan's innovation was financial infrastructure: the ADR created a mechanism for U.S. investors to hold foreign equities without navigating foreign custody, settlement, and currency conversion. The ADR was a bridge between national financial systems. Liquid staking tokens are a bridge between the staking layer and the DeFi layer. The bridge is the infrastructure. The infrastructure enables capital to flow between layers. The flow is the efficiency. The efficiency is the value.
 
+## The engineering connection
+
+Liquid staking is a delegation pattern. The staker delegates capital to a validator. The validator does work (proposes blocks). The staker receives a receipt token (stETH) representing the delegated capital plus accrued rewards. The receipt token is a proxy object — the same pattern as a remote proxy in distributed systems, a lazy-loading proxy in ORM design, or a future/promise in async programming. The holder interacts with the proxy as if it were the underlying. The proxy handles the indirection. The pattern is universal. The domain is staking. The pattern is delegation.
+
+The depeg risk — stETH trading below ETH during market stress — is the same class of failure as any system where a proxy gets out of sync with its underlying. The proxy's price should track the underlying. When it doesn't, arbitrage should restore the peg. The arbitrage requires time and capital. The time is the unstaking period. The capital must be locked during that period. The mechanism design challenge: how to keep the proxy in sync when the sync mechanism has inherent latency. The same challenge appears in cache coherence, database replication, and distributed consensus. The solutions are different. The problem structure is identical.
+
 ---
 
 **References:**

@@ -30,6 +30,12 @@ The regulatory status of tokenized RWAs is uncertain. The SEC has indicated that
 
 BlackRock, "BUIDL: BlackRock USD Institutional Digital Liquidity Fund," 2024. The launch of BUIDL by the world's largest asset manager was the signal that tokenized RWAs had arrived as an institutional product. The fund holds U.S. Treasury bills, repurchase agreements, and cash. It issues BUIDL tokens on Ethereum. It pays daily dividends to token holders. It is regulated. It is audited. It is the bridge between TradFi and DeFi. The bridge is built. The traffic is increasing.
 
+## The engineering connection
+
+Tokenization is an adapter pattern. The traditional financial asset (Treasury bond, real estate deed) speaks one protocol — legal ownership, paper settlement, business hours. The DeFi ecosystem speaks another — programmatic transfer, atomic settlement, 24/7. The tokenization protocol is the adapter between them. The adapter translates: legal ownership → on-chain token, interest payment → token distribution, redemption → token burn. The same pattern as any API adapter, database connector, or protocol bridge. The adapter's job is to make two incompatible systems interoperate. The job is pure software engineering.
+
+The oracle that reports the net asset value is the adapter's most critical component. If the oracle reports incorrectly, the token's value diverges from the underlying. The divergence creates arbitrage or insolvency. The oracle is a trust boundary — the point where the on-chain system must trust an off-chain data source. Engineering trust boundaries is the core problem of distributed systems. The solutions — multiple data sources, stake-based validation, challenge periods — are the same whether the oracle reports a stock price or a server health check. The domain changes. The trust architecture doesn't.
+
 ---
 
 **References:**

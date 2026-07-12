@@ -34,3 +34,6 @@ The more NPUs matter, the less useful it is to think of serving as a generic lay
 
 
 NPUs are a hardware constraint that changes the software architecture. When the compute substrate changes, the optimal model architecture changes with it. This is the hardware-software co-design problem: the hardware determines what software is efficient, and the software requirements determine what hardware gets built. The feedback loop is the same as any platform evolution — iOS constraints shaped mobile app design, cloud constraints shaped distributed systems design. The NPU is the new constraint. The constraint shapes the solution space. The engineer who understands the constraint makes better design decisions than the engineer who treats the hardware as an abstraction.
+
+
+> A new compute substrate does not just make existing models faster. It changes which models are possible. The NPU is not an accelerator. It is a different kind of brain.

@@ -66,3 +66,6 @@ Platform engineering is not a destination but a journey—one that requires cons
 *References:*
 - [Platform Engineering: The Next Step in DevOps](https://www.youtube.com/watch?v=iP-qzK4mQuI)
 - [Economics of Scale vs Economics of Speed](https://www.youtube.com/watch?v=5Ai8UGx7QvQ)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

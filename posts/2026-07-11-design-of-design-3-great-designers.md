@@ -92,3 +92,6 @@ Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver B
 
 
 Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.
+
+
+> Process raises the floor. Talent raises the ceiling. The organization that invests only in process gets consistent mediocrity. The organization that invests only in talent gets inconsistent brilliance. The organization that invests in both gets both.

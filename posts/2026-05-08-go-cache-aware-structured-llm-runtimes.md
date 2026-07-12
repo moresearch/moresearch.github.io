@@ -41,3 +41,6 @@ The more structured LLM applications become, the more they resemble ordinary sys
 
 
 This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.
+
+
+> Game theory is not about predicting what people will do. It is about understanding the structure of their choices. The structure is the game. The game is the constraint.

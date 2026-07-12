@@ -96,3 +96,6 @@ That is why the dissertation centers this topic. I think it is one of the most i
 ## Source
 
 - [Mohamed A. Fouad, *Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations*](https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf)
+
+
+> The economics of software engineering agents is not about whether agents can write code. It is about whether the code they write is worth more than the compute it costs. The answer changes with every model release.

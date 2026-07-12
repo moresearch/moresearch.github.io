@@ -64,3 +64,6 @@ Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver B
 
 
 Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.
+
+
+> The one-mind rule is not about ego. It is about attention. One mind can hold the entire design. Two minds can hold it if they are in resonance. Three minds produce a committee. Committees produce compromises.

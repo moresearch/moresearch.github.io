@@ -78,3 +78,6 @@ Bottom line
 -----------
 AGT isn’t a lightweight policy library — it’s an operational stack for teams that need to run agent fleets under strict, auditable controls. For product teams and security engineers, it’s a valuable reference implementation and a practical toolkit to lift agent governance from ad-hoc prompts into reproducible, testable infrastructure.
 
+
+
+Engineering is always embedded in a context of constraints — economic, political, organizational. The engineer who ignores the context builds systems that are technically correct and operationally irrelevant. The engineer who understands the context builds systems that survive. The context is part of the specification. The specification is incomplete without it.

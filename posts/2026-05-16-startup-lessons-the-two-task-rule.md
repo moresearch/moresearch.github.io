@@ -64,3 +64,6 @@ Resist the temptation to add a third. The third will always seem urgent. It will
 
 
 Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.
+
+
+> Focus is not about doing fewer things. It is about doing the right things. The two-task rule is not a productivity hack. It is a structural constraint that forces the question: what matters most right now?

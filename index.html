@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;A 2023 paper applies information theory to software evolution. Two entropy measures track how codebases change. Both capture something traditional complexity metrics miss: the information content of a codebase, and the moments when it surprises you.&#34;">
+  <meta name="description" content="&#34;Meir Lehman observed that software doesn&#39;t just age — it evolves according to laws as regular as thermodynamics. E-type programs change or die. Complexity increases unless you fight it. The process is self-regulating whether you like it or not.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,51 +652,113 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="entropy-software-evolution">
+      <article class="post" id="lehmans-laws">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#entropy-software-evolution">&#34;entropy as a code metric&#34;</a></h2><p class="post-summary">&#34;A 2023 paper applies information theory to software evolution. Two entropy measures track how codebases change. Both capture something traditional complexity metrics miss: the information content of a codebase, and the moments when it surprises you.&#34;</p>
-          <div class="tags"><span class="tag">entropy</span><span class="tag">information-theory</span><span class="tag">software-evolution</span><span class="tag">complexity</span><span class="tag">metrics</span>
+          <h2><a href="#lehmans-laws">&#34;Lehman&#39;s Laws&#34;</a></h2><p class="post-summary">&#34;Meir Lehman observed that software doesn&#39;t just age — it evolves according to laws as regular as thermodynamics. E-type programs change or die. Complexity increases unless you fight it. The process is self-regulating whether you like it or not.&#34;</p>
+          <div class="tags"><span class="tag">lehman</span><span class="tag">software-evolution</span><span class="tag">complexity</span><span class="tag">entropy</span><span class="tag">laws</span>
           </div>
         </header>
-        <div class="post-body"><p>In 2023, Torres, Baltes, Treude, and Wagner published a small paper with a large idea: what if you measured software complexity not by counting lines, branches, or dependencies, but by measuring the <em>information content</em> of the code itself?</p>
-<p>The paper is eight pages. It is an early-stage investigation. It is also the kind of work that makes you reconsider what &quot;complexity&quot; means. Most complexity metrics — cyclomatic complexity, lines of code, coupling between objects — measure structural properties of code. They tell you how big the code is, how many paths through it, how interconnected its parts. They don't tell you how much <em>information</em> it contains, or how that information changes over time.</p>
-<p>Entropy does.</p>
-<h2 id="two-kinds-of-entropy">Two kinds of entropy</h2>
-<p>The paper applies two definitions of entropy to code:</p>
-<p><strong>Structural entropy.</strong> Treat the codebase as a graph. Each file is a node. Each dependency (import, include, reference) is an edge. The entropy of the graph measures how uniformly connected the system is. A system where every file depends on every other file has maximum structural entropy — maximum disorder. A system where files are organized into clean, independent modules with minimal cross-dependencies has lower entropy. Same functionality. Different information structure.</p>
-<p><strong>Textual entropy.</strong> Treat the code as text. Compress it. The compressed size, relative to the uncompressed size, is a measure of how much information the text contains. Redundant code compresses well — low entropy. Code where every line carries distinct information compresses poorly — high entropy. This is not about quality. It is about information density. A verbose codebase with repetitive patterns has lower textual entropy than a dense, terse one. Neither is inherently better. The metric just tells you which you have.</p>
+        <div class="post-body"><p>In 1980, Meir Lehman published a paper that should have changed how the industry thinks about software maintenance. It didn't. The paper — &quot;Programs, Life Cycles, and Laws of Software Evolution&quot; — introduced a classification of programs and a set of laws governing their evolution. The laws were based on measurement, not opinion. They described what software <em>does</em>, not what anyone wished it did.</p>
+<p>Forty-six years later, the laws hold. The industry still acts surprised when its codebases become harder to change, more complex, and eventually unmaintainable. Lehman explained why this happens. The explanation is still correct. The surprise is still unwarranted.</p>
+<h2 id="the-program-types">The program types</h2>
+<p>Lehman's first contribution was a classification. Not all programs are the same kind of thing. Treating them as if they are is the root error of most software process thinking.</p>
+<p><strong>S-type (Specification-type).</strong> The problem has a complete, formal specification. Correctness can be proven. Changes are limited to efficiency or clarity. Examples: sorting algorithms, the Eight Queens puzzle, a calculator. S-type programs don't evolve. They are replaced.</p>
+<blockquote>
+<p>&quot;Programs whose function is formally defined by and derivable from a specification.&quot;</p>
+</blockquote>
+<p><strong>P-type (Problem-type).</strong> The problem can be stated formally, but a perfect solution is computationally infeasible. The program uses heuristics, approximations, or simplifications. Acceptability is judged against the real world. Examples: chess engines, weather prediction, scheduling. P-type programs evolve as heuristics improve.</p>
+<p><strong>E-type (Embedded-type).</strong> The program mechanizes a human or societal activity. It becomes part of the world it models. The act of deploying the program changes user behavior, which changes requirements, which changes the program. The problem cannot be precisely formulated — it involves judgment. Examples: operating systems, business software, inventory management, trading systems. E-type programs <em>must</em> evolve. They have no final state.</p>
+<blockquote>
+<p>&quot;Programs that mechanize a human or societal activity and are embedded in the real world.&quot;</p>
+</blockquote>
+<p>E-type programs are where Lehman's Laws apply. They are also essentially all of the software that anyone pays anyone to work on. S-type programs are undergraduate assignments. E-type programs are your job.</p>
+<h2 id="the-eight-laws">The eight laws</h2>
+<p>Lehman published the first three laws in 1974, expanded to five in 1980, and codified all eight by 1996. Each was derived from measurement of real systems — OS/360, and later others. These are not principles. They are observations of statistical regularity. They describe what happens. You can ignore them. You cannot make them false.</p>
+<h3 id="i-continuing-change-1974">I. Continuing Change (1974)</h3>
+<blockquote>
+<p>&quot;A program that is used and that as an implementation of its specification reflects some other reality, undergoes continual change or becomes progressively less useful. The change or decay process continues until it is judged more cost effective to replace the system with a recreated version.&quot;</p>
+</blockquote>
+<p>An E-type system must be continually adapted or it becomes progressively less satisfactory. The environment changes — user needs, regulations, platforms, security threats. The software either changes with it or becomes irrelevant. There is no third option. You do not finish an E-type system. You stop working on it.</p>
+<p>Brooks, independently, reached the same conclusion in <em>No Silver Bullet</em> (1986):</p>
+<blockquote>
+<p>&quot;All successful software gets changed. Software is embedded in a cultural matrix of users, laws, and hardware — all of which change continually.&quot;</p>
+</blockquote>
+<p>Two researchers, different methods, same observation. Software that matters changes. Software that doesn't change doesn't matter. The change is not a sign of failure. It is a sign that the software is doing its job — reflecting a world that itself is changing. The cost of change is not a bug in the process. It is the process.</p>
+<h3 id="ii-increasing-complexity-1974">II. Increasing Complexity (1974)</h3>
+<blockquote>
+<p>&quot;As an evolving program is continually changed, its complexity, reflecting deteriorating structure, increases unless work is done to maintain or reduce it.&quot;</p>
+</blockquote>
+<p>This is Lehman's most practically important law. Every change to a system increases its complexity <em>unless explicit effort is made to reduce it</em>. The default direction is toward disorder. The default is entropy.</p>
+<p>Lehman originally used the word &quot;entropy&quot; for this law, not &quot;complexity.&quot; He changed the term later to align with the complexity research of the time, but the original intuition was thermodynamic: systems drift toward disorder unless energy is expended to maintain order. Software is a system. It obeys the same logic. Every commit that adds a feature without simplifying the structure increases total complexity. Every quick fix that works around an existing abstraction rather than extending it properly increases complexity. Every deadline that forces &quot;we'll clean it up later&quot; increases complexity. Later never comes.</p>
+<p>Parnas, Lehman's contemporary, provided the mechanism for fighting Law II: information hiding. If you hide volatile design decisions behind stable interfaces, you contain the complexity increase. The change happens inside the module. The interface stays clean. The rest of the system doesn't accumulate the complexity of the change. Parnas was not directly responding to Lehman, but the fit is exact. Lehman described the problem. Parnas described the defense. Both were published in the early 1970s. Neither is widely followed.</p>
+<blockquote>
+<p>&quot;I believe the hard part of building software to be the specification, design, and testing of this conceptual construct, not the labor of representing it and testing the fidelity of the representation.&quot; — Brooks, <em>No Silver Bullet</em>, 1986</p>
+</blockquote>
+<p>Brooks separated complexity into essential and accidental. Essential complexity is inherent in the problem. Accidental complexity is imposed by our solutions. Law II describes the accumulation of accidental complexity over time. Every change adds a little more. Unless you fight it.</p>
+<h3 id="iii-self-regulation-1974">III. Self-Regulation (1974)</h3>
+<blockquote>
+<p>&quot;Program evolution is subject to a dynamics which makes the programming process, and hence measures of global project and system attributes, self-regulating with statistically determinable trends and invariances.&quot;</p>
+</blockquote>
+<p>Lehman observed that OS/360's growth data showed patterns &quot;typical of a self-stabilising process with positive and negative feedback loops.&quot; The rate of system growth was self-regulatory despite varying budgets, varying team sizes, varying management attitudes, and changing release intervals. The process finds its own equilibrium regardless of what management intends.</p>
+<p>This is the law that should make managers uncomfortable. You cannot accelerate software evolution by adding resources. The process has its own pace, determined by feedback loops among users, developers, and the codebase. Brooks's Law — &quot;adding manpower to a late software project makes it later&quot; — is a special case of Lehman's Self-Regulation. The process resists external perturbation. It returns to its natural rate.</p>
+<h3 id="iv-conservation-of-organizational-stability-1978">IV. Conservation of Organizational Stability (1978)</h3>
+<blockquote>
+<p>&quot;During the active life of a program the global activity rate in a programming project is statistically invariant.&quot;</p>
+</blockquote>
+<p>The amount of work a team can produce per release is roughly constant. You can change the team. You can change the tools. The output stays the same. This is not a claim about individual productivity. It is a statistical observation about organizations. The organization has a natural throughput. It can be measured. It cannot be wished higher.</p>
+<h3 id="v-conservation-of-familiarity-19781980">V. Conservation of Familiarity (1978/1980)</h3>
+<blockquote>
+<p>&quot;During the active life of a program the release content (changes, additions, deletions) of the successive releases of an evolving program is statistically invariant.&quot;</p>
+</blockquote>
+<p>Each release contains roughly the same amount of change. Not because anyone plans it that way, but because the organization can only absorb so much change at once. If you try to ship more, the quality drops, the bugs increase, and the next release is smaller to compensate. The system self-corrects. The average holds. This is Law III operating through Law V.</p>
+<h3 id="vi-continuing-growth-1991">VI. Continuing Growth (1991)</h3>
+<p>The functional content of an E-type system must grow to maintain user satisfaction. Users demand more features over time, not fewer. The system that doesn't grow is the system that users abandon for one that does. Growth is not optional. Managing growth is the entire job.</p>
+<h3 id="vii-declining-quality-1996">VII. Declining Quality (1996)</h3>
+<p>The quality of an E-type system declines unless it is rigorously maintained and adapted to environmental change. Quality is not static. It decays. What was &quot;high quality&quot; in 2019 is &quot;unmaintainable legacy&quot; in 2026, even if the code hasn't changed. The environment changed around it. The standards rose. The code stayed where it was. Quality is relative to the environment. The environment moves.</p>
+<h3 id="viii-feedback-system-1996">VIII. Feedback System (1996)</h3>
+<p>Software evolution is a multi-loop, multi-agent feedback system. Users provide feedback. Developers respond. The system changes. The changes generate new feedback. The loops interact. The system's behavior emerges from these interactions, not from any single decision or plan. You cannot control software evolution. You can only participate in the feedback loops and hope your participation makes things better rather than worse. This is the law that makes all the other laws irreducible: they are properties of a feedback system, not of a plan.</p>
+<h2 id="what-lehman-and-brooks-agreed-on">What Lehman and Brooks agreed on</h2>
+<p>Lehman and Brooks arrived at the same destination from different starting points. Lehman measured systems and derived statistical laws. Brooks managed systems and derived engineering principles. Both concluded that software evolution is inevitable, complexity is the enemy, and the process cannot be controlled — only influenced.</p>
+<p>Brooks in 1986:</p>
+<blockquote>
+<p>&quot;The complexity of software is an essential property, not an accidental one. Descriptions of a software entity that abstract away its complexity often abstract away its essence.&quot;</p>
+</blockquote>
+<p>Lehman in 1980:</p>
+<blockquote>
+<p>&quot;The observed fact that the number of decisions driving the process of evolution, the many feedback paths, the checks and balances of organizations, human interactions in the process, reactions to usage, the rigidity of program code, all combine to yield statistically regular behavior.&quot;</p>
+</blockquote>
+<p>Complexity is essential. Evolution is inevitable. The process is self-regulating. These are not problems to solve. They are conditions to live with. The industry has spent decades trying to solve them — with better tools, better processes, better architectures — and has succeeded mainly in changing the form of the complexity, not its presence. Brooks predicted this. Lehman measured it.</p>
+<h2 id="the-entropy-connection">The entropy connection</h2>
+<p>In 2023, Torres, Baltes, Treude, and Wagner published a small paper applying information theory to software evolution. They applied two definitions of entropy — structural (dependency graph) and textual (compression ratio) — to the commit histories of 25 open source projects.</p>
 <blockquote>
 <p>&quot;Both entropy measures display weak and unstable correlations with other complexity metrics.&quot;</p>
 </blockquote>
-<p>This is the key finding. Entropy is not just another complexity metric in disguise. It captures something different. Traditional complexity metrics measure <em>how complicated the code is to work with</em>. Entropy measures <em>how much information the code contains</em>. These are related but distinct. A system can be information-dense without being complex. A system can be simple in structure but bloated in information content — verbose, repetitive, full of boilerplate. Traditional metrics see simplicity. Entropy sees bloat.</p>
-<blockquote>
-<p>&quot;Structural and textual entropy generally are highly correlated.&quot;</p>
-</blockquote>
-<p>The two entropy measures, though derived completely differently — one from graph structure, one from text compression — move together over time. When structural entropy rises, textual entropy tends to rise with it. When the codebase becomes more interconnected, it also tends to become more information-dense. The two measures converge on the same underlying signal: the system is accumulating information. Whether that information is <em>valuable</em> — whether it represents solved problems or accumulated cruft — is a separate question. Entropy doesn't judge. It measures.</p>
-<h2 id="surprisal-when-the-codebase-jumps">Surprisal: when the codebase jumps</h2>
-<p>The most intriguing finding is about outlier events. The authors tracked entropy over the commit history of 25 open source projects and looked for commits where the entropy change was unusually large — where the information content of the entire codebase shifted significantly in a single change.</p>
+<p>Entropy captures something that traditional complexity metrics miss: the <em>information content</em> of the codebase, and how it changes. Lehman's Law II said complexity increases unless work is done to reduce it. The entropy paper provides a way to <em>measure</em> that increase — not just at release boundaries, but at every commit. Structural entropy rises when the dependency graph becomes more interconnected. Textual entropy rises when the codebase becomes more information-dense. Both rise when complexity, in Lehman's sense, is accumulating.</p>
 <blockquote>
 <p>&quot;An unexpected high frequency of events where there is considerable change in the information content of the project.&quot;</p>
 </blockquote>
-<p>These are surprisal events. A commit lands that is not just large — large commits happen — but <em>structurally unexpected</em> relative to the prior history. The information content of the codebase changes in a way that the historical trend didn't predict. A major refactoring. A new module that reconfigures the dependency graph. A deletion that simplifies the structure dramatically. The entropy doesn't just change. It jumps.</p>
-<p>The authors suggest these outliers could form the basis of a &quot;surprisal&quot; metric — a way to automatically flag commits that are historically unusual, regardless of their size or author. A commit that adds 5,000 lines to an established pattern might be large but not surprising. A commit that deletes 50 lines and rewires the dependency graph might be small but deeply surprising. Traditional metrics see size. Entropy sees the rewiring. Size is easy to measure. Structure change is harder. Surprisal captures structure change.</p>
-<h2 id="why-this-matters">Why this matters</h2>
-<p>Software complexity metrics have a long history of being simultaneously useful and misleading. Cyclomatic complexity correlates with bug density — but so does file size, and the two are correlated with each other, and disentangling cause from correlation is hard. Coupling metrics tell you about interconnections but not about whether those interconnections are stable or volatile. Lines of code is the most commonly used metric and the most commonly abused — it measures size, not complexity, and is gamed by the simple act of writing verbose code.</p>
-<p>Entropy offers something different: a measure of information content that is not gamed by style, not reducible to size, and not correlated with traditional metrics. It is a <em>complementary</em> signal. A codebase whose traditional complexity is low but whose entropy is high is a codebase that is simple in structure but dense in information. That might be a well-factored system with concise code. Or it might be a terse, unreadable mess. The entropy tells you to look. It doesn't tell you what you'll find.</p>
-<p>A codebase whose traditional complexity is high but whose entropy is low is highly interconnected but information-sparse. Lots of boilerplate. Lots of repetition. The structure is tangled but the information is thin. This is the enterprise Java project with fifteen layers of indirection and the same pattern repeated in every package. Complex to navigate. Simple in information content. The metrics agree that something is wrong. They disagree about what.</p>
-<h2 id="the-connection-to-henney">The connection to Henney</h2>
-<p>This paper lands directly on themes explored in the Brooks and Henney series on this blog. Henney argued that less code is less risk — but also that there is an optimal code size, not zero. Entropy gives you a way to measure where you are on that curve. A codebase with high textual entropy is dense with information. Whether that information is essential complexity (the problem is hard) or accidental complexity (the code is unclear) is a judgment call. The metric flags the density. The human makes the call.</p>
-<p>Brooks argued that conceptual integrity — the system feeling like one mind designed it — is the most important property. A system designed by committee will have higher structural entropy: more interconnections, less clean modularity, more uniform distribution of dependencies. The entropy didn't cause the lack of integrity. It measured it. The measurement is not the problem. But it makes the problem visible in a way that individual code reviews might miss. A code review sees one file. Entropy sees the whole graph.</p>
-<p>Parnas argued that modules should hide design decisions likely to change. A system that follows Parnas's criterion will have <em>lower</em> structural entropy in its dependency graph — dependencies flow to stable interfaces, not to volatile internals. A system that ignores Parnas will have higher entropy, with dependencies sprawling across module boundaries. Entropy doesn't replace Parnas. It quantifies what happens when you ignore him.</p>
-<h2 id="the-limits">The limits</h2>
-<p>The paper is eight pages. It studies 25 projects. The correlations with traditional metrics are weak and unstable — which is simultaneously the most interesting finding and a signal that more work is needed. Weak correlation means entropy is measuring something distinct. Unstable correlation means the relationship changes across projects and over time. Neither is a clean result. Both are honest. The authors don't oversell. They present initial evidence and suggest directions. That is what a workshop paper should do.</p>
-<p>The larger question is whether entropy can become <em>actionable</em>. A metric that tells you something interesting about your codebase is academically valuable. A metric that tells you <em>which commit to investigate</em> — flagging surprisal events for review, tracking entropy trends as an early warning of architectural decay — is practically valuable. The paper points toward the second but doesn't reach it. The path is visible. The work remains to be done.</p>
-<h2 id="what-to-take-from-it">What to take from it</h2>
-<p>If you track metrics for your codebase — and you should — entropy is probably not among them. It should be. The tools exist. The theory is sound. The signal is distinct from everything else you're measuring. You can compute structural entropy from your dependency graph. You can compute textual entropy from compression ratios. Both are cheap. Both capture something your existing metrics miss.</p>
-<p>The paper's most actionable insight is about surprisal. Flag commits where the information content of the codebase changes unusually. These are the commits where something structural happened — a refactoring, a deletion, a rearchitecture. They are the commits most likely to contain bugs and most likely to be overlooked by review processes focused on size. Size is a proxy for risk. Surprisal is closer to the thing itself. A commit that changes the structure is riskier than a commit that adds lines to an existing structure. Size-based review thresholds miss this. Entropy-based thresholds would catch it. The industry hasn't adopted them yet. It will. The paper is the first step.</p>
+<p>These are surprisal events. Commits where the information structure of the codebase jumps significantly relative to its history. A major refactoring. A deletion that simplifies the dependency graph. A new module that reconfigures the architecture. These are the commits where Law II is either being obeyed — complexity reduced — or violated spectacularly — complexity added in a single large structural change. Traditional metrics see the size of the commit. Entropy sees the structural impact. Lehman's laws predicted these events would matter. The entropy paper gives us a way to flag them.</p>
+<p>Lehman originally called Law II &quot;entropy&quot; before changing the term to &quot;complexity.&quot; The Torres paper returns to the original framing and gives it measurement. A system's structural entropy, tracked over time, is a direct measure of whether Law II is being respected or ignored. If entropy is rising, complexity is accumulating. If entropy is stable, the team is doing the work to maintain structure. If entropy drops — the rarest and most encouraging case — the team is actively simplifying. Most codebases rise. Few are stable. Almost none drop. The measurement confirms what Lehman predicted in 1974.</p>
+<h2 id="what-to-do">What to do</h2>
+<p>Lehman's Laws are not a call to despair. They are a call to realism. The laws describe what happens. How you respond is a choice.</p>
+<p><strong>Accept that change is not failure.</strong> Law I says you will be changing the system forever. This is not because you built it wrong. This is because the world changes. Stop treating maintenance as a phase that follows development. Development is the first phase of maintenance. Everything after is the rest of it.</p>
+<p><strong>Budget for complexity reduction.</strong> Law II says complexity increases unless you fight it. Fighting it costs time and money. Budget for it. Refactoring is not a sign of past failure. It is the necessary work of preventing future failure. If your organization treats refactoring as a luxury, your complexity is rising. It is rising at a rate determined by your change velocity and your neglect of structure. You can measure this. If you don't, you're choosing ignorance, not safety.</p>
+<p><strong>Measure entropy.</strong> The tools exist. Structural entropy from your dependency graph. Textual entropy from compression ratios. Track them. Flag surprisal commits — the ones where the information structure changes dramatically. These are the commits most likely to contain architectural change and most likely to be overlooked by review processes that flag size. Size is easy to measure. Structure change is more important.</p>
+<p><strong>Hire for taste.</strong> All eight laws describe a system that resists management. The only counterforce is good design decisions, made early and defended persistently. That means good designers. Brooks spent his career arguing this. Lehman's Laws are the evidence that Brooks was right. The process won't save you. Only taste will.</p>
+<blockquote>
+<p>&quot;The central question in how to improve the software art, centers, as it always has, on people.&quot; — Brooks, <em>No Silver Bullet</em>, 1986</p>
+</blockquote>
 <hr>
-<p><strong>Reference:</strong> Adriano Torres, Sebastian Baltes, Christoph Treude, Markus Wagner. &quot;Applying Information Theory to Software Evolution.&quot; NLBSE 2023. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2303.13729">arXiv:2303.13729</a></p>
+<p><strong>References:</strong></p>
+<ul>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, Vol. 68, No. 9, September 1980, pp. 1060-1076.</li>
+<li>M.M. Lehman, &quot;Laws of Software Evolution Revisited,&quot; <em>Proceedings of the 5th European Workshop on Software Process Technology</em>, 1996.</li>
+<li>Frederick P. Brooks, Jr., &quot;No Silver Bullet: Essence and Accidents of Software Engineering,&quot; <em>Computer Magazine</em>, April 1987.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month: Essays on Software Engineering</em>, Addison-Wesley, 1975 (Anniversary Edition, 1995).</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, Vol. 15, No. 12, December 1972.</li>
+<li>Adriano Torres, Sebastian Baltes, Christoph Treude, Markus Wagner, &quot;Applying Information Theory to Software Evolution,&quot; NLBSE 2023. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2303.13729">arXiv:2303.13729</a></li>
+</ul>
 </div>
       </article>
       <article class="post" id="kevlin-henney">
@@ -3711,7 +3773,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#entropy-software-evolution">&#34;entropy as a code metric&#34;</a>
+              <a href="#lehmans-laws">&#34;Lehman&#39;s Laws&#34;</a>
               <a href="#kevlin-henney">&#34;Henney&#39;s Microservices&#34;</a>
               <a href="#parnas-information-hiding">&#34;Parnas&#39;s Information Hiding&#34;</a>
               <a href="#brooks-design-great-designers">&#34;Brooks on Software Design Series: great designers, not great processes&#34;</a>

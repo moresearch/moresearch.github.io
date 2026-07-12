@@ -45,3 +45,6 @@ That is why work like WebVoyager is useful. It reminds teams that if a product p
 
 
 Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.
+
+
+> The browser is not just a rendering engine. It is the user's window into the application. An agent that cannot see what the user sees cannot build what the user needs.

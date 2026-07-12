@@ -6643,6 +6643,81 @@ pn_vis.view(gviz)
 <p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
 </div>
       </article>
+      <article class="post" id="why-blockchains-matter-again-for-agentic-software">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a></h2><p class="post-summary">Blockchains become interesting again when coding agents need programmable, auditable, and explicitly economic coordination instead of opaque platform rules.</p>
+          <div class="tags"><span class="tag">blockchain</span><span class="tag">agents</span><span class="tag">research</span>
+          </div>
+        </header>
+        <div class="post-body"><p>I did not focus on blockchain in my dissertation because I wanted to rehash crypto slogans. I focused on it because blockchains make economic rules programmable, transparent, and auditable.</p>
+<p>That matters a lot more in an agentic world than it did in the earlier platform era.</p>
+<p>In <a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">my dissertation on SWE-Agent Economics and SWEChain-SDK</a>, I argue that decentralized SWE-Agent outsourcing markets are worth studying precisely because centralized platforms hide too much of the mechanism. They hide the ordering logic, the settlement logic, the admission rules, and often the event history needed for serious analysis.</p>
+<p>If agents are going to negotiate, specialize, and compete in software markets, I want those rules visible.</p>
+<h2 id="why-blockchain-was-the-right-research-substrate">Why blockchain was the right research substrate</h2>
+<p>The dissertation frames a blockchain not as branding, but as an implementation of an economic mechanism. That distinction mattered a lot to me.</p>
+<p>I was interested in:</p>
+<ul>
+<li>explicit allocation rules,</li>
+<li>transparent bids and payments,</li>
+<li>auditable state transitions,</li>
+<li>reproducible experiments under fixed conditions.</li>
+</ul>
+<p>A blockchain-style substrate is useful there because it makes state change legible. Every bid, allocation, payment, and artifact trail can be logged as part of the system rather than reconstructed later from scattered dashboards.</p>
+<p>That is exactly why one of the central contributions of the dissertation is <strong>SWEChain-SDK</strong>, a local-first blockchain-native SDK for economic network simulations of decentralized SWE-Agent markets.</p>
+<h2 id="why-this-gets-more-relevant-in-the-agentic-era">Why this gets more relevant in the agentic era</h2>
+<p>The stronger agents become, the more we need clean answers to questions like:</p>
+<ol>
+<li>who can submit work,</li>
+<li>who is allowed to bid,</li>
+<li>how selection happens,</li>
+<li>how settlement happens,</li>
+<li>what evidence counts as completion,</li>
+<li>how disputes or failures are inspected afterward.</li>
+</ol>
+<p>Traditional software systems can answer those questions too, but they often do so in an opaque way. Blockchains are interesting here because they make those policies first-class and programmable.</p>
+<p>That is why I focused on them in research. I was less interested in speculation and more interested in mechanism visibility.</p>
+<h2 id="go-is-a-natural-language-for-the-experimental-surface">Go is a natural language for the experimental surface</h2>
+<p>Even if the settlement substrate is blockchain-based, the surrounding tooling still benefits from straightforward systems code. A local-first SDK needs CLIs, dashboards, bridges, and deterministic utilities. That is where Go fits very naturally.</p>
+<p>A small Go surface makes the policy layer easier to reason about:</p>
+<pre><code class="language-go">package settlement
+
+// AuctionResult is the minimal state needed to settle a finished task.
+type AuctionResult struct {
+	TaskID      string
+	WinnerID    string
+	PriceCents  int64
+	ArtifactRef string
+}
+
+// Ledger abstracts the settlement backend behind one explicit call.
+type Ledger interface {
+	Settle(result AuctionResult) error
+}
+
+func Finalize(ledger Ledger, result AuctionResult) error {
+	// Keep the settlement path obvious so it is easy to audit.
+	return ledger.Settle(result)
+}
+</code></pre>
+<p>Again, the point is not complexity. The point is clarity. If agentic systems are going to rely on explicit mechanisms, the code around those mechanisms should be boring, auditable, and testable.</p>
+<h2 id="why-i-think-this-topic-is-still-underrated">Why I think this topic is still underrated</h2>
+<p>A lot of agent discussion still assumes coordination will be solved inside application logic alone. I think that misses the opportunity.</p>
+<p>Once agents are meaningful economic actors, infrastructure matters. Settlement matters. Logging matters. The ability to replay and inspect the exact rule path matters. That is why a blockchain-native SDK felt like a useful research artifact rather than a gimmick.</p>
+<p>The dissertation made that case because I wanted a platform where decentralized SWE-Agent markets could be studied under controlled, paired experiments. If you want to compare policies seriously, you need the mechanism to be part of the experiment, not an invisible dependency.</p>
+<h2 id="the-real-reason-i-cared">The real reason I cared</h2>
+<p>I focused on this because I think agentic software engineering will eventually force us to choose between opaque coordination and explicit coordination. My bet is that explicit coordination wins, especially in high-stakes systems where trust, incentives, and auditability matter.</p>
+<p>That is why blockchains matter again in this context. Not because they make agents magical, but because they make the rules legible.</p>
+<h2 id="source">Source</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">Mohamed A. Fouad, <em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a></li>
+</ul>
+<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
+<blockquote>
+<p>Blockchains matter for agents because agents need infrastructure they can trust without trusting anyone. The chain is the trust. The trust is the foundation. The foundation must be verifiable.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="studying-local-llm-training-from-scratch">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
@@ -7467,78 +7542,6 @@ func TestCatalogContract(t *testing.T) {
 </blockquote>
 </div>
       </article>
-      <article class="post" id="why-blockchains-matter-again-for-agentic-software">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a></h2><p class="post-summary">Blockchains become interesting again when coding agents need programmable, auditable, and explicitly economic coordination instead of opaque platform rules.</p>
-          <div class="tags"><span class="tag">blockchain</span><span class="tag">agents</span><span class="tag">research</span>
-          </div>
-        </header>
-        <div class="post-body"><p>I did not focus on blockchain in my dissertation because I wanted to rehash crypto slogans. I focused on it because blockchains make economic rules programmable, transparent, and auditable.</p>
-<p>That matters a lot more in an agentic world than it did in the earlier platform era.</p>
-<p>In <a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">my dissertation on SWE-Agent Economics and SWEChain-SDK</a>, I argue that decentralized SWE-Agent outsourcing markets are worth studying precisely because centralized platforms hide too much of the mechanism. They hide the ordering logic, the settlement logic, the admission rules, and often the event history needed for serious analysis.</p>
-<p>If agents are going to negotiate, specialize, and compete in software markets, I want those rules visible.</p>
-<h2 id="why-blockchain-was-the-right-research-substrate">Why blockchain was the right research substrate</h2>
-<p>The dissertation frames a blockchain not as branding, but as an implementation of an economic mechanism. That distinction mattered a lot to me.</p>
-<p>I was interested in:</p>
-<ul>
-<li>explicit allocation rules,</li>
-<li>transparent bids and payments,</li>
-<li>auditable state transitions,</li>
-<li>reproducible experiments under fixed conditions.</li>
-</ul>
-<p>A blockchain-style substrate is useful there because it makes state change legible. Every bid, allocation, payment, and artifact trail can be logged as part of the system rather than reconstructed later from scattered dashboards.</p>
-<p>That is exactly why one of the central contributions of the dissertation is <strong>SWEChain-SDK</strong>, a local-first blockchain-native SDK for economic network simulations of decentralized SWE-Agent markets.</p>
-<h2 id="why-this-gets-more-relevant-in-the-agentic-era">Why this gets more relevant in the agentic era</h2>
-<p>The stronger agents become, the more we need clean answers to questions like:</p>
-<ol>
-<li>who can submit work,</li>
-<li>who is allowed to bid,</li>
-<li>how selection happens,</li>
-<li>how settlement happens,</li>
-<li>what evidence counts as completion,</li>
-<li>how disputes or failures are inspected afterward.</li>
-</ol>
-<p>Traditional software systems can answer those questions too, but they often do so in an opaque way. Blockchains are interesting here because they make those policies first-class and programmable.</p>
-<p>That is why I focused on them in research. I was less interested in speculation and more interested in mechanism visibility.</p>
-<h2 id="go-is-a-natural-language-for-the-experimental-surface">Go is a natural language for the experimental surface</h2>
-<p>Even if the settlement substrate is blockchain-based, the surrounding tooling still benefits from straightforward systems code. A local-first SDK needs CLIs, dashboards, bridges, and deterministic utilities. That is where Go fits very naturally.</p>
-<p>A small Go surface makes the policy layer easier to reason about:</p>
-<pre><code class="language-go">package settlement
-
-// AuctionResult is the minimal state needed to settle a finished task.
-type AuctionResult struct {
-	TaskID      string
-	WinnerID    string
-	PriceCents  int64
-	ArtifactRef string
-}
-
-// Ledger abstracts the settlement backend behind one explicit call.
-type Ledger interface {
-	Settle(result AuctionResult) error
-}
-
-func Finalize(ledger Ledger, result AuctionResult) error {
-	// Keep the settlement path obvious so it is easy to audit.
-	return ledger.Settle(result)
-}
-</code></pre>
-<p>Again, the point is not complexity. The point is clarity. If agentic systems are going to rely on explicit mechanisms, the code around those mechanisms should be boring, auditable, and testable.</p>
-<h2 id="why-i-think-this-topic-is-still-underrated">Why I think this topic is still underrated</h2>
-<p>A lot of agent discussion still assumes coordination will be solved inside application logic alone. I think that misses the opportunity.</p>
-<p>Once agents are meaningful economic actors, infrastructure matters. Settlement matters. Logging matters. The ability to replay and inspect the exact rule path matters. That is why a blockchain-native SDK felt like a useful research artifact rather than a gimmick.</p>
-<p>The dissertation made that case because I wanted a platform where decentralized SWE-Agent markets could be studied under controlled, paired experiments. If you want to compare policies seriously, you need the mechanism to be part of the experiment, not an invisible dependency.</p>
-<h2 id="the-real-reason-i-cared">The real reason I cared</h2>
-<p>I focused on this because I think agentic software engineering will eventually force us to choose between opaque coordination and explicit coordination. My bet is that explicit coordination wins, especially in high-stakes systems where trust, incentives, and auditability matter.</p>
-<p>That is why blockchains matter again in this context. Not because they make agents magical, but because they make the rules legible.</p>
-<h2 id="source">Source</h2>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://repositorio.ufu.br/bitstream/123456789/47974/3/SoftwareEngineeringAgent.pdf">Mohamed A. Fouad, <em>Software Engineering Agent Economics: A Blockchain Software Development Kit for Economic Network Simulations</em></a></li>
-</ul>
-<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
-</div>
-      </article>
       <article class="post" id="the-agentic-era-is-an-economic-system">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-07" data-utc="May 07, 2026 UTC" aria-label="May 07, 2026 UTC" tabindex="0">1778112000</time></p>
@@ -8037,6 +8040,7 @@ type Logger interface {
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#alphago-from-scratch-eric-jang">Building AlphaGo from scratch – Eric Jang</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
+              <a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a>
               <a href="#studying-local-llm-training-from-scratch">LLM Training: Lessons from Local Experiments</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>
               <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
@@ -8044,7 +8048,6 @@ type Logger interface {
               <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>
               <a href="#dependency-injection-in-go-with-fx-and-alternatives">Dependency Injection in Go</a>
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Agentic Engineering: Codebase Contracts and Skills</a>
-              <a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a>
               <a href="#the-agentic-era-is-an-economic-system">Agentic Era: An Economic System</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">SWE-Agent Economics: My Focus</a>
               <a href="#why-go-still-matters-in-the-ai-era">Why Go Still Matters in AI</a>

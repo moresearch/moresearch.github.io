@@ -1,7 +1,7 @@
 ---
-title: On AI and Mechanism Design
+title: Scarcity and Mechanism Design
 date: 2026-07-12
-slug: on-ai-and-mechanism-design
+slug: scarcity-and-mechanism-design
 summary: "AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade."
 tags: ai, mechanism-design, agents, reinforcement-learning, auctions, governance
 series: scarcity
@@ -65,12 +65,12 @@ The software engineer who understands this convergence will design systems where
 ---
 
 **This is part 5 of a 7-part series on scarcity and software.**
-- [Part 1: On Scarcity](https://blog.hackspree.com/#on-scarcity)
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#on-software-engineering-economics)
-- [Part 4: On Games in Software](https://blog.hackspree.com/#on-games-in-software)
-- [Part 6: On Practice](https://blog.hackspree.com/#on-practice)
-- [Part 7: The Catalog of Games](https://blog.hackspree.com/#the-catalog-of-games)
+- [Part 1: On Scarcity](https://blog.hackspree.com/#scarcity)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#scarcity-and-software-economics)
+- [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
+- [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)
+- [Part 7: The Catalog of Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
 
 **References:**
 - Tacchetti et al., "Deep Mechanism Design," *PNAS*, 2025.

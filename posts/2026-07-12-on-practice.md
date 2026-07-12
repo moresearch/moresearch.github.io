@@ -1,7 +1,7 @@
 ---
-title: On Practice
+title: Scarcity in Practice
 date: 2026-07-12
-slug: on-practice
+slug: scarcity-in-practice
 summary: "How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits."
 tags: scarcity, game-theory, mechanism-design, practice, software-engineering
 series: scarcity
@@ -57,12 +57,12 @@ Scarcity thinking becomes a habit. You start seeing opportunity costs everywhere
 ---
 
 **This is part 6 of a 7-part series on scarcity and software.**
-- [Part 1: On Scarcity](https://blog.hackspree.com/#on-scarcity)
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#on-software-engineering-economics)
-- [Part 4: On Games in Software](https://blog.hackspree.com/#on-games-in-software)
-- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#on-ai-and-mechanism-design)
-- [Part 7: The Catalog of Games](https://blog.hackspree.com/#the-catalog-of-games)
+- [Part 1: On Scarcity](https://blog.hackspree.com/#scarcity)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#scarcity-and-software-economics)
+- [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
+- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+- [Part 7: The Catalog of Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
 
 **References:**
 - Lionel Robbins, *An Essay on the Nature and Significance of Economic Science*, Macmillan, 1932.

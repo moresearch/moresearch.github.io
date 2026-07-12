@@ -1,7 +1,7 @@
 ---
-title: On Software Engineering Economics
+title: Scarcity and Software Economics
 date: 2026-07-12
-slug: on-software-engineering-economics
+slug: scarcity-and-software-economics
 summary: "Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed."
 tags: software-economics, boehm, opportunity-cost, technical-debt, npv
 series: scarcity
@@ -47,12 +47,12 @@ Barry Boehm published *Software Engineering Economics* in 1981. The book applied
 ---
 
 **This is part 3 of a 7-part series on scarcity and software.**
-- [Part 1: On Scarcity](https://blog.hackspree.com/#on-scarcity)
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 4: On Games in Software](https://blog.hackspree.com/#on-games-in-software)
-- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#on-ai-and-mechanism-design)
-- [Part 6: On Practice](https://blog.hackspree.com/#on-practice)
-- [Part 7: The Catalog of Games](https://blog.hackspree.com/#the-catalog-of-games)
+- [Part 1: On Scarcity](https://blog.hackspree.com/#scarcity)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
+- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+- [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)
+- [Part 7: The Catalog of Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
 
 **References:**
 - Barry W. Boehm, *Software Engineering Economics*, Prentice-Hall, 1981.

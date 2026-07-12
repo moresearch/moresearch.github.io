@@ -1,7 +1,7 @@
 ---
-title: On Games in Software
+title: Scarcity and Software Games
 date: 2026-07-12
-slug: on-games-in-software
+slug: scarcity-and-software-games
 summary: "Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do."
 tags: game-theory, software-architecture, microservices, coordination
 series: scarcity
@@ -69,12 +69,12 @@ Every situation is a game. The game has a structure. The structure determines th
 ---
 
 **This is part 4 of a 7-part series on scarcity and software.**
-- [Part 1: On Scarcity](https://blog.hackspree.com/#on-scarcity)
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#on-software-engineering-economics)
-- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#on-ai-and-mechanism-design)
-- [Part 6: On Practice](https://blog.hackspree.com/#on-practice)
-- [Part 7: The Catalog of Games](https://blog.hackspree.com/#the-catalog-of-games)
+- [Part 1: On Scarcity](https://blog.hackspree.com/#scarcity)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#scarcity-and-software-economics)
+- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+- [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)
+- [Part 7: The Catalog of Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
 
 **References:**
 - Garrett Hardin, "The Tragedy of the Commons," *Science*, 1968.

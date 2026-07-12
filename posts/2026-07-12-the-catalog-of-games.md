@@ -1,7 +1,7 @@
 ---
-title: The Catalog of Games
+title: A Catalog of Scarcity Games
 date: 2026-07-12
-slug: the-catalog-of-games
+slug: catalog-of-scarcity-games
 summary: "An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture."
 tags: game-theory, taxonomy, reference, software-engineering
 series: scarcity
@@ -117,9 +117,9 @@ Every software situation is a game. The game has a type. The type determines the
 ---
 
 **This is part 7 of a 7-part series on scarcity and software.**
-- [Part 1: On Scarcity](https://blog.hackspree.com/#on-scarcity)
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#on-software-engineering-economics)
-- [Part 4: On Games in Software](https://blog.hackspree.com/#on-games-in-software)
-- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#on-ai-and-mechanism-design)
-- [Part 6: On Practice](https://blog.hackspree.com/#on-practice)
+- [Part 1: On Scarcity](https://blog.hackspree.com/#scarcity)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#scarcity-and-software-economics)
+- [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
+- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+- [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)

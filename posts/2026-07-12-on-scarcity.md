@@ -50,12 +50,12 @@ Resources are finite. Ends are infinite. Means have alternative uses. Every deci
 ---
 
 **This is part 1 of a 7-part series on scarcity and software.**
-- [Part 2: On Games](https://blog.hackspree.com/#on-games)
-- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#on-software-engineering-economics)
-- [Part 4: On Games in Software](https://blog.hackspree.com/#on-games-in-software)
-- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#on-ai-and-mechanism-design)
-- [Part 6: On Practice](https://blog.hackspree.com/#on-practice)
-- [Part 7: The Catalog of Games](https://blog.hackspree.com/#the-catalog-of-games)
+- [Part 2: On Games](https://blog.hackspree.com/#scarcity-and-games)
+- [Part 3: On Software Engineering Economics](https://blog.hackspree.com/#scarcity-and-software-economics)
+- [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
+- [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+- [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)
+- [Part 7: The Catalog of Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
 
 **References:**
 - Lionel Robbins, *An Essay on the Nature and Significance of Economic Science*, Macmillan, 1932.

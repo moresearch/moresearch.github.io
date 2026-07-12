@@ -12,6 +12,8 @@ Software engineering is a multiplayer game. The players are teams, services, org
 
 ## The service boundary game
 
+Thomas Schelling observed that "what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance." API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.
+
 Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.
 
 This is a coordination game with asymmetric information. Team B didn't know what Team A depended on. Team A assumed Team B wouldn't change the API without notice. The assumptions were incompatible. The failure is a Nash equilibrium — neither team can unilaterally improve their outcome given what the other is doing. Team A can't make Team B communicate better. Team B can't make Team A depend on fewer things. The equilibrium is suboptimal. The solution is mechanism design: automated contract testing that makes breaking changes immediately visible. Visibility changes the payoff. The equilibrium shifts.

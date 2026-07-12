@@ -10,6 +10,10 @@ part: 7
 
 Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.
 
+> "Simplicity does not precede complexity, but follows it." — Alan Perlis
+
+The catalog that follows is a map of the complexity. Use it to find the simplicity on the other side.
+
 ## By cooperation
 
 | Category | Definition | Software example |

@@ -6643,6 +6643,45 @@ pn_vis.view(gviz)
 <p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
 </div>
       </article>
+      <article class="post" id="on-device-llms-are-a-systems-design-problem">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a></h2><p class="post-summary">The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">review</span><span class="tag">systems</span>
+          </div>
+        </header>
+        <div class="post-body"><p>There is a reason review papers are useful in fast-moving fields: they show how many moving parts a clean demo hides.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> is valuable because it frames edge LLM deployment as a systems problem spanning compression, hardware acceleration, runtime strategy, and hybrid edge-cloud design.</p>
+<p>That framing is worth stealing.</p>
+<p>If a team says it is &quot;doing on-device AI,&quot; the real question is whether it has a clear answer for:</p>
+<ul>
+<li>what runs locally,</li>
+<li>what falls back remotely,</li>
+<li>how quality and latency trade off,</li>
+<li>how the deployment will be debugged in the field.</li>
+</ul>
+<h2 id="the-model-is-only-one-component">The model is only one component</h2>
+<p>It is tempting to talk about on-device AI as if choosing a small enough model solves the hard part. In practice, model choice is only the beginning. Once a team tries to ship, other questions arrive immediately: how the model is compressed, what hardware path it depends on, and how the system behaves when local execution is not the right answer.</p>
+<p>That is why the systems framing matters. It keeps teams from pretending that an edge strategy is just a checkpoint plus a demo video.</p>
+<h2 id="shipping-requires-coordinated-decisions">Shipping requires coordinated decisions</h2>
+<p>A real on-device deployment has to line up several layers at once:</p>
+<ul>
+<li>model efficiency,</li>
+<li>runtime behavior,</li>
+<li>hardware acceleration,</li>
+<li>fallback and hybrid execution,</li>
+<li>field observability.</li>
+</ul>
+<p>Weakness in any one of those layers can define the product experience. A great local model with poor fallback behavior is still a poor product. A fast path with no clear debugging story is still an operational risk.</p>
+<h2 id="the-useful-question-is-architectural">The useful question is architectural</h2>
+<p>That is why I like the comprehensive-review framing. It encourages a better question than &quot;can we run an LLM on-device?&quot; The better question is &quot;what system are we actually building around local inference?&quot;</p>
+<p>That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.</p>
+<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
+<blockquote>
+<p>Running a model locally is not about privacy. It is about sovereignty. The model that runs on your device is yours. The model that runs in the cloud belongs to someone else. Ownership matters when the model makes decisions.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="mechanism-design-and-network-economics-for-agentic-markets">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
@@ -7497,42 +7536,6 @@ func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
 <p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
 </div>
       </article>
-      <article class="post" id="on-device-llms-are-a-systems-design-problem">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a></h2><p class="post-summary">The on-device future depends on more than one model choice; it depends on compression, acceleration, fallback policy, and deployment design.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">review</span><span class="tag">systems</span>
-          </div>
-        </header>
-        <div class="post-body"><p>There is a reason review papers are useful in fast-moving fields: they show how many moving parts a clean demo hides.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> is valuable because it frames edge LLM deployment as a systems problem spanning compression, hardware acceleration, runtime strategy, and hybrid edge-cloud design.</p>
-<p>That framing is worth stealing.</p>
-<p>If a team says it is &quot;doing on-device AI,&quot; the real question is whether it has a clear answer for:</p>
-<ul>
-<li>what runs locally,</li>
-<li>what falls back remotely,</li>
-<li>how quality and latency trade off,</li>
-<li>how the deployment will be debugged in the field.</li>
-</ul>
-<h2 id="the-model-is-only-one-component">The model is only one component</h2>
-<p>It is tempting to talk about on-device AI as if choosing a small enough model solves the hard part. In practice, model choice is only the beginning. Once a team tries to ship, other questions arrive immediately: how the model is compressed, what hardware path it depends on, and how the system behaves when local execution is not the right answer.</p>
-<p>That is why the systems framing matters. It keeps teams from pretending that an edge strategy is just a checkpoint plus a demo video.</p>
-<h2 id="shipping-requires-coordinated-decisions">Shipping requires coordinated decisions</h2>
-<p>A real on-device deployment has to line up several layers at once:</p>
-<ul>
-<li>model efficiency,</li>
-<li>runtime behavior,</li>
-<li>hardware acceleration,</li>
-<li>fallback and hybrid execution,</li>
-<li>field observability.</li>
-</ul>
-<p>Weakness in any one of those layers can define the product experience. A great local model with poor fallback behavior is still a poor product. A fast path with no clear debugging story is still an operational risk.</p>
-<h2 id="the-useful-question-is-architectural">The useful question is architectural</h2>
-<p>That is why I like the comprehensive-review framing. It encourages a better question than &quot;can we run an LLM on-device?&quot; The better question is &quot;what system are we actually building around local inference?&quot;</p>
-<p>That is a more serious design question, and it is the one that matters. On-device LLMs are exciting, but the teams that ship them well will usually be the teams that treat them as systems design from the start.</p>
-<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
-</div>
-      </article>
       <article class="post" id="the-agentic-era-is-an-economic-system">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-07" data-utc="May 07, 2026 UTC" aria-label="May 07, 2026 UTC" tabindex="0">1778112000</time></p>
@@ -8028,6 +8031,7 @@ type Logger interface {
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#alphago-from-scratch-eric-jang">Building AlphaGo from scratch – Eric Jang</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
+              <a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>
               <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
               <a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a>
               <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>
@@ -8035,7 +8039,6 @@ type Logger interface {
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Agentic Engineering: Codebase Contracts and Skills</a>
               <a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a>
               <a href="#studying-local-llm-training-from-scratch">LLM Training: Lessons from Local Experiments</a>
-              <a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>
               <a href="#the-agentic-era-is-an-economic-system">Agentic Era: An Economic System</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">SWE-Agent Economics: My Focus</a>
               <a href="#why-go-still-matters-in-the-ai-era">Why Go Still Matters in AI</a>

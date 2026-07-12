@@ -45,3 +45,6 @@ Andrew Lo, *Adaptive Markets: Financial Evolution at the Speed of Thought* (2017
 - Robert Engle and Clive Granger, "Co-Integration and Error Correction: Representation, Estimation, and Testing," *Econometrica*, 1987.
 - Andrew Lo, *Adaptive Markets: Financial Evolution at the Speed of Thought*, Princeton University Press, 2017.
 - Related posts: [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage), [Market Making](https://blog.hackspree.com/#dex-trading-market-making)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

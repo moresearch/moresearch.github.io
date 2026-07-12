@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;A sandwich attack is the most profitable form of MEV. The attacker buys before the victim and sells after, pocketing the price difference. The victim pays more. The attacker extracts the difference. The sandwich is the dark forest made visible. Understanding it is the only defense against it.&#34;">
+  <meta name="description" content="&#34;Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="dex-trading-stat-arb">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#dex-trading-stat-arb">Statistical Arbitrage</a></h2><p class="post-summary">&#34;Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.&#34;</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">stat-arb</span><span class="tag">pairs-trading</span><span class="tag">cointegration</span><span class="tag">mean-reversion</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Statistical arbitrage is the exploitation of statistical mispricings. Unlike pure arbitrage — buy cheap, sell dear, simultaneously — stat arb involves risk. The mispricing may persist. It may widen before it corrects. The stat arb trader bets that it will correct, on average, over many trades. The edge is small per trade. The volume makes it profitable.</p>
+<p>The strategy emerged from the quantitative trading revolution of the 1980s. Gerry Bamberger and Nunzio Tartaglia at Morgan Stanley developed the first pairs trading strategies. The idea: identify two stocks that historically move together. When they diverge — one rises, the other falls — the spread between them has widened beyond its historical range. Buy the underperformer. Short the overperformer. Wait for convergence. The trade is market-neutral — you are not betting on the direction of the market, only on the relationship between the two stocks. Market-neutral strategies attracted capital because they were uncorrelated with the market. The lack of correlation was the selling point.</p>
+<h2 id="the-functional-origin-pairs-trading">The functional origin: pairs trading</h2>
+<p>Pairs trading is the simplest stat arb strategy. Two assets with a historical relationship. A spread between them that mean-reverts. The trader identifies the relationship, waits for divergence, enters the trade, exits on convergence. The relationship can be economic — two companies in the same industry, two tokens on the same blockchain — or statistical — two assets whose prices are cointegrated.</p>
+<p>Cointegration, developed by Clive Granger (Nobel Prize, 2003) and Robert Engle (Nobel Prize, 2003), is the statistical property that makes pairs trading work. Two time series are cointegrated if each is non-stationary (its statistical properties change over time) but a linear combination of them is stationary (mean-reverts). The classic example: a drunk and her dog on a leash. Both walk randomly. The distance between them — the leash length — is stationary. The dog wanders. The drunk wanders. The leash pulls them back together. The leash is the cointegrating relationship.</p>
+<p>In finance: two stocks in the same sector. Each follows a random walk. Their price ratio mean-reverts. The ratio is the leash. The trader buys when the ratio is low relative to its historical average — the underperformer is cheap relative to the outperformer. The trader sells when the ratio reverts. The trade is profitable if the cointegrating relationship persists. The relationship can break. The break is the risk.</p>
+<p>In crypto: ETH and a liquid staking derivative like stETH. The two should trade at parity — 1 stETH = 1 ETH. They occasionally diverge — stETH trades at a discount during market stress, when holders want to exit staked positions quickly. The divergence is the opportunity. The trader buys stETH at a discount, waits for convergence, sells at parity. The trade is directional in the pair but market-neutral in dollar terms. The risk: the discount widens further, the trader's capital is locked, the convergence takes longer than the trader can afford. The risk is real. The risk is managed by position sizing and stop-losses.</p>
+<h2 id="statistical-arbitrage-in-crypto">Statistical arbitrage in crypto</h2>
+<p>Crypto stat arb has advantages over traditional stat arb. The data is public and real-time. Every trade on a DEX is on-chain. Every price on a CEX is streamed. The data quality is higher than in traditional markets, where dark pools and off-exchange trading obscure true volumes. The crypto market structure — fragmented across hundreds of venues, each with its own liquidity profile — creates more opportunities for statistical mispricing than the consolidated equity markets. The fragmentation is the opportunity.</p>
+<p>The strategies:</p>
+<p><strong>Cross-DEX pairs.</strong> The same token pair trades on multiple DEXs. The prices are usually close. When they diverge, the divergence is an opportunity. The trader buys on the cheaper DEX, sells on the dearer. The trade is atomic if the DEXs are on the same chain. It is non-atomic if they are on different chains — the trader bears bridge latency risk.</p>
+<p><strong>Liquid staking derivative arbitrage.</strong> stETH/ETH, rETH/ETH, cbETH/ETH. The derivatives should trade at or near parity with the underlying. They don't always. The discount widens during market stress. The trader accumulates at a discount, waits for convergence, redeems. The trade has a natural exit: the derivative can be redeemed for the underlying after the unstaking period. The redemption is the convergence guarantee. The guarantee makes the trade lower-risk than traditional pairs trading. The lower risk attracts capital. The capital compresses the spread.</p>
+<p><strong>Mean reversion in AMM pools.</strong> AMM pools exhibit mean-reverting behavior around the external market price. When a pool's price diverges from the CEX price, arbitrageurs trade against the pool to bring it back. The mean reversion is not guaranteed — it depends on arbitrageurs acting. But the arbitrageurs are reliable because the trade is profitable. The stat arb trader can front-run the arbitrageurs: enter when the divergence appears, exit when the arbitrageurs correct it. The trade is a bet on arbitrageurs doing their job. The bet is well-founded. The arbitrageurs are reliable.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em> (2017). Lo's book is not specifically about statistical arbitrage. It is about the broader framework that makes stat arb intelligible: markets are not perfectly efficient. They are adaptive systems populated by boundedly rational agents competing for profits. The competition produces efficiency in the long run. The transition produces profit opportunities for those who can identify and exploit them faster than others. Stat arb is the mechanism of the transition. The stat arb trader is the agent of efficiency. The efficiency, once achieved, eliminates the stat arb trader's edge. The trader must find new edges. The search is continuous. The search is the subject of this series.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Clive Granger, &quot;Investigating Causal Relations by Econometric Models and Cross-Spectral Methods,&quot; <em>Econometrica</em>, 1969.</li>
+<li>Robert Engle and Clive Granger, &quot;Co-Integration and Error Correction: Representation, Estimation, and Testing,&quot; <em>Econometrica</em>, 1987.</li>
+<li>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em>, Princeton University Press, 2017.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
       <article class="post" id="dex-trading-sandwich">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2811,38 +2844,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Colibri, <a target="_blank" rel="noopener noreferrer" href="https://github.com/JustVugg/colibri">github.com/JustVugg/colibri</a></li>
 <li>GLM-5.2, Z.ai, MIT License.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#chinese-models-local-first">Chinese models will win the local-first race</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="dex-trading-stat-arb">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#dex-trading-stat-arb">Statistical Arbitrage</a></h2><p class="post-summary">&#34;Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.&#34;</p>
-          <div class="tags"><span class="tag">dex</span><span class="tag">stat-arb</span><span class="tag">pairs-trading</span><span class="tag">cointegration</span><span class="tag">mean-reversion</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Statistical arbitrage is the exploitation of statistical mispricings. Unlike pure arbitrage — buy cheap, sell dear, simultaneously — stat arb involves risk. The mispricing may persist. It may widen before it corrects. The stat arb trader bets that it will correct, on average, over many trades. The edge is small per trade. The volume makes it profitable.</p>
-<p>The strategy emerged from the quantitative trading revolution of the 1980s. Gerry Bamberger and Nunzio Tartaglia at Morgan Stanley developed the first pairs trading strategies. The idea: identify two stocks that historically move together. When they diverge — one rises, the other falls — the spread between them has widened beyond its historical range. Buy the underperformer. Short the overperformer. Wait for convergence. The trade is market-neutral — you are not betting on the direction of the market, only on the relationship between the two stocks. Market-neutral strategies attracted capital because they were uncorrelated with the market. The lack of correlation was the selling point.</p>
-<h2 id="the-functional-origin-pairs-trading">The functional origin: pairs trading</h2>
-<p>Pairs trading is the simplest stat arb strategy. Two assets with a historical relationship. A spread between them that mean-reverts. The trader identifies the relationship, waits for divergence, enters the trade, exits on convergence. The relationship can be economic — two companies in the same industry, two tokens on the same blockchain — or statistical — two assets whose prices are cointegrated.</p>
-<p>Cointegration, developed by Clive Granger (Nobel Prize, 2003) and Robert Engle (Nobel Prize, 2003), is the statistical property that makes pairs trading work. Two time series are cointegrated if each is non-stationary (its statistical properties change over time) but a linear combination of them is stationary (mean-reverts). The classic example: a drunk and her dog on a leash. Both walk randomly. The distance between them — the leash length — is stationary. The dog wanders. The drunk wanders. The leash pulls them back together. The leash is the cointegrating relationship.</p>
-<p>In finance: two stocks in the same sector. Each follows a random walk. Their price ratio mean-reverts. The ratio is the leash. The trader buys when the ratio is low relative to its historical average — the underperformer is cheap relative to the outperformer. The trader sells when the ratio reverts. The trade is profitable if the cointegrating relationship persists. The relationship can break. The break is the risk.</p>
-<p>In crypto: ETH and a liquid staking derivative like stETH. The two should trade at parity — 1 stETH = 1 ETH. They occasionally diverge — stETH trades at a discount during market stress, when holders want to exit staked positions quickly. The divergence is the opportunity. The trader buys stETH at a discount, waits for convergence, sells at parity. The trade is directional in the pair but market-neutral in dollar terms. The risk: the discount widens further, the trader's capital is locked, the convergence takes longer than the trader can afford. The risk is real. The risk is managed by position sizing and stop-losses.</p>
-<h2 id="statistical-arbitrage-in-crypto">Statistical arbitrage in crypto</h2>
-<p>Crypto stat arb has advantages over traditional stat arb. The data is public and real-time. Every trade on a DEX is on-chain. Every price on a CEX is streamed. The data quality is higher than in traditional markets, where dark pools and off-exchange trading obscure true volumes. The crypto market structure — fragmented across hundreds of venues, each with its own liquidity profile — creates more opportunities for statistical mispricing than the consolidated equity markets. The fragmentation is the opportunity.</p>
-<p>The strategies:</p>
-<p><strong>Cross-DEX pairs.</strong> The same token pair trades on multiple DEXs. The prices are usually close. When they diverge, the divergence is an opportunity. The trader buys on the cheaper DEX, sells on the dearer. The trade is atomic if the DEXs are on the same chain. It is non-atomic if they are on different chains — the trader bears bridge latency risk.</p>
-<p><strong>Liquid staking derivative arbitrage.</strong> stETH/ETH, rETH/ETH, cbETH/ETH. The derivatives should trade at or near parity with the underlying. They don't always. The discount widens during market stress. The trader accumulates at a discount, waits for convergence, redeems. The trade has a natural exit: the derivative can be redeemed for the underlying after the unstaking period. The redemption is the convergence guarantee. The guarantee makes the trade lower-risk than traditional pairs trading. The lower risk attracts capital. The capital compresses the spread.</p>
-<p><strong>Mean reversion in AMM pools.</strong> AMM pools exhibit mean-reverting behavior around the external market price. When a pool's price diverges from the CEX price, arbitrageurs trade against the pool to bring it back. The mean reversion is not guaranteed — it depends on arbitrageurs acting. But the arbitrageurs are reliable because the trade is profitable. The stat arb trader can front-run the arbitrageurs: enter when the divergence appears, exit when the arbitrageurs correct it. The trade is a bet on arbitrageurs doing their job. The bet is well-founded. The arbitrageurs are reliable.</p>
-<h2 id="the-reference">The reference</h2>
-<p>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em> (2017). Lo's book is not specifically about statistical arbitrage. It is about the broader framework that makes stat arb intelligible: markets are not perfectly efficient. They are adaptive systems populated by boundedly rational agents competing for profits. The competition produces efficiency in the long run. The transition produces profit opportunities for those who can identify and exploit them faster than others. Stat arb is the mechanism of the transition. The stat arb trader is the agent of efficiency. The efficiency, once achieved, eliminates the stat arb trader's edge. The trader must find new edges. The search is continuous. The search is the subject of this series.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Clive Granger, &quot;Investigating Causal Relations by Econometric Models and Cross-Spectral Methods,&quot; <em>Econometrica</em>, 1969.</li>
-<li>Robert Engle and Clive Granger, &quot;Co-Integration and Error Correction: Representation, Estimation, and Testing,&quot; <em>Econometrica</em>, 1987.</li>
-<li>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em>, Princeton University Press, 2017.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
 </ul>
 </div>
       </article>
@@ -7416,6 +7417,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#dex-trading-stat-arb">Statistical Arbitrage</a>
               <a href="#dex-trading-sandwich">Sandwich Attacks</a>
               <a href="#dex-trading-order-book">The Order Book</a>
               <a href="#dex-trading-mev">Maximal Extractable Value</a>
@@ -7461,7 +7463,6 @@ type Logger interface {
               <a href="#fi-perpetuals">Perpetual Futures</a>
               <a href="#algorithmic-trading-books">Why algorithmic trading is a game worth playing</a>
               <a href="#colibri">Colibri</a>
-              <a href="#dex-trading-stat-arb">Statistical Arbitrage</a>
               <a href="#verification-horizon">The Verification Horizon</a>
               <a href="#cosmos-sdk-ai-agents">Cosmos SDK is the substrate for AI agents</a>
               <a href="#algorithmic-trading-crypto">Algorithmic trading in crypto</a>

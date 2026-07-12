@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Uniswap V3 let LPs concentrate liquidity in a price range. Capital efficiency multiplied. Passive LPs were replaced by active managers. And a new form of MEV emerged: just-in-time liquidity, where an attacker provides liquidity for exactly one block, earns the fees, and exits. The LP game changed forever.&#34;">
+  <meta name="description" content="&#34;A flash loan lets you borrow millions with zero collateral, as long as you repay in the same transaction. It is the innovation that made atomic arbitrage possible at scale. It is also the weapon of choice for protocol exploits. The same mechanism that enforces the Law of One Price can drain a lending protocol in 12 seconds.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,38 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="dex-trading-flash-loans">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#dex-trading-flash-loans">Flash Loans</a></h2><p class="post-summary">&#34;A flash loan lets you borrow millions with zero collateral, as long as you repay in the same transaction. It is the innovation that made atomic arbitrage possible at scale. It is also the weapon of choice for protocol exploits. The same mechanism that enforces the Law of One Price can drain a lending protocol in 12 seconds.&#34;</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">flash-loans</span><span class="tag">arbitrage</span><span class="tag">atomicity</span><span class="tag">defi</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A flash loan is an uncollateralized loan that must be borrowed and repaid within a single blockchain transaction. If the loan is not repaid by the end of the transaction, the entire transaction reverts. The loan is never actually disbursed. The borrower pays a fee. The lender earns the fee with zero credit risk — the atomicity of the transaction guarantees either full repayment or full reversion. There is no partial state. There is no default. The mechanism is pure atomicity.</p>
+<p>Flash loans were introduced by Marble Protocol in 2018 and popularized by Aave and dYdX in 2019-2020. The innovation was not the concept — uncollateralized intraday credit has existed in traditional finance for centuries. The innovation was the enforcement mechanism: in traditional finance, uncollateralized credit requires trust, legal contracts, and recourse to courts. In DeFi, it requires a single line of Solidity: <code>require(repayment &gt;= loan, &quot;not repaid&quot;)</code>. The enforcement is code. The code is the court.</p>
+<h2 id="the-functional-origin-intraday-credit">The functional origin: intraday credit</h2>
+<p>In traditional finance, brokers extend intraday credit to clients. A hedge fund buys $10 million of stock in the morning and sells it in the afternoon. The broker lends the $10 million for a few hours. The credit is uncollateralized — the broker trusts the fund to settle by end of day. If the fund doesn't settle, the broker has legal recourse. The recourse is slow and expensive. The trust is the cost.</p>
+<p>The continuous linked settlement (CLS) system in foreign exchange, launched in 2002, addressed a similar problem: FX trades settle in different currencies at different times, creating settlement risk — the risk that one party pays but the other doesn't. CLS uses payment-versus-payment (PvP) settlement: both legs settle simultaneously or neither settles. The simultaneity eliminates settlement risk. The mechanism is atomicity. Flash loans are CLS for DeFi — atomic settlement without a central clearinghouse. The blockchain is the clearinghouse. The atomicity is the mechanism.</p>
+<h2 id="how-flash-loans-enable-arbitrage">How flash loans enable arbitrage</h2>
+<p>Arbitrage requires capital. The price difference between two pools might be 0.5%. To extract meaningful profit, the arbitrageur needs to trade large amounts. Large amounts require capital. The capital has an opportunity cost — it could be deployed elsewhere. The opportunity cost reduces the net return on arbitrage. Flash loans eliminate the capital requirement. The arbitrageur borrows the capital, executes both legs, repays the loan, and keeps the profit. The capital is never at risk. The opportunity cost is zero. The arbitrageur's only cost is gas + flash loan fee. The fee is typically 0.09% on Aave. The spread must exceed the fee to be profitable. The spread that doesn't exceed the fee persists. The spread that does is extracted.</p>
+<p>The flash loan democratized arbitrage — in theory. Anyone with a smart contract can borrow millions and execute an arbitrage. In practice, the democratization was limited by the same latency and infrastructure constraints that concentrate all MEV extraction. The flash loan solves the capital problem. It doesn't solve the speed problem. Speed still wins. Speed requires infrastructure. Infrastructure requires capital. The democratization is partial. The partial democratization is the state of the market.</p>
+<h2 id="flash-loans-as-attack-vectors">Flash loans as attack vectors</h2>
+<p>The same atomicity that enables arbitrage enables attacks. A flash loan can be used to manipulate the price of a governance token, borrow against the inflated collateral, drain the lending protocol, and repay the flash loan — all in one transaction. The attack requires no capital. The attacker pays only gas + flash loan fee. If the attack succeeds, the profit can be millions. The protocol is left with bad debt. The attacker is untraceable. The transaction was atomic. The exploitation was instantaneous.</p>
+<p>The most famous flash loan attacks: bZx (February 2020, $1M), Harvest Finance (October 2020, $34M), Cream Finance (October 2021, $130M), Beanstalk (April 2022, $182M). Each attack used flash loans to amass voting power or manipulate prices. Each attack was atomic. Each attack exploited the gap between the protocol's economic assumptions and the reality of atomic composability: the protocol assumed that accumulating a controlling stake required capital. Flash loans made the assumption false. The assumption was the vulnerability.</p>
+<p>The flash loan is a tool. It is neutral. It enables arbitrage that enforces the Law of One Price. It also enables attacks that destroy protocols. The tool is the same. The use determines the outcome. The outcome is a function of the protocol's design. The design must account for atomic composability. Most protocols don't. The ones that don't are exploited. The ones that do survive. The selection is evolutionary. The evolution is the market.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Kaihua Qin, Liyi Zhou, and Arthur Gervais, &quot;Quantifying Blockchain Extractable Value: How Dark is the Forest?&quot; (2021). This paper quantified the prevalence of MEV extraction on Ethereum, including flash loan-based arbitrage and attacks. The paper documented the concentration of extraction, the profitability of different strategies, and the arms race dynamics. It is the quantitative complement to Daian et al.'s &quot;Flash Boys 2.0.&quot; The numbers are the evidence. The evidence supports the narrative. The narrative is: the dark forest is real, it is concentrated, and it is accelerating.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Aave, &quot;Flash Loans,&quot; Aave Documentation.</li>
+<li>Kaihua Qin, Liyi Zhou, Arthur Gervais, &quot;Quantifying Blockchain Extractable Value: How Dark is the Forest?&quot; 2021.</li>
+<li>Marble Protocol, &quot;Flash Lending,&quot; 2018.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-mev">MEV</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
       <article class="post" id="dex-trading-concentrated-liquidity">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2742,37 +2774,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008.</li>
 <li>Larry Harris, <em>Trading and Exchanges</em>, Oxford University Press, 2003.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="dex-trading-flash-loans">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#dex-trading-flash-loans">Flash Loans</a></h2><p class="post-summary">&#34;A flash loan lets you borrow millions with zero collateral, as long as you repay in the same transaction. It is the innovation that made atomic arbitrage possible at scale. It is also the weapon of choice for protocol exploits. The same mechanism that enforces the Law of One Price can drain a lending protocol in 12 seconds.&#34;</p>
-          <div class="tags"><span class="tag">dex</span><span class="tag">flash-loans</span><span class="tag">arbitrage</span><span class="tag">atomicity</span><span class="tag">defi</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A flash loan is an uncollateralized loan that must be borrowed and repaid within a single blockchain transaction. If the loan is not repaid by the end of the transaction, the entire transaction reverts. The loan is never actually disbursed. The borrower pays a fee. The lender earns the fee with zero credit risk — the atomicity of the transaction guarantees either full repayment or full reversion. There is no partial state. There is no default. The mechanism is pure atomicity.</p>
-<p>Flash loans were introduced by Marble Protocol in 2018 and popularized by Aave and dYdX in 2019-2020. The innovation was not the concept — uncollateralized intraday credit has existed in traditional finance for centuries. The innovation was the enforcement mechanism: in traditional finance, uncollateralized credit requires trust, legal contracts, and recourse to courts. In DeFi, it requires a single line of Solidity: <code>require(repayment &gt;= loan, &quot;not repaid&quot;)</code>. The enforcement is code. The code is the court.</p>
-<h2 id="the-functional-origin-intraday-credit">The functional origin: intraday credit</h2>
-<p>In traditional finance, brokers extend intraday credit to clients. A hedge fund buys $10 million of stock in the morning and sells it in the afternoon. The broker lends the $10 million for a few hours. The credit is uncollateralized — the broker trusts the fund to settle by end of day. If the fund doesn't settle, the broker has legal recourse. The recourse is slow and expensive. The trust is the cost.</p>
-<p>The continuous linked settlement (CLS) system in foreign exchange, launched in 2002, addressed a similar problem: FX trades settle in different currencies at different times, creating settlement risk — the risk that one party pays but the other doesn't. CLS uses payment-versus-payment (PvP) settlement: both legs settle simultaneously or neither settles. The simultaneity eliminates settlement risk. The mechanism is atomicity. Flash loans are CLS for DeFi — atomic settlement without a central clearinghouse. The blockchain is the clearinghouse. The atomicity is the mechanism.</p>
-<h2 id="how-flash-loans-enable-arbitrage">How flash loans enable arbitrage</h2>
-<p>Arbitrage requires capital. The price difference between two pools might be 0.5%. To extract meaningful profit, the arbitrageur needs to trade large amounts. Large amounts require capital. The capital has an opportunity cost — it could be deployed elsewhere. The opportunity cost reduces the net return on arbitrage. Flash loans eliminate the capital requirement. The arbitrageur borrows the capital, executes both legs, repays the loan, and keeps the profit. The capital is never at risk. The opportunity cost is zero. The arbitrageur's only cost is gas + flash loan fee. The fee is typically 0.09% on Aave. The spread must exceed the fee to be profitable. The spread that doesn't exceed the fee persists. The spread that does is extracted.</p>
-<p>The flash loan democratized arbitrage — in theory. Anyone with a smart contract can borrow millions and execute an arbitrage. In practice, the democratization was limited by the same latency and infrastructure constraints that concentrate all MEV extraction. The flash loan solves the capital problem. It doesn't solve the speed problem. Speed still wins. Speed requires infrastructure. Infrastructure requires capital. The democratization is partial. The partial democratization is the state of the market.</p>
-<h2 id="flash-loans-as-attack-vectors">Flash loans as attack vectors</h2>
-<p>The same atomicity that enables arbitrage enables attacks. A flash loan can be used to manipulate the price of a governance token, borrow against the inflated collateral, drain the lending protocol, and repay the flash loan — all in one transaction. The attack requires no capital. The attacker pays only gas + flash loan fee. If the attack succeeds, the profit can be millions. The protocol is left with bad debt. The attacker is untraceable. The transaction was atomic. The exploitation was instantaneous.</p>
-<p>The most famous flash loan attacks: bZx (February 2020, $1M), Harvest Finance (October 2020, $34M), Cream Finance (October 2021, $130M), Beanstalk (April 2022, $182M). Each attack used flash loans to amass voting power or manipulate prices. Each attack was atomic. Each attack exploited the gap between the protocol's economic assumptions and the reality of atomic composability: the protocol assumed that accumulating a controlling stake required capital. Flash loans made the assumption false. The assumption was the vulnerability.</p>
-<p>The flash loan is a tool. It is neutral. It enables arbitrage that enforces the Law of One Price. It also enables attacks that destroy protocols. The tool is the same. The use determines the outcome. The outcome is a function of the protocol's design. The design must account for atomic composability. Most protocols don't. The ones that don't are exploited. The ones that do survive. The selection is evolutionary. The evolution is the market.</p>
-<h2 id="the-reference">The reference</h2>
-<p>Kaihua Qin, Liyi Zhou, and Arthur Gervais, &quot;Quantifying Blockchain Extractable Value: How Dark is the Forest?&quot; (2021). This paper quantified the prevalence of MEV extraction on Ethereum, including flash loan-based arbitrage and attacks. The paper documented the concentration of extraction, the profitability of different strategies, and the arms race dynamics. It is the quantitative complement to Daian et al.'s &quot;Flash Boys 2.0.&quot; The numbers are the evidence. The evidence supports the narrative. The narrative is: the dark forest is real, it is concentrated, and it is accelerating.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Aave, &quot;Flash Loans,&quot; Aave Documentation.</li>
-<li>Kaihua Qin, Liyi Zhou, Arthur Gervais, &quot;Quantifying Blockchain Extractable Value: How Dark is the Forest?&quot; 2021.</li>
-<li>Marble Protocol, &quot;Flash Lending,&quot; 2018.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-mev">MEV</a></li>
 </ul>
 </div>
       </article>
@@ -7410,6 +7411,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#dex-trading-flash-loans">Flash Loans</a>
               <a href="#dex-trading-concentrated-liquidity">Concentrated Liquidity and JIT Attacks</a>
               <a href="#dex-trading-cex-dex-arb">CEX-DEX Arbitrage</a>
               <a href="#dex-trading-arbitrage">Arbitrage</a>
@@ -7453,7 +7455,6 @@ type Logger interface {
               <a href="#dex-trading-latency">Latency and Infrastructure</a>
               <a href="#dex-trading-stat-arb">Statistical Arbitrage</a>
               <a href="#dex-trading-market-making">Market Making</a>
-              <a href="#dex-trading-flash-loans">Flash Loans</a>
               <a href="#dex-trading-mev">Maximal Extractable Value</a>
               <a href="#dex-trading-order-book">The Order Book</a>
               <a href="#verification-horizon">The Verification Horizon</a>

@@ -43,3 +43,6 @@ Kaihua Qin, Liyi Zhou, and Arthur Gervais, "Quantifying Blockchain Extractable V
 - Kaihua Qin, Liyi Zhou, Arthur Gervais, "Quantifying Blockchain Extractable Value: How Dark is the Forest?" 2021.
 - Marble Protocol, "Flash Lending," 2018.
 - Related posts: [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage), [MEV](https://blog.hackspree.com/#dex-trading-mev)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

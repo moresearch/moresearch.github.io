@@ -1,5 +1,5 @@
 ---
-title: Scarcity in Practice
+title: Five Habits
 date: 2026-07-12
 slug: scarcity-in-practice
 summary: "How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits."
@@ -9,6 +9,8 @@ part: 6
 ---
 
 The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.
+The difference between knowing a principle and applying it is the difference between owning a cookbook and cooking dinner. Most engineers who read Robbins will agree that scarcity matters. Most will return to work and debate architectures without naming the scarce resource. The knowing is easy. The doing is hard. The gap between knowing and doing is a habit. Habits are built by repetition, not by insight. The five habits below are designed to be repeated until they're automatic. The goal is not to understand scarcity. The goal is to feel its absence like a missing step on a staircase.
+
 
 Alan Perlis, the first Turing Award winner, wrote: "Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it." Most software teams are pragmatists. They suffer complexity because avoiding it requires upfront investment and removing it requires genius. The five frameworks that follow are for pragmatists who want to suffer less. Genius is not required. Discipline is.
 

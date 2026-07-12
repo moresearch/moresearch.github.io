@@ -1,5 +1,5 @@
 ---
-title: A Catalog of Scarcity Games
+title: Field Guide to Scarcity Games
 date: 2026-07-12
 slug: catalog-of-scarcity-games
 summary: "An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture."
@@ -9,6 +9,8 @@ part: 7
 ---
 
 Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.
+
+This catalog is a diagnostic tool. When a situation feels stuck — the migration isn't happening, the standard isn't being adopted, the teams keep breaking each other's APIs — locate it here. The name of the game tells you why it's stuck. The why tells you what to change. Most organizational interventions fail because they treat every stuck situation as a communication problem. Some are stag hunts. Some are chicken. Some are commons tragedies. The solution to a stag hunt is visible early adopters. The solution to chicken is a pre-committed rule. The solution to a commons tragedy is a governance mechanism. The solutions are different because the games are different. The catalog tells you which one you're in.
 
 > "Simplicity does not precede complexity, but follows it." — Alan Perlis
 

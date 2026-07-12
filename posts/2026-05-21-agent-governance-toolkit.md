@@ -81,3 +81,6 @@ AGT isn’t a lightweight policy library — it’s an operational stack for tea
 
 
 Engineering is always embedded in a context of constraints — economic, political, organizational. The engineer who ignores the context builds systems that are technically correct and operationally irrelevant. The engineer who understands the context builds systems that survive. The context is part of the specification. The specification is incomplete without it.
+
+
+> Governance is not about restricting what agents can do. It is about making their actions auditable. The audit trail is the mechanism of trust. Without it, the agent is a black box. Black boxes are not deployable in production.

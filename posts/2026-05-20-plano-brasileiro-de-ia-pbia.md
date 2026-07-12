@@ -70,3 +70,6 @@ O PBIA representa um marco importante para a política pública de IA no Brasil:
 ---
 
 Referência: MINISTÉRIO DA CIÊNCIA, TECNOLOGIA E INOVAÇÃO - MCTI; CENTRO DE GESTÃO E ESTUDOS ESTRATÉGICOS - CGEE. IA para o bem de todos; Plano Brasileiro de Inteligência Artificial. Brasília, DF: MCTI; CGEE, 2025. 104 p.
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

@@ -74,3 +74,6 @@ The dark factory does not make software easy. It makes implementation easy. The 
 - Fred Brooks, *No Silver Bullet* (1986) — essential vs. accidental complexity
 - Dan Shapiro, [The Five Levels: from spicy autocomplete to the software factory](https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/) (2026)
 - [What is dark factory software development?](https://darkfactory.dev/blog/what-is-dark-factory-software-development)
+
+
+Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.

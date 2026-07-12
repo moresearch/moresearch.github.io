@@ -52,3 +52,6 @@ Nexis-AI, "Nex-T1: Multi-Agent Orchestration Framework for Autonomous DeFi Tradi
 - Nexis-AI, "Nex-T1: Multi-Agent Orchestration Framework for Autonomous DeFi Trading," 2025.
 - Andrew Lo, *Adaptive Markets*, Princeton University Press, 2017.
 - Related posts: [Algorithmic trading in crypto](https://blog.hackspree.com/#algorithmic-trading-crypto), [Cosmos SDK for AI agents](https://blog.hackspree.com/#cosmos-sdk-ai-agents), [Design the Game](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

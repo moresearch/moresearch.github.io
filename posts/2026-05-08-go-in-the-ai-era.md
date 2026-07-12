@@ -53,3 +53,6 @@ That is why Go keeps surfacing in mature AI products. It helps teams build the u
 
 
 This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.
+
+
+

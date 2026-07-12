@@ -4823,6 +4823,46 @@ The difference between knowing a principle and applying it is the difference bet
 </ul>
 </div>
       </article>
+      <article class="post" id="brooks-design-conceptual-integrity">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a></h2><p class="post-summary">&#34;The system feels like one mind designed it. The most important property of any designed thing.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 2010, Fred Brooks published <em>The Design of Design</em>. It is his best book and his least read.</p>
+<p>The argument: <strong>conceptual integrity is the most important property of any designed system.</strong> Everything else serves it.</p>
+<blockquote>
+<p>&quot;I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
+</blockquote>
+<p>The tradeoff: omit useful features to preserve coherence. Say no to good ideas that don't fit.</p>
+<h2 id="definitions">Definitions</h2>
+<p><strong>Conceptual integrity.</strong> The system feels like one mind designed it. The user forms one mental model. They predict behavior in new situations.</p>
+<p><strong>Orthogonality.</strong> One way to do each thing. No overlapping concepts. Non-redundancy.</p>
+<p><strong>Propriety.</strong> Nothing unnecessary.</p>
+<blockquote>
+<p>&quot;The essential skill of the designer is saying no — repeatedly, to smart people with good arguments — and having the authority to make it stick. Every added feature is a subtraction from all existing features, for it adds complexity without corresponding benefit.&quot;</p>
+</blockquote>
+<p>Feature cost is multiplicative. Each new thing makes every existing thing harder to find, learn, and use.</p>
+<p><strong>Generality.</strong> No arbitrary limits. Primitives compose to handle unanticipated cases. Generality without orthogonality is a kitchen sink. Orthogonality without generality is a toy.</p>
+<p>Brooks was not alone. Knuth: programs should be readable by humans. Dijkstra: elegance prevents bugs — transparent structure hides nothing. Kernighan and Plauger on clarity vs. muddle in <em>The Elements of Programming Style</em> (1974). Wirth: Pascal as deliberate integrity — one mind, one language. Lampson: the Alto's GUI worked because one designer decided what to leave out.</p>
+<p>Brooks's contribution: the <em>structural precondition</em>. One mind. In <em>Computer Architecture</em> (1997, with Blaauw), he showed this governed even ISAs, where orthogonality of operations and addressing modes was the explicit goal.</p>
+<h2 id="proof">Proof</h2>
+<blockquote>
+<p>&quot;Reims Cathedral has conceptual integrity. Built over eight generations of architects, each stuck to the original plan. The result is a unified work, coherent in every detail. Most cathedrals are not like this; their conflicting concepts produce architectural chaos.&quot;</p>
+</blockquote>
+<p>Reims worked because the original architect's plan had authority that outlived him. Two centuries of successors submitted. It should not exist. That it does is the evidence.</p>
+<p>Most cathedrals: Gothic nave, Renaissance facade, Baroque chapel on Romanesque transept. Each generation had a vision. Nobody had authority. Chaos.</p>
+<p>Software systems are cathedrals built over decades. Unix: Thompson and Ritchie, one resonant pair. Lisp: McCarthy, one mind. Go: Thompson, Pike, Griesemer. The Macintosh: Jobs. These are Reims. Thompson: &quot;One of my most productive days was throwing away 1,000 lines of code.&quot;</p>
+<hr>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
+<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
+<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
+<blockquote>
+<p>Conceptual integrity is not about consistency. It is about coherence. A system can be consistently bad. A coherent system feels like one mind designed it, even if many hands built it.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="brooks-design-experts-divorce">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
@@ -5100,43 +5140,6 @@ The difference between knowing a principle and applying it is the difference bet
 <p>Every project needs a design owner. Reviews every interface. Says no without escalation. Job: conceptual integrity. If this person doesn't exist on your project, they are not you. Find them. Or become them. Either way, you're currently in trouble you haven't noticed yet.</p>
 <hr>
 <p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">← Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
-<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
-<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
-</div>
-      </article>
-      <article class="post" id="brooks-design-conceptual-integrity">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a></h2><p class="post-summary">&#34;The system feels like one mind designed it. The most important property of any designed thing.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In 2010, Fred Brooks published <em>The Design of Design</em>. It is his best book and his least read.</p>
-<p>The argument: <strong>conceptual integrity is the most important property of any designed system.</strong> Everything else serves it.</p>
-<blockquote>
-<p>&quot;I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
-</blockquote>
-<p>The tradeoff: omit useful features to preserve coherence. Say no to good ideas that don't fit.</p>
-<h2 id="definitions">Definitions</h2>
-<p><strong>Conceptual integrity.</strong> The system feels like one mind designed it. The user forms one mental model. They predict behavior in new situations.</p>
-<p><strong>Orthogonality.</strong> One way to do each thing. No overlapping concepts. Non-redundancy.</p>
-<p><strong>Propriety.</strong> Nothing unnecessary.</p>
-<blockquote>
-<p>&quot;The essential skill of the designer is saying no — repeatedly, to smart people with good arguments — and having the authority to make it stick. Every added feature is a subtraction from all existing features, for it adds complexity without corresponding benefit.&quot;</p>
-</blockquote>
-<p>Feature cost is multiplicative. Each new thing makes every existing thing harder to find, learn, and use.</p>
-<p><strong>Generality.</strong> No arbitrary limits. Primitives compose to handle unanticipated cases. Generality without orthogonality is a kitchen sink. Orthogonality without generality is a toy.</p>
-<p>Brooks was not alone. Knuth: programs should be readable by humans. Dijkstra: elegance prevents bugs — transparent structure hides nothing. Kernighan and Plauger on clarity vs. muddle in <em>The Elements of Programming Style</em> (1974). Wirth: Pascal as deliberate integrity — one mind, one language. Lampson: the Alto's GUI worked because one designer decided what to leave out.</p>
-<p>Brooks's contribution: the <em>structural precondition</em>. One mind. In <em>Computer Architecture</em> (1997, with Blaauw), he showed this governed even ISAs, where orthogonality of operations and addressing modes was the explicit goal.</p>
-<h2 id="proof">Proof</h2>
-<blockquote>
-<p>&quot;Reims Cathedral has conceptual integrity. Built over eight generations of architects, each stuck to the original plan. The result is a unified work, coherent in every detail. Most cathedrals are not like this; their conflicting concepts produce architectural chaos.&quot;</p>
-</blockquote>
-<p>Reims worked because the original architect's plan had authority that outlived him. Two centuries of successors submitted. It should not exist. That it does is the evidence.</p>
-<p>Most cathedrals: Gothic nave, Renaissance facade, Baroque chapel on Romanesque transept. Each generation had a vision. Nobody had authority. Chaos.</p>
-<p>Software systems are cathedrals built over decades. Unix: Thompson and Ritchie, one resonant pair. Lisp: McCarthy, one mind. Go: Thompson, Pike, Griesemer. The Macintosh: Jobs. These are Reims. Thompson: &quot;One of my most productive days was throwing away 1,000 lines of code.&quot;</p>
-<hr>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
 <p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
 <p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
 </div>
@@ -8046,13 +8049,13 @@ type Logger interface {
               <a href="#fi-options">Options and DeFi Derivatives</a>
               <a href="#fi-prediction-markets">Prediction Markets</a>
               <a href="#fi-perpetuals">Perpetual Futures</a>
+              <a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a>
               <a href="#brooks-design-experts-divorce">Brooks on Software Design Series: why experts get it wrong</a>
               <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>
               <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>
               <a href="#brooks-design-great-designers">Brooks on Software Design Series: great designers, not great processes</a>
               <a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a>
               <a href="#brooks-design-one-mind-rule">Brooks on Software Design Series: one mind</a>
-              <a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a>
               <a href="#parnas-information-hiding">Parnas&#39;s Information Hiding</a>
               <a href="#mcculloch-what-is-a-number">McCulloch&#39;s question: what is a number, that a man may know it?</a>
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>

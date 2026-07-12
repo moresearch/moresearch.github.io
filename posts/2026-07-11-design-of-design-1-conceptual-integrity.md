@@ -50,3 +50,6 @@ Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver B
 
 
 Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.
+
+
+> Conceptual integrity is not about consistency. It is about coherence. A system can be consistently bad. A coherent system feels like one mind designed it, even if many hands built it.

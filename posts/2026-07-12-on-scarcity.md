@@ -1,5 +1,5 @@
 ---
-title: On Scarcity
+title: The First Lesson
 date: 2026-07-12
 slug: scarcity
 summary: "Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision."
@@ -19,6 +19,8 @@ Four concepts. **Ends** — what you want. **Means** — what you have. **Scarci
 There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.
 
 Thomas Sowell sharpened Robbins: "The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics." Milton Friedman made it simpler: "There's no such thing as a free lunch." Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.
+
+Most people think the opposite of scarcity is abundance. It isn't. The opposite of scarcity is waste. Abundance without discipline produces waste. Scarcity with discipline produces focus. The difference between a great engineering team and a mediocre one is not how many resources they have. It is how they choose under scarcity. Great teams make the scarcity explicit. Mediocre teams pretend it doesn't exist. Both face the same constraints. One names them. The other pretends.
 
 ## The four scarcities of software
 

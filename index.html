@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Robbins: economics is choice under scarcity (1932). Engineering: the application of knowledge to solve problems within constraints. The constraints are always economic. Time, money, attention, complexity — all finite. All have alternative uses. Engineering without economics is mathematics with a deadline it ignores.&#34;">
+  <meta name="description" content="&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,80 +652,15 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="engineering-is-economics">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#engineering-is-economics">Engineering is economics</a></h2><p class="post-summary">&#34;Robbins: economics is choice under scarcity (1932). Engineering: the application of knowledge to solve problems within constraints. The constraints are always economic. Time, money, attention, complexity — all finite. All have alternative uses. Engineering without economics is mathematics with a deadline it ignores.&#34;</p>
-          <div class="tags"><span class="tag">engineering</span><span class="tag">economics</span><span class="tag">scarcity</span><span class="tag">software-design</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Engineering is the application of knowledge to solve problems within constraints. Mathematics has no constraints. Physics has natural constraints. Engineering has <em>chosen</em> constraints — budget, schedule, weight, power, materials, attention, complexity. The constraints are what make it engineering and not science. Science discovers what is true. Engineering decides what to build given that truth and a budget.</p>
-<p>The constraints are always, ultimately, economic. Time is scarce. Money is scarce. Attention is scarce. The complexity a system can absorb before becoming unmaintainable is scarce. Every decision to use a resource for one purpose is a decision not to use it for another. That is the definition of an economic choice.</p>
-<blockquote>
-<p>&quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; — Thomas Sowell</p>
-</blockquote>
-<p>The first lesson of engineering is also scarcity. The first lesson of engineering management is to disregard the first lesson of engineering. Every unrealistic deadline, every under-resourced project, every &quot;do more with less&quot; mandate is politics disregarding economics. The budget is real. The deadline is real. The complexity budget is real. Pretending otherwise does not make the constraints disappear. It makes the failure invisible until the constraints are violated. The violation is called a death march. The death march was predictable. The economics predicted it.</p>
-<h2 id="the-robbins-definition-applied">The Robbins definition, applied</h2>
-<p>In 1932, Lionel Robbins defined economics:</p>
-<blockquote>
-<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
-</blockquote>
-<p>Replace &quot;economics&quot; with &quot;engineering decision-making&quot; and the sentence remains true. Every architectural choice is a relationship between ends (what you want the system to do) and scarce means (developer time, compute, cognitive capacity) which have alternative uses (different features, different architectures, different optimizations). The engineer who does not think economically is not an engineer. They are a mathematician who happens to write code. The mathematician asks: is this correct? The engineer asks: is this correct <em>and</em> worth what it costs?</p>
-<p>Milton Friedman compressed the same insight:</p>
-<blockquote>
-<p>&quot;There's no such thing as a free lunch.&quot;</p>
-</blockquote>
-<p>Every feature has a cost. The cost is not just the time to build it. The cost is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free because the bill arrives later. The bill is the accumulated complexity that makes every subsequent feature take longer than the last. The bill is paid in reduced velocity, increased bugs, and the eventual rewrite. The rewrite is bankruptcy. The lunch was never free. The accounting was deferred.</p>
-<h2 id="what-economics-gives-engineering">What economics gives engineering</h2>
-<p>Economics gives engineering three things: a vocabulary, a decision framework, and a theory of systems.</p>
-<p><strong>The vocabulary.</strong> Opportunity cost. Sunk cost. Marginal cost. Comparative advantage. Economies of scale. Net present value. Option value. Each term names a specific structure. Each structure appears in engineering decisions whether you name it or not. Naming it lets you reason about it. Not naming it lets it operate invisibly. Invisible economic forces produce worse engineering decisions than visible ones.</p>
-<p>Opportunity cost is the largest cost in software engineering and the one that appears on no invoice. The features you didn't build are the cost of the features you did. Every hour spent on Feature A is an hour not spent on Feature B. The cost of A is not just the time to build it. It is the time plus the value of B. B was never built, so its value was never measured. The absence of measurement doesn't mean the cost wasn't real. It means the accounting was incomplete.</p>
-<p>Sunk cost is the cost already incurred and unrecoverable. The three years spent on the monolith are sunk. They should not influence the decision to migrate. They do. The influence is irrational. The irrationality is human. Friedrich Hayek explained why no single mind can overcome it:</p>
-<blockquote>
-<p>&quot;The knowledge of the circumstances of which we must make use never exists in concentrated or integrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&quot;</p>
-</blockquote>
-<p>The knowledge of what the system costs, what it should become, and what it would take to get there — it is dispersed across the team, the codebase, the incident history, the user feedback. No single person holds it all. The architect who pretends to is making decisions with incomplete information. The admission of incomplete information is the beginning of economic thinking. The pretense of complete information is the beginning of architectural hubris.</p>
-<p><strong>The decision framework.</strong> Robbins's four questions apply to any engineering choice. What is the end? What are the means? Are they scarce? Do they have alternative uses? If yes — and it always is — the decision is economic. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice.</p>
-<p>Most engineering debates skip this. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. &quot;We are optimizing for developer time, not compute.&quot; &quot;We are optimizing for change velocity, not operational simplicity.&quot; State the constraint. The debate resolves. The constraint determines the answer. Name the constraint.</p>
-<p><strong>The theory of systems.</strong> Hayek's price system is a mechanism for communicating scarcity without requiring anyone to understand the whole. When the price of compute rises, users use less compute. They don't need to know why the price rose. The price communicates the scarcity. The behavior adapts. The system self-regulates. This is mechanism design before the term existed: design the signal, not the response. The signal communicates the scarcity. The agents adapt. The system finds equilibrium.</p>
-<p>A well-designed software system does the same. API rate limits are prices. Queue depths are prices. Circuit breaker states are prices. Each communicates a scarcity — of compute, of downstream capacity, of healthy instances. Services adapt by backing off, retrying, routing elsewhere. No service knows why the scarcity exists. No service needs to. The signal communicates. The behavior adapts. The system self-regulates. This is economics implemented as infrastructure. The infrastructure is the mechanism. The mechanism communicates scarcity. Scarcity drives behavior.</p>
-<h2 id="what-happens-without-economics">What happens without economics</h2>
-<p>Engineering without economics produces systems that are correct and useless. The architecture is elegant. The abstractions are clean. The system solves a problem nobody has, at a cost nobody calculated, with a complexity budget nobody tracked. The system is correct. It is also uneconomic. Uneconomic systems are not deployed, or are deployed and abandoned, or are deployed and maintained at a loss until the loss becomes undeniable. The loss was always deniable because the economics were never made explicit. Explicit economics can be debated. Implicit economics produce implicit failure.</p>
-<p>Engineering without economics also produces systems that are popular and catastrophic. The features shipped on time. The architecture was compromised at every deadline. The complexity budget was overdrawn at every sprint. The system worked until it didn't. When it didn't, the rewrite cost more than the original build. The rewrite was necessary because the economics were ignored. The economics were ignored because the deadlines didn't include them. The deadlines were economic decisions stated as technical requirements. &quot;Ship by Q3&quot; is an economic decision. It means &quot;we value time-to-market over complexity budget.&quot; Stating it that way forces the question: is the time-to-market premium worth the future complexity cost? Sometimes yes. Usually nobody asks.</p>
-<h2 id="the-engineers-who-knew">The engineers who knew</h2>
-<p>The great software engineers were economists before the field existed. Brooks: conceptual integrity is an argument about the diseconomy of scale in design teams. Parnas: information hiding is an argument about the option value of clean interfaces. Lehman: E-type systems must evolve, and evolution increases complexity unless work is done to reduce it — an argument about the depreciation of unmaintained structure. Christensen: the innovator's dilemma is an argument about capital allocation under asymmetric constraints. None of them used the economic vocabulary. All of them made economic arguments. The vocabulary existed. They didn't know it. The arguments were correct anyway.</p>
-<p>Tony Hoare stated the economic tradeoff in design:</p>
-<blockquote>
-<p>&quot;There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.&quot;</p>
-</blockquote>
-<p>Far more difficult means far more expensive upfront. Far less expensive over time. The economic choice is between paying now or paying later. Paying now is visible. Paying later is invisible. The invisible cost feels cheaper. It isn't. The accounting that makes it feel cheaper is wrong.</p>
-<h2 id="the-unifying-claim">The unifying claim</h2>
-<p>There is no engineering without economics because engineering is decision-making under constraints, and constraints are the subject matter of economics. Every engineering decision is an economic decision stated in technical language. The language obscures the economics. The economics determine the outcome. The engineer who learns the economic vocabulary makes better decisions. The engineer who doesn't makes economic decisions without knowing they are economic decisions. The decisions are still economic. They are just worse.</p>
-<blockquote>
-<p>&quot;No solutions, only trade-offs.&quot; — Thomas Sowell</p>
-</blockquote>
-<p>Engineering is the discipline of trade-offs. Economics is the science of trade-offs. The two are the same activity described in different vocabularies. Learn both vocabularies. Apply both to every decision. The decisions will improve. The systems will survive longer. The rewrite will be postponed. The rewrite is always coming. Economics postpones it. Ignorance accelerates it.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
-<li>Thomas Sowell, <em>Basic Economics</em>, Basic Books, 2000.</li>
-<li>Friedrich Hayek, &quot;The Use of Knowledge in Society,&quot; <em>American Economic Review</em>, 1945.</li>
-<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
-<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
-<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Scarcity and Software Economics</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Scarcity in Practice</a></li>
-</ul>
-</div>
-      </article>
       <article class="post" id="scarcity-in-practice">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-in-practice">Scarcity in Practice</a></h2><p class="post-summary">&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;</p>
+          <h2><a href="#scarcity-in-practice">Five Habits</a></h2><p class="post-summary">&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;</p>
           <div class="tags"><span class="tag">scarcity</span><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">practice</span><span class="tag">software-engineering</span>
           </div>
         </header>
-        <div class="post-body"><p>The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.</p>
+        <div class="post-body"><p>The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.
+The difference between knowing a principle and applying it is the difference between owning a cookbook and cooking dinner. Most engineers who read Robbins will agree that scarcity matters. Most will return to work and debate architectures without naming the scarce resource. The knowing is easy. The doing is hard. The gap between knowing and doing is a habit. Habits are built by repetition, not by insight. The five habits below are designed to be repeated until they're automatic. The goal is not to understand scarcity. The goal is to feel its absence like a missing step on a staircase.</p>
 <p>Alan Perlis, the first Turing Award winner, wrote: &quot;Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it.&quot; Most software teams are pragmatists. They suffer complexity because avoiding it requires upfront investment and removing it requires genius. The five frameworks that follow are for pragmatists who want to suffer less. Genius is not required. Discipline is.</p>
 <h2 id="1-name-the-scarce-resource">1. Name the scarce resource</h2>
 <p>Before every architectural decision, ask: what is the scarce resource? Is it developer time? Optimize for simplicity of change. Is it compute? Optimize for efficiency. Is it attention? Optimize for clarity. Is it coordination capacity? Optimize for independent deployability. The scarce resource determines the optimal trade.</p>
@@ -769,11 +704,12 @@
       <article class="post" id="catalog-of-scarcity-games">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#catalog-of-scarcity-games">A Catalog of Scarcity Games</a></h2><p class="post-summary">&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;</p>
+          <h2><a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></h2><p class="post-summary">&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">taxonomy</span><span class="tag">reference</span><span class="tag">software-engineering</span>
           </div>
         </header>
         <div class="post-body"><p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
+<p>This catalog is a diagnostic tool. When a situation feels stuck — the migration isn't happening, the standard isn't being adopted, the teams keep breaking each other's APIs — locate it here. The name of the game tells you why it's stuck. The why tells you what to change. Most organizational interventions fail because they treat every stuck situation as a communication problem. Some are stag hunts. Some are chicken. Some are commons tragedies. The solution to a stag hunt is visible early adopters. The solution to chicken is a pre-committed rule. The solution to a commons tragedy is a governance mechanism. The solutions are different because the games are different. The catalog tells you which one you're in.</p>
 <blockquote>
 <p>&quot;Simplicity does not precede complexity, but follows it.&quot; — Alan Perlis</p>
 </blockquote>
@@ -1170,11 +1106,12 @@
       <article class="post" id="scarcity-and-mechanism-design">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-mechanism-design">Scarcity and Mechanism Design</a></h2><p class="post-summary">&#34;AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade.&#34;</p>
+          <h2><a href="#scarcity-and-mechanism-design">Design the Game</a></h2><p class="post-summary">&#34;AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade.&#34;</p>
           <div class="tags"><span class="tag">ai</span><span class="tag">mechanism-design</span><span class="tag">agents</span><span class="tag">reinforcement-learning</span><span class="tag">auctions</span><span class="tag">governance</span>
           </div>
         </header>
         <div class="post-body"><p>AI agents are becoming players in the games that software systems constitute. They make choices under scarcity. Their choices affect other agents. Other agents' choices affect them. This is game theory. Governing these agent interactions requires mechanism design — the branch of game theory that works backward from desired outcomes to the rules that produce them.</p>
+<p>Mechanism design is the highest-leverage activity in software engineering. A line of code changes behavior once. A mechanism changes behavior every time the game is played. The &quot;no Friday deploys&quot; rule took one minute to write and has prevented a thousand weekend incidents. The automated contract test took a day to set up and has caught every breaking API change since. Mechanisms compound. Code depreciates. The mechanism is the investment. The behavior change is the return. The best engineers design mechanisms. The rest fix the same bug in a different context every sprint.</p>
 <p>The convergence of AI and mechanism design is not a future trend. It is happening now. Deep learning is being used to design mechanisms. Mechanisms are being used to govern AI agents. The two fields are merging. Software engineers who understand both will build the infrastructure. Those who don't will consume it without understanding why it behaves as it does.</p>
 <h2 id="ai-as-mechanism-designer">AI as mechanism designer</h2>
 <p>Traditionally, mechanism design was analytical. You proved that a given mechanism — an auction format, a voting rule, a matching algorithm — had certain properties: strategy-proofness, efficiency, individual rationality. The proofs were mathematical. The mechanisms were simple enough to analyze by hand.</p>
@@ -1225,11 +1162,12 @@
       <article class="post" id="scarcity-and-software-games">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-software-games">Scarcity and Software Games</a></h2><p class="post-summary">&#34;Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.&#34;</p>
+          <h2><a href="#scarcity-and-software-games">The Architecture Is a Game</a></h2><p class="post-summary">&#34;Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">software-architecture</span><span class="tag">microservices</span><span class="tag">coordination</span>
           </div>
         </header>
-        <div class="post-body"><p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
+        <div class="post-body"><p>The most dangerous games are the ones you don't know you're playing. Nobody told you that logging format choice was a stag hunt. Nobody announced that the rewrite proposal was a signaling game. The games are invisible. Their outcomes are visible — the broken APIs, the fragmented standards, the stalled migrations. The outcomes are blamed on individuals. &quot;Team B should have communicated better.&quot; &quot;The SRE team should have enforced the standard.&quot; But the individuals were playing rationally given the game they were in. Blaming the player is easier than recognizing the game. Recognizing the game is easier than changing it. Change the game.</p>
+<p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
 <h2 id="the-service-boundary-game">The service boundary game</h2>
 <p>Thomas Schelling observed that &quot;what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance.&quot; API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.</p>
 <p>Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.</p>
@@ -1280,12 +1218,13 @@
       <article class="post" id="scarcity-and-software-economics">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-software-economics">Scarcity and Software Economics</a></h2><p class="post-summary">&#34;Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.&#34;</p>
+          <h2><a href="#scarcity-and-software-economics">No Free Lunch</a></h2><p class="post-summary">&#34;Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.&#34;</p>
           <div class="tags"><span class="tag">software-economics</span><span class="tag">boehm</span><span class="tag">opportunity-cost</span><span class="tag">technical-debt</span><span class="tag">npv</span>
           </div>
         </header>
         <div class="post-body"><p>Barry Boehm published <em>Software Engineering Economics</em> in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.</p>
 <p>Milton Friedman distilled economics to one sentence: &quot;There's no such thing as a free lunch.&quot; Every feature has a cost. The cost is not just the time to build it. It is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free. The bill arrives in year three.</p>
+<p>Every organization has a discount rate — the rate at which it discounts the future relative to the present. The discount rate is the most important number in your technical culture and the one nobody knows. A high discount rate means next quarter matters more than next year. Features ship. Refactors don't. Complexity accumulates. A low discount rate means sustainability matters. The refactor gets done. The feature waits. Neither rate is correct in the abstract. The correct rate depends on whether the company will exist in five years. The discount rate should be a conscious choice. It never is. It is set by the urgency of the nearest deadline. The deadline is a discount rate of nearly infinity. Infinity is too high.</p>
 <h2 id="the-terminology">The terminology</h2>
 <p><strong>Opportunity cost.</strong> The value of the best alternative foregone. Every hour on Feature A is an hour not on Feature B. The cost of Feature A is the time to build it plus the value of whatever you would have built instead. Opportunity cost is invisible. It appears on no invoice. It is the largest cost in software engineering. The features you didn't build are the cost of the features you did.</p>
 <p><strong>Sunk cost.</strong> A cost already incurred and unrecoverable. The three years on the monolith are sunk. They should not influence the migration decision. They do. The influence is irrational. The irrationality is human. The only defense is to externalize the decision to a process that doesn't know the sunk cost.</p>
@@ -1328,13 +1267,14 @@
       <article class="post" id="scarcity-and-games">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-games">Scarcity and Games</a></h2><p class="post-summary">&#34;Von Neumann gave scarcity mathematics in 1944: choice under scarcity, when strategic, is a game. This post defines every game theory concept that matters to software, from zero-sum to mechanism design.&#34;</p>
+          <h2><a href="#scarcity-and-games">The Game You&#39;re Already Playing</a></h2><p class="post-summary">&#34;Von Neumann gave scarcity mathematics in 1944: choice under scarcity, when strategic, is a game. This post defines every game theory concept that matters to software, from zero-sum to mechanism design.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">von-neumann</span><span class="tag">nash</span><span class="tag">software-engineering</span>
           </div>
         </header>
         <div class="post-body"><p>If Robbins defined the problem, John von Neumann gave it mathematics. In 1928, he published &quot;On the Theory of Parlor Games.&quot; In 1944, with Oskar Morgenstern, he published <em>Theory of Games and Economic Behavior</em>. The connection to Robbins is direct. Robbins said economics is choice under scarcity. Von Neumann said: choice under scarcity, when the outcome depends on the choices of others, is a game.</p>
 <p>If your choice were independent of others' choices, it would be optimization. Because it depends on others' choices, it is strategy. Strategy is optimization under uncertainty about what other players will do. Von Neumann's first contribution was the minimax theorem for zero-sum games: every two-player zero-sum game has an optimal strategy — minimize your maximum possible loss. In purely competitive situations, there is a rational strategy. Compute it. Follow it.</p>
 <p>But most real situations are not zero-sum. Nash extended the framework in 1950 with the Nash equilibrium — a state where no player can benefit by unilaterally changing strategy, given what everyone else is doing. The equilibrium is not necessarily optimal. The Prisoner's Dilemma, formalized by Flood, Dresher, and Tucker, shows that individually rational strategies can produce collectively worse outcomes than cooperation. The gap between individual rationality and collective optimality is where economics lives. It is also where software architecture lives.</p>
+<p>Schelling won his Nobel for a deceptively simple observation: in games without communication, people coordinate by finding what is obvious. The power is not in being right. It is in being obvious. The team that picks the most obvious API convention doesn't win because the convention is best. They win because everyone else predicted they would pick it. Obviousness is a coordination technology. The best architects don't design the optimal interface. They design the interface everyone will predict they designed. The prediction does the coordination. The interface just has to be what was predicted.</p>
 <h2 id="the-definitions">The definitions</h2>
 <p><strong>Game.</strong> A set of players, strategies for each, and a payoff function mapping strategy combinations to outcomes. Your microservices architecture is a game. Players: services. Strategies: API designs, deployment schedules, dependency choices. Payoffs: uptime, throughput, maintainability.</p>
 <p><strong>Zero-sum game.</strong> One player's gain is another's loss. Total payoff constant. Fixed headcount across teams is zero-sum: every hire for Team A is a hire Team B doesn't get.</p>
@@ -1373,7 +1313,7 @@
       <article class="post" id="scarcity">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity">On Scarcity</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
+          <h2><a href="#scarcity">The First Lesson</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
           <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span>
           </div>
         </header>
@@ -1387,6 +1327,7 @@
 </blockquote>
 <p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
 <p>Thomas Sowell sharpened Robbins: &quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; Milton Friedman made it simpler: &quot;There's no such thing as a free lunch.&quot; Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.</p>
+<p>Most people think the opposite of scarcity is abundance. It isn't. The opposite of scarcity is waste. Abundance without discipline produces waste. Scarcity with discipline produces focus. The difference between a great engineering team and a mediocre one is not how many resources they have. It is how they choose under scarcity. Great teams make the scarcity explicit. Mediocre teams pretend it doesn't exist. Both face the same constraints. One names them. The other pretends.</p>
 <h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
 <p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
 <p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
@@ -1421,6 +1362,72 @@
 <li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
 <li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
 <li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="engineering-is-economics">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#engineering-is-economics">Engineering is economics</a></h2><p class="post-summary">&#34;Robbins: economics is choice under scarcity (1932). Engineering: the application of knowledge to solve problems within constraints. The constraints are always economic. Time, money, attention, complexity — all finite. All have alternative uses. Engineering without economics is mathematics with a deadline it ignores.&#34;</p>
+          <div class="tags"><span class="tag">engineering</span><span class="tag">economics</span><span class="tag">scarcity</span><span class="tag">software-design</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Engineering is the application of knowledge to solve problems within constraints. Mathematics has no constraints. Physics has natural constraints. Engineering has <em>chosen</em> constraints — budget, schedule, weight, power, materials, attention, complexity. The constraints are what make it engineering and not science. Science discovers what is true. Engineering decides what to build given that truth and a budget.</p>
+<p>The constraints are always, ultimately, economic. Time is scarce. Money is scarce. Attention is scarce. The complexity a system can absorb before becoming unmaintainable is scarce. Every decision to use a resource for one purpose is a decision not to use it for another. That is the definition of an economic choice.</p>
+<blockquote>
+<p>&quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; — Thomas Sowell</p>
+</blockquote>
+<p>The first lesson of engineering is also scarcity. The first lesson of engineering management is to disregard the first lesson of engineering. Every unrealistic deadline, every under-resourced project, every &quot;do more with less&quot; mandate is politics disregarding economics. The budget is real. The deadline is real. The complexity budget is real. Pretending otherwise does not make the constraints disappear. It makes the failure invisible until the constraints are violated. The violation is called a death march. The death march was predictable. The economics predicted it.</p>
+<h2 id="the-robbins-definition-applied">The Robbins definition, applied</h2>
+<p>In 1932, Lionel Robbins defined economics:</p>
+<blockquote>
+<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
+</blockquote>
+<p>Replace &quot;economics&quot; with &quot;engineering decision-making&quot; and the sentence remains true. Every architectural choice is a relationship between ends (what you want the system to do) and scarce means (developer time, compute, cognitive capacity) which have alternative uses (different features, different architectures, different optimizations). The engineer who does not think economically is not an engineer. They are a mathematician who happens to write code. The mathematician asks: is this correct? The engineer asks: is this correct <em>and</em> worth what it costs?</p>
+<p>Milton Friedman compressed the same insight:</p>
+<blockquote>
+<p>&quot;There's no such thing as a free lunch.&quot;</p>
+</blockquote>
+<p>Every feature has a cost. The cost is not just the time to build it. The cost is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free because the bill arrives later. The bill is the accumulated complexity that makes every subsequent feature take longer than the last. The bill is paid in reduced velocity, increased bugs, and the eventual rewrite. The rewrite is bankruptcy. The lunch was never free. The accounting was deferred.</p>
+<h2 id="what-economics-gives-engineering">What economics gives engineering</h2>
+<p>Economics gives engineering three things: a vocabulary, a decision framework, and a theory of systems.</p>
+<p><strong>The vocabulary.</strong> Opportunity cost. Sunk cost. Marginal cost. Comparative advantage. Economies of scale. Net present value. Option value. Each term names a specific structure. Each structure appears in engineering decisions whether you name it or not. Naming it lets you reason about it. Not naming it lets it operate invisibly. Invisible economic forces produce worse engineering decisions than visible ones.</p>
+<p>Opportunity cost is the largest cost in software engineering and the one that appears on no invoice. The features you didn't build are the cost of the features you did. Every hour spent on Feature A is an hour not spent on Feature B. The cost of A is not just the time to build it. It is the time plus the value of B. B was never built, so its value was never measured. The absence of measurement doesn't mean the cost wasn't real. It means the accounting was incomplete.</p>
+<p>Sunk cost is the cost already incurred and unrecoverable. The three years spent on the monolith are sunk. They should not influence the decision to migrate. They do. The influence is irrational. The irrationality is human. Friedrich Hayek explained why no single mind can overcome it:</p>
+<blockquote>
+<p>&quot;The knowledge of the circumstances of which we must make use never exists in concentrated or integrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&quot;</p>
+</blockquote>
+<p>The knowledge of what the system costs, what it should become, and what it would take to get there — it is dispersed across the team, the codebase, the incident history, the user feedback. No single person holds it all. The architect who pretends to is making decisions with incomplete information. The admission of incomplete information is the beginning of economic thinking. The pretense of complete information is the beginning of architectural hubris.</p>
+<p><strong>The decision framework.</strong> Robbins's four questions apply to any engineering choice. What is the end? What are the means? Are they scarce? Do they have alternative uses? If yes — and it always is — the decision is economic. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice.</p>
+<p>Most engineering debates skip this. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. &quot;We are optimizing for developer time, not compute.&quot; &quot;We are optimizing for change velocity, not operational simplicity.&quot; State the constraint. The debate resolves. The constraint determines the answer. Name the constraint.</p>
+<p><strong>The theory of systems.</strong> Hayek's price system is a mechanism for communicating scarcity without requiring anyone to understand the whole. When the price of compute rises, users use less compute. They don't need to know why the price rose. The price communicates the scarcity. The behavior adapts. The system self-regulates. This is mechanism design before the term existed: design the signal, not the response. The signal communicates the scarcity. The agents adapt. The system finds equilibrium.</p>
+<p>A well-designed software system does the same. API rate limits are prices. Queue depths are prices. Circuit breaker states are prices. Each communicates a scarcity — of compute, of downstream capacity, of healthy instances. Services adapt by backing off, retrying, routing elsewhere. No service knows why the scarcity exists. No service needs to. The signal communicates. The behavior adapts. The system self-regulates. This is economics implemented as infrastructure. The infrastructure is the mechanism. The mechanism communicates scarcity. Scarcity drives behavior.</p>
+<h2 id="what-happens-without-economics">What happens without economics</h2>
+<p>Engineering without economics produces systems that are correct and useless. The architecture is elegant. The abstractions are clean. The system solves a problem nobody has, at a cost nobody calculated, with a complexity budget nobody tracked. The system is correct. It is also uneconomic. Uneconomic systems are not deployed, or are deployed and abandoned, or are deployed and maintained at a loss until the loss becomes undeniable. The loss was always deniable because the economics were never made explicit. Explicit economics can be debated. Implicit economics produce implicit failure.</p>
+<p>Engineering without economics also produces systems that are popular and catastrophic. The features shipped on time. The architecture was compromised at every deadline. The complexity budget was overdrawn at every sprint. The system worked until it didn't. When it didn't, the rewrite cost more than the original build. The rewrite was necessary because the economics were ignored. The economics were ignored because the deadlines didn't include them. The deadlines were economic decisions stated as technical requirements. &quot;Ship by Q3&quot; is an economic decision. It means &quot;we value time-to-market over complexity budget.&quot; Stating it that way forces the question: is the time-to-market premium worth the future complexity cost? Sometimes yes. Usually nobody asks.</p>
+<h2 id="the-engineers-who-knew">The engineers who knew</h2>
+<p>The great software engineers were economists before the field existed. Brooks: conceptual integrity is an argument about the diseconomy of scale in design teams. Parnas: information hiding is an argument about the option value of clean interfaces. Lehman: E-type systems must evolve, and evolution increases complexity unless work is done to reduce it — an argument about the depreciation of unmaintained structure. Christensen: the innovator's dilemma is an argument about capital allocation under asymmetric constraints. None of them used the economic vocabulary. All of them made economic arguments. The vocabulary existed. They didn't know it. The arguments were correct anyway.</p>
+<p>Tony Hoare stated the economic tradeoff in design:</p>
+<blockquote>
+<p>&quot;There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.&quot;</p>
+</blockquote>
+<p>Far more difficult means far more expensive upfront. Far less expensive over time. The economic choice is between paying now or paying later. Paying now is visible. Paying later is invisible. The invisible cost feels cheaper. It isn't. The accounting that makes it feel cheaper is wrong.</p>
+<h2 id="the-unifying-claim">The unifying claim</h2>
+<p>There is no engineering without economics because engineering is decision-making under constraints, and constraints are the subject matter of economics. Every engineering decision is an economic decision stated in technical language. The language obscures the economics. The economics determine the outcome. The engineer who learns the economic vocabulary makes better decisions. The engineer who doesn't makes economic decisions without knowing they are economic decisions. The decisions are still economic. They are just worse.</p>
+<blockquote>
+<p>&quot;No solutions, only trade-offs.&quot; — Thomas Sowell</p>
+</blockquote>
+<p>Engineering is the discipline of trade-offs. Economics is the science of trade-offs. The two are the same activity described in different vocabularies. Learn both vocabularies. Apply both to every decision. The decisions will improve. The systems will survive longer. The rewrite will be postponed. The rewrite is always coming. Economics postpones it. Ignorance accelerates it.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Thomas Sowell, <em>Basic Economics</em>, Basic Books, 2000.</li>
+<li>Friedrich Hayek, &quot;The Use of Knowledge in Society,&quot; <em>American Economic Review</em>, 1945.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Scarcity and Software Economics</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Scarcity in Practice</a></li>
 </ul>
 </div>
       </article>
@@ -5507,14 +5514,14 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#scarcity-in-practice">Five Habits</a>
+              <a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a>
+              <a href="#scarcity-and-mechanism-design">Design the Game</a>
+              <a href="#scarcity-and-software-games">The Architecture Is a Game</a>
+              <a href="#scarcity-and-software-economics">No Free Lunch</a>
+              <a href="#scarcity-and-games">The Game You&#39;re Already Playing</a>
+              <a href="#scarcity">The First Lesson</a>
               <a href="#engineering-is-economics">Engineering is economics</a>
-              <a href="#scarcity-in-practice">Scarcity in Practice</a>
-              <a href="#catalog-of-scarcity-games">A Catalog of Scarcity Games</a>
-              <a href="#scarcity-and-mechanism-design">Scarcity and Mechanism Design</a>
-              <a href="#scarcity-and-software-games">Scarcity and Software Games</a>
-              <a href="#scarcity-and-software-economics">Scarcity and Software Economics</a>
-              <a href="#scarcity-and-games">Scarcity and Games</a>
-              <a href="#scarcity">On Scarcity</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>

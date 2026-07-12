@@ -69,3 +69,6 @@ The individual trader entering this game with a Python script and a Binance API 
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> Crypto markets are not more efficient than traditional markets. They are more programmable. Programmability attracts algorithms. Algorithms compete. Competition compresses edges. The compression is the market becoming efficient in real time.

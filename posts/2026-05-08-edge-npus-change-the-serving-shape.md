@@ -31,3 +31,6 @@ An edge stack that ignores device variation usually ends up either fragile or ov
 This is where a lot of "works on my test phone" demos break down. The demo path is often a single happy execution route. The product path needs to survive a fleet.
 
 The more NPUs matter, the less useful it is to think of serving as a generic layer beneath the model. Hardware-aware serving becomes part of the product architecture itself. That is a healthy shift. It forces teams to design for the hardware they actually have, not the hardware they wish every user owned.
+
+
+NPUs are a hardware constraint that changes the software architecture. When the compute substrate changes, the optimal model architecture changes with it. This is the hardware-software co-design problem: the hardware determines what software is efficient, and the software requirements determine what hardware gets built. The feedback loop is the same as any platform evolution — iOS constraints shaped mobile app design, cloud constraints shaped distributed systems design. The NPU is the new constraint. The constraint shapes the solution space. The engineer who understands the constraint makes better design decisions than the engineer who treats the hardware as an abstraction.

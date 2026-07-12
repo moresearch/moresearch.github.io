@@ -40,3 +40,6 @@ The broader lesson from SWE-bench is not only about benchmarking. It is about ho
 
 
 Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.
+
+
+> A toy repository teaches an agent to solve toy problems. A real repository teaches an agent to navigate complexity. The complexity is the lesson. The toy is a distraction.

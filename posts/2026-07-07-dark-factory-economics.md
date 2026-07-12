@@ -90,3 +90,6 @@ The economic prize is enormous: a large fraction of professional software develo
 
 
 Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.
+
+
+> When code is free, the scarce resource shifts from implementation to specification. The person who can say exactly what to build becomes more valuable than the person who can build it. The economics invert.

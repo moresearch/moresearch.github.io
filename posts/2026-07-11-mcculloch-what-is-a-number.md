@@ -122,3 +122,6 @@ McCulloch would have been fascinated. He would have recognized the paper as empi
 **Reference:** Warren S. McCulloch, "What Is a Number, that a Man May Know It, and a Man, that He May Know a Number?" Alfred Korzybski Memorial Lecture, 1960. Published in *General Semantics Bulletin*, No. 26/27, 1960, pp. 7–18. [Full text (PDF)](https://www.nsl.com/k/parry/mcculloch_what-is-a-number.pdf).
 
 **Related:** Raja Marjieh, Veniamin Veselovsky, Thomas L. Griffiths, Ilia Sucholutsky. ["What is a Number, That a Large Language Model May Know It?"](https://arxiv.org/abs/2502.01540) arXiv:2502.01540, February 2025.
+
+
+Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.

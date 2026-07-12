@@ -39,3 +39,6 @@ A Go service is not interesting here because it is fashionable. It is useful bec
 The serving runtime can stay specialized around execution. The control layer can stay specialized around policy.
 
 That separation of responsibilities feels healthy to me. DistServe highlights why inference phases deserve different treatment. The systems lesson is that once you accept that split, you should also accept a clear policy layer around it. Go is often a very practical place to put that layer.
+
+
+This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.

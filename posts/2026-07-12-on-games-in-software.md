@@ -84,3 +84,6 @@ Every situation is a game. The game has a structure. The structure determines th
 - Garrett Hardin, "The Tragedy of the Commons," *Science*, 1968.
 - John Maynard Smith, *Evolution and the Theory of Games*, Cambridge University Press, 1982.
 - Related posts: [Henney's Microservices](https://blog.hackspree.com/#kevlin-henney), [NATS pub/sub beats REST](https://blog.hackspree.com/#nats-pubsub-microservices)
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.&#34;">
+  <meta name="description" content="&#34;Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,63 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="scarcity-and-software-games">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#scarcity-and-software-games">The Architecture Is a Game</a></h2><p class="post-summary">&#34;Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">software-architecture</span><span class="tag">microservices</span><span class="tag">coordination</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The most dangerous games are the ones you don't know you're playing. Nobody told you that logging format choice was a stag hunt. Nobody announced that the rewrite proposal was a signaling game. The games are invisible. Their outcomes are visible — the broken APIs, the fragmented standards, the stalled migrations. The outcomes are blamed on individuals. &quot;Team B should have communicated better.&quot; &quot;The SRE team should have enforced the standard.&quot; But the individuals were playing rationally given the game they were in. Blaming the player is easier than recognizing the game. Recognizing the game is easier than changing it. Change the game.</p>
+<p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
+<h2 id="the-service-boundary-game">The service boundary game</h2>
+<p>Thomas Schelling observed that &quot;what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance.&quot; API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.</p>
+<p>Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.</p>
+<p>This is a coordination game with asymmetric information. Team B didn't know what Team A depended on. Team A assumed Team B wouldn't change the API without notice. The assumptions were incompatible. The failure is a Nash equilibrium — neither team can unilaterally improve their outcome given what the other is doing. Team A can't make Team B communicate better. Team B can't make Team A depend on fewer things. The equilibrium is suboptimal. The solution is mechanism design: automated contract testing that makes breaking changes immediately visible. Visibility changes the payoff. The equilibrium shifts.</p>
+<h2 id="the-microservices-migration-game">The microservices migration game</h2>
+<p>The monolith works but is increasingly expensive to change. Each team wants to extract their service. Extraction requires coordination with other teams. Coordination is costly. The cost falls on the team doing the extraction. The benefit accrues to all teams.</p>
+<p>This is a public goods game. Each team would benefit if everyone extracted. Each team would prefer someone else pay the coordination cost. Individually rational: wait. Collectively optimal: coordinate. The gap is the Prisoner's Dilemma scaled to organizational architecture. The dilemma produced the distributed monolith — services extracted without clean boundaries, communicating through a complete call graph, with all the monolith's coupling and all the network's latency. Nobody wanted this. The game produced it.</p>
+<h2 id="the-deployment-chicken-game">The deployment chicken game</h2>
+<p>Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky — if something breaks, on-call spends the weekend fixing it. Both want their feature in before the weekend. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose. If one deploys and one waits, the deployer wins and the waiter deploys Monday.</p>
+<p>Both deploying is the crash outcome. The organizational rule &quot;no Friday deploys&quot; is mechanism design. It removes the choice. Before the rule: Friday deploys. After: Monday deploys. The mechanism changed the equilibrium.</p>
+<h2 id="the-staging-environment-battle-of-the-sexes">The staging environment battle of the sexes</h2>
+<p>Team A wants staging for integration testing. Team B wants staging for customer demos. Both want staging. Both prefer any coordinated solution to constant conflict. Both prefer their own preferred time.</p>
+<p>Battle of the sexes. Two Nash equilibria: Team A's schedule or Team B's schedule. The solution is a coordination mechanism — a booking calendar, a dedicated demo environment, a policy. The mechanism selects an equilibrium. Before: conflict. After: coordination. The mechanism worked because it made defection visible.</p>
+<h2 id="the-logging-library-stag-hunt">The logging library stag hunt</h2>
+<p>Twelve services. Each uses its own logging format. SRE proposes a standard library. If all adopt, logs become queryable across services. If some adopt and others don't, adopters get no benefit — their logs are standardized but they still can't query across services. If nobody adopts, nothing changes.</p>
+<p>Stag hunt. The stag is cross-service observability. The rabbit is keeping your own format. The stag hunt succeeds when early adopters reach critical mass. Once enough services adopt, the benefit to remaining services exceeds switching cost. The equilibrium tips. The tipping point is a property of network effects.</p>
+<h2 id="the-rewrite-signaling-game">The rewrite signaling game</h2>
+<p>Team A proposes rewriting a legacy service. The proposal is costly to evaluate — architecture reviews, specs, stakeholder meetings. Team A has private information: genuine belief the rewrite is necessary, or boredom with legacy work.</p>
+<p>Signaling game. A costly signal separates sincere from insincere. Requiring a working prototype before the architecture review is a costly signal. Sincere teams pay the cost. Insincere teams won't. The signal screens. Pay the price. Get the review.</p>
+<h2 id="the-regression-test-commons-game">The regression test commons game</h2>
+<p>The regression test suite is a common-pool resource. Everyone benefits from tests. Everyone benefits from fast tests. Adding tests makes the suite slower. The cost is shared. The benefit of your test is yours alone.</p>
+<p>Individually rational: add tests. Collectively optimal: add only high-value tests. The commons is overgrazed. The suite grows. Build times increase. Hardin described the tragedy in 1968. Your CI pipeline is living it. The solution: a test budget per service, periodic culling of low-value tests, a rule requiring historical failure catch rate to justify additions. The mechanism is the institutional response to a tragedy of the commons.</p>
+<h2 id="the-open-source-game">The open-source game</h2>
+<p>Everyone benefits from open-source software. Contributing costs time. Using costs nothing. Individually rational: use without contributing. Collectively optimal: everyone contributes. Public goods game. Resolved by reputation, corporate sponsorship, intrinsic motivation. The free-rider problem is managed, never solved. GitHub sponsorships, open-source foundations, corporate OSPOs — the institutions exist because the game exists. The game exists because scarcity exists.</p>
+<h2 id="the-platform-pricing-stackelberg-game">The platform pricing Stackelberg game</h2>
+<p>A platform team sets API pricing for internal services. Service teams respond by choosing how much to consume. The platform team moves first. Service teams move second.</p>
+<p>Stackelberg game. The leader (platform) chooses price anticipating the followers' (services') responses. Set price too high: services build their own. Too low: platform is underfunded. The optimal price is where marginal cost of providing the service equals the marginal value to consumers. The calculation is economic. The implementation is an internal API with metered billing. The billing is mechanism design.</p>
+<h2 id="recognize-the-game">Recognize the game</h2>
+<p>Every situation is a game. The game has a structure. The structure determines the likely outcome. If you don't like the outcome, change the game. Mechanism design is the tool for changing games. Automated contract testing changes the service boundary game. &quot;No Friday deploys&quot; changes the deployment chicken game. A booking calendar changes the staging environment game. A test budget changes the regression test commons game. Each mechanism changes the payoffs. Changed payoffs change behavior. Changed behavior is the point.</p>
+<hr>
+<p><strong>This is part 4 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Garrett Hardin, &quot;The Tragedy of the Commons,&quot; <em>Science</em>, 1968.</li>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#nats-pubsub-microservices">NATS pub/sub beats REST</a></li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
       <article class="post" id="scarcity-and-software-economics">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -3212,62 +3269,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Kolumbus, Halpern &amp; Tardos, &quot;Paying to Do Better: Games with Payments between Learning Agents,&quot; 2024.</li>
 <li>Karten et al., &quot;LLM Economist: Large Population Models and Mechanism Design in Multi-Agent Generative Simulacra,&quot; Princeton, 2025.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agent-governance-toolkit">Agent Governance Toolkit</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">Task Automation Economics</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="scarcity-and-software-games">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-software-games">The Architecture Is a Game</a></h2><p class="post-summary">&#34;Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">software-architecture</span><span class="tag">microservices</span><span class="tag">coordination</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The most dangerous games are the ones you don't know you're playing. Nobody told you that logging format choice was a stag hunt. Nobody announced that the rewrite proposal was a signaling game. The games are invisible. Their outcomes are visible — the broken APIs, the fragmented standards, the stalled migrations. The outcomes are blamed on individuals. &quot;Team B should have communicated better.&quot; &quot;The SRE team should have enforced the standard.&quot; But the individuals were playing rationally given the game they were in. Blaming the player is easier than recognizing the game. Recognizing the game is easier than changing it. Change the game.</p>
-<p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
-<h2 id="the-service-boundary-game">The service boundary game</h2>
-<p>Thomas Schelling observed that &quot;what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance.&quot; API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.</p>
-<p>Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.</p>
-<p>This is a coordination game with asymmetric information. Team B didn't know what Team A depended on. Team A assumed Team B wouldn't change the API without notice. The assumptions were incompatible. The failure is a Nash equilibrium — neither team can unilaterally improve their outcome given what the other is doing. Team A can't make Team B communicate better. Team B can't make Team A depend on fewer things. The equilibrium is suboptimal. The solution is mechanism design: automated contract testing that makes breaking changes immediately visible. Visibility changes the payoff. The equilibrium shifts.</p>
-<h2 id="the-microservices-migration-game">The microservices migration game</h2>
-<p>The monolith works but is increasingly expensive to change. Each team wants to extract their service. Extraction requires coordination with other teams. Coordination is costly. The cost falls on the team doing the extraction. The benefit accrues to all teams.</p>
-<p>This is a public goods game. Each team would benefit if everyone extracted. Each team would prefer someone else pay the coordination cost. Individually rational: wait. Collectively optimal: coordinate. The gap is the Prisoner's Dilemma scaled to organizational architecture. The dilemma produced the distributed monolith — services extracted without clean boundaries, communicating through a complete call graph, with all the monolith's coupling and all the network's latency. Nobody wanted this. The game produced it.</p>
-<h2 id="the-deployment-chicken-game">The deployment chicken game</h2>
-<p>Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky — if something breaks, on-call spends the weekend fixing it. Both want their feature in before the weekend. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose. If one deploys and one waits, the deployer wins and the waiter deploys Monday.</p>
-<p>Both deploying is the crash outcome. The organizational rule &quot;no Friday deploys&quot; is mechanism design. It removes the choice. Before the rule: Friday deploys. After: Monday deploys. The mechanism changed the equilibrium.</p>
-<h2 id="the-staging-environment-battle-of-the-sexes">The staging environment battle of the sexes</h2>
-<p>Team A wants staging for integration testing. Team B wants staging for customer demos. Both want staging. Both prefer any coordinated solution to constant conflict. Both prefer their own preferred time.</p>
-<p>Battle of the sexes. Two Nash equilibria: Team A's schedule or Team B's schedule. The solution is a coordination mechanism — a booking calendar, a dedicated demo environment, a policy. The mechanism selects an equilibrium. Before: conflict. After: coordination. The mechanism worked because it made defection visible.</p>
-<h2 id="the-logging-library-stag-hunt">The logging library stag hunt</h2>
-<p>Twelve services. Each uses its own logging format. SRE proposes a standard library. If all adopt, logs become queryable across services. If some adopt and others don't, adopters get no benefit — their logs are standardized but they still can't query across services. If nobody adopts, nothing changes.</p>
-<p>Stag hunt. The stag is cross-service observability. The rabbit is keeping your own format. The stag hunt succeeds when early adopters reach critical mass. Once enough services adopt, the benefit to remaining services exceeds switching cost. The equilibrium tips. The tipping point is a property of network effects.</p>
-<h2 id="the-rewrite-signaling-game">The rewrite signaling game</h2>
-<p>Team A proposes rewriting a legacy service. The proposal is costly to evaluate — architecture reviews, specs, stakeholder meetings. Team A has private information: genuine belief the rewrite is necessary, or boredom with legacy work.</p>
-<p>Signaling game. A costly signal separates sincere from insincere. Requiring a working prototype before the architecture review is a costly signal. Sincere teams pay the cost. Insincere teams won't. The signal screens. Pay the price. Get the review.</p>
-<h2 id="the-regression-test-commons-game">The regression test commons game</h2>
-<p>The regression test suite is a common-pool resource. Everyone benefits from tests. Everyone benefits from fast tests. Adding tests makes the suite slower. The cost is shared. The benefit of your test is yours alone.</p>
-<p>Individually rational: add tests. Collectively optimal: add only high-value tests. The commons is overgrazed. The suite grows. Build times increase. Hardin described the tragedy in 1968. Your CI pipeline is living it. The solution: a test budget per service, periodic culling of low-value tests, a rule requiring historical failure catch rate to justify additions. The mechanism is the institutional response to a tragedy of the commons.</p>
-<h2 id="the-open-source-game">The open-source game</h2>
-<p>Everyone benefits from open-source software. Contributing costs time. Using costs nothing. Individually rational: use without contributing. Collectively optimal: everyone contributes. Public goods game. Resolved by reputation, corporate sponsorship, intrinsic motivation. The free-rider problem is managed, never solved. GitHub sponsorships, open-source foundations, corporate OSPOs — the institutions exist because the game exists. The game exists because scarcity exists.</p>
-<h2 id="the-platform-pricing-stackelberg-game">The platform pricing Stackelberg game</h2>
-<p>A platform team sets API pricing for internal services. Service teams respond by choosing how much to consume. The platform team moves first. Service teams move second.</p>
-<p>Stackelberg game. The leader (platform) chooses price anticipating the followers' (services') responses. Set price too high: services build their own. Too low: platform is underfunded. The optimal price is where marginal cost of providing the service equals the marginal value to consumers. The calculation is economic. The implementation is an internal API with metered billing. The billing is mechanism design.</p>
-<h2 id="recognize-the-game">Recognize the game</h2>
-<p>Every situation is a game. The game has a structure. The structure determines the likely outcome. If you don't like the outcome, change the game. Mechanism design is the tool for changing games. Automated contract testing changes the service boundary game. &quot;No Friday deploys&quot; changes the deployment chicken game. A booking calendar changes the staging environment game. A test budget changes the regression test commons game. Each mechanism changes the payoffs. Changed payoffs change behavior. Changed behavior is the point.</p>
-<hr>
-<p><strong>This is part 4 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Garrett Hardin, &quot;The Tragedy of the Commons,&quot; <em>Science</em>, 1968.</li>
-<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#nats-pubsub-microservices">NATS pub/sub beats REST</a></li>
 </ul>
 </div>
       </article>
@@ -7388,6 +7389,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#scarcity-and-software-games">The Architecture Is a Game</a>
               <a href="#scarcity-and-software-economics">No Free Lunch</a>
               <a href="#scarcity-and-games">The Game You&#39;re Already Playing</a>
               <a href="#scarcity">The First Lesson</a>
@@ -7442,7 +7444,6 @@ type Logger interface {
               <a href="#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>
               <a href="#scarcity-in-practice">Five Habits</a>
               <a href="#scarcity-and-mechanism-design">Design the Game</a>
-              <a href="#scarcity-and-software-games">The Architecture Is a Game</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>

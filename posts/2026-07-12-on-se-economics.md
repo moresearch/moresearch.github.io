@@ -1,5 +1,5 @@
 ---
-title: Scarcity and Software Economics
+title: No Free Lunch
 date: 2026-07-12
 slug: scarcity-and-software-economics
 summary: "Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed."
@@ -11,6 +11,8 @@ part: 3
 Barry Boehm published *Software Engineering Economics* in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.
 
 Milton Friedman distilled economics to one sentence: "There's no such thing as a free lunch." Every feature has a cost. The cost is not just the time to build it. It is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free. The bill arrives in year three.
+
+Every organization has a discount rate — the rate at which it discounts the future relative to the present. The discount rate is the most important number in your technical culture and the one nobody knows. A high discount rate means next quarter matters more than next year. Features ship. Refactors don't. Complexity accumulates. A low discount rate means sustainability matters. The refactor gets done. The feature waits. Neither rate is correct in the abstract. The correct rate depends on whether the company will exist in five years. The discount rate should be a conscious choice. It never is. It is set by the urgency of the nearest deadline. The deadline is a discount rate of nearly infinity. Infinity is too high.
 
 ## The terminology
 

@@ -94,3 +94,6 @@ The freedom to innovate is not a policy choice. It is a property of a system. Th
 - Mervin Kelly, internal Bell Labs memos on research culture, 1940s-1950s.
 - Claude Shannon, *A Mathematical Theory of Communication*, Bell System Technical Journal, 1948.
 - Related posts: [Disruptive Innovation](https://blog.hackspree.com/#disruptive-innovation), [I, Pencil](https://blog.hackspree.com/#i-pencil), [BSD is clean, OpenBSD is cleaner](https://blog.hackspree.com/#bsd-openbsd-linux)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

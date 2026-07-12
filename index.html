@@ -5781,6 +5781,65 @@ now := time.Now()
 <p>Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.</p>
 </div>
       </article>
+      <article class="post" id="dark-factory-complexity">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
+          <h2><a href="#dark-factory-complexity">The dark factory doesn&#39;t eliminate complexity — it moves it</a></h2><p class="post-summary">&#34;Dark factories shift the bottleneck from implementation to specification. The complexity doesn&#39;t vanish — it concentrates upstream, and the skill that matters is the ability to say exactly what you mean.&#34;</p>
+          <div class="tags"><span class="tag">dark-factory</span><span class="tag">complexity</span><span class="tag">software-engineering</span><span class="tag">specification</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 1986, Fred Brooks drew his famous distinction between essential and accidental complexity. Essential complexity is inherent in the problem — you cannot remove it, only manage it. Accidental complexity is everything we inflict on ourselves: build systems, type systems, deployment pipelines, the accumulated sediment of toolchain decisions that have nothing to do with the problem domain.</p>
+<p>For four decades, the software industry has fought accidental complexity with better languages, better tooling, better abstractions. Dark factories change the game in a way Brooks did not anticipate: they make accidental complexity <em>someone else's problem</em>. Specifically, the AI's problem.</p>
+<p>But essential complexity does not go anywhere. It just moves.</p>
+<h2 id="the-complexity-budget">The complexity budget</h2>
+<p>Every software system has a fixed complexity budget. You can think of it as the total information content required to produce working software: the sum of domain knowledge, architectural decisions, edge-case handling, behavioral contracts, and operational constraints. Before dark factories, this budget was spent across the entire stack — some in specification, some in architecture, some in implementation, some in testing, some in operations.</p>
+<p>A dark factory reshuffles where each unit of complexity is absorbed. Implementation complexity — the part that was always accidental, the part that was about translating intent into code — drops toward zero. But the total complexity budget does not shrink. The complexity that used to be absorbed by a senior engineer during implementation now must be absorbed <em>upstream</em>, in the specification, or <em>downstream</em>, in validation and operations.</p>
+<p>The upstream shift is the one that matters. When a human engineer receives a vague ticket, they fill in the gaps: they know the codebase conventions, they have intuitions about edge cases, they can ping the PM and clarify. When an AI agent receives a vague specification, it produces exactly what you asked for — and you discover at validation time that what you asked for was wrong.</p>
+<p>This is not a failure of the AI. It is a failure of the specification. And in a dark factory world, specification failures are the only kind of failure that matter.</p>
+<h2 id="what-specification-actually-means-now">What specification actually means now</h2>
+<p>Specification in a dark factory context is not a Jira ticket. It is not a user story. It is not &quot;as a user I want to reset my password.&quot; It is a document with enough precision that a system with no context, no judgment, and no ability to clarify ambiguity can produce working software from it.</p>
+<p>This means specification must contain:</p>
+<ul>
+<li><strong>Behavioral contracts</strong> — given these inputs, produce these outputs, within these constraints</li>
+<li><strong>Edge cases enumerated</strong> — empty states, error states, boundary values, concurrent access patterns</li>
+<li><strong>Acceptance criteria at machine resolution</strong> — not &quot;the page loads fast&quot; but &quot;the page renders within 200ms at P95 under 10K concurrent requests&quot;</li>
+<li><strong>Error handling semantics</strong> — what fails gracefully, what fails loudly, what retries, what alerts</li>
+<li><strong>State machine definitions</strong> — what states exist, what transitions are legal, what invariants hold</li>
+<li><strong>Integration contracts</strong> — API shapes, authentication models, retry policies, failure modes of dependencies</li>
+</ul>
+<p>This is not a new discipline. It is what good technical leads have always done, just more explicit and more complete. The difference is that in a traditional team, gaps in the specification could be absorbed by the engineer implementing it. In a dark factory, gaps in the specification produce gaps in the software — at scale, at speed, with nobody in the loop to catch them.</p>
+<h2 id="the-inversion-of-expertise">The inversion of expertise</h2>
+<p>This reshuffling inverts what &quot;seniority&quot; means. In a traditional team, seniority is partly about coding skill — the ability to hold a large system in your head, to write clean abstractions, to navigate the codebase quickly. In a dark factory, coding skill is commoditized. What remains valuable is:</p>
+<ul>
+<li><strong>Domain modeling</strong> — the ability to see the shape of a problem and express it precisely</li>
+<li><strong>Edge-case imagination</strong> — the paranoid instinct for what could go wrong, honed by years of production incidents</li>
+<li><strong>Contract design</strong> — the ability to define interfaces that are complete, minimal, and stable under change</li>
+<li><strong>Validation strategy</strong> — knowing what &quot;correct&quot; looks like and how to test for it at multiple levels</li>
+</ul>
+<p>These skills are rare. They were always the truly valuable part of senior engineering — the part that distinguished a 10x engineer from a fast typist. What dark factories do is strip away everything else, making it obvious that specification craftsmanship was the bottleneck all along.</p>
+<h2 id="the-new-accidental-complexity">The new accidental complexity</h2>
+<p>There is a twist. Dark factories eliminate one form of accidental complexity (implementation) while potentially creating new forms:</p>
+<p><strong>Specification tooling complexity.</strong> If specification becomes the primary engineering artifact, the tooling around specification — versioning, diffing, linting, testing, code review for specs — becomes critical. A bad specification is harder to debug than bad code because you cannot step through it with a debugger. The specification is the source of truth, and we have almost no tooling for managing specification quality at scale.</p>
+<p><strong>Validation complexity.</strong> When AI generates code, the testing burden inverts. You are no longer testing that a human implemented what they intended. You are testing that an AI implemented what you specified — and also that what you specified was correct. The second problem is harder than the first. It requires tests that validate the specification against reality, not just the implementation against the specification.</p>
+<p><strong>Drift complexity.</strong> Specifications, like code, drift from reality over time. In a traditional codebase, drift manifests as stale comments and outdated READMEs — annoying but usually harmless. In a dark factory, drift manifests as the AI faithfully implementing an outdated specification, producing software that matches the spec but not the world. Detecting and correcting specification drift becomes an operational concern.</p>
+<p>None of these are unsolvable. But they are new. And they will consume engineering effort that was previously spent on build systems, linters, and CI pipelines — the old accidental complexity that the dark factory absorbed.</p>
+<h2 id="what-this-means-for-teams">What this means for teams</h2>
+<p>The practical implication is that teams adopting dark factory workflows should stop measuring implementation velocity and start measuring specification quality. The metric that matters is not &quot;how fast can we produce code&quot; — the AI does that instantly. The metric is &quot;how often does the produced code match intent on the first try.&quot;</p>
+<p>That metric is a function of specification quality. And specification quality is a function of how well the team understands the problem domain, how rigorously they think about edge cases, and how clearly they can express what they mean.</p>
+<p>The dark factory does not make software easy. It makes implementation easy. The hard part — understanding what to build and defining it precisely enough that a machine can build it — remains hard. It always was. The factory just makes it impossible to pretend otherwise.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Fred Brooks, <em>No Silver Bullet</em> (1986) — essential vs. accidental complexity</li>
+<li>Dan Shapiro, <a target="_blank" rel="noopener noreferrer" href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/">The Five Levels: from spicy autocomplete to the software factory</a> (2026)</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://darkfactory.dev/blog/what-is-dark-factory-software-development">What is dark factory software development?</a></li>
+</ul>
+<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
+<blockquote>
+<p>The dark factory does not eliminate complexity. It moves it. The complexity that lived in the code now lives in the specification. The specification must be precise enough that a machine can execute it without asking questions. Precision is the new bottleneck.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="always-on-agents">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
@@ -6115,62 +6174,6 @@ If you are a journal editor who has spent more energy protecting your impact fac
 <li>Dan Shapiro, <a target="_blank" rel="noopener noreferrer" href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/">The Five Levels: from spicy autocomplete to the software factory</a> (2026)</li>
 <li>CodeRabbit — automated code review for AI-generated code</li>
 <li>Barry Boehm, <em>Software Engineering Economics</em> (1981) — foundational cost-modeling framework</li>
-</ul>
-<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
-</div>
-      </article>
-      <article class="post" id="dark-factory-complexity">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
-          <h2><a href="#dark-factory-complexity">The dark factory doesn&#39;t eliminate complexity — it moves it</a></h2><p class="post-summary">&#34;Dark factories shift the bottleneck from implementation to specification. The complexity doesn&#39;t vanish — it concentrates upstream, and the skill that matters is the ability to say exactly what you mean.&#34;</p>
-          <div class="tags"><span class="tag">dark-factory</span><span class="tag">complexity</span><span class="tag">software-engineering</span><span class="tag">specification</span><span class="tag">agents</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In 1986, Fred Brooks drew his famous distinction between essential and accidental complexity. Essential complexity is inherent in the problem — you cannot remove it, only manage it. Accidental complexity is everything we inflict on ourselves: build systems, type systems, deployment pipelines, the accumulated sediment of toolchain decisions that have nothing to do with the problem domain.</p>
-<p>For four decades, the software industry has fought accidental complexity with better languages, better tooling, better abstractions. Dark factories change the game in a way Brooks did not anticipate: they make accidental complexity <em>someone else's problem</em>. Specifically, the AI's problem.</p>
-<p>But essential complexity does not go anywhere. It just moves.</p>
-<h2 id="the-complexity-budget">The complexity budget</h2>
-<p>Every software system has a fixed complexity budget. You can think of it as the total information content required to produce working software: the sum of domain knowledge, architectural decisions, edge-case handling, behavioral contracts, and operational constraints. Before dark factories, this budget was spent across the entire stack — some in specification, some in architecture, some in implementation, some in testing, some in operations.</p>
-<p>A dark factory reshuffles where each unit of complexity is absorbed. Implementation complexity — the part that was always accidental, the part that was about translating intent into code — drops toward zero. But the total complexity budget does not shrink. The complexity that used to be absorbed by a senior engineer during implementation now must be absorbed <em>upstream</em>, in the specification, or <em>downstream</em>, in validation and operations.</p>
-<p>The upstream shift is the one that matters. When a human engineer receives a vague ticket, they fill in the gaps: they know the codebase conventions, they have intuitions about edge cases, they can ping the PM and clarify. When an AI agent receives a vague specification, it produces exactly what you asked for — and you discover at validation time that what you asked for was wrong.</p>
-<p>This is not a failure of the AI. It is a failure of the specification. And in a dark factory world, specification failures are the only kind of failure that matter.</p>
-<h2 id="what-specification-actually-means-now">What specification actually means now</h2>
-<p>Specification in a dark factory context is not a Jira ticket. It is not a user story. It is not &quot;as a user I want to reset my password.&quot; It is a document with enough precision that a system with no context, no judgment, and no ability to clarify ambiguity can produce working software from it.</p>
-<p>This means specification must contain:</p>
-<ul>
-<li><strong>Behavioral contracts</strong> — given these inputs, produce these outputs, within these constraints</li>
-<li><strong>Edge cases enumerated</strong> — empty states, error states, boundary values, concurrent access patterns</li>
-<li><strong>Acceptance criteria at machine resolution</strong> — not &quot;the page loads fast&quot; but &quot;the page renders within 200ms at P95 under 10K concurrent requests&quot;</li>
-<li><strong>Error handling semantics</strong> — what fails gracefully, what fails loudly, what retries, what alerts</li>
-<li><strong>State machine definitions</strong> — what states exist, what transitions are legal, what invariants hold</li>
-<li><strong>Integration contracts</strong> — API shapes, authentication models, retry policies, failure modes of dependencies</li>
-</ul>
-<p>This is not a new discipline. It is what good technical leads have always done, just more explicit and more complete. The difference is that in a traditional team, gaps in the specification could be absorbed by the engineer implementing it. In a dark factory, gaps in the specification produce gaps in the software — at scale, at speed, with nobody in the loop to catch them.</p>
-<h2 id="the-inversion-of-expertise">The inversion of expertise</h2>
-<p>This reshuffling inverts what &quot;seniority&quot; means. In a traditional team, seniority is partly about coding skill — the ability to hold a large system in your head, to write clean abstractions, to navigate the codebase quickly. In a dark factory, coding skill is commoditized. What remains valuable is:</p>
-<ul>
-<li><strong>Domain modeling</strong> — the ability to see the shape of a problem and express it precisely</li>
-<li><strong>Edge-case imagination</strong> — the paranoid instinct for what could go wrong, honed by years of production incidents</li>
-<li><strong>Contract design</strong> — the ability to define interfaces that are complete, minimal, and stable under change</li>
-<li><strong>Validation strategy</strong> — knowing what &quot;correct&quot; looks like and how to test for it at multiple levels</li>
-</ul>
-<p>These skills are rare. They were always the truly valuable part of senior engineering — the part that distinguished a 10x engineer from a fast typist. What dark factories do is strip away everything else, making it obvious that specification craftsmanship was the bottleneck all along.</p>
-<h2 id="the-new-accidental-complexity">The new accidental complexity</h2>
-<p>There is a twist. Dark factories eliminate one form of accidental complexity (implementation) while potentially creating new forms:</p>
-<p><strong>Specification tooling complexity.</strong> If specification becomes the primary engineering artifact, the tooling around specification — versioning, diffing, linting, testing, code review for specs — becomes critical. A bad specification is harder to debug than bad code because you cannot step through it with a debugger. The specification is the source of truth, and we have almost no tooling for managing specification quality at scale.</p>
-<p><strong>Validation complexity.</strong> When AI generates code, the testing burden inverts. You are no longer testing that a human implemented what they intended. You are testing that an AI implemented what you specified — and also that what you specified was correct. The second problem is harder than the first. It requires tests that validate the specification against reality, not just the implementation against the specification.</p>
-<p><strong>Drift complexity.</strong> Specifications, like code, drift from reality over time. In a traditional codebase, drift manifests as stale comments and outdated READMEs — annoying but usually harmless. In a dark factory, drift manifests as the AI faithfully implementing an outdated specification, producing software that matches the spec but not the world. Detecting and correcting specification drift becomes an operational concern.</p>
-<p>None of these are unsolvable. But they are new. And they will consume engineering effort that was previously spent on build systems, linters, and CI pipelines — the old accidental complexity that the dark factory absorbed.</p>
-<h2 id="what-this-means-for-teams">What this means for teams</h2>
-<p>The practical implication is that teams adopting dark factory workflows should stop measuring implementation velocity and start measuring specification quality. The metric that matters is not &quot;how fast can we produce code&quot; — the AI does that instantly. The metric is &quot;how often does the produced code match intent on the first try.&quot;</p>
-<p>That metric is a function of specification quality. And specification quality is a function of how well the team understands the problem domain, how rigorously they think about edge cases, and how clearly they can express what they mean.</p>
-<p>The dark factory does not make software easy. It makes implementation easy. The hard part — understanding what to build and defining it precisely enough that a machine can build it — remains hard. It always was. The factory just makes it impossible to pretend otherwise.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Fred Brooks, <em>No Silver Bullet</em> (1986) — essential vs. accidental complexity</li>
-<li>Dan Shapiro, <a target="_blank" rel="noopener noreferrer" href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/">The Five Levels: from spicy autocomplete to the software factory</a> (2026)</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://darkfactory.dev/blog/what-is-dark-factory-software-development">What is dark factory software development?</a></li>
 </ul>
 <p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
 </div>
@@ -8040,12 +8043,12 @@ type Logger interface {
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>
               <a href="#temporal-vs-dbos-golang">Temporal vs DBOS for Go: two paths to durable execution</a>
               <a href="#dot-files-dark-factories">Why DOT files work for dark factories</a>
+              <a href="#dark-factory-complexity">The dark factory doesn&#39;t eliminate complexity — it moves it</a>
               <a href="#always-on-agents">Always-on agents: state, memory, and the governance gap</a>
               <a href="#academics-without-integrity-shame">Academics without academic integrity: shame on you</a>
               <a href="#task-automation-economics">Task automation economics: why an agent run is not automation</a>
               <a href="#software-dark-factories">Software dark factories: specs in, software out</a>
               <a href="#dark-factory-economics">The economics of the dark factory: what happens when code is free</a>
-              <a href="#dark-factory-complexity">The dark factory doesn&#39;t eliminate complexity — it moves it</a>
               <a href="#ai-sovereignty-or-ai-colony">AI sovereignty or AI colony: why domestic capability matters</a>
               <a href="#how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks">How to build self-improving companies and internal AI agents (YC talks)</a>
               <a href="#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>

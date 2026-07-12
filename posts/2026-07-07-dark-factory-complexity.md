@@ -77,3 +77,6 @@ The dark factory does not make software easy. It makes implementation easy. The 
 
 
 Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.
+
+
+> The dark factory does not eliminate complexity. It moves it. The complexity that lived in the code now lives in the specification. The specification must be precise enough that a machine can execute it without asking questions. Precision is the new bottleneck.

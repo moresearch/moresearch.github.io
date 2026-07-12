@@ -43,3 +43,6 @@ In thousands of replications across dozens of cultures, proposers offer 30-50% o
 - Daniel Kahneman, Jack Knetsch, Richard Thaler, "Fairness and the Assumptions of Economics," *Journal of Business*, 1986.
 - Joseph Henrich et al., "In Search of Homo Economicus," *American Economic Review*, 2001.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

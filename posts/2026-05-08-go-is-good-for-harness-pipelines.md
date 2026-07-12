@@ -40,3 +40,6 @@ Go tends to be a good fit for harness pipelines because it handles routine infra
 That does not make Go magical. It just makes it a practical tool for a class of problems where operational clarity pays off.
 
 Papers like SWE-bench and GAIA make the case that evaluation should get closer to real tasks. Once you accept that, you also accept more harness complexity. My bias is to meet that complexity with boring tools and explicit pipelines, not with a pile of clever glue code that becomes its own benchmark failure.
+
+
+This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.

@@ -10,6 +10,8 @@ part: 3
 
 Barry Boehm published *Software Engineering Economics* in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.
 
+Milton Friedman distilled economics to one sentence: "There's no such thing as a free lunch." Every feature has a cost. The cost is not just the time to build it. It is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free. The bill arrives in year three.
+
 ## The terminology
 
 **Opportunity cost.** The value of the best alternative foregone. Every hour on Feature A is an hour not on Feature B. The cost of Feature A is the time to build it plus the value of whatever you would have built instead. Opportunity cost is invisible. It appears on no invoice. It is the largest cost in software engineering. The features you didn't build are the cost of the features you did.
@@ -35,6 +37,9 @@ Barry Boehm published *Software Engineering Economics* in 1981. The book applied
 **Build vs. buy.** Make-or-buy. Build if internal cost < market cost, adjusted for risk, control, and strategic value. Coase: the boundary of the firm is where internal cost equals market cost. Teams that build everything have not calculated the boundary. They have assumed it.
 
 ## The economists who didn't know they were economists
+
+Tony Hoare observed: "There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult." The difficult method costs more upfront. The easy method costs more over time. The economics of software is the economics of choosing which cost to pay. Most choose the easy method. The easy method is why refactoring exists.
+
 
 **Brooks.** Conceptual integrity is an economic argument. One mind controls the design because coordination cost exceeds the benefit of additional designers. The n(n−1)/2 communication paths make adding designers counterproductive. Brooks's Law is a statement about the diseconomy of scale in software teams. Brooks was doing economics without the vocabulary.
 

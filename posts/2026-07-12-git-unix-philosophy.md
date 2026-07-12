@@ -101,3 +101,6 @@ The switch was GitHub. The community built the porcelain. The community built th
 - Linus Torvalds, Google Tech Talk on Git, 2007.
 - Scott Chacon and Ben Straub, *Pro Git*, Chapter 10: Git Internals, Apress.
 - Related posts: [Brooks on Software Design: conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity), [Parnas's Information Hiding](https://blog.hackspree.com/#parnas-information-hiding), [I, Pencil](https://blog.hackspree.com/#i-pencil)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

@@ -45,3 +45,6 @@ The economy of knowledge. The system operates without anyone needing to know the
 **References:**
 - Friedrich Hayek, "The Use of Knowledge in Society," *American Economic Review*, Vol. 35, No. 4, September 1945.
 - Related posts: [On Scarcity](https://blog.hackspree.com/#scarcity), [I, Pencil](https://blog.hackspree.com/#i-pencil), [Engineering is art and philosophy](https://blog.hackspree.com/#engineering-is-economics)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

@@ -95,3 +95,6 @@ The paper is from 1971. It is fifty-five years old. It was right then. It is rig
 ---
 
 **Reference:** David L. Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM*, Vol. 15, No. 12, December 1972, pp. 1053-1058. [PDF](https://prl.khoury.northeastern.edu/img/p-tr-1971.pdf)
+
+
+Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.

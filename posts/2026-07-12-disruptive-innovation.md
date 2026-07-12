@@ -124,3 +124,6 @@ Schumpeter's gale blows. Christensen's incumbents fall. Thom's catastrophes erup
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> The electric light was not a better candle. It was a different category of thing, valued along a different axis. The incumbents who improved their candles did everything right and were destroyed anyway. The innovator's dilemma is not a failure of management. It is a property of the structure.

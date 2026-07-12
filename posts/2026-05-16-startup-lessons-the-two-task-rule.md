@@ -61,3 +61,6 @@ Resist the temptation to add a third. The third will always seem urgent. It will
 **References:**
 - Y Combinator, "The Hardest Lessons for Startups to Learn." [YC Library](https://www.ycombinator.com/library/8w-the-hardest-lessons-for-startups-to-learn)
 - Related posts: [Brooks on Software Design: conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity), [Lehman's Software Evolution](https://blog.hackspree.com/#lehmans-laws), [The Unix philosophy](https://blog.hackspree.com/#unix-philosophy)
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

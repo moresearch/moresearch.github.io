@@ -38,6 +38,8 @@ AI agents are not just designed by mechanisms. They are players in games. Multi-
 
 ## Mechanism design for software infrastructure
 
+Hayek's central insight was that prices communicate scarcity. "The price system is a mechanism for communicating information. The most significant fact about this system is the economy of knowledge with which it operates." A Vickrey auction for compute does what prices do in markets: it elicits truthful information about private valuations without requiring anyone to reveal anything beyond their bid. The bid is the price. The price communicates the scarcity. The mechanism processes the prices. The allocation emerges. No central planner knows the true value of compute to each team. The auction discovers it. Hayek would approve.
+
 The principles apply directly to software infrastructure:
 
 **Compute allocation as auction design.** Multiple teams compete for a shared compute cluster. Each team has private information about the value of its jobs. A central scheduler allocates compute. If the scheduler uses first-come-first-served, teams have incentive to misreport urgency. If the scheduler uses a Vickrey auction — second-price sealed-bid — truthful reporting is a dominant strategy. The auction is mechanism design. The scheduler is the mechanism. The teams are the bidders. The compute is the good.

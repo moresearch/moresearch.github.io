@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Tragedy of the Commons"
+title: The Tragedy of the Commons
 date: 2026-07-12
 slug: game-tragedy-of-commons
 summary: "Garrett Hardin described it in 1968: a shared resource, individually rational use, collective ruin. The Tragedy of the Commons is a multi-player Prisoner's Dilemma with a shared resource. It explains overloaded CI pipelines, degraded staging environments, and every shared service that nobody maintains. Elinor Ostrom won a Nobel proving it's not inevitable."

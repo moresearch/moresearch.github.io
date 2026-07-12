@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Vickrey Auction"
+title: The Vickrey Auction
 date: 2026-07-12
 slug: game-vickrey-auction
 summary: "William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations."

@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Prisoner's Dilemma"
+title: The Prisoner's Dilemma
 date: 2026-07-12
 slug: game-prisoners-dilemma
 summary: "Two prisoners. Two choices. Cooperate or defect. The individually rational choice produces a collectively worse outcome. The Prisoner's Dilemma is the foundational model of game theory because it captures the essential tension between self-interest and mutual benefit. It explains why teams don't cooperate, why standards don't get adopted, and why the microservices migration never finishes."

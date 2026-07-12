@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;">
+  <meta name="description" content="&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,106 +652,10 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="game-evolutionary">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-evolutionary">&#34;Game Theory Model: Evolutionary Game Theory&#34;</a></h2><p class="post-summary">&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">evolutionary</span><span class="tag">maynard-smith</span><span class="tag">replicator-dynamics</span><span class="tag">ESS</span>
-          </div>
-        </header>
-        <div class="post-body"><p>John Maynard Smith published <em>Evolution and the Theory of Games</em> in 1982. He asked: what if players don't choose strategies rationally but inherit them genetically? The question launched evolutionary game theory. The key concepts: replicator dynamics and the Evolutionarily Stable Strategy (ESS).</p>
-<p>Replicator dynamics describe how the proportions of different strategies in a population change over time. Strategies that earn above-average payoffs grow. Strategies that earn below-average payoffs shrink. The growth rate is proportional to the difference between the strategy's payoff and the population average. The dynamics are deterministic. Given the initial proportions and the payoff matrix, the trajectory is determined.</p>
-<p>An Evolutionarily Stable Strategy is a strategy that, if adopted by the entire population, cannot be invaded by any small group of mutants playing a different strategy. The ESS is a refinement of Nash equilibrium for biological contexts. Every ESS is a Nash equilibrium. Not every Nash equilibrium is an ESS. The ESS requires that if a mutant strategy appears, it does worse against the existing population than the existing strategy does. The condition is stricter than Nash. The strictness is appropriate for evolution, where stability means resistance to invasion, not just mutual best response.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Biology (Maynard Smith, 1982).</strong> The hawk-dove game models animal conflict. Hawks fight for resources. Doves display but retreat if attacked. Hawk vs. Hawk: one wins, one is injured. Hawk vs. Dove: Hawk wins. Dove vs. Dove: both share. The ESS is a mixed population — some proportion of Hawks, some of Doves. The proportion depends on the value of the resource relative to the cost of injury. The prediction matches observed behavior in multiple species. Evolution is a game. The game has an equilibrium. The equilibrium is the observed behavior.</p>
-<p><strong>Economics (evolutionary game theory, Nelson and Winter, 1982).</strong> Firms don't optimize. They follow routines — organizational habits inherited from the past. Routines that produce profits survive. Routines that produce losses are replaced. The market is the selection environment. The replicator is the firm's growth rate. The ESS is the industry equilibrium. The dynamics explain why industries converge on similar practices. The practices are not optimal in any absolute sense. They are stable against invasion by alternatives.</p>
-<p><strong>Anthropology (Boyd and Richerson, 1985).</strong> Culture evolves through imitation and social learning. Cultural variants — beliefs, practices, technologies — are strategies. Successful variants are copied. Unsuccessful variants are abandoned. The replicator dynamics are cultural transmission. The ESS is a cultural equilibrium. The dynamics explain why some cultural practices persist despite being individually costly — they are stable against invasion by alternatives, even if alternatives would be better for individuals.</p>
-<p><strong>Computer science (genetic algorithms, classifier systems).</strong> Evolutionary computation uses replicator dynamics to solve optimization problems. A population of candidate solutions. Fitness evaluation. Selection. Recombination. Mutation. Repeat. The algorithm is replicator dynamics implemented in code. The solutions evolve. The evolution finds optima that gradient-based methods miss. The search is stochastic. The convergence is evolutionary.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Architecture pattern evolution.</strong> Microservices emerged as a mutant strategy. The monolith was the incumbent. Early microservices adopters demonstrated advantages — independent deployability, team autonomy, fault isolation. Other teams observed the success and adopted. The replicator dynamics: adoption rate proportional to observed advantage. The ESS: microservices are now the default for new systems. The monolith couldn't resist the invasion. Not because microservices are universally better. Because they are stable against re-invasion by the monolith pattern. Once adopted, the switching cost back to monolith is high. The switching cost is the invasion barrier.</p>
-<p><strong>Language and framework adoption.</strong> React emerged as a mutant in a jQuery-dominant ecosystem. Early adopters demonstrated advantages — component model, virtual DOM, unidirectional data flow. Adoption accelerated as the advantages became visible. jQuery declined. The replicator dynamics: framework popularity follows relative fitness. The fitness landscape changes as tooling, community, and hiring markets co-evolve. Today's ESS may not be tomorrow's. The dynamics continue.</p>
-<p><strong>Process evolution.</strong> Agile emerged as a mutant in a waterfall-dominant ecosystem. Early adopters demonstrated faster delivery, better responsiveness to change. Adoption accelerated. Waterfall declined — not eliminated, but no longer the default. The replicator dynamics: process fitness is measured by organizational survival. Organizations that adopted agile survived at higher rates. The surviving organizations shaped the hiring market. The hiring market shaped the training pipeline. The pipeline reinforced agile. The equilibrium is self-reinforcing.</p>
-<p><strong>The persistence of patterns.</strong> Some architecture patterns persist despite being widely criticized. The distributed monolith — microservices with tight coupling — persists because it is an ESS in certain environments. A team that inherits a distributed monolith can't unilaterally refactor to clean boundaries. The refactoring requires coordination across teams. The coordination is a public good. The individually rational choice is to work within the existing architecture. The equilibrium is suboptimal but stable. Stability doesn't mean goodness. It means resistance to change.</p>
-<h2 id="the-evolutionary-lens">The evolutionary lens</h2>
-<p>Evolutionary game theory gives the software engineer a lens: what strategies are growing in the population? What strategies are stable against invasion? The dominant architecture, the dominant language, the dominant process — they are not necessarily optimal. They are evolutionary equilibria. They persist because they resist invasion. Understanding the invasion barrier — switching cost, coordination cost, network effects — explains why they persist. Changing them requires lowering the barrier or raising the fitness of the alternative. The lowering is mechanism design. The raising is engineering. Both are evolutionary.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
-<li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
-<li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-repeated-games">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-repeated-games">&#34;Game Theory Model: Repeated Games and the Folk Theorem&#34;</a></h2><p class="post-summary">&#34;Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">repeated-games</span><span class="tag">folk-theorem</span><span class="tag">aumann</span><span class="tag">cooperation</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A one-shot Prisoner's Dilemma produces defection. A repeated Prisoner's Dilemma can produce cooperation. The difference is the future. In a one-shot game, there is no tomorrow in which defection can be punished. In a repeated game, today's defection costs you tomorrow's cooperation. If tomorrow matters enough — if the discount rate is low enough — cooperation becomes the rational strategy.</p>
-<p>The Folk Theorem, so called because it was known informally before it was formally proved, states: in an infinitely repeated game with sufficiently patient players, any feasible and individually rational payoff vector can be sustained as a Nash equilibrium. &quot;Feasible&quot; means the payoffs can be achieved by some combination of strategies. &quot;Individually rational&quot; means each player gets at least their minimax payoff — the worst the other players can impose on them. The theorem says: if the game goes on long enough, almost any outcome is possible as an equilibrium. The future is a mechanism for sustaining norms.</p>
-<p>The mechanism is the threat of punishment. If I cooperate today, you cooperate tomorrow. If I defect today, you defect tomorrow — and the day after, and the day after. The punishment must be credible. It must be in your interest to carry it out once defection has occurred. The credibility of the punishment is the constraint on what equilibria can be sustained. The Grim Trigger — cooperate until the first defection, then defect forever — is the harshest credible punishment. Tit-for-Tat — start with cooperation, then mirror the other's last move — is gentler and more robust.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Game theory (Aumann, 1959 Nobel 2005).</strong> Aumann's contribution was the formal analysis of repeated games with incomplete information. If players have private information, the repetition allows them to learn about each other. The learning changes the equilibrium. The Folk Theorem extends to games with imperfect monitoring — players observe noisy signals of each other's actions. The extension is technical. The implication is practical: even when you can't perfectly observe what others did, repetition enables cooperation.</p>
-<p><strong>Political science (Axelrod, 1984).</strong> Robert Axelrod's tournaments showed that Tit-for-Tat is a robust strategy. It is nice (never defects first), retaliatory (punishes defection immediately), forgiving (returns to cooperation if the other does), and clear (easy to recognize). These four properties make it effective in repeated interactions. The clarity is crucial — if the other player can't figure out your strategy, they can't adapt to it. Clarity is strategic.</p>
-<p><strong>International relations (Keohane, 1984).</strong> International cooperation is a repeated game among states. Trade agreements, arms control treaties, environmental protocols — these are equilibria sustained by the shadow of the future. The mechanism: if you violate the treaty today, we withdraw cooperation tomorrow. The mechanism works when the future is valued. It fails when states discount the future heavily — when leaders face elections, when regimes are unstable, when the long-term benefits of cooperation accrue to successors rather than incumbents. The discount rate is political. The politics determine whether cooperation is sustainable.</p>
-<p><strong>Organizational behavior.</strong> Company culture is a repeated-game equilibrium. Norms of collaboration, knowledge-sharing, and mutual support are sustained by the expectation of continued interaction. When turnover is high, the shadow of the future shortens. Cooperation declines. The decline is attributed to &quot;bad culture.&quot; The culture is a symptom. The cause is the shortened horizon. Fix the horizon. The culture follows.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Team continuity.</strong> A stable team is a repeated game. Members expect to work together indefinitely. Cooperation is an equilibrium — helping a colleague today is repaid tomorrow. A team with high turnover is a sequence of short-horizon games. Cooperation is fragile — the new person hasn't built the history, the departing person won't face the consequences of defection. The Folk Theorem predicts that stable teams will have more cooperation. The prediction is correct. The mechanism is the horizon.</p>
-<p><strong>Inter-service API stability.</strong> Two services with a long history of mutual dependence are in a repeated game. Breaking the API today costs you in future coordination. The equilibrium is stability. A service consumed by many anonymous clients is in a one-shot game with each. Breaking the API harms each client individually but none enough to punish. The equilibrium is instability — the provider changes the API when convenient. The difference is the horizon. The horizon is structural.</p>
-<p><strong>Code review reciprocity.</strong> Engineers who review each other's code are in a repeated game. Reviewing thoroughly today earns thorough reviews tomorrow. Skimming today earns skimmed reviews tomorrow. The equilibrium is a norm of thoroughness — if the team is stable and the horizon is long. The norm emerges without being mandated. The mandate is unnecessary. The horizon is sufficient.</p>
-<p><strong>Cross-team collaboration.</strong> Two teams that expect to work together for years develop informal cooperation — shared understanding, mutual accommodation, the benefit of the doubt. Two teams thrown together for a single project have no shadow of the future. Cooperation must be formalized — detailed specs, explicit contracts, escalation paths. The formality is the substitute for the missing horizon. The formality is costly. The horizon was free.</p>
-<h2 id="the-design-implication">The design implication</h2>
-<p>If you want cooperation, lengthen the horizon. Stable teams. Long-term ownership. Continuity of relationships. If you can't lengthen the horizon, simulate it: automated contract testing makes defection immediately visible, creating a repeated-game payoff structure. SLAs with penalties bring the future cost of defection into the present. The mechanisms are substitutes for the missing horizon. The best mechanism is the horizon itself. The horizon is free.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Robert Aumann, &quot;Acceptance Speech,&quot; Nobel Prize, 2005.</li>
-<li>Robert Axelrod, <em>The Evolution of Cooperation</em>, Basic Books, 1984.</li>
-<li>Drew Fudenberg and Eric Maskin, &quot;The Folk Theorem in Repeated Games with Discounting or with Incomplete Information,&quot; <em>Econometrica</em>, 1986.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cooperation-is-logical">Cooperation is logical</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-principal-agent">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-principal-agent">&#34;Game Theory Model: The Principal-Agent Problem&#34;</a></h2><p class="post-summary">&#34;A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent&#39;s effort. The problem: how to design a contract that aligns the agent&#39;s incentives with the principal&#39;s goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">principal-agent</span><span class="tag">moral-hazard</span><span class="tag">contract-theory</span><span class="tag">incentives</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The principal-agent problem is the foundational model of contract theory. A principal wants a task performed. An agent can perform it. The agent's effort is unobservable — the principal sees the outcome but not the effort. The outcome depends on effort and on random factors beyond the agent's control. The principal must design a contract — a payment scheme contingent on observable outcomes — that incentivizes the agent to exert the desired level of effort.</p>
-<p>The tension: the principal wants high effort at low cost. The agent wants high payment for low effort. If the principal pays a fixed wage, the agent exerts minimum effort — there's no incentive to do more. If the principal pays entirely based on outcome, the agent bears all the risk from random factors. The optimal contract balances insurance (protecting the agent from randomness) with incentives (rewarding effort). The balance is the contract. The contract is the mechanism.</p>
-<p>The problem has two variants. Moral hazard: the agent takes hidden actions after the contract is signed. Adverse selection: the agent has hidden information before the contract is signed — the agent knows their own type, and the principal doesn't. Both are information asymmetries. Both require mechanism design to resolve.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Contract theory (Hart, Holmström, 2016 Nobel).</strong> Oliver Hart and Bengt Holmström shared the 2016 Nobel for contract theory. Holmström's informativeness principle: any performance measure that provides information about effort should be included in the contract. If the measure is informative, including it reduces the agent's risk for a given level of incentives. Hart's incomplete contracts: real contracts cannot specify every contingency. When contracts are incomplete, the allocation of residual control rights — who decides what happens in unforeseen circumstances — determines outcomes. Ownership matters because ownership confers residual control.</p>
-<p><strong>Corporate governance (Jensen and Meckling, 1976).</strong> The separation of ownership and control in corporations is a principal-agent problem. Shareholders are principals. Managers are agents. Managers may pursue their own interests — empire-building, risk-aversion, short-term stock price — rather than shareholder value. The mechanisms: stock options (aligning incentives), boards of directors (monitoring), hostile takeovers (discipline). The mechanisms are imperfect. The imperfection is the cost of the agency relationship.</p>
-<p><strong>Regulation (Laffont and Tirole, 1993 Nobel 2014).</strong> Regulating a monopoly is a principal-agent problem. The regulator (principal) wants the monopoly (agent) to operate efficiently. The monopoly has private information about its costs. The regulator designs a pricing scheme that incentivizes cost reduction while preventing excessive pricing. The scheme is a contract. The contract is mechanism design applied to public utility regulation.</p>
-<p><strong>Political science.</strong> Voters are principals. Politicians are agents. The agency problem is accountability. Elections are the incentive mechanism — politicians who perform poorly are voted out. The mechanism is imperfect because voters have incomplete information, politicians control the flow of information, and election cycles are coarse. The imperfections are the subject of political economy.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Team and manager.</strong> The manager (principal) wants the team (agent) to produce high-quality work. The manager cannot perfectly observe effort — code quality is partly effort, partly skill, partly the difficulty of the task. The contract: salary, performance review, promotion. The mechanisms: code review (monitoring), OKRs (outcome-based incentives), peer feedback (multi-source monitoring). Each mechanism reduces the information asymmetry.</p>
-<p><strong>Outsourcing vendor management.</strong> The company (principal) hires a vendor (agent) to build a system. The vendor has private information about their true costs, their true timeline, and the quality of their engineers. The contract: fixed-price or time-and-materials. Fixed-price transfers risk to the vendor but creates incentive to cut corners. Time-and-materials transfers risk to the company but creates incentive to inflate hours. The optimal contract balances risk-sharing with incentive alignment. The balance is the principal-agent problem in procurement form.</p>
-<p><strong>Platform team and service teams.</strong> The platform team (agent) provides infrastructure to service teams (principals). The service teams cannot observe the platform team's effort. The platform team may optimize for its own interests — interesting technical work, clean architecture — rather than service team needs. The contract: SLAs with penalties, internal billing (chargebacks), user satisfaction surveys. The mechanisms align the platform team's incentives with service team outcomes.</p>
-<p><strong>Open-source maintainer and corporate user.</strong> The maintainer (agent) produces a library. The corporation (principal) depends on it. The maintainer's effort is unobservable. The corporation cannot compel the maintainer to fix bugs or accept patches. The contract is social, not legal — reputation, sponsorship, contribution guidelines. The principal-agent problem in open source is acute because the mechanisms are weak. The weakness is why maintainers burn out.</p>
-<h2 id="the-alignment-problem">The alignment problem</h2>
-<p>The principal-agent problem is the alignment problem in economic form. Align the agent's incentives with the principal's goals. The alignment is never perfect because information is never perfect. The residual misalignment is the agency cost. The cost is irreducible. The mechanism designer's job is to minimize it. Minimize it by making outcomes observable, linking rewards to observables, and accepting that some misalignment will remain. The acceptance is realism. The minimization is engineering.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Bengt Holmström, &quot;Moral Hazard and Observability,&quot; <em>Bell Journal of Economics</em>, 1979.</li>
-<li>Oliver Hart and Bengt Holmström, &quot;The Theory of Contracts,&quot; 1987.</li>
-<li>Michael Jensen and William Meckling, &quot;Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure,&quot; <em>Journal of Financial Economics</em>, 1976.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a></li>
-</ul>
-</div>
-      </article>
       <article class="post" id="game-vickrey-auction">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-vickrey-auction">&#34;Game Theory Model: The Vickrey Auction&#34;</a></h2><p class="post-summary">&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;</p>
+          <h2><a href="#game-vickrey-auction">The Vickrey Auction</a></h2><p class="post-summary">&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">vickrey-auction</span><span class="tag">second-price</span><span class="tag">truthful-bidding</span><span class="tag">mechanism-design</span>
           </div>
         </header>
@@ -778,42 +682,41 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="game-mechanism-design">
+      <article class="post" id="game-ultimatum">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-mechanism-design">&#34;Game Theory Model: Mechanism Design&#34;</a></h2><p class="post-summary">&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">incentives</span><span class="tag">hurwicz</span><span class="tag">maskin</span><span class="tag">myerson</span>
+          <h2><a href="#game-ultimatum">The Ultimatum Game</a></h2><p class="post-summary">&#34;One player proposes how to split $100. The other accepts or rejects. If they reject, both get nothing. The Nash equilibrium: proposer offers $1, responder accepts. Real humans: proposers offer $30-$50, responders reject offers below $20. The gap between theory and behavior is a window into fairness, emotion, and what rationality actually means.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">ultimatum-game</span><span class="tag">fairness</span><span class="tag">behavioral-economics</span><span class="tag">rationality</span>
           </div>
         </header>
-        <div class="post-body"><p>Mechanism design is game theory in reverse. In standard game theory, you are given the rules and you solve for the equilibrium. In mechanism design, you are given the desired outcome and you design the rules that produce it as an equilibrium. You don't ask &quot;what will happen given these incentives?&quot; You ask &quot;what incentives will produce what we want to happen?&quot;</p>
-<p>The field was founded by Leonid Hurwicz, Eric Maskin, and Roger Myerson. They shared the 2007 Nobel Prize. Hurwicz asked the founding question in 1960: how do you design an allocation mechanism that works even when participants have private information and act strategically? The answer: you design the rules so that truthful revelation of private information is the best strategy for each participant, and the outcome given truthful revelation is the one you want.</p>
-<p>The mechanism has four components: a set of participants, each with private information (their type). A set of possible outcomes. A rule that maps reported types to outcomes. And a solution concept — usually dominant-strategy incentive compatibility or Bayesian incentive compatibility. The mechanism is incentive-compatible if truthful reporting is an equilibrium. The mechanism implements the desired outcome if the equilibrium produces it.</p>
+        <div class="post-body"><p>The Ultimatum Game was introduced by Werner Güth in 1982. It is the simplest game that tests fairness. Two players. The proposer receives $100 and must offer some portion to the responder. The responder can accept — in which case both get the proposed split — or reject — in which case both get nothing. The game is played once. The players are anonymous.</p>
+<p>The Nash equilibrium: the proposer offers the minimum possible amount ($1), and the responder accepts. Why? Because the responder, facing a choice between $1 and $0, rationally prefers $1. Knowing this, the proposer offers $1. The outcome is (99, 1). The prediction is clear. The prediction is wrong.</p>
+<p>In thousands of replications across dozens of cultures, proposers offer 30-50% of the pie. Offers below 20% are rejected roughly half the time. The rejection rate increases as the offer decreases. The Nash equilibrium predicts 0% rejection at any positive offer. The prediction fails. The failure is systematic. The system is human.</p>
 <h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Economics (Hurwicz, 1960).</strong> The fundamental question: can a central planner achieve an efficient allocation without knowing individuals' private valuations? The answer: yes, under certain conditions. The Vickrey-Clarke-Groves (VCG) mechanism achieves efficient allocation in quasi-linear environments. Participants report their valuations. The mechanism allocates goods to maximize total reported value and charges each participant the externality they impose on others. Truthful reporting is a dominant strategy. The VCG mechanism is the theoretical foundation of spectrum auctions, online advertising auctions, and compute resource allocation.</p>
-<p><strong>Implementation theory (Maskin, 1977 Nobel 2007).</strong> Maskin answered: which social choice rules can be implemented in Nash equilibrium? The answer involves Monotonicity — if an outcome is selected under one preference profile, and the outcome moves up in everyone's ranking under a new profile, it must still be selected. Monotonicity is necessary and, with no veto power, sufficient for Nash implementation. The mathematics is abstract. The implication is practical: not every desirable outcome can be implemented. The constraints are mathematical, not political.</p>
-<p><strong>Auction theory (Myerson, 1981 Nobel 2007).</strong> Myerson characterized optimal auctions. The revenue-equivalence theorem: any auction that allocates to the highest bidder and gives zero surplus to the lowest type yields the same expected revenue. The optimal auction sets a reserve price and allocates to the highest bidder above the reserve. The reserve price is the mechanism designer's tool for extracting surplus. Myerson applied mechanism design to auctions and showed that auction design is mechanism design.</p>
-<p><strong>Market design (Roth, 2012 Nobel).</strong> Alvin Roth applied mechanism design to markets that didn't exist: matching medical residents to hospitals, matching students to schools, matching kidney donors to recipients. The mechanisms are algorithms that take reported preferences and produce stable matches. Stability means no pair would prefer each other over their current match. The deferred acceptance algorithm (Gale-Shapley) produces stable matches. Roth made it work in practice. Market design is mechanism design implemented.</p>
+<p><strong>Classical game theory.</strong> The Nash equilibrium is (proposer offers ε, responder accepts any positive offer). The prediction relies on the assumption that players care only about their own monetary payoff. The assumption is false. The falsity is informative.</p>
+<p><strong>Behavioral economics (Kahneman, Thaler).</strong> Responders reject low offers because they value fairness. The rejection is costly — they give up money — but the cost is worth it to punish unfair behavior. The proposer anticipates this and offers a fair split to avoid rejection. The fairness norm constrains the equilibrium. The constraint is not in the payoff matrix. It is in the players' heads.</p>
+<p><strong>Neuroeconomics (Sanfey et al., 2003).</strong> fMRI studies show that receiving an unfair offer activates the anterior insula — a brain region associated with disgust — and the dorsolateral prefrontal cortex — associated with cognitive control. The brain treats unfairness as physically aversive. The rejection is not a calculated choice. It is an emotional response. The emotion is disgust. The disgust overrides the rational calculation. The override is visible in the brain.</p>
+<p><strong>Cross-cultural studies (Henrich et al., 2001).</strong> The Ultimatum Game has been played in 15 small-scale societies. The results vary enormously. In some societies, proposers offer as little as 15% and responders accept. In others, proposers offer more than 50% — hyper-fair — and responders reject both low <em>and</em> high offers. The variation tracks cultural norms about sharing, gift-giving, and market integration. The game reveals culture. The culture varies. The variation is systematic.</p>
+<p><strong>Evolutionary psychology.</strong> Fairness norms evolved in small groups where reputation mattered. The one-shot anonymous Ultimatum Game is evolutionarily novel. The brain applies reputation-based reasoning to an anonymous situation. The misapplication produces rejection of unfair offers. The brain is not wrong. The environment is novel. The adaptation is for a different world.</p>
 <h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Automated contract testing.</strong> The desired outcome: services maintain stable API contracts. The mechanism: every CI build runs contract tests. Breaking the contract fails the build. The build failure is immediate, visible, and costly. The cost of defection — changing the API without updating callers — is brought forward to the moment of the change. The mechanism implements the outcome. Truthful revelation — &quot;I changed the API&quot; — is enforced by the test.</p>
-<p><strong>SLAs with penalty clauses.</strong> The desired outcome: services maintain availability targets. The mechanism: an SLA defines the target and the penalty for missing it. The penalty makes degradation costly to the provider. The cost aligns the provider's incentive with the consumer's need. The mechanism implements the outcome. The SLA is the contract. The penalty is the enforcement.</p>
-<p><strong>Deployment gates.</strong> The desired outcome: only tested, reviewed code reaches production. The mechanism: the deployment pipeline requires passing tests, code review approval, and a staging verification period. Each gate is a rule. The rules collectively implement the outcome. Bypassing a gate is possible but visible. Visibility creates accountability. Accountability enforces compliance.</p>
-<p><strong>Code review requirements.</strong> The desired outcome: all code is reviewed before merge. The mechanism: the repository requires an approving review. The mechanism is enforced by the platform. The enforcement is automatic. The automatic enforcement removes the human decision. The removal is mechanism design — design the rules so the desired behavior is the only possible behavior.</p>
-<h2 id="the-designers-question">The designer's question</h2>
-<p>Mechanism design gives the software engineer a question to ask: what outcome do I want, and what rules would produce it? The question is more powerful than &quot;what should we do?&quot; because it acknowledges that people respond to incentives. Telling people to cooperate produces cooperation if people are cooperative. Designing a mechanism where cooperation is the dominant strategy produces cooperation regardless. The mechanism doesn't require virtue. It requires structure. Structure is more reliable than virtue. Design the structure.</p>
+<p><strong>Salary negotiation.</strong> The offer is the salary. The rejection is walking away. If the offer is too low, the candidate rejects — even though a low salary is better than no salary. The rejection is the Ultimatum Game. The candidate is the responder. The company is the proposer. Companies that lowball lose good candidates not because the candidates can't use the money but because the offer signals undervaluation. The signal is the information. The information is worth more than the salary difference.</p>
+<p><strong>Resource allocation between teams.</strong> The infrastructure budget must be split. The platform team proposes an allocation. The service teams can accept or escalate. Escalation costs time and political capital — both parties lose. The Nash equilibrium: platform proposes a minimal allocation, service teams accept. The observed behavior: platform proposes a fair split to avoid escalation. The fairness norm constrains the outcome.</p>
+<p><strong>Review assignment.</strong> A tech lead assigns code reviews. If the assignment is visibly unfair — one person gets all the difficult reviews — the overloaded reviewer may refuse, forcing the lead to rebalance. The refusal costs the reviewer social capital. The cost is worth it to punish the unfairness. The lead, anticipating refusal, assigns fairly. The fairness is strategic.</p>
+<p><strong>The takeaway.</strong> The Ultimatum Game teaches that humans are not purely self-interested payoff maximizers. They value fairness. They will pay to punish unfairness. The willingness to pay is a constraint on any system that allocates resources among humans. Algorithms that produce technically optimal but visibly unfair allocations will be rejected. The rejection is rational — if your model of rationality includes fairness in the utility function. The model should.</p>
 <hr>
 <p><strong>References:</strong></p>
 <ul>
-<li>Leonid Hurwicz, &quot;Optimality and Informational Efficiency in Resource Allocation Processes,&quot; 1960.</li>
-<li>Eric Maskin, &quot;Nash Equilibrium and Welfare Optimality,&quot; <em>Review of Economic Studies</em>, 1977.</li>
-<li>Roger Myerson, &quot;Optimal Auction Design,&quot; <em>Mathematics of Operations Research</em>, 1981.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+<li>Werner Güth, Rolf Schmittberger, Bernd Schwarze, &quot;An Experimental Analysis of Ultimatum Bargaining,&quot; <em>Journal of Economic Behavior &amp; Organization</em>, 1982.</li>
+<li>Daniel Kahneman, Jack Knetsch, Richard Thaler, &quot;Fairness and the Assumptions of Economics,&quot; <em>Journal of Business</em>, 1986.</li>
+<li>Joseph Henrich et al., &quot;In Search of Homo Economicus,&quot; <em>American Economic Review</em>, 2001.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a></li>
 </ul>
 </div>
       </article>
       <article class="post" id="game-tragedy-of-commons">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-tragedy-of-commons">&#34;Game Theory Model: The Tragedy of the Commons&#34;</a></h2><p class="post-summary">&#34;Garrett Hardin described it in 1968: a shared resource, individually rational use, collective ruin. The Tragedy of the Commons is a multi-player Prisoner&#39;s Dilemma with a shared resource. It explains overloaded CI pipelines, degraded staging environments, and every shared service that nobody maintains. Elinor Ostrom won a Nobel proving it&#39;s not inevitable.&#34;</p>
+          <h2><a href="#game-tragedy-of-commons">The Tragedy of the Commons</a></h2><p class="post-summary">&#34;Garrett Hardin described it in 1968: a shared resource, individually rational use, collective ruin. The Tragedy of the Commons is a multi-player Prisoner&#39;s Dilemma with a shared resource. It explains overloaded CI pipelines, degraded staging environments, and every shared service that nobody maintains. Elinor Ostrom won a Nobel proving it&#39;s not inevitable.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">tragedy-of-commons</span><span class="tag">hardin</span><span class="tag">ostrom</span><span class="tag">common-pool-resources</span>
           </div>
         </header>
@@ -844,179 +747,10 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="game-signaling">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-signaling">&#34;Game Theory Model: Signaling Games&#34;</a></h2><p class="post-summary">&#34;One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it&#39;s costly enough that only the &#39;good&#39; type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn&#39;t teach skills, it proves you had the skills to get in. In software: the RFC that&#39;s too detailed, the rewrite proposal that comes with a prototype.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">signaling</span><span class="tag">spence</span><span class="tag">private-information</span><span class="tag">separating-equilibrium</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A signaling game has two players. The sender has private information about their type. The sender takes an action — sends a signal. The receiver observes the signal and responds. The sender's payoff depends on the receiver's response and the sender's type. The receiver's payoff depends on the sender's type and the receiver's response.</p>
-<p>The classic model is Michael Spence's job market signaling (1973). A worker knows their own productivity (high or low). The employer doesn't. The worker can acquire education — a costly signal. If education is more costly for low-productivity workers than for high-productivity workers, there exists a separating equilibrium: high types acquire education, low types don't, employers pay high wages to educated workers and low wages to uneducated workers. The education doesn't need to increase productivity. It only needs to be differentially costly. The differential cost is what makes the signal informative.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Economics (Spence, 1973 Nobel 2001).</strong> The separating equilibrium exists when the single-crossing property holds — the marginal cost of signaling differs across types. Education signals productivity not because education teaches skills but because it is harder for low-productivity people to acquire. The hardship is the signal. The credential is the evidence of hardship.</p>
-<p><strong>Biology (Zahavi's handicap principle, 1975).</strong> The peacock's tail is a signal of genetic fitness. The tail is costly — it requires energy, attracts predators, impedes movement. Only a genetically fit peacock can afford such a handicap. The cost is the signal. The tail doesn't help the peacock survive. It proves the peacock <em>can</em> survive despite the tail. The handicap is honest because it's too expensive to fake.</p>
-<p><strong>Political science (Fearon, 1994).</strong> Audience costs in international relations are signaling games. A leader who makes a public threat — &quot;we will retaliate&quot; — pays an audience cost if they back down. The cost is domestic political damage. Only a leader who is genuinely committed can afford to make the threat. The threat is credible because backing down is costly. The cost is the signal.</p>
-<p><strong>Computer science (mechanism design).</strong> Screening is the reverse of signaling. In screening, the uninformed party moves first, offering a menu of contracts. Each type self-selects into the contract designed for it. The menu separates types by making each contract optimal for the intended type. Screening is mechanism design. Signaling is sender-driven. Screening is receiver-driven.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>The rewrite proposal.</strong> A team proposes rewriting a legacy service. The proposal is cheap talk — anyone can propose. The architecture review must decide whether the team genuinely believes the rewrite is necessary or is bored and wants greenfield work. A prototype requirement is a screening mechanism. A sincere team will build the prototype. An insincere team won't. The prototype is costly. The cost separates types.</p>
-<p><strong>The detailed RFC.</strong> Writing a thorough RFC — with trade-off analysis, migration plans, and risk assessment — is costly. It takes days. The cost signals seriousness. A team that writes a one-paragraph proposal is signaling low investment. The architecture review discounts the proposal accordingly. The RFC's length is not about information transfer. It is about signaling commitment.</p>
-<p><strong>Open-source contributions as job market signaling.</strong> A developer contributes to a well-known open-source project. The contribution is publicly visible. It signals skill to potential employers. The contribution is costly — it takes time outside work. The cost signals passion and competence. The signal works because it's harder to fake than a resume bullet point. The code doesn't lie. The commit history is the credential.</p>
-<p><strong>The production incident response.</strong> How an engineer handles a production incident signals competence to the entire organization. The signal is costly — incidents are high-stress, high-visibility, and occur at inconvenient times. The engineer who stays calm, diagnoses systematically, and communicates clearly is signaling a type that cannot be faked under pressure. The pressure is the cost. The calm is the signal.</p>
-<h2 id="separating-vs-pooling-equilibria">Separating vs. pooling equilibria</h2>
-<p>A signaling game has two kinds of equilibria. In a separating equilibrium, different types send different signals. The receiver can infer the type from the signal. In a pooling equilibrium, all types send the same signal. The receiver learns nothing. Which equilibrium emerges depends on the cost structure and the prior distribution of types. If the cost of the signal is too low for all types, everyone sends it — credential inflation. If too high, nobody does. The sweet spot is where the cost is differentially burdensome.</p>
-<p>In software: if writing a prototype is too easy, everyone writes one. The prototype stops separating types. If it's too hard, nobody writes one. The review process loses the signal. The optimal screening cost is calibrated to the distribution of sincere and insincere proposers. The calibration is mechanism design.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Michael Spence, &quot;Job Market Signaling,&quot; <em>Quarterly Journal of Economics</em>, 1973.</li>
-<li>Amotz Zahavi, &quot;Mate Selection — A Selection for a Handicap,&quot; <em>Journal of Theoretical Biology</em>, 1975.</li>
-<li>James D. Fearon, &quot;Domestic Political Audiences and the Escalation of International Disputes,&quot; <em>American Political Science Review</em>, 1994.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-ultimatum">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-ultimatum">&#34;Game Theory Model: The Ultimatum Game&#34;</a></h2><p class="post-summary">&#34;One player proposes how to split $100. The other accepts or rejects. If they reject, both get nothing. The Nash equilibrium: proposer offers $1, responder accepts. Real humans: proposers offer $30-$50, responders reject offers below $20. The gap between theory and behavior is a window into fairness, emotion, and what rationality actually means.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">ultimatum-game</span><span class="tag">fairness</span><span class="tag">behavioral-economics</span><span class="tag">rationality</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The Ultimatum Game was introduced by Werner Güth in 1982. It is the simplest game that tests fairness. Two players. The proposer receives $100 and must offer some portion to the responder. The responder can accept — in which case both get the proposed split — or reject — in which case both get nothing. The game is played once. The players are anonymous.</p>
-<p>The Nash equilibrium: the proposer offers the minimum possible amount ($1), and the responder accepts. Why? Because the responder, facing a choice between $1 and $0, rationally prefers $1. Knowing this, the proposer offers $1. The outcome is (99, 1). The prediction is clear. The prediction is wrong.</p>
-<p>In thousands of replications across dozens of cultures, proposers offer 30-50% of the pie. Offers below 20% are rejected roughly half the time. The rejection rate increases as the offer decreases. The Nash equilibrium predicts 0% rejection at any positive offer. The prediction fails. The failure is systematic. The system is human.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Classical game theory.</strong> The Nash equilibrium is (proposer offers ε, responder accepts any positive offer). The prediction relies on the assumption that players care only about their own monetary payoff. The assumption is false. The falsity is informative.</p>
-<p><strong>Behavioral economics (Kahneman, Thaler).</strong> Responders reject low offers because they value fairness. The rejection is costly — they give up money — but the cost is worth it to punish unfair behavior. The proposer anticipates this and offers a fair split to avoid rejection. The fairness norm constrains the equilibrium. The constraint is not in the payoff matrix. It is in the players' heads.</p>
-<p><strong>Neuroeconomics (Sanfey et al., 2003).</strong> fMRI studies show that receiving an unfair offer activates the anterior insula — a brain region associated with disgust — and the dorsolateral prefrontal cortex — associated with cognitive control. The brain treats unfairness as physically aversive. The rejection is not a calculated choice. It is an emotional response. The emotion is disgust. The disgust overrides the rational calculation. The override is visible in the brain.</p>
-<p><strong>Cross-cultural studies (Henrich et al., 2001).</strong> The Ultimatum Game has been played in 15 small-scale societies. The results vary enormously. In some societies, proposers offer as little as 15% and responders accept. In others, proposers offer more than 50% — hyper-fair — and responders reject both low <em>and</em> high offers. The variation tracks cultural norms about sharing, gift-giving, and market integration. The game reveals culture. The culture varies. The variation is systematic.</p>
-<p><strong>Evolutionary psychology.</strong> Fairness norms evolved in small groups where reputation mattered. The one-shot anonymous Ultimatum Game is evolutionarily novel. The brain applies reputation-based reasoning to an anonymous situation. The misapplication produces rejection of unfair offers. The brain is not wrong. The environment is novel. The adaptation is for a different world.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Salary negotiation.</strong> The offer is the salary. The rejection is walking away. If the offer is too low, the candidate rejects — even though a low salary is better than no salary. The rejection is the Ultimatum Game. The candidate is the responder. The company is the proposer. Companies that lowball lose good candidates not because the candidates can't use the money but because the offer signals undervaluation. The signal is the information. The information is worth more than the salary difference.</p>
-<p><strong>Resource allocation between teams.</strong> The infrastructure budget must be split. The platform team proposes an allocation. The service teams can accept or escalate. Escalation costs time and political capital — both parties lose. The Nash equilibrium: platform proposes a minimal allocation, service teams accept. The observed behavior: platform proposes a fair split to avoid escalation. The fairness norm constrains the outcome.</p>
-<p><strong>Review assignment.</strong> A tech lead assigns code reviews. If the assignment is visibly unfair — one person gets all the difficult reviews — the overloaded reviewer may refuse, forcing the lead to rebalance. The refusal costs the reviewer social capital. The cost is worth it to punish the unfairness. The lead, anticipating refusal, assigns fairly. The fairness is strategic.</p>
-<p><strong>The takeaway.</strong> The Ultimatum Game teaches that humans are not purely self-interested payoff maximizers. They value fairness. They will pay to punish unfairness. The willingness to pay is a constraint on any system that allocates resources among humans. Algorithms that produce technically optimal but visibly unfair allocations will be rejected. The rejection is rational — if your model of rationality includes fairness in the utility function. The model should.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Werner Güth, Rolf Schmittberger, Bernd Schwarze, &quot;An Experimental Analysis of Ultimatum Bargaining,&quot; <em>Journal of Economic Behavior &amp; Organization</em>, 1982.</li>
-<li>Daniel Kahneman, Jack Knetsch, Richard Thaler, &quot;Fairness and the Assumptions of Economics,&quot; <em>Journal of Business</em>, 1986.</li>
-<li>Joseph Henrich et al., &quot;In Search of Homo Economicus,&quot; <em>American Economic Review</em>, 2001.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-battle-of-sexes">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-battle-of-sexes">&#34;Game Theory Model: The Battle of the Sexes&#34;</a></h2><p class="post-summary">&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">battle-of-sexes</span><span class="tag">coordination</span><span class="tag">focal-points</span><span class="tag">standards</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A couple wants to spend the evening together. One prefers the opera. The other prefers the football game. Both prefer being together at the less-preferred event to being apart at the preferred one. The payoff matrix:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Opera</th>
-<th>Football</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Opera</strong></td>
-<td>(3, 2)</td>
-<td>(0, 0)</td>
-</tr>
-<tr>
-<td><strong>Football</strong></td>
-<td>(0, 0)</td>
-<td>(2, 3)</td>
-</tr>
-</tbody>
-</table>
-<p>Two pure-strategy Nash equilibria: both go to Opera, both go to Football. Both are Pareto-efficient — neither can be improved without harming the other. Neither equilibrium is obviously better than the other without a way to weigh the two players' preferences. The game has a mixed-strategy equilibrium as well, but it is inefficient — sometimes they miscoordinate. The challenge is selecting <em>which</em> coordinated outcome without an external authority.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Classical game theory.</strong> The Battle of the Sexes is a coordination game with conflicting interests. The equilibria are Pareto-rankable only by interpersonal utility comparison, which classical game theory avoids. Equilibrium selection requires something beyond the payoff matrix: a focal point, a convention, a first-mover advantage, or a bargaining process.</p>
-<p><strong>Focal points (Schelling).</strong> In the absence of communication, players coordinate by finding what is obvious. &quot;We'll go to the opera because it's Tuesday and the opera is on Tuesdays.&quot; The day is a focal point. It is arbitrary. It works because both players know the other is looking for it. The power of the focal point is not in its logic. It is in its obviousness.</p>
-<p><strong>Bargaining theory (Nash).</strong> If players can communicate, they can bargain. The Nash bargaining solution splits the surplus according to relative bargaining power. The player with better outside options — could go to the opera alone and enjoy it more than the other would enjoy football alone — has more bargaining power. The solution predicts the outcome based on the disagreement point.</p>
-<p><strong>Evolutionary game theory.</strong> In a population playing Battle of the Sexes, which equilibrium emerges depends on initial conditions and the speed of adaptation. If a slight majority initially goes to Opera, the minority has incentive to switch. The equilibrium is path-dependent. History matters. The equilibrium that emerges is the one that got a small initial advantage.</p>
-<p><strong>Feminist economics (Akerlof, Sen).</strong> The Battle of the Sexes models the gendered division of labor. In traditional households, the wife's preferences are systematically discounted. The equilibrium that emerges — &quot;his&quot; choice — is not a reflection of equal bargaining. It is a reflection of unequal outside options. The wife cannot credibly threaten to go alone because her outside option is worse. The bargaining power is structural. The structure is social.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Message queue choice.</strong> Team A wants NATS. Team B wants Kafka. Both prefer either queue to no queue. Both prefer their own choice. The game has two Nash equilibria: both NATS or both Kafka. Which equilibrium is selected depends on who has more organizational power, who moves first, or who cares more. The selection mechanism is political. The politics are game-theoretic.</p>
-<p><strong>Language choice for a new service.</strong> The team is split between Go and Rust. Both prefer a unified language to fragmentation. Both prefer their own. The equilibrium: the language chosen by the tech lead, or the language chosen by the team that builds the first service (first-mover advantage), or the language that has the most internal library support (focal point).</p>
-<p><strong>Meeting time selection.</strong> Team members across time zones need a recurring meeting slot. Everyone prefers any slot to no meeting. Everyone prefers their own working hours. The equilibrium: the slot that works for the person with the most organizational power, or the slot suggested first, or the slot that's &quot;obvious&quot; — Tuesday 10am, the universal default.</p>
-<p><strong>Deploy schedule.</strong> Three teams share a deploy window. Each prefers a different day. All prefer a coordinated schedule to conflicting deploys. The equilibrium: the day claimed by the team that shipped first, or the day assigned by the release manager (hierarchy), or Monday (focal point — start of the week).</p>
-<h2 id="resolving-the-battle-of-the-sexes">Resolving the Battle of the Sexes</h2>
-<p>The Battle of the Sexes is resolved by a selection mechanism. Any mechanism will do. The mechanism must be accepted as legitimate by both players, or it won't be accepted. Hierarchy: the architect decides. Convention: we always use what the first team chose. Rotation: we alternate. External authority: the CTO mandated NATS. Market: whichever technology has the most internal tooling wins. Commitment: Team A already deployed to production with NATS; Team B can join or build their own queue.</p>
-<p>The mechanism that works is the one both players will accept. Acceptance is the constraint. The constraint is social. The social is game-theoretic.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>R. Duncan Luce and Howard Raiffa, <em>Games and Decisions</em>, Wiley, 1957.</li>
-<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
-<li>John Nash, &quot;The Bargaining Problem,&quot; <em>Econometrica</em>, 1950.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-chicken">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-chicken">&#34;Game Theory Model: Chicken&#34;</a></h2><p class="post-summary">&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">chicken</span><span class="tag">brinkmanship</span><span class="tag">credible-commitment</span><span class="tag">organizational-politics</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Two drivers speed toward each other on a narrow road. The first to swerve is the chicken — loses status, loses the game. If both swerve, both lose a little. If neither swerves, both crash. The payoff matrix:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Swerve</th>
-<th>Straight</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Swerve</strong></td>
-<td>(0, 0)</td>
-<td>(-1, +1)</td>
-</tr>
-<tr>
-<td><strong>Straight</strong></td>
-<td>(+1, -1)</td>
-<td>(-10, -10)</td>
-</tr>
-</tbody>
-</table>
-<p>There are two pure-strategy Nash equilibria: (Straight, Swerve) and (Swerve, Straight). Both are asymmetric — one player wins, one loses. The symmetric outcome (Swerve, Swerve) is not an equilibrium because each player would prefer to deviate to Straight. The symmetric outcome (Straight, Straight) is disaster.</p>
-<p>The game is about who commits first. If you can credibly commit to going straight — by throwing your steering wheel out the window, visibly, where the other driver can see — the other driver must swerve. The commitment must be credible. A verbal threat is not credible. The thrown steering wheel is. The commitment changes the game from simultaneous to sequential. The sequential game has a unique outcome: the committed player goes straight, the uncommitted player swerves.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Classical game theory.</strong> Chicken has two asymmetric Nash equilibria. The equilibrium selection problem is about who can credibly commit first. The commitment must be observable and irreversible. Schelling analyzed this extensively in <em>The Strategy of Conflict</em> — the ability to worsen one's own options can be strategically advantageous because it forces the opponent to concede.</p>
-<p><strong>Nuclear strategy (Schelling, RAND).</strong> Chicken was the dominant metaphor for Cold War nuclear brinkmanship. Two superpowers, each threatening mutual destruction. The one that could credibly commit to retaliation — by making retaliation automatic, by removing the human decision from the loop — gained strategic advantage. &quot;Threats that leave something to chance&quot; was Schelling's phrase. The threat of mutual destruction must be credible. If it's credible, the other side swerves.</p>
-<p><strong>Behavioral game theory.</strong> In laboratory play, Chicken produces higher rates of &quot;swerve&quot; than Nash predicts, especially among players who have played before and learned that mutual stubbornness produces disaster. Experience teaches swerving. The learning is expensive. The disaster teaches it.</p>
-<p><strong>Organizational theory.</strong> Chicken models inter-team conflict. Two teams both want to rewrite the same shared service. Both have started work. Neither wants to abandon their effort. If both continue, the organization gets two incompatible rewrites and a migration mess. Someone must swerve. Who swerves is determined by organizational hierarchy, political capital, or the urgency of each team's deliverable. The hierarchy is a mechanism for resolving Chicken. The mechanism is informal. The crashes are frequent.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Friday deploy races.</strong> Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky. Both want their feature in. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose their weekend. The equilibrium before the &quot;no Friday deploys&quot; rule was Friday deploys by the team with the most political capital. The rule resolved the game by removing the choice. Mechanism design.</p>
-<p><strong>Conflicting rewrites.</strong> Two teams independently decide to rewrite the same legacy service. Both have invested weeks. Both present their work at demo day. Neither wants to be the team that wasted effort. The resolution: one rewrite is adopted, the other is shelved. The shelved team swerved. The swerve was forced by the architect. The architect is the mechanism.</p>
-<p><strong>Competing architecture proposals.</strong> Two senior engineers propose incompatible architectures for the same system. Both have strong opinions. Both have supporters. The debate is unresolved. Someone must swerve. If neither does, the organization forks the system or deadlocks. The CTO resolves it. The CTO is the mechanism. The mechanism is hierarchical. The hierarchy exists partly to resolve Chicken games.</p>
-<p><strong>On-call escalation.</strong> An incident is ongoing. Two engineers disagree about the fix. The clock is ticking. The disagreement is Chicken in miniature — each sticking to their approach risks extended downtime. The escalation policy — &quot;after 10 minutes of disagreement, escalate to the on-call lead&quot; — is a mechanism for resolving Chicken. The policy predetermines who has the authority. The predetermination prevents the debate.</p>
-<h2 id="resolving-chicken">Resolving chicken</h2>
-<p>Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment — &quot;I will not swerve&quot; — works if credible. Organizational hierarchy — &quot;the architect decides&quot; — works if respected. Pre-agreed rules — &quot;no Friday deploys&quot; — work if enforced. The mechanism changes the game from a simultaneous contest of wills to a sequential game where the first mover's commitment is binding. The binding commitment selects the equilibrium. The equilibrium prevents the crash.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
-<li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
-</ul>
-</div>
-      </article>
       <article class="post" id="game-stag-hunt">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-stag-hunt">&#34;Game Theory Model: The Stag Hunt&#34;</a></h2><p class="post-summary">&#34;Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.&#34;</p>
+          <h2><a href="#game-stag-hunt">The Stag Hunt</a></h2><p class="post-summary">&#34;Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">stag-hunt</span><span class="tag">coordination</span><span class="tag">trust</span><span class="tag">network-effects</span>
           </div>
         </header>
@@ -1069,10 +803,74 @@
 </ul>
 </div>
       </article>
+      <article class="post" id="game-signaling">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-signaling">Signaling Games</a></h2><p class="post-summary">&#34;One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it&#39;s costly enough that only the &#39;good&#39; type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn&#39;t teach skills, it proves you had the skills to get in. In software: the RFC that&#39;s too detailed, the rewrite proposal that comes with a prototype.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">signaling</span><span class="tag">spence</span><span class="tag">private-information</span><span class="tag">separating-equilibrium</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A signaling game has two players. The sender has private information about their type. The sender takes an action — sends a signal. The receiver observes the signal and responds. The sender's payoff depends on the receiver's response and the sender's type. The receiver's payoff depends on the sender's type and the receiver's response.</p>
+<p>The classic model is Michael Spence's job market signaling (1973). A worker knows their own productivity (high or low). The employer doesn't. The worker can acquire education — a costly signal. If education is more costly for low-productivity workers than for high-productivity workers, there exists a separating equilibrium: high types acquire education, low types don't, employers pay high wages to educated workers and low wages to uneducated workers. The education doesn't need to increase productivity. It only needs to be differentially costly. The differential cost is what makes the signal informative.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Economics (Spence, 1973 Nobel 2001).</strong> The separating equilibrium exists when the single-crossing property holds — the marginal cost of signaling differs across types. Education signals productivity not because education teaches skills but because it is harder for low-productivity people to acquire. The hardship is the signal. The credential is the evidence of hardship.</p>
+<p><strong>Biology (Zahavi's handicap principle, 1975).</strong> The peacock's tail is a signal of genetic fitness. The tail is costly — it requires energy, attracts predators, impedes movement. Only a genetically fit peacock can afford such a handicap. The cost is the signal. The tail doesn't help the peacock survive. It proves the peacock <em>can</em> survive despite the tail. The handicap is honest because it's too expensive to fake.</p>
+<p><strong>Political science (Fearon, 1994).</strong> Audience costs in international relations are signaling games. A leader who makes a public threat — &quot;we will retaliate&quot; — pays an audience cost if they back down. The cost is domestic political damage. Only a leader who is genuinely committed can afford to make the threat. The threat is credible because backing down is costly. The cost is the signal.</p>
+<p><strong>Computer science (mechanism design).</strong> Screening is the reverse of signaling. In screening, the uninformed party moves first, offering a menu of contracts. Each type self-selects into the contract designed for it. The menu separates types by making each contract optimal for the intended type. Screening is mechanism design. Signaling is sender-driven. Screening is receiver-driven.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>The rewrite proposal.</strong> A team proposes rewriting a legacy service. The proposal is cheap talk — anyone can propose. The architecture review must decide whether the team genuinely believes the rewrite is necessary or is bored and wants greenfield work. A prototype requirement is a screening mechanism. A sincere team will build the prototype. An insincere team won't. The prototype is costly. The cost separates types.</p>
+<p><strong>The detailed RFC.</strong> Writing a thorough RFC — with trade-off analysis, migration plans, and risk assessment — is costly. It takes days. The cost signals seriousness. A team that writes a one-paragraph proposal is signaling low investment. The architecture review discounts the proposal accordingly. The RFC's length is not about information transfer. It is about signaling commitment.</p>
+<p><strong>Open-source contributions as job market signaling.</strong> A developer contributes to a well-known open-source project. The contribution is publicly visible. It signals skill to potential employers. The contribution is costly — it takes time outside work. The cost signals passion and competence. The signal works because it's harder to fake than a resume bullet point. The code doesn't lie. The commit history is the credential.</p>
+<p><strong>The production incident response.</strong> How an engineer handles a production incident signals competence to the entire organization. The signal is costly — incidents are high-stress, high-visibility, and occur at inconvenient times. The engineer who stays calm, diagnoses systematically, and communicates clearly is signaling a type that cannot be faked under pressure. The pressure is the cost. The calm is the signal.</p>
+<h2 id="separating-vs-pooling-equilibria">Separating vs. pooling equilibria</h2>
+<p>A signaling game has two kinds of equilibria. In a separating equilibrium, different types send different signals. The receiver can infer the type from the signal. In a pooling equilibrium, all types send the same signal. The receiver learns nothing. Which equilibrium emerges depends on the cost structure and the prior distribution of types. If the cost of the signal is too low for all types, everyone sends it — credential inflation. If too high, nobody does. The sweet spot is where the cost is differentially burdensome.</p>
+<p>In software: if writing a prototype is too easy, everyone writes one. The prototype stops separating types. If it's too hard, nobody writes one. The review process loses the signal. The optimal screening cost is calibrated to the distribution of sincere and insincere proposers. The calibration is mechanism design.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Michael Spence, &quot;Job Market Signaling,&quot; <em>Quarterly Journal of Economics</em>, 1973.</li>
+<li>Amotz Zahavi, &quot;Mate Selection — A Selection for a Handicap,&quot; <em>Journal of Theoretical Biology</em>, 1975.</li>
+<li>James D. Fearon, &quot;Domestic Political Audiences and the Escalation of International Disputes,&quot; <em>American Political Science Review</em>, 1994.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-repeated-games">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-repeated-games">Repeated Games and the Folk Theorem</a></h2><p class="post-summary">&#34;Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">repeated-games</span><span class="tag">folk-theorem</span><span class="tag">aumann</span><span class="tag">cooperation</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A one-shot Prisoner's Dilemma produces defection. A repeated Prisoner's Dilemma can produce cooperation. The difference is the future. In a one-shot game, there is no tomorrow in which defection can be punished. In a repeated game, today's defection costs you tomorrow's cooperation. If tomorrow matters enough — if the discount rate is low enough — cooperation becomes the rational strategy.</p>
+<p>The Folk Theorem, so called because it was known informally before it was formally proved, states: in an infinitely repeated game with sufficiently patient players, any feasible and individually rational payoff vector can be sustained as a Nash equilibrium. &quot;Feasible&quot; means the payoffs can be achieved by some combination of strategies. &quot;Individually rational&quot; means each player gets at least their minimax payoff — the worst the other players can impose on them. The theorem says: if the game goes on long enough, almost any outcome is possible as an equilibrium. The future is a mechanism for sustaining norms.</p>
+<p>The mechanism is the threat of punishment. If I cooperate today, you cooperate tomorrow. If I defect today, you defect tomorrow — and the day after, and the day after. The punishment must be credible. It must be in your interest to carry it out once defection has occurred. The credibility of the punishment is the constraint on what equilibria can be sustained. The Grim Trigger — cooperate until the first defection, then defect forever — is the harshest credible punishment. Tit-for-Tat — start with cooperation, then mirror the other's last move — is gentler and more robust.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Game theory (Aumann, 1959 Nobel 2005).</strong> Aumann's contribution was the formal analysis of repeated games with incomplete information. If players have private information, the repetition allows them to learn about each other. The learning changes the equilibrium. The Folk Theorem extends to games with imperfect monitoring — players observe noisy signals of each other's actions. The extension is technical. The implication is practical: even when you can't perfectly observe what others did, repetition enables cooperation.</p>
+<p><strong>Political science (Axelrod, 1984).</strong> Robert Axelrod's tournaments showed that Tit-for-Tat is a robust strategy. It is nice (never defects first), retaliatory (punishes defection immediately), forgiving (returns to cooperation if the other does), and clear (easy to recognize). These four properties make it effective in repeated interactions. The clarity is crucial — if the other player can't figure out your strategy, they can't adapt to it. Clarity is strategic.</p>
+<p><strong>International relations (Keohane, 1984).</strong> International cooperation is a repeated game among states. Trade agreements, arms control treaties, environmental protocols — these are equilibria sustained by the shadow of the future. The mechanism: if you violate the treaty today, we withdraw cooperation tomorrow. The mechanism works when the future is valued. It fails when states discount the future heavily — when leaders face elections, when regimes are unstable, when the long-term benefits of cooperation accrue to successors rather than incumbents. The discount rate is political. The politics determine whether cooperation is sustainable.</p>
+<p><strong>Organizational behavior.</strong> Company culture is a repeated-game equilibrium. Norms of collaboration, knowledge-sharing, and mutual support are sustained by the expectation of continued interaction. When turnover is high, the shadow of the future shortens. Cooperation declines. The decline is attributed to &quot;bad culture.&quot; The culture is a symptom. The cause is the shortened horizon. Fix the horizon. The culture follows.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Team continuity.</strong> A stable team is a repeated game. Members expect to work together indefinitely. Cooperation is an equilibrium — helping a colleague today is repaid tomorrow. A team with high turnover is a sequence of short-horizon games. Cooperation is fragile — the new person hasn't built the history, the departing person won't face the consequences of defection. The Folk Theorem predicts that stable teams will have more cooperation. The prediction is correct. The mechanism is the horizon.</p>
+<p><strong>Inter-service API stability.</strong> Two services with a long history of mutual dependence are in a repeated game. Breaking the API today costs you in future coordination. The equilibrium is stability. A service consumed by many anonymous clients is in a one-shot game with each. Breaking the API harms each client individually but none enough to punish. The equilibrium is instability — the provider changes the API when convenient. The difference is the horizon. The horizon is structural.</p>
+<p><strong>Code review reciprocity.</strong> Engineers who review each other's code are in a repeated game. Reviewing thoroughly today earns thorough reviews tomorrow. Skimming today earns skimmed reviews tomorrow. The equilibrium is a norm of thoroughness — if the team is stable and the horizon is long. The norm emerges without being mandated. The mandate is unnecessary. The horizon is sufficient.</p>
+<p><strong>Cross-team collaboration.</strong> Two teams that expect to work together for years develop informal cooperation — shared understanding, mutual accommodation, the benefit of the doubt. Two teams thrown together for a single project have no shadow of the future. Cooperation must be formalized — detailed specs, explicit contracts, escalation paths. The formality is the substitute for the missing horizon. The formality is costly. The horizon was free.</p>
+<h2 id="the-design-implication">The design implication</h2>
+<p>If you want cooperation, lengthen the horizon. Stable teams. Long-term ownership. Continuity of relationships. If you can't lengthen the horizon, simulate it: automated contract testing makes defection immediately visible, creating a repeated-game payoff structure. SLAs with penalties bring the future cost of defection into the present. The mechanisms are substitutes for the missing horizon. The best mechanism is the horizon itself. The horizon is free.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Robert Aumann, &quot;Acceptance Speech,&quot; Nobel Prize, 2005.</li>
+<li>Robert Axelrod, <em>The Evolution of Cooperation</em>, Basic Books, 1984.</li>
+<li>Drew Fudenberg and Eric Maskin, &quot;The Folk Theorem in Repeated Games with Discounting or with Incomplete Information,&quot; <em>Econometrica</em>, 1986.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cooperation-is-logical">Cooperation is logical</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="game-prisoners-dilemma">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-prisoners-dilemma">&#34;Game Theory Model: The Prisoner&#39;s Dilemma&#34;</a></h2><p class="post-summary">&#34;Two prisoners. Two choices. Cooperate or defect. The individually rational choice produces a collectively worse outcome. The Prisoner&#39;s Dilemma is the foundational model of game theory because it captures the essential tension between self-interest and mutual benefit. It explains why teams don&#39;t cooperate, why standards don&#39;t get adopted, and why the microservices migration never finishes.&#34;</p>
+          <h2><a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a></h2><p class="post-summary">&#34;Two prisoners. Two choices. Cooperate or defect. The individually rational choice produces a collectively worse outcome. The Prisoner&#39;s Dilemma is the foundational model of game theory because it captures the essential tension between self-interest and mutual benefit. It explains why teams don&#39;t cooperate, why standards don&#39;t get adopted, and why the microservices migration never finishes.&#34;</p>
           <div class="tags"><span class="tag">game-theory</span><span class="tag">prisoners-dilemma</span><span class="tag">cooperation</span><span class="tag">defection</span><span class="tag">software-architecture</span>
           </div>
         </header>
@@ -1123,6 +921,208 @@
 <li>Robert Aumann, &quot;Acceptance Speech,&quot; Nobel Prize in Economics, 2005.</li>
 <li>Anatol Rapoport and Albert Chammah, <em>Prisoner's Dilemma</em>, University of Michigan Press, 1965.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cooperation-is-logical">Cooperation is logical</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-principal-agent">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-principal-agent">The Principal-Agent Problem</a></h2><p class="post-summary">&#34;A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent&#39;s effort. The problem: how to design a contract that aligns the agent&#39;s incentives with the principal&#39;s goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">principal-agent</span><span class="tag">moral-hazard</span><span class="tag">contract-theory</span><span class="tag">incentives</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The principal-agent problem is the foundational model of contract theory. A principal wants a task performed. An agent can perform it. The agent's effort is unobservable — the principal sees the outcome but not the effort. The outcome depends on effort and on random factors beyond the agent's control. The principal must design a contract — a payment scheme contingent on observable outcomes — that incentivizes the agent to exert the desired level of effort.</p>
+<p>The tension: the principal wants high effort at low cost. The agent wants high payment for low effort. If the principal pays a fixed wage, the agent exerts minimum effort — there's no incentive to do more. If the principal pays entirely based on outcome, the agent bears all the risk from random factors. The optimal contract balances insurance (protecting the agent from randomness) with incentives (rewarding effort). The balance is the contract. The contract is the mechanism.</p>
+<p>The problem has two variants. Moral hazard: the agent takes hidden actions after the contract is signed. Adverse selection: the agent has hidden information before the contract is signed — the agent knows their own type, and the principal doesn't. Both are information asymmetries. Both require mechanism design to resolve.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Contract theory (Hart, Holmström, 2016 Nobel).</strong> Oliver Hart and Bengt Holmström shared the 2016 Nobel for contract theory. Holmström's informativeness principle: any performance measure that provides information about effort should be included in the contract. If the measure is informative, including it reduces the agent's risk for a given level of incentives. Hart's incomplete contracts: real contracts cannot specify every contingency. When contracts are incomplete, the allocation of residual control rights — who decides what happens in unforeseen circumstances — determines outcomes. Ownership matters because ownership confers residual control.</p>
+<p><strong>Corporate governance (Jensen and Meckling, 1976).</strong> The separation of ownership and control in corporations is a principal-agent problem. Shareholders are principals. Managers are agents. Managers may pursue their own interests — empire-building, risk-aversion, short-term stock price — rather than shareholder value. The mechanisms: stock options (aligning incentives), boards of directors (monitoring), hostile takeovers (discipline). The mechanisms are imperfect. The imperfection is the cost of the agency relationship.</p>
+<p><strong>Regulation (Laffont and Tirole, 1993 Nobel 2014).</strong> Regulating a monopoly is a principal-agent problem. The regulator (principal) wants the monopoly (agent) to operate efficiently. The monopoly has private information about its costs. The regulator designs a pricing scheme that incentivizes cost reduction while preventing excessive pricing. The scheme is a contract. The contract is mechanism design applied to public utility regulation.</p>
+<p><strong>Political science.</strong> Voters are principals. Politicians are agents. The agency problem is accountability. Elections are the incentive mechanism — politicians who perform poorly are voted out. The mechanism is imperfect because voters have incomplete information, politicians control the flow of information, and election cycles are coarse. The imperfections are the subject of political economy.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Team and manager.</strong> The manager (principal) wants the team (agent) to produce high-quality work. The manager cannot perfectly observe effort — code quality is partly effort, partly skill, partly the difficulty of the task. The contract: salary, performance review, promotion. The mechanisms: code review (monitoring), OKRs (outcome-based incentives), peer feedback (multi-source monitoring). Each mechanism reduces the information asymmetry.</p>
+<p><strong>Outsourcing vendor management.</strong> The company (principal) hires a vendor (agent) to build a system. The vendor has private information about their true costs, their true timeline, and the quality of their engineers. The contract: fixed-price or time-and-materials. Fixed-price transfers risk to the vendor but creates incentive to cut corners. Time-and-materials transfers risk to the company but creates incentive to inflate hours. The optimal contract balances risk-sharing with incentive alignment. The balance is the principal-agent problem in procurement form.</p>
+<p><strong>Platform team and service teams.</strong> The platform team (agent) provides infrastructure to service teams (principals). The service teams cannot observe the platform team's effort. The platform team may optimize for its own interests — interesting technical work, clean architecture — rather than service team needs. The contract: SLAs with penalties, internal billing (chargebacks), user satisfaction surveys. The mechanisms align the platform team's incentives with service team outcomes.</p>
+<p><strong>Open-source maintainer and corporate user.</strong> The maintainer (agent) produces a library. The corporation (principal) depends on it. The maintainer's effort is unobservable. The corporation cannot compel the maintainer to fix bugs or accept patches. The contract is social, not legal — reputation, sponsorship, contribution guidelines. The principal-agent problem in open source is acute because the mechanisms are weak. The weakness is why maintainers burn out.</p>
+<h2 id="the-alignment-problem">The alignment problem</h2>
+<p>The principal-agent problem is the alignment problem in economic form. Align the agent's incentives with the principal's goals. The alignment is never perfect because information is never perfect. The residual misalignment is the agency cost. The cost is irreducible. The mechanism designer's job is to minimize it. Minimize it by making outcomes observable, linking rewards to observables, and accepting that some misalignment will remain. The acceptance is realism. The minimization is engineering.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Bengt Holmström, &quot;Moral Hazard and Observability,&quot; <em>Bell Journal of Economics</em>, 1979.</li>
+<li>Oliver Hart and Bengt Holmström, &quot;The Theory of Contracts,&quot; 1987.</li>
+<li>Michael Jensen and William Meckling, &quot;Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure,&quot; <em>Journal of Financial Economics</em>, 1976.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-mechanism-design">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-mechanism-design">Mechanism Design</a></h2><p class="post-summary">&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">incentives</span><span class="tag">hurwicz</span><span class="tag">maskin</span><span class="tag">myerson</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Mechanism design is game theory in reverse. In standard game theory, you are given the rules and you solve for the equilibrium. In mechanism design, you are given the desired outcome and you design the rules that produce it as an equilibrium. You don't ask &quot;what will happen given these incentives?&quot; You ask &quot;what incentives will produce what we want to happen?&quot;</p>
+<p>The field was founded by Leonid Hurwicz, Eric Maskin, and Roger Myerson. They shared the 2007 Nobel Prize. Hurwicz asked the founding question in 1960: how do you design an allocation mechanism that works even when participants have private information and act strategically? The answer: you design the rules so that truthful revelation of private information is the best strategy for each participant, and the outcome given truthful revelation is the one you want.</p>
+<p>The mechanism has four components: a set of participants, each with private information (their type). A set of possible outcomes. A rule that maps reported types to outcomes. And a solution concept — usually dominant-strategy incentive compatibility or Bayesian incentive compatibility. The mechanism is incentive-compatible if truthful reporting is an equilibrium. The mechanism implements the desired outcome if the equilibrium produces it.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Economics (Hurwicz, 1960).</strong> The fundamental question: can a central planner achieve an efficient allocation without knowing individuals' private valuations? The answer: yes, under certain conditions. The Vickrey-Clarke-Groves (VCG) mechanism achieves efficient allocation in quasi-linear environments. Participants report their valuations. The mechanism allocates goods to maximize total reported value and charges each participant the externality they impose on others. Truthful reporting is a dominant strategy. The VCG mechanism is the theoretical foundation of spectrum auctions, online advertising auctions, and compute resource allocation.</p>
+<p><strong>Implementation theory (Maskin, 1977 Nobel 2007).</strong> Maskin answered: which social choice rules can be implemented in Nash equilibrium? The answer involves Monotonicity — if an outcome is selected under one preference profile, and the outcome moves up in everyone's ranking under a new profile, it must still be selected. Monotonicity is necessary and, with no veto power, sufficient for Nash implementation. The mathematics is abstract. The implication is practical: not every desirable outcome can be implemented. The constraints are mathematical, not political.</p>
+<p><strong>Auction theory (Myerson, 1981 Nobel 2007).</strong> Myerson characterized optimal auctions. The revenue-equivalence theorem: any auction that allocates to the highest bidder and gives zero surplus to the lowest type yields the same expected revenue. The optimal auction sets a reserve price and allocates to the highest bidder above the reserve. The reserve price is the mechanism designer's tool for extracting surplus. Myerson applied mechanism design to auctions and showed that auction design is mechanism design.</p>
+<p><strong>Market design (Roth, 2012 Nobel).</strong> Alvin Roth applied mechanism design to markets that didn't exist: matching medical residents to hospitals, matching students to schools, matching kidney donors to recipients. The mechanisms are algorithms that take reported preferences and produce stable matches. Stability means no pair would prefer each other over their current match. The deferred acceptance algorithm (Gale-Shapley) produces stable matches. Roth made it work in practice. Market design is mechanism design implemented.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Automated contract testing.</strong> The desired outcome: services maintain stable API contracts. The mechanism: every CI build runs contract tests. Breaking the contract fails the build. The build failure is immediate, visible, and costly. The cost of defection — changing the API without updating callers — is brought forward to the moment of the change. The mechanism implements the outcome. Truthful revelation — &quot;I changed the API&quot; — is enforced by the test.</p>
+<p><strong>SLAs with penalty clauses.</strong> The desired outcome: services maintain availability targets. The mechanism: an SLA defines the target and the penalty for missing it. The penalty makes degradation costly to the provider. The cost aligns the provider's incentive with the consumer's need. The mechanism implements the outcome. The SLA is the contract. The penalty is the enforcement.</p>
+<p><strong>Deployment gates.</strong> The desired outcome: only tested, reviewed code reaches production. The mechanism: the deployment pipeline requires passing tests, code review approval, and a staging verification period. Each gate is a rule. The rules collectively implement the outcome. Bypassing a gate is possible but visible. Visibility creates accountability. Accountability enforces compliance.</p>
+<p><strong>Code review requirements.</strong> The desired outcome: all code is reviewed before merge. The mechanism: the repository requires an approving review. The mechanism is enforced by the platform. The enforcement is automatic. The automatic enforcement removes the human decision. The removal is mechanism design — design the rules so the desired behavior is the only possible behavior.</p>
+<h2 id="the-designers-question">The designer's question</h2>
+<p>Mechanism design gives the software engineer a question to ask: what outcome do I want, and what rules would produce it? The question is more powerful than &quot;what should we do?&quot; because it acknowledges that people respond to incentives. Telling people to cooperate produces cooperation if people are cooperative. Designing a mechanism where cooperation is the dominant strategy produces cooperation regardless. The mechanism doesn't require virtue. It requires structure. Structure is more reliable than virtue. Design the structure.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Leonid Hurwicz, &quot;Optimality and Informational Efficiency in Resource Allocation Processes,&quot; 1960.</li>
+<li>Eric Maskin, &quot;Nash Equilibrium and Welfare Optimality,&quot; <em>Review of Economic Studies</em>, 1977.</li>
+<li>Roger Myerson, &quot;Optimal Auction Design,&quot; <em>Mathematics of Operations Research</em>, 1981.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-evolutionary">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-evolutionary">Evolutionary Game Theory</a></h2><p class="post-summary">&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">evolutionary</span><span class="tag">maynard-smith</span><span class="tag">replicator-dynamics</span><span class="tag">ESS</span>
+          </div>
+        </header>
+        <div class="post-body"><p>John Maynard Smith published <em>Evolution and the Theory of Games</em> in 1982. He asked: what if players don't choose strategies rationally but inherit them genetically? The question launched evolutionary game theory. The key concepts: replicator dynamics and the Evolutionarily Stable Strategy (ESS).</p>
+<p>Replicator dynamics describe how the proportions of different strategies in a population change over time. Strategies that earn above-average payoffs grow. Strategies that earn below-average payoffs shrink. The growth rate is proportional to the difference between the strategy's payoff and the population average. The dynamics are deterministic. Given the initial proportions and the payoff matrix, the trajectory is determined.</p>
+<p>An Evolutionarily Stable Strategy is a strategy that, if adopted by the entire population, cannot be invaded by any small group of mutants playing a different strategy. The ESS is a refinement of Nash equilibrium for biological contexts. Every ESS is a Nash equilibrium. Not every Nash equilibrium is an ESS. The ESS requires that if a mutant strategy appears, it does worse against the existing population than the existing strategy does. The condition is stricter than Nash. The strictness is appropriate for evolution, where stability means resistance to invasion, not just mutual best response.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Biology (Maynard Smith, 1982).</strong> The hawk-dove game models animal conflict. Hawks fight for resources. Doves display but retreat if attacked. Hawk vs. Hawk: one wins, one is injured. Hawk vs. Dove: Hawk wins. Dove vs. Dove: both share. The ESS is a mixed population — some proportion of Hawks, some of Doves. The proportion depends on the value of the resource relative to the cost of injury. The prediction matches observed behavior in multiple species. Evolution is a game. The game has an equilibrium. The equilibrium is the observed behavior.</p>
+<p><strong>Economics (evolutionary game theory, Nelson and Winter, 1982).</strong> Firms don't optimize. They follow routines — organizational habits inherited from the past. Routines that produce profits survive. Routines that produce losses are replaced. The market is the selection environment. The replicator is the firm's growth rate. The ESS is the industry equilibrium. The dynamics explain why industries converge on similar practices. The practices are not optimal in any absolute sense. They are stable against invasion by alternatives.</p>
+<p><strong>Anthropology (Boyd and Richerson, 1985).</strong> Culture evolves through imitation and social learning. Cultural variants — beliefs, practices, technologies — are strategies. Successful variants are copied. Unsuccessful variants are abandoned. The replicator dynamics are cultural transmission. The ESS is a cultural equilibrium. The dynamics explain why some cultural practices persist despite being individually costly — they are stable against invasion by alternatives, even if alternatives would be better for individuals.</p>
+<p><strong>Computer science (genetic algorithms, classifier systems).</strong> Evolutionary computation uses replicator dynamics to solve optimization problems. A population of candidate solutions. Fitness evaluation. Selection. Recombination. Mutation. Repeat. The algorithm is replicator dynamics implemented in code. The solutions evolve. The evolution finds optima that gradient-based methods miss. The search is stochastic. The convergence is evolutionary.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Architecture pattern evolution.</strong> Microservices emerged as a mutant strategy. The monolith was the incumbent. Early microservices adopters demonstrated advantages — independent deployability, team autonomy, fault isolation. Other teams observed the success and adopted. The replicator dynamics: adoption rate proportional to observed advantage. The ESS: microservices are now the default for new systems. The monolith couldn't resist the invasion. Not because microservices are universally better. Because they are stable against re-invasion by the monolith pattern. Once adopted, the switching cost back to monolith is high. The switching cost is the invasion barrier.</p>
+<p><strong>Language and framework adoption.</strong> React emerged as a mutant in a jQuery-dominant ecosystem. Early adopters demonstrated advantages — component model, virtual DOM, unidirectional data flow. Adoption accelerated as the advantages became visible. jQuery declined. The replicator dynamics: framework popularity follows relative fitness. The fitness landscape changes as tooling, community, and hiring markets co-evolve. Today's ESS may not be tomorrow's. The dynamics continue.</p>
+<p><strong>Process evolution.</strong> Agile emerged as a mutant in a waterfall-dominant ecosystem. Early adopters demonstrated faster delivery, better responsiveness to change. Adoption accelerated. Waterfall declined — not eliminated, but no longer the default. The replicator dynamics: process fitness is measured by organizational survival. Organizations that adopted agile survived at higher rates. The surviving organizations shaped the hiring market. The hiring market shaped the training pipeline. The pipeline reinforced agile. The equilibrium is self-reinforcing.</p>
+<p><strong>The persistence of patterns.</strong> Some architecture patterns persist despite being widely criticized. The distributed monolith — microservices with tight coupling — persists because it is an ESS in certain environments. A team that inherits a distributed monolith can't unilaterally refactor to clean boundaries. The refactoring requires coordination across teams. The coordination is a public good. The individually rational choice is to work within the existing architecture. The equilibrium is suboptimal but stable. Stability doesn't mean goodness. It means resistance to change.</p>
+<h2 id="the-evolutionary-lens">The evolutionary lens</h2>
+<p>Evolutionary game theory gives the software engineer a lens: what strategies are growing in the population? What strategies are stable against invasion? The dominant architecture, the dominant language, the dominant process — they are not necessarily optimal. They are evolutionary equilibria. They persist because they resist invasion. Understanding the invasion barrier — switching cost, coordination cost, network effects — explains why they persist. Changing them requires lowering the barrier or raising the fitness of the alternative. The lowering is mechanism design. The raising is engineering. Both are evolutionary.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
+<li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-chicken">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-chicken">Chicken</a></h2><p class="post-summary">&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">chicken</span><span class="tag">brinkmanship</span><span class="tag">credible-commitment</span><span class="tag">organizational-politics</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Two drivers speed toward each other on a narrow road. The first to swerve is the chicken — loses status, loses the game. If both swerve, both lose a little. If neither swerves, both crash. The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Swerve</th>
+<th>Straight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Swerve</strong></td>
+<td>(0, 0)</td>
+<td>(-1, +1)</td>
+</tr>
+<tr>
+<td><strong>Straight</strong></td>
+<td>(+1, -1)</td>
+<td>(-10, -10)</td>
+</tr>
+</tbody>
+</table>
+<p>There are two pure-strategy Nash equilibria: (Straight, Swerve) and (Swerve, Straight). Both are asymmetric — one player wins, one loses. The symmetric outcome (Swerve, Swerve) is not an equilibrium because each player would prefer to deviate to Straight. The symmetric outcome (Straight, Straight) is disaster.</p>
+<p>The game is about who commits first. If you can credibly commit to going straight — by throwing your steering wheel out the window, visibly, where the other driver can see — the other driver must swerve. The commitment must be credible. A verbal threat is not credible. The thrown steering wheel is. The commitment changes the game from simultaneous to sequential. The sequential game has a unique outcome: the committed player goes straight, the uncommitted player swerves.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> Chicken has two asymmetric Nash equilibria. The equilibrium selection problem is about who can credibly commit first. The commitment must be observable and irreversible. Schelling analyzed this extensively in <em>The Strategy of Conflict</em> — the ability to worsen one's own options can be strategically advantageous because it forces the opponent to concede.</p>
+<p><strong>Nuclear strategy (Schelling, RAND).</strong> Chicken was the dominant metaphor for Cold War nuclear brinkmanship. Two superpowers, each threatening mutual destruction. The one that could credibly commit to retaliation — by making retaliation automatic, by removing the human decision from the loop — gained strategic advantage. &quot;Threats that leave something to chance&quot; was Schelling's phrase. The threat of mutual destruction must be credible. If it's credible, the other side swerves.</p>
+<p><strong>Behavioral game theory.</strong> In laboratory play, Chicken produces higher rates of &quot;swerve&quot; than Nash predicts, especially among players who have played before and learned that mutual stubbornness produces disaster. Experience teaches swerving. The learning is expensive. The disaster teaches it.</p>
+<p><strong>Organizational theory.</strong> Chicken models inter-team conflict. Two teams both want to rewrite the same shared service. Both have started work. Neither wants to abandon their effort. If both continue, the organization gets two incompatible rewrites and a migration mess. Someone must swerve. Who swerves is determined by organizational hierarchy, political capital, or the urgency of each team's deliverable. The hierarchy is a mechanism for resolving Chicken. The mechanism is informal. The crashes are frequent.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Friday deploy races.</strong> Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky. Both want their feature in. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose their weekend. The equilibrium before the &quot;no Friday deploys&quot; rule was Friday deploys by the team with the most political capital. The rule resolved the game by removing the choice. Mechanism design.</p>
+<p><strong>Conflicting rewrites.</strong> Two teams independently decide to rewrite the same legacy service. Both have invested weeks. Both present their work at demo day. Neither wants to be the team that wasted effort. The resolution: one rewrite is adopted, the other is shelved. The shelved team swerved. The swerve was forced by the architect. The architect is the mechanism.</p>
+<p><strong>Competing architecture proposals.</strong> Two senior engineers propose incompatible architectures for the same system. Both have strong opinions. Both have supporters. The debate is unresolved. Someone must swerve. If neither does, the organization forks the system or deadlocks. The CTO resolves it. The CTO is the mechanism. The mechanism is hierarchical. The hierarchy exists partly to resolve Chicken games.</p>
+<p><strong>On-call escalation.</strong> An incident is ongoing. Two engineers disagree about the fix. The clock is ticking. The disagreement is Chicken in miniature — each sticking to their approach risks extended downtime. The escalation policy — &quot;after 10 minutes of disagreement, escalate to the on-call lead&quot; — is a mechanism for resolving Chicken. The policy predetermines who has the authority. The predetermination prevents the debate.</p>
+<h2 id="resolving-chicken">Resolving chicken</h2>
+<p>Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment — &quot;I will not swerve&quot; — works if credible. Organizational hierarchy — &quot;the architect decides&quot; — works if respected. Pre-agreed rules — &quot;no Friday deploys&quot; — work if enforced. The mechanism changes the game from a simultaneous contest of wills to a sequential game where the first mover's commitment is binding. The binding commitment selects the equilibrium. The equilibrium prevents the crash.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="game-battle-of-sexes">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-battle-of-sexes">The Battle of the Sexes</a></h2><p class="post-summary">&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">battle-of-sexes</span><span class="tag">coordination</span><span class="tag">focal-points</span><span class="tag">standards</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A couple wants to spend the evening together. One prefers the opera. The other prefers the football game. Both prefer being together at the less-preferred event to being apart at the preferred one. The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Opera</th>
+<th>Football</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Opera</strong></td>
+<td>(3, 2)</td>
+<td>(0, 0)</td>
+</tr>
+<tr>
+<td><strong>Football</strong></td>
+<td>(0, 0)</td>
+<td>(2, 3)</td>
+</tr>
+</tbody>
+</table>
+<p>Two pure-strategy Nash equilibria: both go to Opera, both go to Football. Both are Pareto-efficient — neither can be improved without harming the other. Neither equilibrium is obviously better than the other without a way to weigh the two players' preferences. The game has a mixed-strategy equilibrium as well, but it is inefficient — sometimes they miscoordinate. The challenge is selecting <em>which</em> coordinated outcome without an external authority.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> The Battle of the Sexes is a coordination game with conflicting interests. The equilibria are Pareto-rankable only by interpersonal utility comparison, which classical game theory avoids. Equilibrium selection requires something beyond the payoff matrix: a focal point, a convention, a first-mover advantage, or a bargaining process.</p>
+<p><strong>Focal points (Schelling).</strong> In the absence of communication, players coordinate by finding what is obvious. &quot;We'll go to the opera because it's Tuesday and the opera is on Tuesdays.&quot; The day is a focal point. It is arbitrary. It works because both players know the other is looking for it. The power of the focal point is not in its logic. It is in its obviousness.</p>
+<p><strong>Bargaining theory (Nash).</strong> If players can communicate, they can bargain. The Nash bargaining solution splits the surplus according to relative bargaining power. The player with better outside options — could go to the opera alone and enjoy it more than the other would enjoy football alone — has more bargaining power. The solution predicts the outcome based on the disagreement point.</p>
+<p><strong>Evolutionary game theory.</strong> In a population playing Battle of the Sexes, which equilibrium emerges depends on initial conditions and the speed of adaptation. If a slight majority initially goes to Opera, the minority has incentive to switch. The equilibrium is path-dependent. History matters. The equilibrium that emerges is the one that got a small initial advantage.</p>
+<p><strong>Feminist economics (Akerlof, Sen).</strong> The Battle of the Sexes models the gendered division of labor. In traditional households, the wife's preferences are systematically discounted. The equilibrium that emerges — &quot;his&quot; choice — is not a reflection of equal bargaining. It is a reflection of unequal outside options. The wife cannot credibly threaten to go alone because her outside option is worse. The bargaining power is structural. The structure is social.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Message queue choice.</strong> Team A wants NATS. Team B wants Kafka. Both prefer either queue to no queue. Both prefer their own choice. The game has two Nash equilibria: both NATS or both Kafka. Which equilibrium is selected depends on who has more organizational power, who moves first, or who cares more. The selection mechanism is political. The politics are game-theoretic.</p>
+<p><strong>Language choice for a new service.</strong> The team is split between Go and Rust. Both prefer a unified language to fragmentation. Both prefer their own. The equilibrium: the language chosen by the tech lead, or the language chosen by the team that builds the first service (first-mover advantage), or the language that has the most internal library support (focal point).</p>
+<p><strong>Meeting time selection.</strong> Team members across time zones need a recurring meeting slot. Everyone prefers any slot to no meeting. Everyone prefers their own working hours. The equilibrium: the slot that works for the person with the most organizational power, or the slot suggested first, or the slot that's &quot;obvious&quot; — Tuesday 10am, the universal default.</p>
+<p><strong>Deploy schedule.</strong> Three teams share a deploy window. Each prefers a different day. All prefer a coordinated schedule to conflicting deploys. The equilibrium: the day claimed by the team that shipped first, or the day assigned by the release manager (hierarchy), or Monday (focal point — start of the week).</p>
+<h2 id="resolving-the-battle-of-the-sexes">Resolving the Battle of the Sexes</h2>
+<p>The Battle of the Sexes is resolved by a selection mechanism. Any mechanism will do. The mechanism must be accepted as legitimate by both players, or it won't be accepted. Hierarchy: the architect decides. Convention: we always use what the first team chose. Rotation: we alternate. External authority: the CTO mandated NATS. Market: whichever technology has the most internal tooling wins. Commitment: Team A already deployed to production with NATS; Team B can join or build their own queue.</p>
+<p>The mechanism that works is the one both players will accept. Acceptance is the constraint. The constraint is social. The social is game-theoretic.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>R. Duncan Luce and Howard Raiffa, <em>Games and Decisions</em>, Wiley, 1957.</li>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>John Nash, &quot;The Bargaining Problem,&quot; <em>Econometrica</em>, 1950.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
 </ul>
 </div>
       </article>
@@ -6218,18 +6218,18 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#game-evolutionary">&#34;Game Theory Model: Evolutionary Game Theory&#34;</a>
-              <a href="#game-repeated-games">&#34;Game Theory Model: Repeated Games and the Folk Theorem&#34;</a>
-              <a href="#game-principal-agent">&#34;Game Theory Model: The Principal-Agent Problem&#34;</a>
-              <a href="#game-vickrey-auction">&#34;Game Theory Model: The Vickrey Auction&#34;</a>
-              <a href="#game-mechanism-design">&#34;Game Theory Model: Mechanism Design&#34;</a>
-              <a href="#game-tragedy-of-commons">&#34;Game Theory Model: The Tragedy of the Commons&#34;</a>
-              <a href="#game-signaling">&#34;Game Theory Model: Signaling Games&#34;</a>
-              <a href="#game-ultimatum">&#34;Game Theory Model: The Ultimatum Game&#34;</a>
-              <a href="#game-battle-of-sexes">&#34;Game Theory Model: The Battle of the Sexes&#34;</a>
-              <a href="#game-chicken">&#34;Game Theory Model: Chicken&#34;</a>
-              <a href="#game-stag-hunt">&#34;Game Theory Model: The Stag Hunt&#34;</a>
-              <a href="#game-prisoners-dilemma">&#34;Game Theory Model: The Prisoner&#39;s Dilemma&#34;</a>
+              <a href="#game-vickrey-auction">The Vickrey Auction</a>
+              <a href="#game-ultimatum">The Ultimatum Game</a>
+              <a href="#game-tragedy-of-commons">The Tragedy of the Commons</a>
+              <a href="#game-stag-hunt">The Stag Hunt</a>
+              <a href="#game-signaling">Signaling Games</a>
+              <a href="#game-repeated-games">Repeated Games and the Folk Theorem</a>
+              <a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a>
+              <a href="#game-principal-agent">The Principal-Agent Problem</a>
+              <a href="#game-mechanism-design">Mechanism Design</a>
+              <a href="#game-evolutionary">Evolutionary Game Theory</a>
+              <a href="#game-chicken">Chicken</a>
+              <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

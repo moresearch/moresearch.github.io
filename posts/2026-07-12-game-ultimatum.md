@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Ultimatum Game"
+title: The Ultimatum Game
 date: 2026-07-12
 slug: game-ultimatum
 summary: "One player proposes how to split $100. The other accepts or rejects. If they reject, both get nothing. The Nash equilibrium: proposer offers $1, responder accepts. Real humans: proposers offer $30-$50, responders reject offers below $20. The gap between theory and behavior is a window into fairness, emotion, and what rationality actually means."

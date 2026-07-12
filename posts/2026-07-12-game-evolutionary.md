@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: Evolutionary Game Theory"
+title: Evolutionary Game Theory
 date: 2026-07-12
 slug: game-evolutionary
 summary: "Maynard Smith asked: what if players don't choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn't."

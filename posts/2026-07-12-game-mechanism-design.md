@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: Mechanism Design"
+title: Mechanism Design
 date: 2026-07-12
 slug: game-mechanism-design
 summary: "Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering."

@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: Signaling Games"
+title: Signaling Games
 date: 2026-07-12
 slug: game-signaling
 summary: "One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it's costly enough that only the 'good' type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn't teach skills, it proves you had the skills to get in. In software: the RFC that's too detailed, the rewrite proposal that comes with a prototype."

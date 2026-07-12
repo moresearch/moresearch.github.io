@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Battle of the Sexes"
+title: The Battle of the Sexes
 date: 2026-07-12
 slug: game-battle-of-sexes
 summary: "Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn't better arguments. It's a selection mechanism."

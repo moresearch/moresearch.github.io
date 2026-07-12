@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: Chicken"
+title: Chicken
 date: 2026-07-12
 slug: game-chicken
 summary: "Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields."

@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: Repeated Games and the Folk Theorem"
+title: Repeated Games and the Folk Theorem
 date: 2026-07-12
 slug: game-repeated-games
 summary: "Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics."

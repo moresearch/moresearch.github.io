@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Principal-Agent Problem"
+title: The Principal-Agent Problem
 date: 2026-07-12
 slug: game-principal-agent
 summary: "A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent's effort. The problem: how to design a contract that aligns the agent's incentives with the principal's goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams."

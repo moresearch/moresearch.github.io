@@ -1,5 +1,5 @@
 ---
-title: "Game Theory Model: The Stag Hunt"
+title: The Stag Hunt
 date: 2026-07-12
 slug: game-stag-hunt
 summary: "Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread."

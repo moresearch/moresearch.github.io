@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;A governance token gives its holder the right to vote on a protocol&#39;s decisions. The functional origin is the joint-stock company — invented in 1602 by the Dutch East India Company. Shareholders owned the company. Shareholders voted. The DAO is the joint-stock company, automated. The governance token is the share. The vote is the product.&#34;">
+  <meta name="description" content="&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,62 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="scarcity">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#scarcity">The First Lesson</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
+          <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 1932, Lionel Robbins published <em>An Essay on the Nature and Significance of Economic Science</em>. On page 15, he wrote:</p>
+<blockquote>
+<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
+</blockquote>
+<p>Four concepts. <strong>Ends</strong> — what you want. <strong>Means</strong> — what you have. <strong>Scarcity</strong> — means are finite. <strong>Alternative uses</strong> — means can be deployed in different ways, forcing choice. Every human activity involving these four conditions is economic. Robbins made this explicit:</p>
+<blockquote>
+<p>&quot;Insofar as it deals with the influence of scarcity, any kind of human behaviour falls within the scope of Economic Generalisations. There are no limitations on the subject-matter of Economic Science save this.&quot;</p>
+</blockquote>
+<p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
+<p>Thomas Sowell sharpened Robbins: &quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; Milton Friedman made it simpler: &quot;There's no such thing as a free lunch.&quot; Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.</p>
+<p>Most people think the opposite of scarcity is abundance. It isn't. The opposite of scarcity is waste. Abundance without discipline produces waste. Scarcity with discipline produces focus. The difference between a great engineering team and a mediocre one is not how many resources they have. It is how they choose under scarcity. Great teams make the scarcity explicit. Mediocre teams pretend it doesn't exist. Both face the same constraints. One names them. The other pretends.</p>
+<h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
+<p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
+<p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
+<p><strong>Complexity budget is scarce.</strong> Lehman's Second Law: complexity increases unless work is done to reduce it. The work requires time and attention, both scarce. The complexity budget is the total complexity the system can absorb before becoming unmaintainable. Every feature adds to the budget. Every quick fix adds. Every workaround adds. The budget is finite. When exhausted, the system must be rewritten. The rewrite is expensive. The expense is the cost of exceeding the budget. The budget was always finite. The accounting ignored it.</p>
+<p>Parnas's information hiding is an economic strategy. Hide volatile decisions behind stable interfaces. The interface is the investment. The hiding is the return. When the volatile decision changes, the change is contained within the module. The containment saves time, attention, and complexity budget. The investment costs more upfront. The return accrues over time — every change that doesn't propagate is a cost avoided. The net present value is positive if the decision is sufficiently volatile. Parnas didn't state it in economic terms. The economics are implicit. The economics are correct.</p>
+<p><strong>Compute is scarce.</strong> Moore's Law made compute cheap but not free. Cloud computing made it elastic but not infinite. Every algorithm choice trades compute for something else — development time, code simplicity, latency. The trade is economic. The price of compute determines which side is optimal. When compute was expensive, developers optimized for cycles. When compute became cheap, they optimized for developer time. The price changed. The optimal trade changed. The change was economic. The economics were invisible to the developers. They thought they were making technical decisions. They were making economic decisions with technical parameters.</p>
+<h2 id="the-robbins-test">The Robbins test</h2>
+<p>Robbins gives a test for any decision. Ask four questions:</p>
+<ol>
+<li>What is the end? (What are you trying to achieve?)</li>
+<li>What are the means? (What resources do you have?)</li>
+<li>Are the means scarce? (Could you use them for something else?)</li>
+<li>Do they have alternative uses? (What are you giving up?)</li>
+</ol>
+<p>If the answer to 3 and 4 is yes — and it always is — the decision is economic. Treat it as such. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice. The choice will be better for having been made explicitly.</p>
+<p>Most software decisions are made without naming the scarcity. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. The debate resolves. This feature or that feature? State the scarce resource. This architecture or that architecture? State the trade. The Robbins test makes implicit economics explicit. Explicit economics are debatable. Implicit economics are invisible. Invisible economics produce worse decisions.</p>
+<h2 id="the-unifying-principle">The unifying principle</h2>
+<p>Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Software engineering is economics.</p>
+<hr>
+<p><strong>This is part 1 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
       <article class="post" id="fi-daos-governance">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -3210,61 +3266,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>John von Neumann and Oskar Morgenstern, <em>Theory of Games and Economic Behavior</em>, Princeton University Press, 1944.</li>
 <li>John Nash, &quot;Equilibrium Points in N-Person Games,&quot; <em>Proceedings of the National Academy of Sciences</em>, 1950.</li>
 <li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="scarcity">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity">The First Lesson</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
-          <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In 1932, Lionel Robbins published <em>An Essay on the Nature and Significance of Economic Science</em>. On page 15, he wrote:</p>
-<blockquote>
-<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
-</blockquote>
-<p>Four concepts. <strong>Ends</strong> — what you want. <strong>Means</strong> — what you have. <strong>Scarcity</strong> — means are finite. <strong>Alternative uses</strong> — means can be deployed in different ways, forcing choice. Every human activity involving these four conditions is economic. Robbins made this explicit:</p>
-<blockquote>
-<p>&quot;Insofar as it deals with the influence of scarcity, any kind of human behaviour falls within the scope of Economic Generalisations. There are no limitations on the subject-matter of Economic Science save this.&quot;</p>
-</blockquote>
-<p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
-<p>Thomas Sowell sharpened Robbins: &quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; Milton Friedman made it simpler: &quot;There's no such thing as a free lunch.&quot; Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.</p>
-<p>Most people think the opposite of scarcity is abundance. It isn't. The opposite of scarcity is waste. Abundance without discipline produces waste. Scarcity with discipline produces focus. The difference between a great engineering team and a mediocre one is not how many resources they have. It is how they choose under scarcity. Great teams make the scarcity explicit. Mediocre teams pretend it doesn't exist. Both face the same constraints. One names them. The other pretends.</p>
-<h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
-<p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
-<p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
-<p><strong>Complexity budget is scarce.</strong> Lehman's Second Law: complexity increases unless work is done to reduce it. The work requires time and attention, both scarce. The complexity budget is the total complexity the system can absorb before becoming unmaintainable. Every feature adds to the budget. Every quick fix adds. Every workaround adds. The budget is finite. When exhausted, the system must be rewritten. The rewrite is expensive. The expense is the cost of exceeding the budget. The budget was always finite. The accounting ignored it.</p>
-<p>Parnas's information hiding is an economic strategy. Hide volatile decisions behind stable interfaces. The interface is the investment. The hiding is the return. When the volatile decision changes, the change is contained within the module. The containment saves time, attention, and complexity budget. The investment costs more upfront. The return accrues over time — every change that doesn't propagate is a cost avoided. The net present value is positive if the decision is sufficiently volatile. Parnas didn't state it in economic terms. The economics are implicit. The economics are correct.</p>
-<p><strong>Compute is scarce.</strong> Moore's Law made compute cheap but not free. Cloud computing made it elastic but not infinite. Every algorithm choice trades compute for something else — development time, code simplicity, latency. The trade is economic. The price of compute determines which side is optimal. When compute was expensive, developers optimized for cycles. When compute became cheap, they optimized for developer time. The price changed. The optimal trade changed. The change was economic. The economics were invisible to the developers. They thought they were making technical decisions. They were making economic decisions with technical parameters.</p>
-<h2 id="the-robbins-test">The Robbins test</h2>
-<p>Robbins gives a test for any decision. Ask four questions:</p>
-<ol>
-<li>What is the end? (What are you trying to achieve?)</li>
-<li>What are the means? (What resources do you have?)</li>
-<li>Are the means scarce? (Could you use them for something else?)</li>
-<li>Do they have alternative uses? (What are you giving up?)</li>
-</ol>
-<p>If the answer to 3 and 4 is yes — and it always is — the decision is economic. Treat it as such. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice. The choice will be better for having been made explicitly.</p>
-<p>Most software decisions are made without naming the scarcity. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. The debate resolves. This feature or that feature? State the scarce resource. This architecture or that architecture? State the trade. The Robbins test makes implicit economics explicit. Explicit economics are debatable. Implicit economics are invisible. Invisible economics produce worse decisions.</p>
-<h2 id="the-unifying-principle">The unifying principle</h2>
-<p>Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Software engineering is economics.</p>
-<hr>
-<p><strong>This is part 1 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
-<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
-<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
-<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
 </ul>
 </div>
       </article>
@@ -7385,6 +7386,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#scarcity">The First Lesson</a>
               <a href="#fi-daos-governance">Governance Tokens and DAOs</a>
               <a href="#fi-structured-products">Structured Products</a>
               <a href="#fi-insurance">Insurance Protocols</a>
@@ -7439,7 +7441,6 @@ type Logger interface {
               <a href="#scarcity-and-software-games">The Architecture Is a Game</a>
               <a href="#scarcity-and-software-economics">No Free Lunch</a>
               <a href="#scarcity-and-games">The Game You&#39;re Already Playing</a>
-              <a href="#scarcity">The First Lesson</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>

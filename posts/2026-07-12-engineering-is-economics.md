@@ -87,3 +87,6 @@ The trade-off is economic. The choice among trade-offs is philosophical. The fee
 
 
 Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.
+
+
+> Engineering is decision-making under constraints. Economics is the science of choice under scarcity. The two are the same activity described in different vocabularies. The engineer who does not think economically makes economic decisions without knowing they are economic. The decisions are still economic. They are just worse.

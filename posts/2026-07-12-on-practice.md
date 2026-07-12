@@ -10,6 +10,8 @@ part: 6
 
 The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.
 
+Alan Perlis, the first Turing Award winner, wrote: "Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it." Most software teams are pragmatists. They suffer complexity because avoiding it requires upfront investment and removing it requires genius. The five frameworks that follow are for pragmatists who want to suffer less. Genius is not required. Discipline is.
+
 ## 1. Name the scarce resource
 
 Before every architectural decision, ask: what is the scarce resource? Is it developer time? Optimize for simplicity of change. Is it compute? Optimize for efficiency. Is it attention? Optimize for clarity. Is it coordination capacity? Optimize for independent deployability. The scarce resource determines the optimal trade.

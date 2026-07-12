@@ -55,3 +55,6 @@ The Hayekian manager understands this. They preserve team continuity not because
 - Robert Aumann and Michael Maschler, *Repeated Games with Incomplete Information*, MIT Press, 1995.
 - Anatol Rapoport and Albert Chammah, *Prisoner's Dilemma*, University of Michigan Press, 1965.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [On Scarcity](https://blog.hackspree.com/#scarcity), [Design the Game](https://blog.hackspree.com/#scarcity-and-mechanism-design)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

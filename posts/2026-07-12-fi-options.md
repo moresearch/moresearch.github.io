@@ -34,6 +34,12 @@ DeFi options protocols are automating the options market on-chain. The approache
 
 Nassim Nicholas Taleb, *Dynamic Hedging: Managing Vanilla and Exotic Options* (1997). Taleb was a options market maker before he was an author. His book is the practitioner's guide to the reality of options trading — the greeks, the hedging, the tail risks that Black-Scholes assumes away. Taleb's later book, *The Black Swan* (2007), is about the consequences of those tail risks. The DeFi options market is still young. The tail risks have not yet materialized at scale. When they do, Taleb's framework will be the guide to understanding them. The framework is ready. The market is not.
 
+## The engineering connection
+
+An option is a function from an underlying price to a payoff. Black-Scholes is the algorithm that prices that function. DeFi options vaults automate the execution of that algorithm on-chain. The automation is software engineering applied to financial engineering. The vault deposits collateral, sells options, collects premiums, reinvests — the same loop as a CI/CD pipeline: trigger, execute, verify, repeat. The domain is different. The control flow is the same.
+
+The DeFi options stack also illustrates a recurring engineering pattern: complexity compression. Black-Scholes is a partial differential equation. A covered call vault presents it as "deposit ETH, earn yield." The vault compresses the complexity of options pricing, Greeks management, and position monitoring into a single user action. The compression is the product. The product is an abstraction. The abstraction is good if it hides the right things and bad if it hides the wrong things. The vault that hides tail risk from the user is a bad abstraction. The vault that surfaces tail risk is a good one. The engineer's judgment is knowing which is which.
+
 ---
 
 **References:**

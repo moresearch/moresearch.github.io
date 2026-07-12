@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;A prediction market lets people bet on the outcome of future events. The market price is a probability estimate. The functional origin is 16th-century papal conclave betting. The modern incarnation is Polymarket, which correctly called the 2024 U.S. election while polls were uncertain. Markets aggregate dispersed knowledge. The aggregation is the product.&#34;">
+  <meta name="description" content="&#34;Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="fi-options">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#fi-options">Options and DeFi Derivatives</a></h2><p class="post-summary">&#34;Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.&#34;</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">options</span><span class="tag">black-scholes</span><span class="tag">derivatives</span><span class="tag">hegic</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Aristotle, in the <em>Politics</em>, tells the story of Thales of Miletus. Thales was a philosopher. His critics mocked him for his poverty, arguing that philosophy was useless because it couldn't make money. Thales, using his knowledge of astronomy, predicted a particularly abundant olive harvest. During the winter, when demand for olive presses was low, he paid small deposits to reserve the use of all the olive presses in Miletus and Chios for the following autumn. When the harvest arrived — abundant, as he predicted — demand for olive presses surged. Thales sold his reservations at a premium. He made a fortune.</p>
+<p>The transaction was a call option. Thales paid a premium for the right, but not the obligation, to use the olive presses at a future date. If the harvest had been poor, he would have let the option expire. His loss would have been limited to the premium. The structure — limited downside, asymmetric upside, premium paid upfront — is the structure of every option contract since. Thales invented the option. He also proved that philosophy could make money. The two achievements are connected.</p>
+<h2 id="the-functional-origin-black-scholes">The functional origin: Black-Scholes</h2>
+<p>The modern options market was created by a formula. Fischer Black and Myron Scholes published &quot;The Pricing of Options and Corporate Liabilities&quot; in 1973. The Black-Scholes formula calculates the theoretical price of a European call option as a function of the underlying asset price, the strike price, the time to expiration, the risk-free interest rate, and the asset's volatility. The formula assumes continuous trading, no transaction costs, and log-normal price distributions. The assumptions are false. The formula is still useful. The usefulness derives from the formula's insight: an option can be replicated by dynamically hedging a position in the underlying asset. The replication argument is the foundation of all derivatives pricing.</p>
+<p>The Chicago Board Options Exchange opened in April 1973, the same year Black-Scholes was published. The coincidence was not planned. The coincidence was catalytic. Traders had a formula for pricing options. The formula gave them confidence to trade. The trading created liquidity. The liquidity attracted more traders. The virtuous cycle created the modern options market, which now trades trillions in notional value annually.</p>
+<h2 id="defi-options">DeFi options</h2>
+<p>DeFi options protocols are automating the options market on-chain. The approaches:</p>
+<p><strong>Order book options.</strong> Hegic, Opyn, and Lyra use on-chain order books or request-for-quote systems for options trading. Buyers and sellers match on-chain. Settlement is automated. The challenge: options are complex instruments with many parameters (strike, expiry, type). The order book for any specific option is thin. The thinness produces wide spreads. The spreads limit adoption.</p>
+<p><strong>Automated options vaults.</strong> Ribbon Finance and ThetaNuts sell options automatically on behalf of depositors. A depositor deposits ETH into a covered call vault. The vault sells call options against the ETH, collecting premiums. The premiums are distributed to depositors. The vault automates the option selling strategy. The depositor earns yield without managing strikes, expirations, or greeks. The automation is the product. The product is yield.</p>
+<p><strong>Structured products.</strong> Cega and Friktion combine options into structured products — principal-protected notes, yield enhancement, volatility trading. The investor deposits capital. The protocol executes a strategy involving multiple options positions. The strategy generates yield in most market conditions and loses principal in tail events. The risk is the tail. The tail is priced into the premium. The pricing is the challenge.</p>
+<p><strong>Perpetual options.</strong> Paradigm and Panoptic are developing perpetual options — options with no expiry, analogous to perpetual futures. The mechanism is a funding rate between option buyers and sellers. The perpetual option eliminates expiration management. The perpetual option is the next frontier.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Nassim Nicholas Taleb, <em>Dynamic Hedging: Managing Vanilla and Exotic Options</em> (1997). Taleb was a options market maker before he was an author. His book is the practitioner's guide to the reality of options trading — the greeks, the hedging, the tail risks that Black-Scholes assumes away. Taleb's later book, <em>The Black Swan</em> (2007), is about the consequences of those tail risks. The DeFi options market is still young. The tail risks have not yet materialized at scale. When they do, Taleb's framework will be the guide to understanding them. The framework is ready. The market is not.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>An option is a function from an underlying price to a payoff. Black-Scholes is the algorithm that prices that function. DeFi options vaults automate the execution of that algorithm on-chain. The automation is software engineering applied to financial engineering. The vault deposits collateral, sells options, collects premiums, reinvests — the same loop as a CI/CD pipeline: trigger, execute, verify, repeat. The domain is different. The control flow is the same.</p>
+<p>The DeFi options stack also illustrates a recurring engineering pattern: complexity compression. Black-Scholes is a partial differential equation. A covered call vault presents it as &quot;deposit ETH, earn yield.&quot; The vault compresses the complexity of options pricing, Greeks management, and position monitoring into a single user action. The compression is the product. The product is an abstraction. The abstraction is good if it hides the right things and bad if it hides the wrong things. The vault that hides tail risk from the user is a bad abstraction. The vault that surfaces tail risk is a good one. The engineer's judgment is knowing which is which.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Aristotle, <em>Politics</em>, Book I, Chapter XI (Thales and the olive presses).</li>
+<li>Fischer Black and Myron Scholes, &quot;The Pricing of Options and Corporate Liabilities,&quot; <em>Journal of Political Economy</em>, 1973.</li>
+<li>Nassim Nicholas Taleb, <em>Dynamic Hedging</em>, Wiley, 1997.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-perpetuals">Perpetual Futures</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="fi-prediction-markets">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -1073,36 +1106,6 @@
 <li>Compound, &quot;Compound Governance,&quot; 2020.</li>
 <li>Yearn Finance, &quot;Yearn Vaults,&quot; Yearn Documentation.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-lending">Lending Protocols</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="fi-options">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#fi-options">Options and DeFi Derivatives</a></h2><p class="post-summary">&#34;Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.&#34;</p>
-          <div class="tags"><span class="tag">defi</span><span class="tag">options</span><span class="tag">black-scholes</span><span class="tag">derivatives</span><span class="tag">hegic</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Aristotle, in the <em>Politics</em>, tells the story of Thales of Miletus. Thales was a philosopher. His critics mocked him for his poverty, arguing that philosophy was useless because it couldn't make money. Thales, using his knowledge of astronomy, predicted a particularly abundant olive harvest. During the winter, when demand for olive presses was low, he paid small deposits to reserve the use of all the olive presses in Miletus and Chios for the following autumn. When the harvest arrived — abundant, as he predicted — demand for olive presses surged. Thales sold his reservations at a premium. He made a fortune.</p>
-<p>The transaction was a call option. Thales paid a premium for the right, but not the obligation, to use the olive presses at a future date. If the harvest had been poor, he would have let the option expire. His loss would have been limited to the premium. The structure — limited downside, asymmetric upside, premium paid upfront — is the structure of every option contract since. Thales invented the option. He also proved that philosophy could make money. The two achievements are connected.</p>
-<h2 id="the-functional-origin-black-scholes">The functional origin: Black-Scholes</h2>
-<p>The modern options market was created by a formula. Fischer Black and Myron Scholes published &quot;The Pricing of Options and Corporate Liabilities&quot; in 1973. The Black-Scholes formula calculates the theoretical price of a European call option as a function of the underlying asset price, the strike price, the time to expiration, the risk-free interest rate, and the asset's volatility. The formula assumes continuous trading, no transaction costs, and log-normal price distributions. The assumptions are false. The formula is still useful. The usefulness derives from the formula's insight: an option can be replicated by dynamically hedging a position in the underlying asset. The replication argument is the foundation of all derivatives pricing.</p>
-<p>The Chicago Board Options Exchange opened in April 1973, the same year Black-Scholes was published. The coincidence was not planned. The coincidence was catalytic. Traders had a formula for pricing options. The formula gave them confidence to trade. The trading created liquidity. The liquidity attracted more traders. The virtuous cycle created the modern options market, which now trades trillions in notional value annually.</p>
-<h2 id="defi-options">DeFi options</h2>
-<p>DeFi options protocols are automating the options market on-chain. The approaches:</p>
-<p><strong>Order book options.</strong> Hegic, Opyn, and Lyra use on-chain order books or request-for-quote systems for options trading. Buyers and sellers match on-chain. Settlement is automated. The challenge: options are complex instruments with many parameters (strike, expiry, type). The order book for any specific option is thin. The thinness produces wide spreads. The spreads limit adoption.</p>
-<p><strong>Automated options vaults.</strong> Ribbon Finance and ThetaNuts sell options automatically on behalf of depositors. A depositor deposits ETH into a covered call vault. The vault sells call options against the ETH, collecting premiums. The premiums are distributed to depositors. The vault automates the option selling strategy. The depositor earns yield without managing strikes, expirations, or greeks. The automation is the product. The product is yield.</p>
-<p><strong>Structured products.</strong> Cega and Friktion combine options into structured products — principal-protected notes, yield enhancement, volatility trading. The investor deposits capital. The protocol executes a strategy involving multiple options positions. The strategy generates yield in most market conditions and loses principal in tail events. The risk is the tail. The tail is priced into the premium. The pricing is the challenge.</p>
-<p><strong>Perpetual options.</strong> Paradigm and Panoptic are developing perpetual options — options with no expiry, analogous to perpetual futures. The mechanism is a funding rate between option buyers and sellers. The perpetual option eliminates expiration management. The perpetual option is the next frontier.</p>
-<h2 id="the-reference">The reference</h2>
-<p>Nassim Nicholas Taleb, <em>Dynamic Hedging: Managing Vanilla and Exotic Options</em> (1997). Taleb was a options market maker before he was an author. His book is the practitioner's guide to the reality of options trading — the greeks, the hedging, the tail risks that Black-Scholes assumes away. Taleb's later book, <em>The Black Swan</em> (2007), is about the consequences of those tail risks. The DeFi options market is still young. The tail risks have not yet materialized at scale. When they do, Taleb's framework will be the guide to understanding them. The framework is ready. The market is not.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Aristotle, <em>Politics</em>, Book I, Chapter XI (Thales and the olive presses).</li>
-<li>Fischer Black and Myron Scholes, &quot;The Pricing of Options and Corporate Liabilities,&quot; <em>Journal of Political Economy</em>, 1973.</li>
-<li>Nassim Nicholas Taleb, <em>Dynamic Hedging</em>, Wiley, 1997.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-perpetuals">Perpetual Futures</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
 </ul>
 </div>
       </article>
@@ -7315,6 +7318,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#fi-options">Options and DeFi Derivatives</a>
               <a href="#fi-prediction-markets">Prediction Markets</a>
               <a href="#fi-perpetuals">Perpetual Futures</a>
               <a href="#algorithmic-trading-books">Why algorithmic trading is a game worth playing</a>
@@ -7326,7 +7330,6 @@ type Logger interface {
               <a href="#fi-synthetics">Synthetic Assets</a>
               <a href="#fi-liquid-staking">Liquid Staking</a>
               <a href="#fi-yield-farming">Yield Farming</a>
-              <a href="#fi-options">Options and DeFi Derivatives</a>
               <a href="#fi-lending">Lending Protocols</a>
               <a href="#fi-stablecoins">Stablecoins</a>
               <a href="#dex-trading-ai-agents">AI Agents for Trading</a>

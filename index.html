@@ -655,7 +655,7 @@
       <article class="post" id="scarcity">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity">Scarcity Rules Everything</a></h2><p class="post-summary">&#34;Robbins: economics is choice under scarcity (1932). Von Neumann: choice under scarcity, when strategic, is a game (1944). Software engineering is both. Time, attention, complexity, compute—all scarce. Every architecture decision is a bet. The theory of bets is game theory. Scarcity rules everything around me.&#34;</p>
+          <h2><a href="#scarcity">On Scarcity</a></h2><p class="post-summary">&#34;Robbins: economics is choice under scarcity (1932). Von Neumann: choice under scarcity, when strategic, is a game (1944). Software engineering is both. Time, attention, complexity, compute—all scarce. Every architecture decision is a bet. The theory of bets is game theory. Scarcity rules everything around me.&#34;</p>
           <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">game-theory</span><span class="tag">software-engineering</span><span class="tag">robbins</span><span class="tag">von-neumann</span>
           </div>
         </header>
@@ -731,6 +731,387 @@
 <h2 id="sream">S.R.E.A.M.</h2>
 <p>Scarcity rules everything around me. Robbins defined it in 1932. Von Neumann gave it mathematics in 1944. Nash generalized it. Simon bounded it. Schumacher argued for appropriate scale within it. Boehm applied it to software costs. Brooks, Parnas, and Lehman applied it to software structure. Hardin showed how it produces tragedy in commons. Coase showed how firms emerge to manage it. Maynard Smith showed how evolution optimizes it. Christensen showed how it destroys incumbents.</p>
 <p>Software engineering has been rediscovering all of this, under different names, with different frameworks, at different scales. The names change. The framework documentation gets updated. The scale grows. The principle is the same. Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Economics is the science of choice under scarcity. Software engineering is economics. Game theory is the mathematics of strategic choice. Software engineering is a multiplayer game. Scarcity rules everything around me.</p>
+<hr>
+<h2 id="a-catalog-of-games-an-exhaustive-taxonomy-for-further-exploration">A catalog of games: an exhaustive taxonomy for further exploration</h2>
+<p>Game theory classifies games along multiple independent dimensions. Every real software situation can be located in this space. Locating it tells you which tools apply. The catalog is a map. The map is for navigation.</p>
+<h3 id="by-cooperation">By cooperation</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cooperative</strong></td>
+<td>Players can form binding agreements. Side-payments allowed.</td>
+<td>Two teams sign an SLA with penalty clauses. The SLA is the binding agreement.</td>
+</tr>
+<tr>
+<td><strong>Non-cooperative</strong></td>
+<td>No binding agreements. Each player acts independently.</td>
+<td>Teams without API contracts. Communication is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Cheap talk</strong></td>
+<td>Communication allowed but unenforceable.</td>
+<td>&quot;We promise not to break the API.&quot; Without automated testing, this is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Bargaining</strong></td>
+<td>Two-player cooperative game over division of surplus.</td>
+<td>Two teams negotiating shared infrastructure costs. Nash bargaining solution splits the surplus.</td>
+</tr>
+<tr>
+<td><strong>Team problems</strong></td>
+<td>Non-cooperative structure but identical payoffs.</td>
+<td>A team where everyone shares the same OKRs. Incentives are aligned by design.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-conflict-of-interest">By conflict of interest</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Zero-sum</strong></td>
+<td>One player's gain = another's loss. Total constant.</td>
+<td>Fixed headcount allocation across teams. Every hire for Team A is a hire Team B doesn't get.</td>
+</tr>
+<tr>
+<td><strong>Non-zero-sum</strong></td>
+<td>Players can both gain or both lose.</td>
+<td>API design. Both teams gain from a clean contract. Both lose from a broken one.</td>
+</tr>
+<tr>
+<td><strong>Coordination</strong></td>
+<td>No conflict. Players simply need to align.</td>
+<td>Choosing a shared logging format. Everyone wants the same thing. The problem is agreeing which thing.</td>
+</tr>
+<tr>
+<td><strong>Mixed-motive</strong></td>
+<td>Both conflict and cooperation incentives.</td>
+<td>Most real situations. Teams share goals but have private priorities.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-timing">By timing</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simultaneous</strong></td>
+<td>Players move without observing others.</td>
+<td>Teams making independent technology choices in the same quarter.</td>
+</tr>
+<tr>
+<td><strong>Sequential</strong></td>
+<td>Players move in turn, observing previous moves.</td>
+<td>Deployment ordering. Team A deploys. Team B observes. Team B deploys. Stackelberg game: first mover advantage.</td>
+</tr>
+<tr>
+<td><strong>Repeated</strong></td>
+<td>Same game played multiple times.</td>
+<td>Sprint planning. The same resource allocation game every two weeks. Repeated games enable reputation and reciprocity.</td>
+</tr>
+<tr>
+<td><strong>One-shot</strong></td>
+<td>Game played exactly once.</td>
+<td>A rewrite decision. You either do it or you don't. No repetition.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>State evolves probabilistically between stages.</td>
+<td>Incident response. Alerts arrive randomly. The game state changes with each alert.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-information">By information</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Complete information</strong></td>
+<td>All players know all payoffs.</td>
+<td>Open-source projects. Everyone can see the code, the issues, the priorities.</td>
+</tr>
+<tr>
+<td><strong>Incomplete information</strong></td>
+<td>Some players have private information. Bayesian games.</td>
+<td>A team proposing a rewrite has private information about their true motivation.</td>
+</tr>
+<tr>
+<td><strong>Perfect information</strong></td>
+<td>All previous moves known at each decision point.</td>
+<td>A monolith where every module can observe every other module's state.</td>
+</tr>
+<tr>
+<td><strong>Imperfect information</strong></td>
+<td>Some previous moves unknown.</td>
+<td>Microservices. Service A cannot observe Service B's internal state.</td>
+</tr>
+<tr>
+<td><strong>Symmetric information</strong></td>
+<td>All players have the same uncertainty.</td>
+<td>Two teams both uncertain about the new CTO's priorities.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric information</strong></td>
+<td>Different players know different things.</td>
+<td>A senior engineer knows the legacy system's weaknesses. A new hire doesn't.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-symmetry">By symmetry</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Symmetric</strong></td>
+<td>Payoffs depend only on strategies, not on player identity.</td>
+<td>Two identical microservices in the same cluster under the same SLA.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric</strong></td>
+<td>Changing identities changes payoffs.</td>
+<td>Frontend team vs. backend team. Different constraints, different strategy sets, different payoffs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-player-count">By player count</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1-player (decision theory)</strong></td>
+<td>No strategic interaction. Optimization against nature.</td>
+<td>Choosing an algorithm. Nature is the problem constraints. No other player.</td>
+</tr>
+<tr>
+<td><strong>2-player</strong></td>
+<td>The classic case. Most foundational results.</td>
+<td>Two teams negotiating an API contract.</td>
+</tr>
+<tr>
+<td><strong>N-player</strong></td>
+<td>Three or more. Coalitions possible.</td>
+<td>An organization with many teams. Alliances form. Politics emerges.</td>
+</tr>
+<tr>
+<td><strong>Large/Many-player</strong></td>
+<td>Continuum of players. Atomic vs. non-atomic.</td>
+<td>Open-source ecosystem. Individual contributors are non-atomic. No single contributor changes the equilibrium.</td>
+</tr>
+<tr>
+<td><strong>Mean field</strong></td>
+<td>Large population. Players interact through distribution of states.</td>
+<td>Microservices at scale. Each service interacts with the aggregate behavior of all other services.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-determinism">By determinism</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deterministic</strong></td>
+<td>No chance elements.</td>
+<td>A deterministic deployment pipeline. Same input, same output.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>Some moves by nature/chance.</td>
+<td>A system with probabilistic failures. The failure is nature's move.</td>
+</tr>
+<tr>
+<td><strong>Games of chance</strong></td>
+<td>All moves by one player and chance.</td>
+<td>A/B testing. Nature randomizes users. The analyst observes outcomes.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-strategy-type">By strategy type</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pure strategy</strong></td>
+<td>Single deterministic action.</td>
+<td>Always use the same database for every service.</td>
+</tr>
+<tr>
+<td><strong>Mixed strategy</strong></td>
+<td>Randomize over actions.</td>
+<td>Randomly assign on-call shifts. The randomization prevents predictable exploitation.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-stateaction-space">By state/action space</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite</strong></td>
+<td>Finite actions and states.</td>
+<td>Choosing between exactly three database options.</td>
+</tr>
+<tr>
+<td><strong>Infinite/Continuous</strong></td>
+<td>Continuous action or state spaces.</td>
+<td>Allocating compute resources across services. The allocation is a continuous variable.</td>
+</tr>
+<tr>
+<td><strong>Discrete-time</strong></td>
+<td>Decisions at discrete intervals.</td>
+<td>Sprint planning. Decisions every two weeks.</td>
+</tr>
+<tr>
+<td><strong>Continuous-time (differential)</strong></td>
+<td>Decisions at every instant. Hamilton-Jacobi-Isaacs equations.</td>
+<td>Real-time auto-scaling. The decision is continuous. The mathematics is differential equations.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="by-time-horizon">By time horizon</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite horizon</strong></td>
+<td>Known, fixed number of periods.</td>
+<td>A project with a fixed deadline and known milestones.</td>
+</tr>
+<tr>
+<td><strong>Infinite horizon</strong></td>
+<td>No predetermined end.</td>
+<td>Ongoing system maintenance. The game never ends. Infinite horizon changes optimal strategies — cooperation can be sustained.</td>
+</tr>
+<tr>
+<td><strong>Discounted</strong></td>
+<td>Future payoffs weighted less than present.</td>
+<td>Quarterly planning. This quarter's results matter more than next year's. The discount rate determines refactoring decisions.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="special-game-classes">Special game classes</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Definition</th>
+<th>Software example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Signaling</strong></td>
+<td>Informed player acts to reveal private information.</td>
+<td>Writing a detailed RFC. The detail signals competence and seriousness.</td>
+</tr>
+<tr>
+<td><strong>Screening</strong></td>
+<td>Uninformed player moves first to induce revelation.</td>
+<td>Requiring a prototype before architecture review. The uninformed reviewer screens the proposer.</td>
+</tr>
+<tr>
+<td><strong>Stackelberg</strong></td>
+<td>Leader-follower. Leader moves first. Follower responds optimally.</td>
+<td>Platform team sets the API standard. Service teams build against it. The platform team is the Stackelberg leader.</td>
+</tr>
+<tr>
+<td><strong>Pursuit-evasion</strong></td>
+<td>Zero-sum differential game. Duration not fixed.</td>
+<td>Intrusion detection. The attacker evades. The defender pursues.</td>
+</tr>
+<tr>
+<td><strong>Mechanism design</strong></td>
+<td>Reverse game theory. Design rules to achieve desired outcome.</td>
+<td>SLAs, automated contract testing, deployment gates, code review requirements. All are mechanism design.</td>
+</tr>
+<tr>
+<td><strong>Global games</strong></td>
+<td>Incomplete information. Players observe noisy private signals of an underlying state.</td>
+<td>Teams deciding whether to adopt a new technology based on private signals about its maturity.</td>
+</tr>
+<tr>
+<td><strong>Combinatorial</strong></td>
+<td>Finite, deterministic, perfect-information, two-player, zero-sum.</td>
+<td>Automated theorem proving. Compiler optimization.</td>
+</tr>
+<tr>
+<td><strong>Evolutionary</strong></td>
+<td>Strategies that perform well survive. Strategies that perform poorly die. Replicator dynamics.</td>
+<td>Architecture patterns that persist in an organization. Microservices survived because they resist being re-monolithed.</td>
+</tr>
+<tr>
+<td><strong>Partizan</strong></td>
+<td>In combinatorial games, moves differ per player.</td>
+<td>Frontend and backend teams have different available moves. The game is partizan.</td>
+</tr>
+<tr>
+<td><strong>Impartial</strong></td>
+<td>In combinatorial games, moves depend only on position, not player.</td>
+<td>Two identical services with identical deployment options. The game is impartial.</td>
+</tr>
+</tbody>
+</table>
+<p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. The catalog is a map of the space. When you encounter a situation, locate it on the map. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
 <hr>
 <p><strong>References:</strong></p>
 <ul>
@@ -4835,7 +5216,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#scarcity">Scarcity Rules Everything</a>
+              <a href="#scarcity">On Scarcity</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>

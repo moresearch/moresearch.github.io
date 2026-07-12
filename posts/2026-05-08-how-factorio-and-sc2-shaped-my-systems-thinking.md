@@ -153,3 +153,6 @@ Factorio sharpened my instinct for pipelines, layout, scaling, and bottlenecks.
 StarCraft II sharpened my instinct for tempo, triage, attention management, and hotkey discipline.
 
 Together, they made terminal and Vim environments feel less like harsh tools and more like expressive systems. And I think that is why those environments still feel so productive to me now: they reward exactly the kind of system-level thinking those games trained over and over again.
+
+
+Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.

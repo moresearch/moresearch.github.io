@@ -73,3 +73,6 @@ Brooks: "There is no silver bullet." The paper: "There is no silver bullet for c
 - Frederick P. Brooks, Jr., "No Silver Bullet: Essence and Accidents of Software Engineering," *Computer Magazine*, April 1987.
 - M.M. Lehman, "Programs, Life Cycles, and Laws of Software Evolution," *Proceedings of the IEEE*, 1980.
 - Related posts: [Brooks on Software Design](https://blog.hackspree.com/#brooks-design-conceptual-integrity), [Lehman's Software Evolution](https://blog.hackspree.com/#lehmans-laws), [Task Automation Economics](https://blog.hackspree.com/#task-automation-economics)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

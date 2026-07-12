@@ -90,3 +90,6 @@ The export controls were intended to contain Chinese AI. They contained Chinese 
 - DeepSeek technical reports, V3 (2025), R1 (2025), V4 (2026).
 - Qwen technical reports, Qwen2.5 (2025), Qwen3.5 (2026).
 - Related posts: [Disruptive Innovation](https://blog.hackspree.com/#disruptive-innovation), [I, Pencil](https://blog.hackspree.com/#i-pencil), [The electric light was not a better candle](https://blog.hackspree.com/#disruptive-innovation)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

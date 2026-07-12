@@ -52,3 +52,6 @@ The mechanism that works is the one both players will accept. Acceptance is the 
 - Thomas Schelling, *The Strategy of Conflict*, Harvard University Press, 1960.
 - John Nash, "The Bargaining Problem," *Econometrica*, 1950.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [Field Guide to Scarcity Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

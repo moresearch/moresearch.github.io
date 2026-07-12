@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Engineering has three layers. The top is art: taste, judgment, the feel for what is right. The middle is philosophy: principles, values, what to optimize. The foundation is economics: scarcity, constraints, trade-offs. Art without economics is fantasy. Philosophy without economics is empty.&#34;">
+  <meta name="description" content="&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,61 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-battle-of-sexes">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-battle-of-sexes">The Battle of the Sexes</a></h2><p class="post-summary">&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">battle-of-sexes</span><span class="tag">coordination</span><span class="tag">focal-points</span><span class="tag">standards</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A couple wants to spend the evening together. One prefers the opera. The other prefers the football game. Both prefer being together at the less-preferred event to being apart at the preferred one. The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Opera</th>
+<th>Football</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Opera</strong></td>
+<td>(3, 2)</td>
+<td>(0, 0)</td>
+</tr>
+<tr>
+<td><strong>Football</strong></td>
+<td>(0, 0)</td>
+<td>(2, 3)</td>
+</tr>
+</tbody>
+</table>
+<p>Two pure-strategy Nash equilibria: both go to Opera, both go to Football. Both are Pareto-efficient — neither can be improved without harming the other. Neither equilibrium is obviously better than the other without a way to weigh the two players' preferences. The game has a mixed-strategy equilibrium as well, but it is inefficient — sometimes they miscoordinate. The challenge is selecting <em>which</em> coordinated outcome without an external authority.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> The Battle of the Sexes is a coordination game with conflicting interests. The equilibria are Pareto-rankable only by interpersonal utility comparison, which classical game theory avoids. Equilibrium selection requires something beyond the payoff matrix: a focal point, a convention, a first-mover advantage, or a bargaining process.</p>
+<p><strong>Focal points (Schelling).</strong> In the absence of communication, players coordinate by finding what is obvious. &quot;We'll go to the opera because it's Tuesday and the opera is on Tuesdays.&quot; The day is a focal point. It is arbitrary. It works because both players know the other is looking for it. The power of the focal point is not in its logic. It is in its obviousness.</p>
+<p><strong>Bargaining theory (Nash).</strong> If players can communicate, they can bargain. The Nash bargaining solution splits the surplus according to relative bargaining power. The player with better outside options — could go to the opera alone and enjoy it more than the other would enjoy football alone — has more bargaining power. The solution predicts the outcome based on the disagreement point.</p>
+<p><strong>Evolutionary game theory.</strong> In a population playing Battle of the Sexes, which equilibrium emerges depends on initial conditions and the speed of adaptation. If a slight majority initially goes to Opera, the minority has incentive to switch. The equilibrium is path-dependent. History matters. The equilibrium that emerges is the one that got a small initial advantage.</p>
+<p><strong>Feminist economics (Akerlof, Sen).</strong> The Battle of the Sexes models the gendered division of labor. In traditional households, the wife's preferences are systematically discounted. The equilibrium that emerges — &quot;his&quot; choice — is not a reflection of equal bargaining. It is a reflection of unequal outside options. The wife cannot credibly threaten to go alone because her outside option is worse. The bargaining power is structural. The structure is social.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Message queue choice.</strong> Team A wants NATS. Team B wants Kafka. Both prefer either queue to no queue. Both prefer their own choice. The game has two Nash equilibria: both NATS or both Kafka. Which equilibrium is selected depends on who has more organizational power, who moves first, or who cares more. The selection mechanism is political. The politics are game-theoretic.</p>
+<p><strong>Language choice for a new service.</strong> The team is split between Go and Rust. Both prefer a unified language to fragmentation. Both prefer their own. The equilibrium: the language chosen by the tech lead, or the language chosen by the team that builds the first service (first-mover advantage), or the language that has the most internal library support (focal point).</p>
+<p><strong>Meeting time selection.</strong> Team members across time zones need a recurring meeting slot. Everyone prefers any slot to no meeting. Everyone prefers their own working hours. The equilibrium: the slot that works for the person with the most organizational power, or the slot suggested first, or the slot that's &quot;obvious&quot; — Tuesday 10am, the universal default.</p>
+<p><strong>Deploy schedule.</strong> Three teams share a deploy window. Each prefers a different day. All prefer a coordinated schedule to conflicting deploys. The equilibrium: the day claimed by the team that shipped first, or the day assigned by the release manager (hierarchy), or Monday (focal point — start of the week).</p>
+<h2 id="resolving-the-battle-of-the-sexes">Resolving the Battle of the Sexes</h2>
+<p>The Battle of the Sexes is resolved by a selection mechanism. Any mechanism will do. The mechanism must be accepted as legitimate by both players, or it won't be accepted. Hierarchy: the architect decides. Convention: we always use what the first team chose. Rotation: we alternate. External authority: the CTO mandated NATS. Market: whichever technology has the most internal tooling wins. Commitment: Team A already deployed to production with NATS; Team B can join or build their own queue.</p>
+<p>The mechanism that works is the one both players will accept. Acceptance is the constraint. The constraint is social. The social is game-theoretic.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>R. Duncan Luce and Howard Raiffa, <em>Games and Decisions</em>, Wiley, 1957.</li>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>John Nash, &quot;The Bargaining Problem,&quot; <em>Econometrica</em>, 1950.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="engineering-is-economics">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2925,60 +2980,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
 <li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-battle-of-sexes">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-battle-of-sexes">The Battle of the Sexes</a></h2><p class="post-summary">&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">battle-of-sexes</span><span class="tag">coordination</span><span class="tag">focal-points</span><span class="tag">standards</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A couple wants to spend the evening together. One prefers the opera. The other prefers the football game. Both prefer being together at the less-preferred event to being apart at the preferred one. The payoff matrix:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Opera</th>
-<th>Football</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Opera</strong></td>
-<td>(3, 2)</td>
-<td>(0, 0)</td>
-</tr>
-<tr>
-<td><strong>Football</strong></td>
-<td>(0, 0)</td>
-<td>(2, 3)</td>
-</tr>
-</tbody>
-</table>
-<p>Two pure-strategy Nash equilibria: both go to Opera, both go to Football. Both are Pareto-efficient — neither can be improved without harming the other. Neither equilibrium is obviously better than the other without a way to weigh the two players' preferences. The game has a mixed-strategy equilibrium as well, but it is inefficient — sometimes they miscoordinate. The challenge is selecting <em>which</em> coordinated outcome without an external authority.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Classical game theory.</strong> The Battle of the Sexes is a coordination game with conflicting interests. The equilibria are Pareto-rankable only by interpersonal utility comparison, which classical game theory avoids. Equilibrium selection requires something beyond the payoff matrix: a focal point, a convention, a first-mover advantage, or a bargaining process.</p>
-<p><strong>Focal points (Schelling).</strong> In the absence of communication, players coordinate by finding what is obvious. &quot;We'll go to the opera because it's Tuesday and the opera is on Tuesdays.&quot; The day is a focal point. It is arbitrary. It works because both players know the other is looking for it. The power of the focal point is not in its logic. It is in its obviousness.</p>
-<p><strong>Bargaining theory (Nash).</strong> If players can communicate, they can bargain. The Nash bargaining solution splits the surplus according to relative bargaining power. The player with better outside options — could go to the opera alone and enjoy it more than the other would enjoy football alone — has more bargaining power. The solution predicts the outcome based on the disagreement point.</p>
-<p><strong>Evolutionary game theory.</strong> In a population playing Battle of the Sexes, which equilibrium emerges depends on initial conditions and the speed of adaptation. If a slight majority initially goes to Opera, the minority has incentive to switch. The equilibrium is path-dependent. History matters. The equilibrium that emerges is the one that got a small initial advantage.</p>
-<p><strong>Feminist economics (Akerlof, Sen).</strong> The Battle of the Sexes models the gendered division of labor. In traditional households, the wife's preferences are systematically discounted. The equilibrium that emerges — &quot;his&quot; choice — is not a reflection of equal bargaining. It is a reflection of unequal outside options. The wife cannot credibly threaten to go alone because her outside option is worse. The bargaining power is structural. The structure is social.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Message queue choice.</strong> Team A wants NATS. Team B wants Kafka. Both prefer either queue to no queue. Both prefer their own choice. The game has two Nash equilibria: both NATS or both Kafka. Which equilibrium is selected depends on who has more organizational power, who moves first, or who cares more. The selection mechanism is political. The politics are game-theoretic.</p>
-<p><strong>Language choice for a new service.</strong> The team is split between Go and Rust. Both prefer a unified language to fragmentation. Both prefer their own. The equilibrium: the language chosen by the tech lead, or the language chosen by the team that builds the first service (first-mover advantage), or the language that has the most internal library support (focal point).</p>
-<p><strong>Meeting time selection.</strong> Team members across time zones need a recurring meeting slot. Everyone prefers any slot to no meeting. Everyone prefers their own working hours. The equilibrium: the slot that works for the person with the most organizational power, or the slot suggested first, or the slot that's &quot;obvious&quot; — Tuesday 10am, the universal default.</p>
-<p><strong>Deploy schedule.</strong> Three teams share a deploy window. Each prefers a different day. All prefer a coordinated schedule to conflicting deploys. The equilibrium: the day claimed by the team that shipped first, or the day assigned by the release manager (hierarchy), or Monday (focal point — start of the week).</p>
-<h2 id="resolving-the-battle-of-the-sexes">Resolving the Battle of the Sexes</h2>
-<p>The Battle of the Sexes is resolved by a selection mechanism. Any mechanism will do. The mechanism must be accepted as legitimate by both players, or it won't be accepted. Hierarchy: the architect decides. Convention: we always use what the first team chose. Rotation: we alternate. External authority: the CTO mandated NATS. Market: whichever technology has the most internal tooling wins. Commitment: Team A already deployed to production with NATS; Team B can join or build their own queue.</p>
-<p>The mechanism that works is the one both players will accept. Acceptance is the constraint. The constraint is social. The social is game-theoretic.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>R. Duncan Luce and Howard Raiffa, <em>Games and Decisions</em>, Wiley, 1957.</li>
-<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
-<li>John Nash, &quot;The Bargaining Problem,&quot; <em>Econometrica</em>, 1950.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
 </ul>
 </div>
       </article>
@@ -7393,6 +7394,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
               <a href="#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>
               <a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a>
               <a href="#scarcity-in-practice">Five Habits</a>
@@ -7441,7 +7443,6 @@ type Logger interface {
               <a href="#game-mechanism-design">Mechanism Design</a>
               <a href="#game-evolutionary">Evolutionary Game Theory</a>
               <a href="#game-chicken">Chicken</a>
-              <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

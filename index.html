@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Alan Perlis wrote: &#39;Simplicity does not precede complexity, but follows it.&#39; You do not start simple. You start messy and refine. The simple thing is the complex thing, understood. Git rebase, refactoring, and clean interfaces are not first drafts. They are the artifact of having already been wrong.&#34;">
+  <meta name="description" content="&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,348 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="catalog-of-scarcity-games">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></h2><p class="post-summary">&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">taxonomy</span><span class="tag">reference</span><span class="tag">software-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
+<p>This catalog is a diagnostic tool. When a situation feels stuck — the migration isn't happening, the standard isn't being adopted, the teams keep breaking each other's APIs — locate it here. The name of the game tells you why it's stuck. The why tells you what to change. Most organizational interventions fail because they treat every stuck situation as a communication problem. Some are stag hunts. Some are chicken. Some are commons tragedies. The solution to a stag hunt is visible early adopters. The solution to chicken is a pre-committed rule. The solution to a commons tragedy is a governance mechanism. The solutions are different because the games are different. The catalog tells you which one you're in.</p>
+<blockquote>
+<p>&quot;Simplicity does not precede complexity, but follows it.&quot; — Alan Perlis</p>
+</blockquote>
+<p>The catalog that follows is a map of the complexity. Use it to find the simplicity on the other side.</p>
+<h2 id="by-cooperation">By cooperation</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cooperative</strong></td>
+<td>Players can form binding agreements. — SLA with penalty clauses. The SLA is the binding agreement.</td>
+</tr>
+<tr>
+<td><strong>Non-cooperative</strong></td>
+<td>No binding agreements. — Teams without API contracts. Communication is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Cheap talk</strong></td>
+<td>Communication allowed but unenforceable. — &quot;We promise not to break the API.&quot; Without testing, this is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Bargaining</strong></td>
+<td>Two-player cooperative game over surplus division. — Two teams negotiating shared infrastructure costs.</td>
+</tr>
+<tr>
+<td><strong>Team problems</strong></td>
+<td>Non-cooperative structure, identical payoffs. — Team sharing the same OKRs. Incentives aligned by design.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-conflict-of-interest">By conflict of interest</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Zero-sum</strong></td>
+<td>One's gain = another's loss. — Fixed headcount allocation. Every hire for Team A is one Team B doesn't get.</td>
+</tr>
+<tr>
+<td><strong>Non-zero-sum</strong></td>
+<td>Players can both gain or both lose. — API design. Both gain from clean contract. Both lose from broken one.</td>
+</tr>
+<tr>
+<td><strong>Coordination</strong></td>
+<td>No conflict. Players need to align. — Choosing a shared logging format. Everyone wants the same thing.</td>
+</tr>
+<tr>
+<td><strong>Mixed-motive</strong></td>
+<td>Both conflict and cooperation incentives. — Most real situations. Shared goals but private priorities.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-timing">By timing</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simultaneous</strong></td>
+<td>Players move without observing others. — Teams making independent tech choices in the same quarter.</td>
+</tr>
+<tr>
+<td><strong>Sequential</strong></td>
+<td>Players move in turn. — Deployment ordering. Stackelberg: first-mover advantage.</td>
+</tr>
+<tr>
+<td><strong>Repeated</strong></td>
+<td>Same game multiple times. — Sprint planning. Repetition enables reputation and reciprocity.</td>
+</tr>
+<tr>
+<td><strong>One-shot</strong></td>
+<td>Played exactly once. — A rewrite decision. No repetition.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>State evolves probabilistically. — Incident response. Alerts arrive randomly.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-information">By information</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Complete information</strong></td>
+<td>All players know all payoffs. — Open-source. Everyone sees the code, issues, priorities.</td>
+</tr>
+<tr>
+<td><strong>Incomplete information</strong></td>
+<td>Private information. Bayesian games. — Team proposing rewrite has private info about true motivation.</td>
+</tr>
+<tr>
+<td><strong>Perfect information</strong></td>
+<td>All previous moves known. — Monolith. Every module observes every other module's state.</td>
+</tr>
+<tr>
+<td><strong>Imperfect information</strong></td>
+<td>Some moves unknown. — Microservices. Service A can't observe Service B's internal state.</td>
+</tr>
+<tr>
+<td><strong>Symmetric information</strong></td>
+<td>Same uncertainty. — Both teams uncertain about new CTO's priorities.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric information</strong></td>
+<td>Different knowledge. — Senior engineer knows legacy weaknesses. New hire doesn't.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-symmetry">By symmetry</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Symmetric</strong></td>
+<td>Payoffs depend only on strategies, not identity. — Two identical microservices with the same SLA.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric</strong></td>
+<td>Changing identities changes payoffs. — Frontend vs. backend team. Different constraints, different strategies.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-player-count">By player count</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1-player</strong></td>
+<td>Decision theory. No strategic interaction. — Choosing an algorithm. Nature is the constraint.</td>
+</tr>
+<tr>
+<td><strong>2-player</strong></td>
+<td>Classic case. — Two teams negotiating an API contract.</td>
+</tr>
+<tr>
+<td><strong>N-player</strong></td>
+<td>Three or more. Coalitions possible. — Organization with many teams. Alliances form. Politics emerges.</td>
+</tr>
+<tr>
+<td><strong>Large/Many-player</strong></td>
+<td>Continuum. Atomic vs. non-atomic. — Open-source ecosystem. No single contributor changes equilibrium.</td>
+</tr>
+<tr>
+<td><strong>Mean field</strong></td>
+<td>Players interact through state distribution. — Microservices at scale. Each service interacts with aggregate behavior.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-determinism">By determinism</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deterministic</strong></td>
+<td>No chance elements. — Deterministic deployment pipeline.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>Some moves by nature/chance. — System with probabilistic failures.</td>
+</tr>
+<tr>
+<td><strong>Games of chance</strong></td>
+<td>All moves by one player and chance. — A/B testing. Nature randomizes users.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-strategy-type">By strategy type</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pure strategy</strong></td>
+<td>Single deterministic action. — Always use the same database for every service.</td>
+</tr>
+<tr>
+<td><strong>Mixed strategy</strong></td>
+<td>Randomize over actions. — Random on-call assignment. Prevents predictable exploitation.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-stateaction-space">By state/action space</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite</strong></td>
+<td>Finite actions and states. — Choosing between exactly three database options.</td>
+</tr>
+<tr>
+<td><strong>Infinite/Continuous</strong></td>
+<td>Continuous spaces. — Allocating compute resources. Continuous variable.</td>
+</tr>
+<tr>
+<td><strong>Discrete-time</strong></td>
+<td>Decisions at discrete intervals. — Sprint planning. Every two weeks.</td>
+</tr>
+<tr>
+<td><strong>Continuous-time</strong></td>
+<td>Decisions at every instant. — Real-time auto-scaling. Differential equations.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-time-horizon">By time horizon</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite horizon</strong></td>
+<td>Known number of periods. — Project with fixed deadline and milestones.</td>
+</tr>
+<tr>
+<td><strong>Infinite horizon</strong></td>
+<td>No predetermined end. — Ongoing system maintenance. Cooperation sustainable.</td>
+</tr>
+<tr>
+<td><strong>Discounted</strong></td>
+<td>Future payoffs weighted less. — Quarterly planning. This quarter &gt; next year.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="special-game-classes">Special game classes</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Signaling</strong></td>
+<td>Informed player acts to reveal info. — Detailed RFC signals competence and seriousness.</td>
+</tr>
+<tr>
+<td><strong>Screening</strong></td>
+<td>Uninformed player moves first. — Requiring prototype before architecture review.</td>
+</tr>
+<tr>
+<td><strong>Stackelberg</strong></td>
+<td>Leader-follower. Leader first. — Platform team sets API standard. Services build against it.</td>
+</tr>
+<tr>
+<td><strong>Pursuit-evasion</strong></td>
+<td>Zero-sum differential. — Intrusion detection. Attacker evades. Defender pursues.</td>
+</tr>
+<tr>
+<td><strong>Mechanism design</strong></td>
+<td>Reverse game theory. — SLAs, contract testing, deployment gates, code review requirements.</td>
+</tr>
+<tr>
+<td><strong>Global games</strong></td>
+<td>Noisy private signals of underlying state. — Teams deciding on new tech based on private maturity signals.</td>
+</tr>
+<tr>
+<td><strong>Combinatorial</strong></td>
+<td>Finite, deterministic, perfect-info, 2P, zero-sum. — Automated theorem proving. Compiler optimization.</td>
+</tr>
+<tr>
+<td><strong>Evolutionary</strong></td>
+<td>Fit strategies survive. Replicator dynamics. — Architecture patterns that persist. Microservices resist re-monolithing.</td>
+</tr>
+<tr>
+<td><strong>Partizan</strong></td>
+<td>Moves differ per player. — Frontend and backend teams have different available moves.</td>
+</tr>
+<tr>
+<td><strong>Impartial</strong></td>
+<td>Moves depend only on position, not player. — Identical services with identical deployment options.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>This is part 7 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="simplicity-follows-complexity">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -825,408 +1167,6 @@ The difference between knowing a principle and applying it is the difference bet
 <ul>
 <li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
 <li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="catalog-of-scarcity-games">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></h2><p class="post-summary">&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">taxonomy</span><span class="tag">reference</span><span class="tag">software-engineering</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
-<p>This catalog is a diagnostic tool. When a situation feels stuck — the migration isn't happening, the standard isn't being adopted, the teams keep breaking each other's APIs — locate it here. The name of the game tells you why it's stuck. The why tells you what to change. Most organizational interventions fail because they treat every stuck situation as a communication problem. Some are stag hunts. Some are chicken. Some are commons tragedies. The solution to a stag hunt is visible early adopters. The solution to chicken is a pre-committed rule. The solution to a commons tragedy is a governance mechanism. The solutions are different because the games are different. The catalog tells you which one you're in.</p>
-<blockquote>
-<p>&quot;Simplicity does not precede complexity, but follows it.&quot; — Alan Perlis</p>
-</blockquote>
-<p>The catalog that follows is a map of the complexity. Use it to find the simplicity on the other side.</p>
-<h2 id="by-cooperation">By cooperation</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Cooperative</strong></td>
-<td>Players can form binding agreements.</td>
-<td>SLA with penalty clauses. The SLA is the binding agreement.</td>
-</tr>
-<tr>
-<td><strong>Non-cooperative</strong></td>
-<td>No binding agreements.</td>
-<td>Teams without API contracts. Communication is cheap talk.</td>
-</tr>
-<tr>
-<td><strong>Cheap talk</strong></td>
-<td>Communication allowed but unenforceable.</td>
-<td>&quot;We promise not to break the API.&quot; Without testing, this is cheap talk.</td>
-</tr>
-<tr>
-<td><strong>Bargaining</strong></td>
-<td>Two-player cooperative game over surplus division.</td>
-<td>Two teams negotiating shared infrastructure costs.</td>
-</tr>
-<tr>
-<td><strong>Team problems</strong></td>
-<td>Non-cooperative structure, identical payoffs.</td>
-<td>Team sharing the same OKRs. Incentives aligned by design.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-conflict-of-interest">By conflict of interest</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Zero-sum</strong></td>
-<td>One's gain = another's loss.</td>
-<td>Fixed headcount allocation. Every hire for Team A is one Team B doesn't get.</td>
-</tr>
-<tr>
-<td><strong>Non-zero-sum</strong></td>
-<td>Players can both gain or both lose.</td>
-<td>API design. Both gain from clean contract. Both lose from broken one.</td>
-</tr>
-<tr>
-<td><strong>Coordination</strong></td>
-<td>No conflict. Players need to align.</td>
-<td>Choosing a shared logging format. Everyone wants the same thing.</td>
-</tr>
-<tr>
-<td><strong>Mixed-motive</strong></td>
-<td>Both conflict and cooperation incentives.</td>
-<td>Most real situations. Shared goals but private priorities.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-timing">By timing</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Simultaneous</strong></td>
-<td>Players move without observing others.</td>
-<td>Teams making independent tech choices in the same quarter.</td>
-</tr>
-<tr>
-<td><strong>Sequential</strong></td>
-<td>Players move in turn.</td>
-<td>Deployment ordering. Stackelberg: first-mover advantage.</td>
-</tr>
-<tr>
-<td><strong>Repeated</strong></td>
-<td>Same game multiple times.</td>
-<td>Sprint planning. Repetition enables reputation and reciprocity.</td>
-</tr>
-<tr>
-<td><strong>One-shot</strong></td>
-<td>Played exactly once.</td>
-<td>A rewrite decision. No repetition.</td>
-</tr>
-<tr>
-<td><strong>Stochastic</strong></td>
-<td>State evolves probabilistically.</td>
-<td>Incident response. Alerts arrive randomly.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-information">By information</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Complete information</strong></td>
-<td>All players know all payoffs.</td>
-<td>Open-source. Everyone sees the code, issues, priorities.</td>
-</tr>
-<tr>
-<td><strong>Incomplete information</strong></td>
-<td>Private information. Bayesian games.</td>
-<td>Team proposing rewrite has private info about true motivation.</td>
-</tr>
-<tr>
-<td><strong>Perfect information</strong></td>
-<td>All previous moves known.</td>
-<td>Monolith. Every module observes every other module's state.</td>
-</tr>
-<tr>
-<td><strong>Imperfect information</strong></td>
-<td>Some moves unknown.</td>
-<td>Microservices. Service A can't observe Service B's internal state.</td>
-</tr>
-<tr>
-<td><strong>Symmetric information</strong></td>
-<td>Same uncertainty.</td>
-<td>Both teams uncertain about new CTO's priorities.</td>
-</tr>
-<tr>
-<td><strong>Asymmetric information</strong></td>
-<td>Different knowledge.</td>
-<td>Senior engineer knows legacy weaknesses. New hire doesn't.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-symmetry">By symmetry</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Symmetric</strong></td>
-<td>Payoffs depend only on strategies, not identity.</td>
-<td>Two identical microservices with the same SLA.</td>
-</tr>
-<tr>
-<td><strong>Asymmetric</strong></td>
-<td>Changing identities changes payoffs.</td>
-<td>Frontend vs. backend team. Different constraints, different strategies.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-player-count">By player count</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>1-player</strong></td>
-<td>Decision theory. No strategic interaction.</td>
-<td>Choosing an algorithm. Nature is the constraint.</td>
-</tr>
-<tr>
-<td><strong>2-player</strong></td>
-<td>Classic case.</td>
-<td>Two teams negotiating an API contract.</td>
-</tr>
-<tr>
-<td><strong>N-player</strong></td>
-<td>Three or more. Coalitions possible.</td>
-<td>Organization with many teams. Alliances form. Politics emerges.</td>
-</tr>
-<tr>
-<td><strong>Large/Many-player</strong></td>
-<td>Continuum. Atomic vs. non-atomic.</td>
-<td>Open-source ecosystem. No single contributor changes equilibrium.</td>
-</tr>
-<tr>
-<td><strong>Mean field</strong></td>
-<td>Players interact through state distribution.</td>
-<td>Microservices at scale. Each service interacts with aggregate behavior.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-determinism">By determinism</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Deterministic</strong></td>
-<td>No chance elements.</td>
-<td>Deterministic deployment pipeline.</td>
-</tr>
-<tr>
-<td><strong>Stochastic</strong></td>
-<td>Some moves by nature/chance.</td>
-<td>System with probabilistic failures.</td>
-</tr>
-<tr>
-<td><strong>Games of chance</strong></td>
-<td>All moves by one player and chance.</td>
-<td>A/B testing. Nature randomizes users.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-strategy-type">By strategy type</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Pure strategy</strong></td>
-<td>Single deterministic action.</td>
-<td>Always use the same database for every service.</td>
-</tr>
-<tr>
-<td><strong>Mixed strategy</strong></td>
-<td>Randomize over actions.</td>
-<td>Random on-call assignment. Prevents predictable exploitation.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-stateaction-space">By state/action space</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Finite</strong></td>
-<td>Finite actions and states.</td>
-<td>Choosing between exactly three database options.</td>
-</tr>
-<tr>
-<td><strong>Infinite/Continuous</strong></td>
-<td>Continuous spaces.</td>
-<td>Allocating compute resources. Continuous variable.</td>
-</tr>
-<tr>
-<td><strong>Discrete-time</strong></td>
-<td>Decisions at discrete intervals.</td>
-<td>Sprint planning. Every two weeks.</td>
-</tr>
-<tr>
-<td><strong>Continuous-time</strong></td>
-<td>Decisions at every instant.</td>
-<td>Real-time auto-scaling. Differential equations.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="by-time-horizon">By time horizon</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Finite horizon</strong></td>
-<td>Known number of periods.</td>
-<td>Project with fixed deadline and milestones.</td>
-</tr>
-<tr>
-<td><strong>Infinite horizon</strong></td>
-<td>No predetermined end.</td>
-<td>Ongoing system maintenance. Cooperation sustainable.</td>
-</tr>
-<tr>
-<td><strong>Discounted</strong></td>
-<td>Future payoffs weighted less.</td>
-<td>Quarterly planning. This quarter &gt; next year.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="special-game-classes">Special game classes</h2>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Definition</th>
-<th>Software example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Signaling</strong></td>
-<td>Informed player acts to reveal info.</td>
-<td>Detailed RFC signals competence and seriousness.</td>
-</tr>
-<tr>
-<td><strong>Screening</strong></td>
-<td>Uninformed player moves first.</td>
-<td>Requiring prototype before architecture review.</td>
-</tr>
-<tr>
-<td><strong>Stackelberg</strong></td>
-<td>Leader-follower. Leader first.</td>
-<td>Platform team sets API standard. Services build against it.</td>
-</tr>
-<tr>
-<td><strong>Pursuit-evasion</strong></td>
-<td>Zero-sum differential.</td>
-<td>Intrusion detection. Attacker evades. Defender pursues.</td>
-</tr>
-<tr>
-<td><strong>Mechanism design</strong></td>
-<td>Reverse game theory.</td>
-<td>SLAs, contract testing, deployment gates, code review requirements.</td>
-</tr>
-<tr>
-<td><strong>Global games</strong></td>
-<td>Noisy private signals of underlying state.</td>
-<td>Teams deciding on new tech based on private maturity signals.</td>
-</tr>
-<tr>
-<td><strong>Combinatorial</strong></td>
-<td>Finite, deterministic, perfect-info, 2P, zero-sum.</td>
-<td>Automated theorem proving. Compiler optimization.</td>
-</tr>
-<tr>
-<td><strong>Evolutionary</strong></td>
-<td>Fit strategies survive. Replicator dynamics.</td>
-<td>Architecture patterns that persist. Microservices resist re-monolithing.</td>
-</tr>
-<tr>
-<td><strong>Partizan</strong></td>
-<td>Moves differ per player.</td>
-<td>Frontend and backend teams have different available moves.</td>
-</tr>
-<tr>
-<td><strong>Impartial</strong></td>
-<td>Moves depend only on position, not player.</td>
-<td>Identical services with identical deployment options.</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p><strong>This is part 7 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
 </ul>
 </div>
       </article>
@@ -3361,7 +3301,7 @@ now := time.Now()
 <table>
 <thead>
 <tr>
-<th></th>
+<th>Property</th>
 <th>Temporal</th>
 <th>DBOS</th>
 </tr>
@@ -4215,6 +4155,75 @@ pn_vis.view(gviz)
 </ul>
 </div>
       </article>
+      <article class="post" id="platform-engineering-scale-vs-speed">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-16" data-utc="May 16, 2026 UTC" aria-label="May 16, 2026 UTC" tabindex="0">1778889600</time></p>
+          <h2><a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a></h2><p class="post-summary">A deep dive into how platform engineering teams can balance the trade-offs and synergies between scaling platforms and accelerating delivery, with actionable frameworks and real-world examples.</p>
+          <div class="tags"><span class="tag">platform engineering</span><span class="tag">economics of scale</span><span class="tag">economics of speed</span><span class="tag">devops</span>
+          </div>
+        </header>
+        <div class="post-body"><p><img src="https://img.youtube.com/vi/iP-qzK4mQuI/maxresdefault.jpg" alt="Platform Engineering"></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Watch: Platform Engineering - YouTube</a></p>
+<h1 id="platform-engineering-navigating-economics-of-scale-vs-economics-of-speed">Platform Engineering: Navigating Economics of Scale vs Economics of Speed</h1>
+<p>Platform engineering is rapidly becoming a cornerstone of modern software delivery. As organizations grow, they face a critical question: should they optimize for <strong>economies of scale</strong> or <strong>economies of speed</strong>? Drawing on insights from <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Platform Engineering: The Next Step in DevOps</a> and <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=5Ai8UGx7QvQ">Economics of Scale vs Economics of Speed</a>, this post explores how platform teams can navigate these competing forces.</p>
+<h2 id="defining-the-economics">Defining the Economics</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Economies of Scale</strong></td>
+<td><strong>Focus:</strong> Standardization, Centralization. <strong>Benefits:</strong> Lower per-unit cost, efficiency, reliability. <strong>Risks:</strong> Slower change, bottlenecks, rigidity.</td>
+</tr>
+<tr>
+<td><strong>Economies of Speed</strong></td>
+<td><strong>Focus:</strong> Autonomy, Decentralization. <strong>Benefits:</strong> Faster delivery, innovation, adaptability. <strong>Risks:</strong> Duplication, higher costs, inconsistency.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="economics-of-scale">Economics of Scale</h3>
+<p>Economies of scale are achieved by centralizing and standardizing processes, tools, and infrastructure. Platform teams build shared services that multiple product teams can leverage, reducing duplication and driving down costs. This approach is ideal for organizations seeking reliability, compliance, and cost efficiency at scale.</p>
+<p><strong>Example:</strong> A central CI/CD platform used by all engineering teams ensures consistent deployments, security, and monitoring. However, introducing changes or supporting edge cases can become slow and bureaucratic.</p>
+<h3 id="economics-of-speed">Economics of Speed</h3>
+<p>Economies of speed prioritize rapid delivery and team autonomy. Here, platform teams provide self-service tools and APIs, empowering product teams to move fast and innovate. This model is crucial for startups or organizations in fast-moving markets.</p>
+<p><strong>Example:</strong> Allowing teams to spin up their own infrastructure or pipelines enables experimentation and quick pivots, but can lead to duplicated effort and inconsistent standards.</p>
+<h2 id="the-platform-engineering-balancing-act">The Platform Engineering Balancing Act</h2>
+<p>The real challenge for platform engineering is not choosing one over the other, but finding the right balance. The best platform teams:</p>
+<ul>
+<li><strong>Abstract complexity</strong>: Provide simple interfaces to complex systems.</li>
+<li><strong>Enable autonomy</strong>: Let teams move fast without reinventing the wheel.</li>
+<li><strong>Enforce guardrails</strong>: Ensure security and compliance without blocking innovation.</li>
+<li><strong>Continuously evolve</strong>: Adapt the platform as organizational needs change.</li>
+</ul>
+<h3 id="framework-for-decision-making">Framework for Decision-Making</h3>
+<ol>
+<li><strong>Assess Organizational Priorities</strong>: Is cost efficiency or speed to market more critical right now?</li>
+<li><strong>Identify Bottlenecks</strong>: Are teams slowed down by central processes, or is there chaos from too much autonomy?</li>
+<li><strong>Iterate Platform Offerings</strong>: Start with core shared services, then layer on self-service and customization.</li>
+<li><strong>Measure Outcomes</strong>: Track both efficiency (cost, reliability) and velocity (lead time, deployment frequency).</li>
+</ol>
+<h2 id="real-world-example">Real-World Example</h2>
+<p>A global fintech company adopted a platform engineering approach by building a central developer portal. Initially, strict standardization improved reliability but slowed innovation. By introducing self-service infrastructure and clear APIs, they enabled teams to move faster while maintaining compliance—achieving a pragmatic balance between scale and speed.</p>
+<h2 id="conclusion-actionable-takeaways">Conclusion: Actionable Takeaways</h2>
+<ul>
+<li><strong>Don’t default to one model</strong>: Both scale and speed have a place; context matters.</li>
+<li><strong>Invest in platform UX</strong>: The easier it is to use, the more value it delivers.</li>
+<li><strong>Automate guardrails</strong>: Use policy-as-code and automated checks to enforce standards without manual gates.</li>
+<li><strong>Foster feedback loops</strong>: Regularly engage with product teams to refine platform offerings.</li>
+</ul>
+<p>Platform engineering is not a destination but a journey—one that requires constant calibration between the economics of scale and speed. By understanding and intentionally balancing these forces, organizations can build platforms that empower teams and drive sustainable growth.</p>
+<hr>
+<p><em>References:</em></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Platform Engineering: The Next Step in DevOps</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=5Ai8UGx7QvQ">Economics of Scale vs Economics of Speed</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="startup-lessons-the-two-task-rule">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-16" data-utc="May 16, 2026 UTC" aria-label="May 16, 2026 UTC" tabindex="0">1778889600</time></p>
@@ -4271,81 +4280,6 @@ pn_vis.view(gviz)
 <p><strong>Technical Reflection:</strong></p>
 <p>This talk is a must-watch for anyone interested in the intersection of deep learning, game AI, and research engineering. Jang’s experience highlights the value of hands-on replication for understanding state-of-the-art systems, and the discussion offers practical advice for engineers aiming to bridge the gap between academic papers and robust implementations.</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=X_ZVSPcZhtw">Watch the full interview on YouTube</a></p>
-</div>
-      </article>
-      <article class="post" id="platform-engineering-scale-vs-speed">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-16" data-utc="May 16, 2026 UTC" aria-label="May 16, 2026 UTC" tabindex="0">1778889600</time></p>
-          <h2><a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a></h2><p class="post-summary">A deep dive into how platform engineering teams can balance the trade-offs and synergies between scaling platforms and accelerating delivery, with actionable frameworks and real-world examples.</p>
-          <div class="tags"><span class="tag">platform engineering</span><span class="tag">economics of scale</span><span class="tag">economics of speed</span><span class="tag">devops</span>
-          </div>
-        </header>
-        <div class="post-body"><p><img src="https://img.youtube.com/vi/iP-qzK4mQuI/maxresdefault.jpg" alt="Platform Engineering"></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Watch: Platform Engineering - YouTube</a></p>
-<h1 id="platform-engineering-navigating-economics-of-scale-vs-economics-of-speed">Platform Engineering: Navigating Economics of Scale vs Economics of Speed</h1>
-<p>Platform engineering is rapidly becoming a cornerstone of modern software delivery. As organizations grow, they face a critical question: should they optimize for <strong>economies of scale</strong> or <strong>economies of speed</strong>? Drawing on insights from <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Platform Engineering: The Next Step in DevOps</a> and <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=5Ai8UGx7QvQ">Economics of Scale vs Economics of Speed</a>, this post explores how platform teams can navigate these competing forces.</p>
-<h2 id="defining-the-economics">Defining the Economics</h2>
-<table>
-<thead>
-<tr>
-<th>Concept</th>
-<th>Focus</th>
-<th>Benefits</th>
-<th>Risks/Trade-offs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Economies of Scale</strong></td>
-<td>Standardization, Centralization</td>
-<td>Lower per-unit cost, efficiency, reliability</td>
-<td>Slower change, bottlenecks, rigidity</td>
-</tr>
-<tr>
-<td><strong>Economies of Speed</strong></td>
-<td>Autonomy, Decentralization</td>
-<td>Faster delivery, innovation, adaptability</td>
-<td>Duplication, higher costs, inconsistency</td>
-</tr>
-</tbody>
-</table>
-<h3 id="economics-of-scale">Economics of Scale</h3>
-<p>Economies of scale are achieved by centralizing and standardizing processes, tools, and infrastructure. Platform teams build shared services that multiple product teams can leverage, reducing duplication and driving down costs. This approach is ideal for organizations seeking reliability, compliance, and cost efficiency at scale.</p>
-<p><strong>Example:</strong> A central CI/CD platform used by all engineering teams ensures consistent deployments, security, and monitoring. However, introducing changes or supporting edge cases can become slow and bureaucratic.</p>
-<h3 id="economics-of-speed">Economics of Speed</h3>
-<p>Economies of speed prioritize rapid delivery and team autonomy. Here, platform teams provide self-service tools and APIs, empowering product teams to move fast and innovate. This model is crucial for startups or organizations in fast-moving markets.</p>
-<p><strong>Example:</strong> Allowing teams to spin up their own infrastructure or pipelines enables experimentation and quick pivots, but can lead to duplicated effort and inconsistent standards.</p>
-<h2 id="the-platform-engineering-balancing-act">The Platform Engineering Balancing Act</h2>
-<p>The real challenge for platform engineering is not choosing one over the other, but finding the right balance. The best platform teams:</p>
-<ul>
-<li><strong>Abstract complexity</strong>: Provide simple interfaces to complex systems.</li>
-<li><strong>Enable autonomy</strong>: Let teams move fast without reinventing the wheel.</li>
-<li><strong>Enforce guardrails</strong>: Ensure security and compliance without blocking innovation.</li>
-<li><strong>Continuously evolve</strong>: Adapt the platform as organizational needs change.</li>
-</ul>
-<h3 id="framework-for-decision-making">Framework for Decision-Making</h3>
-<ol>
-<li><strong>Assess Organizational Priorities</strong>: Is cost efficiency or speed to market more critical right now?</li>
-<li><strong>Identify Bottlenecks</strong>: Are teams slowed down by central processes, or is there chaos from too much autonomy?</li>
-<li><strong>Iterate Platform Offerings</strong>: Start with core shared services, then layer on self-service and customization.</li>
-<li><strong>Measure Outcomes</strong>: Track both efficiency (cost, reliability) and velocity (lead time, deployment frequency).</li>
-</ol>
-<h2 id="real-world-example">Real-World Example</h2>
-<p>A global fintech company adopted a platform engineering approach by building a central developer portal. Initially, strict standardization improved reliability but slowed innovation. By introducing self-service infrastructure and clear APIs, they enabled teams to move faster while maintaining compliance—achieving a pragmatic balance between scale and speed.</p>
-<h2 id="conclusion-actionable-takeaways">Conclusion: Actionable Takeaways</h2>
-<ul>
-<li><strong>Don’t default to one model</strong>: Both scale and speed have a place; context matters.</li>
-<li><strong>Invest in platform UX</strong>: The easier it is to use, the more value it delivers.</li>
-<li><strong>Automate guardrails</strong>: Use policy-as-code and automated checks to enforce standards without manual gates.</li>
-<li><strong>Foster feedback loops</strong>: Regularly engage with product teams to refine platform offerings.</li>
-</ul>
-<p>Platform engineering is not a destination but a journey—one that requires constant calibration between the economics of scale and speed. By understanding and intentionally balancing these forces, organizations can build platforms that empower teams and drive sustainable growth.</p>
-<hr>
-<p><em>References:</em></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=iP-qzK4mQuI">Platform Engineering: The Next Step in DevOps</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=5Ai8UGx7QvQ">Economics of Scale vs Economics of Speed</a></li>
-</ul>
 </div>
       </article>
       <article class="post" id="codebases-in-the-era-of-agentic-software-engineering">
@@ -5575,10 +5509,10 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a>
               <a href="#simplicity-follows-complexity">Simplicity does not precede complexity, but follows it</a>
               <a href="#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>
               <a href="#scarcity-in-practice">Five Habits</a>
-              <a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a>
               <a href="#scarcity-and-mechanism-design">Design the Game</a>
               <a href="#scarcity-and-software-games">The Architecture Is a Game</a>
               <a href="#scarcity-and-software-economics">No Free Lunch</a>
@@ -5618,9 +5552,9 @@ type Logger interface {
               <a href="#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>
               <a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a>
               <a href="#startups-obsession-as-an-engine">Startups: Obsession as an engine</a>
+              <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
               <a href="#alphago-from-scratch-eric-jang">Building AlphaGo from scratch – Eric Jang</a>
-              <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Agentic Engineering: Codebase Contracts and Skills</a>
               <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
               <a href="#studying-local-llm-training-from-scratch">LLM Training: Lessons from Local Experiments</a>

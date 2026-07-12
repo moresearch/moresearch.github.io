@@ -15,10 +15,10 @@ Platform engineering is rapidly becoming a cornerstone of modern software delive
 
 ## Defining the Economics
 
-| Concept              | Focus                | Benefits                        | Risks/Trade-offs                |
-|----------------------|---------------------|----------------------------------|---------------------------------|
-| **Economies of Scale** | Standardization, Centralization | Lower per-unit cost, efficiency, reliability | Slower change, bottlenecks, rigidity |
-| **Economies of Speed** | Autonomy, Decentralization | Faster delivery, innovation, adaptability | Duplication, higher costs, inconsistency |
+| Concept | Description |
+|---|---|
+| **Economies of Scale** | **Focus:** Standardization, Centralization. **Benefits:** Lower per-unit cost, efficiency, reliability. **Risks:** Slower change, bottlenecks, rigidity. |
+| **Economies of Speed** | **Focus:** Autonomy, Decentralization. **Benefits:** Faster delivery, innovation, adaptability. **Risks:** Duplication, higher costs, inconsistency. |
 
 ### Economics of Scale
 

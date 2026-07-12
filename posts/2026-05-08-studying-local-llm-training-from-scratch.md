@@ -133,3 +133,6 @@ That is why I liked this workshop. It keeps the model compact, but it does not f
 - [Angelos Perivolaropoulos, Training an LLM from Scratch, Locally](https://www.youtube.com/watch?v=UsB70Tf5zcE)
 - [angelos-p/llm-from-scratch](https://github.com/angelos-p/llm-from-scratch)
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+
+
+Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.

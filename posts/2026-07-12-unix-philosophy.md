@@ -6,7 +6,23 @@ summary: "McIlroy wrote it in 1978. Kernighan and Pike explained it in 1984. Ray
 tags: unix, philosophy, pipes, tools, composition, microservices, software-design
 ---
 
-In 1978, Doug McIlroy — the inventor of the Unix pipe — wrote down the Unix philosophy in the Bell System Technical Journal. It consisted of four directives:
+## Scarcity is the only constraint
+
+Engineering is the application of knowledge to solve problems within constraints. The constraints are what make it engineering and not mathematics. Mathematics has no budget. Engineering has a budget. Mathematics has no deadline. Engineering has a deadline. Mathematics values elegance. Engineering values working within the constraints. The constraints are always, ultimately, economic.
+
+Every engineering discipline is bounded by the same fundamental problem: resources are finite. Time is finite. Attention is finite. Money is finite. You cannot do everything. You must choose. The choice of what to build and what to leave unbuilt is not a technical decision. It is an economic decision made under conditions of scarcity. The engineer who denies this is not an engineer. They are a mathematician who happens to write code.
+
+E.F. Schumacher published *Small Is Beautiful: A Study of Economics As If People Mattered* in 1973. The book is about economics, not software. Its argument is that the modern economy has optimized for scale at the expense of human flourishing — that bigness has become an end in itself, that technologies and organizations have grown beyond the scale at which humans can understand them, and that the appropriate scale for human institutions is small. Not small because small is virtuous. Small because small is *comprehensible*. A system you cannot understand is a system you cannot control. A system you cannot control is a system that controls you.
+
+> "Ever bigger machines, entailing ever bigger concentrations of economic power and exerting ever greater violence against the environment, do not represent progress: they are a denial of wisdom. Wisdom demands a new orientation of science and technology toward the organic, the gentle, the non-violent, the elegant and beautiful." — E.F. Schumacher, *Small Is Beautiful*
+
+Schumacher was writing about industrial economics. He could have been writing about software architecture. The Unix philosophy is Schumacher's argument applied to code. Small programs. Gentle interfaces. Non-violent composition. Elegant design. The scale of a program should be no larger than necessary to do its job. The job should be one thing. The interface should be simple enough to be understood completely. This is not an aesthetic preference. It is an engineering response to the problem of scarcity. You have finite time, finite attention, finite ability to hold complexity in your head. The system must work within those constraints or it will fail.
+
+Schumacher's principle applied to software: a program large enough to require a team is large enough to develop internal complexity visible only to the team. A program large enough to require multiple teams is large enough that no single person understands it. A system that no single person understands is a system whose behavior is emergent, not designed. Emergent behavior can be good. It can also be catastrophic. The smaller the components, the easier to understand each one. The simpler the interfaces, the easier to predict the behavior of the whole. Small is beautiful because small is the scale at which humans can still reason about what they have built.
+
+## The Unix philosophy: Schumacher applied to code
+
+In 1978, Doug McIlroy — the inventor of the Unix pipe — wrote down the Unix philosophy in the Bell System Technical Journal. He didn't cite Schumacher. He didn't need to. The principle is the same whether you're designing a factory or a program. Small. Simple. Composable. The philosophy consisted of four directives:
 
 1. Make each program do one thing well. To do a new job, build afresh rather than complicate old programs by adding new features.
 2. Expect the output of every program to become the input to another, as yet unknown, program. Don't clutter output with extraneous information. Avoid stringently columnar or binary input formats. Don't insist on interactive input.
@@ -54,6 +70,8 @@ The Unix pipe is not a metaphor. It is a specific engineering construct with spe
 
 **Composability without coordination.** `grep` was written before `sort` knew about it. `sort` was written before `wc` knew about it. None of them were designed to work together. They work together because they all obey the same interface contract. They can be composed into pipelines the original authors never imagined. This is the property that microservices promise and rarely deliver: composition without coordination. Services that were designed by different teams at different times, communicating through stable interfaces, composed into workflows that nobody designed in advance. The promise is real. The delivery is rare because the interfaces are not uniform. Every service defines its own contract. Every composition requires a new adapter. The adapters accumulate. The system becomes a collection of adapters connecting services that were supposed to be directly composable.
 
+This is also the economic argument for smallness. Schumacher: the appropriate scale for any human institution is the scale at which it can be understood by the people who operate it. `grep` can be understood completely by one person in an afternoon. `sort` can be understood completely. `wc` can be understood completely. The pipeline composed of them can be understood by understanding each component in sequence. The understanding scales linearly with the number of components because the components are small enough to fit in a human head. A microservice that takes a team of five to maintain cannot be understood completely by any single person. A system of twelve such services cannot be understood by anyone. The components are too large. The composition is opaque. The system has exceeded the Schumacher threshold — the scale at which humans can still reason about what they have built.
+
 **Filter thinking.** McIlroy's second directive: "Expect the output of every program to become the input to another, as yet unknown, program." Every program is a filter — it transforms an input stream into an output stream. It doesn't know where the input came from. It doesn't know where the output is going. It transforms. This is the purest form of Parnas's information hiding: the program hides everything about itself except the transformation it performs. The caller doesn't know the algorithm. The caller doesn't know the implementation language. The caller knows the transformation. The transformation is the interface. Everything else is hidden.
 
 ## Where pipes fail
@@ -96,13 +114,22 @@ The cost of this amnesia is not theoretical. It is measured in failed microservi
 
 Every one of these failures was avoidable. Not by reading the microservices literature. By reading the Unix literature. The principles are older. The principles are clearer. The principles were stated in three sentences in 1978. The sentences are still correct. The sentences are still unread.
 
+The amnesia has an economic cause. The software industry grows by selling new things. New things need new names. Old principles with new names sound like progress. They are not progress. They are the same principles, rediscovered at greater expense, with more infrastructure. The principles were free, in the public domain, published in 1978. The ignorance is not free. It is the most expensive thing in the industry.
+
+Schumacher saw this dynamic in industrial economics fifty years ago. The cult of bigness — larger factories, larger organizations, larger systems — was not driven by efficiency. It was driven by the interests of the people who built and operated the large things. Scale benefits the builder. It burdens the user. The Unix philosophers built small because they were building for themselves. They were the users. When the builder is the user, the scale is appropriate. When the builder is not the user — when the user is a customer and the builder is a vendor — the scale inflates. The inflation serves the vendor's interests: more features, more complexity, more lock-in, more billable hours. The user wanted a program that does one thing well. The vendor shipped a platform. The user adapted. The cycle repeated. The industry grew. The principles were forgotten. They are still true. They are still unread.
+
 > "Those days are dead and gone and the eulogy was delivered by Perl." — Rob Pike
 
-Pike's eulogy was premature. The philosophy didn't die. It moved up the stack. Pipes became channels. Text streams became typed interfaces. Small programs became small services. The shell became the orchestrator. The toolbox became the service catalog. The principles survived. The implementation changed. The failure modes are the same. The books are still on the shelf. Read them.
+Pike's eulogy was premature. The philosophy didn't die. It moved up the stack. Pipes became channels. Text streams became typed interfaces. Small programs became small services. The shell became the orchestrator. The toolbox became the service catalog. The principles survived. The implementation changed. The failure modes are the same.
+
+> "Ever bigger machines, entailing ever bigger concentrations of economic power, do not represent progress: they are a denial of wisdom. Wisdom demands a new orientation of science and technology toward the organic, the gentle, the non-violent, the elegant and beautiful." — E.F. Schumacher, *Small Is Beautiful*, 1973
+
+The books are on the shelf. The economics book and the Unix book. They are both short. They are both correct. Read them.
 
 ---
 
 **References:**
+- E.F. Schumacher, *Small Is Beautiful: A Study of Economics As If People Mattered*, Blond & Briggs, 1973.
 - Doug McIlroy, "Unix Time-Sharing System: Forward," *Bell System Technical Journal*, Vol. 57, No. 6, July-August 1978.
 - Brian Kernighan and Rob Pike, *The Unix Programming Environment*, Prentice-Hall, 1984.
 - Eric S. Raymond, *The Art of Unix Programming*, Addison-Wesley, 2003.

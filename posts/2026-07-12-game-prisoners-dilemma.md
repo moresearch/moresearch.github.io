@@ -58,3 +58,6 @@ In software: make defection visible. Automated contract testing makes breaking a
 - Robert Aumann, "Acceptance Speech," Nobel Prize in Economics, 2005.
 - Anatol Rapoport and Albert Chammah, *Prisoner's Dilemma*, University of Michigan Press, 1965.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [Cooperation is logical](https://blog.hackspree.com/#cooperation-is-logical)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

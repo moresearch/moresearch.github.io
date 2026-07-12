@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Two players want to coordinate but disagree on which coordinated outcome to choose. Both prefer coordination to miscoordination. Both prefer their own choice. The Battle of the Sexes models every argument about which technology to standardize on, which queue to use, and which convention to adopt. The answer isn&#39;t better arguments. It&#39;s a selection mechanism.&#34;">
+  <meta name="description" content="&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,59 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-chicken">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-chicken">Chicken</a></h2><p class="post-summary">&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">chicken</span><span class="tag">brinkmanship</span><span class="tag">credible-commitment</span><span class="tag">organizational-politics</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Two drivers speed toward each other on a narrow road. The first to swerve is the chicken — loses status, loses the game. If both swerve, both lose a little. If neither swerves, both crash. The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Swerve</th>
+<th>Straight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Swerve</strong></td>
+<td>(0, 0)</td>
+<td>(-1, +1)</td>
+</tr>
+<tr>
+<td><strong>Straight</strong></td>
+<td>(+1, -1)</td>
+<td>(-10, -10)</td>
+</tr>
+</tbody>
+</table>
+<p>There are two pure-strategy Nash equilibria: (Straight, Swerve) and (Swerve, Straight). Both are asymmetric — one player wins, one loses. The symmetric outcome (Swerve, Swerve) is not an equilibrium because each player would prefer to deviate to Straight. The symmetric outcome (Straight, Straight) is disaster.</p>
+<p>The game is about who commits first. If you can credibly commit to going straight — by throwing your steering wheel out the window, visibly, where the other driver can see — the other driver must swerve. The commitment must be credible. A verbal threat is not credible. The thrown steering wheel is. The commitment changes the game from simultaneous to sequential. The sequential game has a unique outcome: the committed player goes straight, the uncommitted player swerves.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> Chicken has two asymmetric Nash equilibria. The equilibrium selection problem is about who can credibly commit first. The commitment must be observable and irreversible. Schelling analyzed this extensively in <em>The Strategy of Conflict</em> — the ability to worsen one's own options can be strategically advantageous because it forces the opponent to concede.</p>
+<p><strong>Nuclear strategy (Schelling, RAND).</strong> Chicken was the dominant metaphor for Cold War nuclear brinkmanship. Two superpowers, each threatening mutual destruction. The one that could credibly commit to retaliation — by making retaliation automatic, by removing the human decision from the loop — gained strategic advantage. &quot;Threats that leave something to chance&quot; was Schelling's phrase. The threat of mutual destruction must be credible. If it's credible, the other side swerves.</p>
+<p><strong>Behavioral game theory.</strong> In laboratory play, Chicken produces higher rates of &quot;swerve&quot; than Nash predicts, especially among players who have played before and learned that mutual stubbornness produces disaster. Experience teaches swerving. The learning is expensive. The disaster teaches it.</p>
+<p><strong>Organizational theory.</strong> Chicken models inter-team conflict. Two teams both want to rewrite the same shared service. Both have started work. Neither wants to abandon their effort. If both continue, the organization gets two incompatible rewrites and a migration mess. Someone must swerve. Who swerves is determined by organizational hierarchy, political capital, or the urgency of each team's deliverable. The hierarchy is a mechanism for resolving Chicken. The mechanism is informal. The crashes are frequent.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Friday deploy races.</strong> Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky. Both want their feature in. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose their weekend. The equilibrium before the &quot;no Friday deploys&quot; rule was Friday deploys by the team with the most political capital. The rule resolved the game by removing the choice. Mechanism design.</p>
+<p><strong>Conflicting rewrites.</strong> Two teams independently decide to rewrite the same legacy service. Both have invested weeks. Both present their work at demo day. Neither wants to be the team that wasted effort. The resolution: one rewrite is adopted, the other is shelved. The shelved team swerved. The swerve was forced by the architect. The architect is the mechanism.</p>
+<p><strong>Competing architecture proposals.</strong> Two senior engineers propose incompatible architectures for the same system. Both have strong opinions. Both have supporters. The debate is unresolved. Someone must swerve. If neither does, the organization forks the system or deadlocks. The CTO resolves it. The CTO is the mechanism. The mechanism is hierarchical. The hierarchy exists partly to resolve Chicken games.</p>
+<p><strong>On-call escalation.</strong> An incident is ongoing. Two engineers disagree about the fix. The clock is ticking. The disagreement is Chicken in miniature — each sticking to their approach risks extended downtime. The escalation policy — &quot;after 10 minutes of disagreement, escalate to the on-call lead&quot; — is a mechanism for resolving Chicken. The policy predetermines who has the authority. The predetermination prevents the debate.</p>
+<h2 id="resolving-chicken">Resolving chicken</h2>
+<p>Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment — &quot;I will not swerve&quot; — works if credible. Organizational hierarchy — &quot;the architect decides&quot; — works if respected. Pre-agreed rules — &quot;no Friday deploys&quot; — work if enforced. The mechanism changes the game from a simultaneous contest of wills to a sequential game where the first mover's commitment is binding. The binding commitment selects the equilibrium. The equilibrium prevents the crash.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-battle-of-sexes">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2928,58 +2981,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
 <li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-chicken">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-chicken">Chicken</a></h2><p class="post-summary">&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">chicken</span><span class="tag">brinkmanship</span><span class="tag">credible-commitment</span><span class="tag">organizational-politics</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Two drivers speed toward each other on a narrow road. The first to swerve is the chicken — loses status, loses the game. If both swerve, both lose a little. If neither swerves, both crash. The payoff matrix:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Swerve</th>
-<th>Straight</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Swerve</strong></td>
-<td>(0, 0)</td>
-<td>(-1, +1)</td>
-</tr>
-<tr>
-<td><strong>Straight</strong></td>
-<td>(+1, -1)</td>
-<td>(-10, -10)</td>
-</tr>
-</tbody>
-</table>
-<p>There are two pure-strategy Nash equilibria: (Straight, Swerve) and (Swerve, Straight). Both are asymmetric — one player wins, one loses. The symmetric outcome (Swerve, Swerve) is not an equilibrium because each player would prefer to deviate to Straight. The symmetric outcome (Straight, Straight) is disaster.</p>
-<p>The game is about who commits first. If you can credibly commit to going straight — by throwing your steering wheel out the window, visibly, where the other driver can see — the other driver must swerve. The commitment must be credible. A verbal threat is not credible. The thrown steering wheel is. The commitment changes the game from simultaneous to sequential. The sequential game has a unique outcome: the committed player goes straight, the uncommitted player swerves.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Classical game theory.</strong> Chicken has two asymmetric Nash equilibria. The equilibrium selection problem is about who can credibly commit first. The commitment must be observable and irreversible. Schelling analyzed this extensively in <em>The Strategy of Conflict</em> — the ability to worsen one's own options can be strategically advantageous because it forces the opponent to concede.</p>
-<p><strong>Nuclear strategy (Schelling, RAND).</strong> Chicken was the dominant metaphor for Cold War nuclear brinkmanship. Two superpowers, each threatening mutual destruction. The one that could credibly commit to retaliation — by making retaliation automatic, by removing the human decision from the loop — gained strategic advantage. &quot;Threats that leave something to chance&quot; was Schelling's phrase. The threat of mutual destruction must be credible. If it's credible, the other side swerves.</p>
-<p><strong>Behavioral game theory.</strong> In laboratory play, Chicken produces higher rates of &quot;swerve&quot; than Nash predicts, especially among players who have played before and learned that mutual stubbornness produces disaster. Experience teaches swerving. The learning is expensive. The disaster teaches it.</p>
-<p><strong>Organizational theory.</strong> Chicken models inter-team conflict. Two teams both want to rewrite the same shared service. Both have started work. Neither wants to abandon their effort. If both continue, the organization gets two incompatible rewrites and a migration mess. Someone must swerve. Who swerves is determined by organizational hierarchy, political capital, or the urgency of each team's deliverable. The hierarchy is a mechanism for resolving Chicken. The mechanism is informal. The crashes are frequent.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Friday deploy races.</strong> Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky. Both want their feature in. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose their weekend. The equilibrium before the &quot;no Friday deploys&quot; rule was Friday deploys by the team with the most political capital. The rule resolved the game by removing the choice. Mechanism design.</p>
-<p><strong>Conflicting rewrites.</strong> Two teams independently decide to rewrite the same legacy service. Both have invested weeks. Both present their work at demo day. Neither wants to be the team that wasted effort. The resolution: one rewrite is adopted, the other is shelved. The shelved team swerved. The swerve was forced by the architect. The architect is the mechanism.</p>
-<p><strong>Competing architecture proposals.</strong> Two senior engineers propose incompatible architectures for the same system. Both have strong opinions. Both have supporters. The debate is unresolved. Someone must swerve. If neither does, the organization forks the system or deadlocks. The CTO resolves it. The CTO is the mechanism. The mechanism is hierarchical. The hierarchy exists partly to resolve Chicken games.</p>
-<p><strong>On-call escalation.</strong> An incident is ongoing. Two engineers disagree about the fix. The clock is ticking. The disagreement is Chicken in miniature — each sticking to their approach risks extended downtime. The escalation policy — &quot;after 10 minutes of disagreement, escalate to the on-call lead&quot; — is a mechanism for resolving Chicken. The policy predetermines who has the authority. The predetermination prevents the debate.</p>
-<h2 id="resolving-chicken">Resolving chicken</h2>
-<p>Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment — &quot;I will not swerve&quot; — works if credible. Organizational hierarchy — &quot;the architect decides&quot; — works if respected. Pre-agreed rules — &quot;no Friday deploys&quot; — work if enforced. The mechanism changes the game from a simultaneous contest of wills to a sequential game where the first mover's commitment is binding. The binding commitment selects the equilibrium. The equilibrium prevents the crash.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
-<li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
 </ul>
 </div>
       </article>
@@ -7394,6 +7395,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-chicken">Chicken</a>
               <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
               <a href="#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>
               <a href="#catalog-of-scarcity-games">Field Guide to Scarcity Games</a>
@@ -7442,7 +7444,6 @@ type Logger interface {
               <a href="#game-principal-agent">The Principal-Agent Problem</a>
               <a href="#game-mechanism-design">Mechanism Design</a>
               <a href="#game-evolutionary">Evolutionary Game Theory</a>
-              <a href="#game-chicken">Chicken</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

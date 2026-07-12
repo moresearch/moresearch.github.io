@@ -49,3 +49,6 @@ Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment â
 - Thomas Schelling, *The Strategy of Conflict*, Harvard University Press, 1960.
 - Thomas Schelling, *Arms and Influence*, Yale University Press, 1966.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [Scarcity and Software Games](https://blog.hackspree.com/#scarcity-and-software-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer â€” designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

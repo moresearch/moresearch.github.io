@@ -121,3 +121,6 @@ The bookshelf is a curriculum. The curriculum is a career. The career is a conti
 - Nassim Nicholas Taleb, *Dynamic Hedging: Managing Vanilla and Exotic Options*, Wiley, 1997.
 - Michael Lewis, *Flash Boys: A Wall Street Revolt*, W.W. Norton, 2014.
 - Related posts: [DEX trading series](https://blog.hackspree.com/#dex-trading-order-book), [On Scarcity](https://blog.hackspree.com/#scarcity)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

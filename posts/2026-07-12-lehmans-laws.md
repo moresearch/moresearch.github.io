@@ -225,3 +225,6 @@ Lehman's Laws are not despair. They are realism. The laws describe what happens.
 
 
 Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.
+
+
+> Software does not age. It evolves. The environment changes around it. The change forces adaptation. Adaptation increases complexity. Complexity must be fought. The fight is continuous. The continuity is the discipline of software engineering.

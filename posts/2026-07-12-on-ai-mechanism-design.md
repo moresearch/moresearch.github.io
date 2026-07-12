@@ -82,3 +82,6 @@ The software engineer who understands this convergence will design systems where
 - Kolumbus, Halpern & Tardos, "Paying to Do Better: Games with Payments between Learning Agents," 2024.
 - Karten et al., "LLM Economist: Large Population Models and Mechanism Design in Multi-Agent Generative Simulacra," Princeton, 2025.
 - Related posts: [Agent Governance Toolkit](https://blog.hackspree.com/#agent-governance-toolkit), [Task Automation Economics](https://blog.hackspree.com/#task-automation-economics)
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

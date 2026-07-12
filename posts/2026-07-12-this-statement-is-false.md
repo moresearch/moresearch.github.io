@@ -123,3 +123,6 @@ Smullyan, alone among them, made it fun. His puzzles are the Liar staged as ente
 - Raymond Smullyan, *To Mock a Mockingbird*, Knopf, 1985.
 - Raymond Smullyan, *Forever Undecided: A Puzzle Guide to Gödel*, Knopf, 1987.
 - Kurt Gödel, "On Formally Undecidable Propositions of Principia Mathematica and Related Systems," 1931.
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

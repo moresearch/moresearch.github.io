@@ -32,6 +32,14 @@ During bull markets, funding rates can reach extreme levels — 0.1% per 8 hours
 
 Robert Shiller, "Measuring Asset Values for Cash Settlement in Derivative Markets: Hedonic Repeated Measures Indices and Perpetual Futures" (1992). Shiller proposed the perpetual futures contract as a mechanism for creating derivative markets on illiquid assets — specifically, real estate indices. The contract would have no expiration and would use a "dividend" payment (what we now call the funding rate) to keep the contract price close to the index value. Shiller's proposal was academic. BitMEX's implementation in 2016 was commercial. The academic proposal became a $100 billion daily market. The market is larger than Shiller's wildest expectation. The mechanism is exactly as he described it.
 
+## The engineering connection
+
+The perpetual contract is mechanism design implemented in code. The funding rate replaces the expiration date. Expiration is a hard constraint — a date on a calendar. The funding rate is a soft constraint — an incentive that nudges the market toward equilibrium. The engineering insight: when you can replace a hard constraint with an incentive, replace it. The hard constraint requires enforcement, monitoring, penalties. The incentive is self-enforcing. The market enforces it. The enforcement is free.
+
+This is the same principle as automated contract testing replacing manual API review. Manual review is a hard constraint — someone must check that the API hasn't changed. Automated testing is an incentive — breaking the contract fails the build immediately. The build failure is the funding rate. It nudges the developer toward the equilibrium of stable contracts. The market of developers enforces it. The enforcement is automated.
+
+The perpetual contract is also an example of emergent stability. No central authority sets the funding rate. The rate emerges from the difference between the perpetual price and the spot price. The difference is measured. The rate is calculated. The payment is executed. The loop is a feedback system — Lehman's Eighth Law in financial form. The software engineer who understands feedback systems can build them in any domain. The domain changes. The feedback structure doesn't.
+
 ---
 
 **References:**

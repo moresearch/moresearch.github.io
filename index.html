@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;One player proposes how to split $100. The other accepts or rejects. If they reject, both get nothing. The Nash equilibrium: proposer offers $1, responder accepts. Real humans: proposers offer $30-$50, responders reject offers below $20. The gap between theory and behavior is a window into fairness, emotion, and what rationality actually means.&#34;">
+  <meta name="description" content="&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,37 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-vickrey-auction">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-vickrey-auction">The Vickrey Auction</a></h2><p class="post-summary">&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">vickrey-auction</span><span class="tag">second-price</span><span class="tag">truthful-bidding</span><span class="tag">mechanism-design</span>
+          </div>
+        </header>
+        <div class="post-body"><p>William Vickrey published his auction paper in 1961. He won the Nobel Prize in 1996, three days before he died. The Vickrey auction — also called the second-price sealed-bid auction — works like this: each bidder submits a single bid, sealed, without knowing others' bids. The highest bidder wins. The winner pays the <em>second-highest</em> bid, not their own.</p>
+<p>The magic: truthful bidding is a dominant strategy. You should bid exactly what the item is worth to you. Bidding higher doesn't help — if you win, you pay the second-highest bid, which is already determined. Bidding higher only risks winning at a price above your true value. Bidding lower doesn't help — you might lose an item you would have won at a price below your value. The optimal strategy is honesty. The mechanism makes honesty optimal.</p>
+<p>Compare this to a first-price sealed-bid auction — highest bidder wins, pays their own bid. In a first-price auction, bidders shade their bids below their true value. How much to shade depends on what you think others will bid. The strategy is complex. The outcome is inefficient — the item may not go to the person who values it most. The Vickrey auction eliminates the shading. Honesty is optimal. Efficiency follows.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Auction theory (Vickrey, 1961 Nobel 1996).</strong> The revenue equivalence theorem: under symmetric independent private values, first-price, second-price, English, and Dutch auctions all yield the same expected revenue. The auction format doesn't matter for revenue. It matters for strategy. The Vickrey auction makes strategy simple. Simplicity is valuable.</p>
+<p><strong>Mechanism design (Clarke, Groves, 1970s).</strong> The Vickrey auction is a special case of the Vickrey-Clarke-Groves (VCG) mechanism. In the general VCG, each participant pays the externality they impose on others — the difference between the total value others would have received if the participant weren't there and the total value others actually receive. The VCG mechanism achieves efficient allocation with dominant-strategy incentive compatibility. It is the theoretical foundation for all truthful resource allocation mechanisms.</p>
+<p><strong>Online advertising (Google, Facebook).</strong> Google's AdWords auction is a generalized second-price (GSP) auction. Multiple ad slots. Multiple bidders. The GSP is not strategy-proof — bidders have incentive to shade. But it approximates the Vickrey outcome and is simpler to explain to advertisers. The trade-off between theoretical purity and practical simplicity is the mechanism designer's constant dilemma.</p>
+<p><strong>Spectrum auctions (FCC).</strong> The FCC auctions electromagnetic spectrum using a simultaneous multiple-round ascending auction — a complex mechanism designed to allocate hundreds of licenses across geographic regions. The design drew on Vickrey's insights: truthful bidding should be encouraged, bidders should be able to assemble packages of complementary licenses, and the auction should be transparent. The mechanism raised billions. The design was mechanism design applied to public resources.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Compute cluster allocation.</strong> Multiple teams share a GPU cluster. Each team has private information about the value of its jobs. The scheduler allocates GPUs. A first-come-first-served policy — the default — gives teams incentive to submit jobs early, hog resources, and misrepresent urgency. A Vickrey-like mechanism: teams submit bids in internal credits. The highest bidder wins, pays the second-highest bid. Truthful bidding is optimal. The credits are not real money. They are a mechanism for eliciting truthful valuations. The mechanism works without money because the credits are scarce. The scarcity makes them valuable.</p>
+<p><strong>Deployment slot scheduling.</strong> Multiple teams compete for a limited deployment window. Each team has private information about deployment urgency. A bidding mechanism: teams bid for slots using priority tokens allocated quarterly. The highest bidder gets the slot. Truthful bidding is optimal because tokens are scarce and bidding above true urgency risks wasting tokens. The mechanism replaces the political negotiation that currently determines deploy order. Politics is a bad allocation mechanism. Auctions are better.</p>
+<p><strong>Review queue prioritization.</strong> Pull requests compete for reviewer attention. Reviewers are scarce. A mechanism where authors bid for review priority using reputation credits — earned by reviewing others' PRs — aligns incentives. Authors who contribute reviews earn priority for their own PRs. The mechanism is a market for attention. Attention is the scarce resource. The market allocates it.</p>
+<p><strong>The Vickrey principle.</strong> The Vickrey auction teaches a general principle: make the cost of a decision equal to the externality it imposes on others. If winning a compute slot costs the value of the next-best job that could have used it, bidders have incentive to bid truthfully. The principle generalizes: price resources at their opportunity cost. The opportunity cost is the value of the best alternative foregone. Vickrey showed how to compute it. The computation is a mechanism. The mechanism is fair.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>William Vickrey, &quot;Counterspeculation, Auctions, and Competitive Sealed Tenders,&quot; <em>Journal of Finance</em>, 1961.</li>
+<li>Edward Clarke, &quot;Multipart Pricing of Public Goods,&quot; <em>Public Choice</em>, 1971.</li>
+<li>Theodore Groves, &quot;Incentives in Teams,&quot; <em>Econometrica</em>, 1973.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Game Theory Model: Mechanism Design</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-ultimatum">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2960,36 +2991,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Nexis-AI, &quot;Nex-T1: Multi-Agent Framework for Autonomous DeFi Trading,&quot; October 2025.</li>
 <li>&quot;RediSwap: MEV Redistribution at the Application Layer,&quot; 2024.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Scarcity Rules Everything</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-vickrey-auction">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-vickrey-auction">The Vickrey Auction</a></h2><p class="post-summary">&#34;William Vickrey won a Nobel for proving that in a second-price sealed-bid auction, truthful bidding is a dominant strategy. You bid what the item is worth to you. You pay the second-highest bid. You cannot gain by lying. The Vickrey auction is the theoretical foundation for compute allocation, ad auctions, and every resource-scheduling mechanism where participants have private valuations.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">vickrey-auction</span><span class="tag">second-price</span><span class="tag">truthful-bidding</span><span class="tag">mechanism-design</span>
-          </div>
-        </header>
-        <div class="post-body"><p>William Vickrey published his auction paper in 1961. He won the Nobel Prize in 1996, three days before he died. The Vickrey auction — also called the second-price sealed-bid auction — works like this: each bidder submits a single bid, sealed, without knowing others' bids. The highest bidder wins. The winner pays the <em>second-highest</em> bid, not their own.</p>
-<p>The magic: truthful bidding is a dominant strategy. You should bid exactly what the item is worth to you. Bidding higher doesn't help — if you win, you pay the second-highest bid, which is already determined. Bidding higher only risks winning at a price above your true value. Bidding lower doesn't help — you might lose an item you would have won at a price below your value. The optimal strategy is honesty. The mechanism makes honesty optimal.</p>
-<p>Compare this to a first-price sealed-bid auction — highest bidder wins, pays their own bid. In a first-price auction, bidders shade their bids below their true value. How much to shade depends on what you think others will bid. The strategy is complex. The outcome is inefficient — the item may not go to the person who values it most. The Vickrey auction eliminates the shading. Honesty is optimal. Efficiency follows.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Auction theory (Vickrey, 1961 Nobel 1996).</strong> The revenue equivalence theorem: under symmetric independent private values, first-price, second-price, English, and Dutch auctions all yield the same expected revenue. The auction format doesn't matter for revenue. It matters for strategy. The Vickrey auction makes strategy simple. Simplicity is valuable.</p>
-<p><strong>Mechanism design (Clarke, Groves, 1970s).</strong> The Vickrey auction is a special case of the Vickrey-Clarke-Groves (VCG) mechanism. In the general VCG, each participant pays the externality they impose on others — the difference between the total value others would have received if the participant weren't there and the total value others actually receive. The VCG mechanism achieves efficient allocation with dominant-strategy incentive compatibility. It is the theoretical foundation for all truthful resource allocation mechanisms.</p>
-<p><strong>Online advertising (Google, Facebook).</strong> Google's AdWords auction is a generalized second-price (GSP) auction. Multiple ad slots. Multiple bidders. The GSP is not strategy-proof — bidders have incentive to shade. But it approximates the Vickrey outcome and is simpler to explain to advertisers. The trade-off between theoretical purity and practical simplicity is the mechanism designer's constant dilemma.</p>
-<p><strong>Spectrum auctions (FCC).</strong> The FCC auctions electromagnetic spectrum using a simultaneous multiple-round ascending auction — a complex mechanism designed to allocate hundreds of licenses across geographic regions. The design drew on Vickrey's insights: truthful bidding should be encouraged, bidders should be able to assemble packages of complementary licenses, and the auction should be transparent. The mechanism raised billions. The design was mechanism design applied to public resources.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Compute cluster allocation.</strong> Multiple teams share a GPU cluster. Each team has private information about the value of its jobs. The scheduler allocates GPUs. A first-come-first-served policy — the default — gives teams incentive to submit jobs early, hog resources, and misrepresent urgency. A Vickrey-like mechanism: teams submit bids in internal credits. The highest bidder wins, pays the second-highest bid. Truthful bidding is optimal. The credits are not real money. They are a mechanism for eliciting truthful valuations. The mechanism works without money because the credits are scarce. The scarcity makes them valuable.</p>
-<p><strong>Deployment slot scheduling.</strong> Multiple teams compete for a limited deployment window. Each team has private information about deployment urgency. A bidding mechanism: teams bid for slots using priority tokens allocated quarterly. The highest bidder gets the slot. Truthful bidding is optimal because tokens are scarce and bidding above true urgency risks wasting tokens. The mechanism replaces the political negotiation that currently determines deploy order. Politics is a bad allocation mechanism. Auctions are better.</p>
-<p><strong>Review queue prioritization.</strong> Pull requests compete for reviewer attention. Reviewers are scarce. A mechanism where authors bid for review priority using reputation credits — earned by reviewing others' PRs — aligns incentives. Authors who contribute reviews earn priority for their own PRs. The mechanism is a market for attention. Attention is the scarce resource. The market allocates it.</p>
-<p><strong>The Vickrey principle.</strong> The Vickrey auction teaches a general principle: make the cost of a decision equal to the externality it imposes on others. If winning a compute slot costs the value of the next-best job that could have used it, bidders have incentive to bid truthfully. The principle generalizes: price resources at their opportunity cost. The opportunity cost is the value of the best alternative foregone. Vickrey showed how to compute it. The computation is a mechanism. The mechanism is fair.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>William Vickrey, &quot;Counterspeculation, Auctions, and Competitive Sealed Tenders,&quot; <em>Journal of Finance</em>, 1961.</li>
-<li>Edward Clarke, &quot;Multipart Pricing of Public Goods,&quot; <em>Public Choice</em>, 1971.</li>
-<li>Theodore Groves, &quot;Incentives in Teams,&quot; <em>Econometrica</em>, 1973.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Game Theory Model: Mechanism Design</a></li>
 </ul>
 </div>
       </article>
@@ -7404,6 +7405,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-vickrey-auction">The Vickrey Auction</a>
               <a href="#game-ultimatum">The Ultimatum Game</a>
               <a href="#game-tragedy-of-commons">The Tragedy of the Commons</a>
               <a href="#game-stag-hunt">The Stag Hunt</a>
@@ -7452,7 +7454,6 @@ type Logger interface {
               <a href="#verification-horizon">The Verification Horizon</a>
               <a href="#cosmos-sdk-ai-agents">Cosmos SDK is the substrate for AI agents</a>
               <a href="#algorithmic-trading-crypto">Algorithmic trading in crypto</a>
-              <a href="#game-vickrey-auction">The Vickrey Auction</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

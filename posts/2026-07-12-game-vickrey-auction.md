@@ -41,3 +41,6 @@ Compare this to a first-price sealed-bid auction — highest bidder wins, pays t
 - Edward Clarke, "Multipart Pricing of Public Goods," *Public Choice*, 1971.
 - Theodore Groves, "Incentives in Teams," *Econometrica*, 1973.
 - Related posts: [Design the Game](https://blog.hackspree.com/#scarcity-and-mechanism-design), [Game Theory Model: Mechanism Design](https://blog.hackspree.com/#game-mechanism-design)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

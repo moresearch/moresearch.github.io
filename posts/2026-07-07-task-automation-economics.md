@@ -91,3 +91,6 @@ The core insight — that a run is an event and automation is capacity, and conf
 
 
 Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.
+
+
+> An agent run is not automation. It is an event. Automation is capacity. The difference is that an event proves something can be done. Capacity means it will be done, repeatedly, without further human intervention.

@@ -5781,6 +5781,101 @@ now := time.Now()
 <p>Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.</p>
 </div>
       </article>
+      <article class="post" id="task-automation-economics">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
+          <h2><a href="#task-automation-economics">Task automation economics: why an agent run is not automation</a></h2><p class="post-summary">&#34;A new paper argues that agentic AI execution is not automation — and that the real economic unit is the verified automation asset, not the agent run.&#34;</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">automation</span><span class="tag">economics</span><span class="tag">data-engineering</span><span class="tag">software-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A successful agent run feels like progress. The model understood the task, called the right tools, produced the output. Ship it.</p>
+<p>But a new paper by Mohamed A. Fouad (<a target="_blank" rel="noopener noreferrer" href="/talks/005.pdf">On Task Automation Economics</a>) argues that this feeling is a category error. An agent run is an <em>event</em>. Automation is <em>capacity</em>. Confusing the two is the central mistake teams make when adopting agentic AI for recurring work.</p>
+<p>The paper is compact — 9 pages — but the argument is sharp and worth engaging with. Here is my reading of it.</p>
+<h2 id="the-category-error">The category error</h2>
+<p>The paper opens with a clean distinction:</p>
+<blockquote>
+<p>Agentic AI execution is not automation. Automation begins when recurring work becomes verified software capacity.</p>
+</blockquote>
+<p>The problem is not that agents lack capability. They can perform knowledge-based tasks — ingest files, map schemas, clean records, transform tables. The problem is that a successful execution leaves behind no reusable organizational capacity. The next time the same task comes up, you run the agent again. You purchase the output again. Nothing accumulates.</p>
+<p>This is the category error: treating an event as an asset. An agent run proves feasibility. It does not create capacity. The distinction matters because repeated execution has weak economics — each run repurchases output — while verified assets accumulate value across reuse.</p>
+<h2 id="task-automation-economics">Task automation economics</h2>
+<p>The paper names the decision problem <strong>task automation economics</strong>: when should recurring work stop being bought as separate agent runs and become governed software capacity?</p>
+<p>This extends Barry Boehm's software engineering economics framework from software products to agent-mediated task assets. The economic unit is not the agent, the prompt, or the run. It is the <strong>verified automation asset</strong> — a released object with seven reviewable parts:</p>
+<ol>
+<li><strong>Specification</strong> — what the task does, explicitly</li>
+<li><strong>Governance template</strong> — what rules and evidence apply</li>
+<li><strong>Pipeline</strong> — the executable mechanism</li>
+<li><strong>Criteria</strong> — how acceptance is judged</li>
+<li><strong>Evidence</strong> — records that the criteria were met</li>
+<li><strong>Release snapshot</strong> — the versioned, reviewed state</li>
+<li><strong>Replacement rule</strong> — when and how the asset should be retired or replaced</li>
+</ol>
+<p>The economics become favorable when reuse value exceeds lifecycle cost. Value comes from accumulated capability. Cost comes from specification, engineering, verification, audit records, and replacement. This is a familiar tradeoff — it is the same logic behind technical debt in ML systems (Sculley et al., 2015). The difference is that with agentic AI, the run-level capability is so easy to achieve that teams never graduate to the asset level. They stay at &quot;let me just run the agent again&quot; indefinitely.</p>
+<h2 id="the-task-automation-factory">The task automation factory</h2>
+<p>If task automation economics names the <em>why</em>, the task automation factory names the <em>how</em>. The paper defines it as a production mechanism with five stages:</p>
+<ol>
+<li><strong>Select</strong> candidate demand — identify recurring work</li>
+<li><strong>Specify</strong> rules and evidence — make acceptance criteria explicit</li>
+<li><strong>Engineer</strong> tools and pipelines — build the executable mechanism</li>
+<li><strong>Verify</strong> with tests and audit records — prove the asset works</li>
+<li><strong>Release</strong> as a versioned asset — make it reusable</li>
+</ol>
+<p>Each stage has a failure mode. If you skip specification, automation guesses. If you skip engineering, it remains repeated execution. If you skip verification, it cannot be trusted. If you skip release, it cannot be reused. If you skip replacement, it decays.</p>
+<p>This connects directly to the <a target="_blank" rel="noopener noreferrer" href="/posts/software-dark-factories">dark factory</a> concept — and the paper explicitly references Dan Shapiro's five levels and the broader dark factory discourse. But Fouad adds an important constraint: a task automation factory is dark only as a production metaphor. It must not make data, pipeline, or workflow accountability invisible. Rules, evidence, audit records, and replacement paths must remain visible. This is not lights-out as a trust model. It is lights-out as an execution model, with governance kept fully lit.</p>
+<h2 id="the-evaluation-checklist">The evaluation checklist</h2>
+<p>The paper provides a concrete test for whether a task has graduated from execution to automation. Six questions a reviewer should be able to answer:</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Reviewer question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Explicit task</td>
+<td>Is the recurring work described clearly enough to engineer?</td>
+</tr>
+<tr>
+<td>Defined evidence</td>
+<td>Is acceptance tied to rules and records?</td>
+</tr>
+<tr>
+<td>Replayable pipeline</td>
+<td>Can the mechanism be rerun and inspected?</td>
+</tr>
+<tr>
+<td>Reconstructible acceptance</td>
+<td>Can a reviewer explain why the asset passed?</td>
+</tr>
+<tr>
+<td>Known release</td>
+<td>Is reuse tied to a reviewed release state?</td>
+</tr>
+<tr>
+<td>Replacement path</td>
+<td>Is there a trigger for repair or retirement?</td>
+</tr>
+</tbody>
+</table>
+<p>This checklist is deliberately narrow. It does not test whether every AI risk has been addressed. It tests whether a recurring task has become a reviewable asset. A high-scoring agent run is insufficient if the team cannot link it to a rule, an evidence record, a verification criterion, a release snapshot, and a replacement path. Conversely, a modest deterministic tool may be more valuable than a sophisticated agent if it replaces repeated execution with governed capacity.</p>
+<h2 id="why-data-engineering">Why data engineering</h2>
+<p>The paper grounds the argument in data engineering workflows: ingestion scripts, schema mappings, cleaning rules, transformation jobs, validation checks, orchestration DAGs, and backfill procedures. These tasks recur constantly. They require interpretation, system context, and operational judgment. They also require evidence preservation — sources, transformations, checks, and lineage must remain inspectable.</p>
+<p>Data engineering is a strong choice of domain because the gap between run and asset is so visible there. A one-off script that cleans a table is useful once and decays when the schema changes. The team runs it again with adjustments. And again. Each run works. But nothing accumulates. The task automation factory turns that repeated demand into a verified, reusable, replaceable asset — and the economics shift from repurchasing output to accumulating capacity.</p>
+<h2 id="what-i-take-from-this">What I take from this</h2>
+<p>Three things stand out.</p>
+<p>First, the paper is making an argument about <em>organizational capability formation</em>, not about agent performance. The better agents become at execution, the easier it becomes to mistake performance for capacity. This is a real risk. Teams that optimize for run success rates are optimizing the wrong variable. The variable that matters is the conversion rate from repeated runs to released assets.</p>
+<p>Second, the verified automation asset is a useful concept independent of the tooling. Even if you never touch axnrun (the open-source runtime the paper uses for grounding), the seven-part structure — specification, governance, pipeline, criteria, evidence, release, replacement — gives you a checklist for auditing whether your team is accumulating capacity or just accumulating runs.</p>
+<p>Third, the paper is short and reads more like a position paper than an empirical study. That is a feature, not a bug. The claim is limited: not every task should be automated. The argument applies to recurring workflow demand where evidence and review matter. The evaluation criteria are offered as a practical test, not a formal framework. And the paper is honest about what is not yet demonstrated — conversion rates, time-to-asset, reuse counts, audit reconstruction success. Those measurements are left as future work.</p>
+<p>The core insight — that a run is an event and automation is capacity, and confusing the two is a category error — is worth sitting with. Especially if your team is doing a lot of successful agent runs and wondering why it does not feel like progress is accumulating.</p>
+<hr>
+<p><strong>Reference:</strong> Mohamed A. Fouad. <a target="_blank" rel="noopener noreferrer" href="/talks/005.pdf">On Task Automation Economics</a>. arXiv:submit/7796173, July 2026. (<a target="_blank" rel="noopener noreferrer" href="/talks/">Talk page with slides</a>)</p>
+<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
+<blockquote>
+<p>An agent run is not automation. It is an event. Automation is capacity. The difference is that an event proves something can be done. Capacity means it will be done, repeatedly, without further human intervention.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="software-dark-factories">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
@@ -6090,98 +6185,6 @@ If you are a journal editor who has spent more energy protecting your impact fac
 <blockquote>
 <p>Integrity is not a virtue. It is a constraint. The researcher who fabricates data removes the constraint. The removal produces papers. It does not produce knowledge.</p>
 </blockquote>
-</div>
-      </article>
-      <article class="post" id="task-automation-economics">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-07" data-utc="Jul 07, 2026 UTC" aria-label="Jul 07, 2026 UTC" tabindex="0">1783382400</time></p>
-          <h2><a href="#task-automation-economics">Task automation economics: why an agent run is not automation</a></h2><p class="post-summary">&#34;A new paper argues that agentic AI execution is not automation — and that the real economic unit is the verified automation asset, not the agent run.&#34;</p>
-          <div class="tags"><span class="tag">agents</span><span class="tag">automation</span><span class="tag">economics</span><span class="tag">data-engineering</span><span class="tag">software-engineering</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A successful agent run feels like progress. The model understood the task, called the right tools, produced the output. Ship it.</p>
-<p>But a new paper by Mohamed A. Fouad (<a target="_blank" rel="noopener noreferrer" href="/talks/005.pdf">On Task Automation Economics</a>) argues that this feeling is a category error. An agent run is an <em>event</em>. Automation is <em>capacity</em>. Confusing the two is the central mistake teams make when adopting agentic AI for recurring work.</p>
-<p>The paper is compact — 9 pages — but the argument is sharp and worth engaging with. Here is my reading of it.</p>
-<h2 id="the-category-error">The category error</h2>
-<p>The paper opens with a clean distinction:</p>
-<blockquote>
-<p>Agentic AI execution is not automation. Automation begins when recurring work becomes verified software capacity.</p>
-</blockquote>
-<p>The problem is not that agents lack capability. They can perform knowledge-based tasks — ingest files, map schemas, clean records, transform tables. The problem is that a successful execution leaves behind no reusable organizational capacity. The next time the same task comes up, you run the agent again. You purchase the output again. Nothing accumulates.</p>
-<p>This is the category error: treating an event as an asset. An agent run proves feasibility. It does not create capacity. The distinction matters because repeated execution has weak economics — each run repurchases output — while verified assets accumulate value across reuse.</p>
-<h2 id="task-automation-economics">Task automation economics</h2>
-<p>The paper names the decision problem <strong>task automation economics</strong>: when should recurring work stop being bought as separate agent runs and become governed software capacity?</p>
-<p>This extends Barry Boehm's software engineering economics framework from software products to agent-mediated task assets. The economic unit is not the agent, the prompt, or the run. It is the <strong>verified automation asset</strong> — a released object with seven reviewable parts:</p>
-<ol>
-<li><strong>Specification</strong> — what the task does, explicitly</li>
-<li><strong>Governance template</strong> — what rules and evidence apply</li>
-<li><strong>Pipeline</strong> — the executable mechanism</li>
-<li><strong>Criteria</strong> — how acceptance is judged</li>
-<li><strong>Evidence</strong> — records that the criteria were met</li>
-<li><strong>Release snapshot</strong> — the versioned, reviewed state</li>
-<li><strong>Replacement rule</strong> — when and how the asset should be retired or replaced</li>
-</ol>
-<p>The economics become favorable when reuse value exceeds lifecycle cost. Value comes from accumulated capability. Cost comes from specification, engineering, verification, audit records, and replacement. This is a familiar tradeoff — it is the same logic behind technical debt in ML systems (Sculley et al., 2015). The difference is that with agentic AI, the run-level capability is so easy to achieve that teams never graduate to the asset level. They stay at &quot;let me just run the agent again&quot; indefinitely.</p>
-<h2 id="the-task-automation-factory">The task automation factory</h2>
-<p>If task automation economics names the <em>why</em>, the task automation factory names the <em>how</em>. The paper defines it as a production mechanism with five stages:</p>
-<ol>
-<li><strong>Select</strong> candidate demand — identify recurring work</li>
-<li><strong>Specify</strong> rules and evidence — make acceptance criteria explicit</li>
-<li><strong>Engineer</strong> tools and pipelines — build the executable mechanism</li>
-<li><strong>Verify</strong> with tests and audit records — prove the asset works</li>
-<li><strong>Release</strong> as a versioned asset — make it reusable</li>
-</ol>
-<p>Each stage has a failure mode. If you skip specification, automation guesses. If you skip engineering, it remains repeated execution. If you skip verification, it cannot be trusted. If you skip release, it cannot be reused. If you skip replacement, it decays.</p>
-<p>This connects directly to the <a target="_blank" rel="noopener noreferrer" href="/posts/software-dark-factories">dark factory</a> concept — and the paper explicitly references Dan Shapiro's five levels and the broader dark factory discourse. But Fouad adds an important constraint: a task automation factory is dark only as a production metaphor. It must not make data, pipeline, or workflow accountability invisible. Rules, evidence, audit records, and replacement paths must remain visible. This is not lights-out as a trust model. It is lights-out as an execution model, with governance kept fully lit.</p>
-<h2 id="the-evaluation-checklist">The evaluation checklist</h2>
-<p>The paper provides a concrete test for whether a task has graduated from execution to automation. Six questions a reviewer should be able to answer:</p>
-<table>
-<thead>
-<tr>
-<th>Criterion</th>
-<th>Reviewer question</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Explicit task</td>
-<td>Is the recurring work described clearly enough to engineer?</td>
-</tr>
-<tr>
-<td>Defined evidence</td>
-<td>Is acceptance tied to rules and records?</td>
-</tr>
-<tr>
-<td>Replayable pipeline</td>
-<td>Can the mechanism be rerun and inspected?</td>
-</tr>
-<tr>
-<td>Reconstructible acceptance</td>
-<td>Can a reviewer explain why the asset passed?</td>
-</tr>
-<tr>
-<td>Known release</td>
-<td>Is reuse tied to a reviewed release state?</td>
-</tr>
-<tr>
-<td>Replacement path</td>
-<td>Is there a trigger for repair or retirement?</td>
-</tr>
-</tbody>
-</table>
-<p>This checklist is deliberately narrow. It does not test whether every AI risk has been addressed. It tests whether a recurring task has become a reviewable asset. A high-scoring agent run is insufficient if the team cannot link it to a rule, an evidence record, a verification criterion, a release snapshot, and a replacement path. Conversely, a modest deterministic tool may be more valuable than a sophisticated agent if it replaces repeated execution with governed capacity.</p>
-<h2 id="why-data-engineering">Why data engineering</h2>
-<p>The paper grounds the argument in data engineering workflows: ingestion scripts, schema mappings, cleaning rules, transformation jobs, validation checks, orchestration DAGs, and backfill procedures. These tasks recur constantly. They require interpretation, system context, and operational judgment. They also require evidence preservation — sources, transformations, checks, and lineage must remain inspectable.</p>
-<p>Data engineering is a strong choice of domain because the gap between run and asset is so visible there. A one-off script that cleans a table is useful once and decays when the schema changes. The team runs it again with adjustments. And again. Each run works. But nothing accumulates. The task automation factory turns that repeated demand into a verified, reusable, replaceable asset — and the economics shift from repurchasing output to accumulating capacity.</p>
-<h2 id="what-i-take-from-this">What I take from this</h2>
-<p>Three things stand out.</p>
-<p>First, the paper is making an argument about <em>organizational capability formation</em>, not about agent performance. The better agents become at execution, the easier it becomes to mistake performance for capacity. This is a real risk. Teams that optimize for run success rates are optimizing the wrong variable. The variable that matters is the conversion rate from repeated runs to released assets.</p>
-<p>Second, the verified automation asset is a useful concept independent of the tooling. Even if you never touch axnrun (the open-source runtime the paper uses for grounding), the seven-part structure — specification, governance, pipeline, criteria, evidence, release, replacement — gives you a checklist for auditing whether your team is accumulating capacity or just accumulating runs.</p>
-<p>Third, the paper is short and reads more like a position paper than an empirical study. That is a feature, not a bug. The claim is limited: not every task should be automated. The argument applies to recurring workflow demand where evidence and review matter. The evaluation criteria are offered as a practical test, not a formal framework. And the paper is honest about what is not yet demonstrated — conversion rates, time-to-asset, reuse counts, audit reconstruction success. Those measurements are left as future work.</p>
-<p>The core insight — that a run is an event and automation is capacity, and confusing the two is a category error — is worth sitting with. Especially if your team is doing a lot of successful agent runs and wondering why it does not feel like progress is accumulating.</p>
-<hr>
-<p><strong>Reference:</strong> Mohamed A. Fouad. <a target="_blank" rel="noopener noreferrer" href="/talks/005.pdf">On Task Automation Economics</a>. arXiv:submit/7796173, July 2026. (<a target="_blank" rel="noopener noreferrer" href="/talks/">Talk page with slides</a>)</p>
-<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
 </div>
       </article>
       <article class="post" id="ai-sovereignty-or-ai-colony">
@@ -8049,12 +8052,12 @@ type Logger interface {
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>
               <a href="#temporal-vs-dbos-golang">Temporal vs DBOS for Go: two paths to durable execution</a>
               <a href="#dot-files-dark-factories">Why DOT files work for dark factories</a>
+              <a href="#task-automation-economics">Task automation economics: why an agent run is not automation</a>
               <a href="#software-dark-factories">Software dark factories: specs in, software out</a>
               <a href="#dark-factory-economics">The economics of the dark factory: what happens when code is free</a>
               <a href="#dark-factory-complexity">The dark factory doesn&#39;t eliminate complexity — it moves it</a>
               <a href="#always-on-agents">Always-on agents: state, memory, and the governance gap</a>
               <a href="#academics-without-integrity-shame">Academics without academic integrity: shame on you</a>
-              <a href="#task-automation-economics">Task automation economics: why an agent run is not automation</a>
               <a href="#ai-sovereignty-or-ai-colony">AI sovereignty or AI colony: why domestic capability matters</a>
               <a href="#how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks">How to build self-improving companies and internal AI agents (YC talks)</a>
               <a href="#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>

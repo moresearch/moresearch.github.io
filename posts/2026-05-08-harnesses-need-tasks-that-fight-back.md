@@ -45,3 +45,6 @@ That balance is worth the effort. If the tasks fight back a little, the results 
 
 
 Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.
+
+
+> A task that does not resist teaches the agent that resistance does not exist. The real world resists. The agent must learn to overcome resistance. The resistance is the teacher.

@@ -36,3 +36,6 @@ That is the practical lesson I keep taking from work like MobileLLM. Edge succes
 
 
 Model architecture is a constraint on deployment. The model shape — parameter count, layer structure, attention mechanism — determines what hardware can run it. This is the engineering problem of fitting a solution to a resource budget. The same problem appears in embedded systems (fitting firmware to ROM), mobile development (fitting UI to screen), and cloud infrastructure (fitting services to instance types). The constraints are different. The discipline — measure the budget, design within it, test at the boundary — is the same.
+
+
+> Dependency injection is not about making code configurable. It is about making coupling visible. The injector does not reduce coupling. It reveals the coupling that was always there.

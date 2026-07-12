@@ -37,3 +37,6 @@ The model may live close to the user. The control plane still lives in the ordin
 
 
 This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.
+
+
+> Mobile is not a smaller cloud. It is a different physics. The battery, the thermal envelope, the intermittent connectivity — these are not constraints to work around. They are the design.

@@ -6643,6 +6643,124 @@ pn_vis.view(gviz)
 <p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
 </div>
       </article>
+      <article class="post" id="how-factorio-and-sc2-shaped-my-systems-thinking">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a></h2><p class="post-summary">Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.</p>
+          <div class="tags"><span class="tag">systems</span><span class="tag">productivity</span><span class="tag">reflections</span>
+          </div>
+        </header>
+        <div class="post-body"><p>I do not think I learned systems thinking only from engineering.</p>
+<p>A surprising amount of it came from games, especially <strong>Factorio</strong> and <strong>StarCraft II</strong>.</p>
+<p>That does not mean games magically teach software architecture. What they did give me was repeated exposure to the exact kinds of pressure that matter in real engineering work: limited attention, constrained resources, competing priorities, incomplete information, and the need to build systems that keep working while I am busy somewhere else.</p>
+<p>Over time, I started to realize that a lot of the habits that make me effective in terminal- and Vim-heavy environments were strengthened by those games long before I had language for them.</p>
+<h2 id="factorio-taught-me-to-think-in-flows-not-parts">Factorio taught me to think in flows, not parts</h2>
+<p>Factorio is one of the cleanest lessons I know in throughput thinking.</p>
+<p>At first, the game looks like a construction game. Later, it becomes obvious that it is really a lesson in <strong>flows</strong>:</p>
+<ul>
+<li>ore becomes plates,</li>
+<li>plates become intermediate products,</li>
+<li>intermediates become higher-order assemblies,</li>
+<li>energy, belts, inserters, trains, and layout all constrain the whole pipeline.</li>
+</ul>
+<p>The key mental shift is that local correctness is not enough. A single sub-factory can be beautifully designed and still fail the system if it starves upstream or overloads downstream.</p>
+<p>That maps directly to software.</p>
+<p>In a codebase, I care much more now about how information, control, and dependency pressure move through the system than about whether one module looks clever in isolation. Factorio trained my brain to look for:</p>
+<ol>
+<li>bottlenecks,</li>
+<li>wasted movement,</li>
+<li>hidden coupling,</li>
+<li>poor observability,</li>
+<li>and scaling limits that only appear after expansion.</li>
+</ol>
+<p>That is an engineering habit.</p>
+<p>When I open a Go service or a shell pipeline, I often think about it the same way I think about a Factorio bus or train network: where is the actual choke point, what resource is really scarce, and which redesign improves throughput without adding chaos?</p>
+<h2 id="factorio-also-taught-me-to-value-layout-as-an-operational-decision">Factorio also taught me to value layout as an operational decision</h2>
+<p>One of the biggest transfers from Factorio into coding is respect for layout.</p>
+<p>In the game, layout is not decoration. Layout determines whether the factory is easy to expand, easy to debug, and easy to reason about under growth. A cramped but “efficient” build often becomes a trap later.</p>
+<p>That same instinct helps in terminal and Vim environments.</p>
+<p>I like tools that preserve spatial memory:</p>
+<ul>
+<li>stable file trees,</li>
+<li>stable keymaps,</li>
+<li>stable command patterns,</li>
+<li>stable pane layouts,</li>
+<li>stable text structure.</li>
+</ul>
+<p>The reason is not aesthetic purity. It is operational speed. Good layout reduces context-switch cost.</p>
+<p>Factorio makes that lesson painfully obvious because bad layout punishes you every time the system scales. So does a codebase.</p>
+<h2 id="starcraft-ii-taught-me-prioritization-under-pressure">StarCraft II taught me prioritization under pressure</h2>
+<p>If Factorio trained system layout and throughput thinking, <strong>StarCraft II</strong> trained tempo and prioritization.</p>
+<p>SC2 is not just about speed. It is about deciding what matters <strong>right now</strong> while the rest of the game keeps moving.</p>
+<p>You cannot do everything at once. You have to:</p>
+<ul>
+<li>macro while scouting,</li>
+<li>spend money while defending,</li>
+<li>expand while preserving unit production,</li>
+<li>and avoid wasting attention on the wrong fight.</li>
+</ul>
+<p>That feels very familiar to real engineering.</p>
+<p>When I am coding inside Vim or a terminal-heavy workflow, the whole environment rewards the same skill: keep the main loop alive while handling interruptions. That means I am constantly asking:</p>
+<ol>
+<li>what is the highest-leverage action in this moment,</li>
+<li>what can be deferred safely,</li>
+<li>what needs to stay on rhythm,</li>
+<li>what signal is actually worth interrupting for.</li>
+</ol>
+<p>SC2 trained my brain to stop romanticizing constant reaction. Not every alert deserves a response. Not every branch of work deserves equal attention. Good play is partly about refusing low-value actions. So is good engineering.</p>
+<h2 id="hotkeys-changed-how-i-think-about-tools">Hotkeys changed how I think about tools</h2>
+<p>Both Factorio and SC2 reward compressing common actions into reliable motor patterns. That maps directly into why I like Vim and terminal workflows so much.</p>
+<p>Once the tool becomes hotkey-native, the interaction stops feeling like “issue a command from scratch every time.” It becomes a vocabulary of rehearsed moves.</p>
+<p>That has two effects:</p>
+<p>First, it reduces friction. I do not want to re-decide how to move, search, select, split, grep, format, diff, or commit every few minutes.</p>
+<p>Second, it preserves cognitive energy for the actual problem.</p>
+<p>That is what good hotkey systems do. They move execution into muscle memory and free working memory for reasoning.</p>
+<p>Vim is excellent at this when it clicks. The terminal is excellent at this too. You start thinking in composable verbs and operators rather than isolated GUI actions.</p>
+<p>Games taught me to respect that style of interaction before I understood it formally.</p>
+<h2 id="map-awareness-became-systems-awareness">Map awareness became systems awareness</h2>
+<p>Another direct transfer from SC2 is the idea of map awareness.</p>
+<p>Strong play depends on more than your current camera position. You need a model of what is happening elsewhere:</p>
+<ul>
+<li>your production,</li>
+<li>your expansions,</li>
+<li>likely enemy timings,</li>
+<li>vulnerable paths,</li>
+<li>information gaps.</li>
+</ul>
+<p>In engineering terms, that becomes system awareness.</p>
+<p>When I work effectively in a terminal environment, I am usually maintaining a rough mental map of:</p>
+<ul>
+<li>what processes are running,</li>
+<li>which files are authoritative,</li>
+<li>where the risky boundaries are,</li>
+<li>which commands are safe,</li>
+<li>what the current bottleneck is,</li>
+<li>and what state the repo is in.</li>
+</ul>
+<p>That is not very different from strategy-game awareness. It is still about managing incomplete information across a live system.</p>
+<h2 id="terminal-work-feels-natural-to-me-for-the-same-reason-these-games-did">Terminal work feels natural to me for the same reason these games did</h2>
+<p>A good terminal workflow feels alive in the same way a strategy game does.</p>
+<p>There is rhythm. There is structure. There is feedback. There are repeated loops. There is economy in movement. There is a constant tradeoff between local action and global awareness.</p>
+<p>That is why I think the transition from those games into terminal/Vim-heavy coding felt natural to me. The surface domain changed, but the cognitive style did not.</p>
+<p>I was still:</p>
+<ul>
+<li>building repeatable flows,</li>
+<li>reducing wasted motion,</li>
+<li>maintaining a global map,</li>
+<li>watching for bottlenecks,</li>
+<li>and turning frequent actions into low-friction habits.</li>
+</ul>
+<h2 id="my-real-takeaway">My real takeaway</h2>
+<p>Factorio and SC2 did not teach me software engineering directly. They taught me habits that made software engineering easier to learn deeply.</p>
+<p>Factorio sharpened my instinct for pipelines, layout, scaling, and bottlenecks.</p>
+<p>StarCraft II sharpened my instinct for tempo, triage, attention management, and hotkey discipline.</p>
+<p>Together, they made terminal and Vim environments feel less like harsh tools and more like expressive systems. And I think that is why those environments still feel so productive to me now: they reward exactly the kind of system-level thinking those games trained over and over again.</p>
+<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
+<blockquote>
+<p>Games teach systems thinking because they are systems. Factorio is a supply chain. StarCraft is a resource allocation problem. The player who sees the system behind the graphics wins. The engineer who sees the system behind the code does too.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="empirical-games-and-algorithmic-game-theory-for-agents">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
@@ -7412,121 +7530,6 @@ func Score(b Bid) float64 {
 <p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
 </div>
       </article>
-      <article class="post" id="how-factorio-and-sc2-shaped-my-systems-thinking">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a></h2><p class="post-summary">Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.</p>
-          <div class="tags"><span class="tag">systems</span><span class="tag">productivity</span><span class="tag">reflections</span>
-          </div>
-        </header>
-        <div class="post-body"><p>I do not think I learned systems thinking only from engineering.</p>
-<p>A surprising amount of it came from games, especially <strong>Factorio</strong> and <strong>StarCraft II</strong>.</p>
-<p>That does not mean games magically teach software architecture. What they did give me was repeated exposure to the exact kinds of pressure that matter in real engineering work: limited attention, constrained resources, competing priorities, incomplete information, and the need to build systems that keep working while I am busy somewhere else.</p>
-<p>Over time, I started to realize that a lot of the habits that make me effective in terminal- and Vim-heavy environments were strengthened by those games long before I had language for them.</p>
-<h2 id="factorio-taught-me-to-think-in-flows-not-parts">Factorio taught me to think in flows, not parts</h2>
-<p>Factorio is one of the cleanest lessons I know in throughput thinking.</p>
-<p>At first, the game looks like a construction game. Later, it becomes obvious that it is really a lesson in <strong>flows</strong>:</p>
-<ul>
-<li>ore becomes plates,</li>
-<li>plates become intermediate products,</li>
-<li>intermediates become higher-order assemblies,</li>
-<li>energy, belts, inserters, trains, and layout all constrain the whole pipeline.</li>
-</ul>
-<p>The key mental shift is that local correctness is not enough. A single sub-factory can be beautifully designed and still fail the system if it starves upstream or overloads downstream.</p>
-<p>That maps directly to software.</p>
-<p>In a codebase, I care much more now about how information, control, and dependency pressure move through the system than about whether one module looks clever in isolation. Factorio trained my brain to look for:</p>
-<ol>
-<li>bottlenecks,</li>
-<li>wasted movement,</li>
-<li>hidden coupling,</li>
-<li>poor observability,</li>
-<li>and scaling limits that only appear after expansion.</li>
-</ol>
-<p>That is an engineering habit.</p>
-<p>When I open a Go service or a shell pipeline, I often think about it the same way I think about a Factorio bus or train network: where is the actual choke point, what resource is really scarce, and which redesign improves throughput without adding chaos?</p>
-<h2 id="factorio-also-taught-me-to-value-layout-as-an-operational-decision">Factorio also taught me to value layout as an operational decision</h2>
-<p>One of the biggest transfers from Factorio into coding is respect for layout.</p>
-<p>In the game, layout is not decoration. Layout determines whether the factory is easy to expand, easy to debug, and easy to reason about under growth. A cramped but “efficient” build often becomes a trap later.</p>
-<p>That same instinct helps in terminal and Vim environments.</p>
-<p>I like tools that preserve spatial memory:</p>
-<ul>
-<li>stable file trees,</li>
-<li>stable keymaps,</li>
-<li>stable command patterns,</li>
-<li>stable pane layouts,</li>
-<li>stable text structure.</li>
-</ul>
-<p>The reason is not aesthetic purity. It is operational speed. Good layout reduces context-switch cost.</p>
-<p>Factorio makes that lesson painfully obvious because bad layout punishes you every time the system scales. So does a codebase.</p>
-<h2 id="starcraft-ii-taught-me-prioritization-under-pressure">StarCraft II taught me prioritization under pressure</h2>
-<p>If Factorio trained system layout and throughput thinking, <strong>StarCraft II</strong> trained tempo and prioritization.</p>
-<p>SC2 is not just about speed. It is about deciding what matters <strong>right now</strong> while the rest of the game keeps moving.</p>
-<p>You cannot do everything at once. You have to:</p>
-<ul>
-<li>macro while scouting,</li>
-<li>spend money while defending,</li>
-<li>expand while preserving unit production,</li>
-<li>and avoid wasting attention on the wrong fight.</li>
-</ul>
-<p>That feels very familiar to real engineering.</p>
-<p>When I am coding inside Vim or a terminal-heavy workflow, the whole environment rewards the same skill: keep the main loop alive while handling interruptions. That means I am constantly asking:</p>
-<ol>
-<li>what is the highest-leverage action in this moment,</li>
-<li>what can be deferred safely,</li>
-<li>what needs to stay on rhythm,</li>
-<li>what signal is actually worth interrupting for.</li>
-</ol>
-<p>SC2 trained my brain to stop romanticizing constant reaction. Not every alert deserves a response. Not every branch of work deserves equal attention. Good play is partly about refusing low-value actions. So is good engineering.</p>
-<h2 id="hotkeys-changed-how-i-think-about-tools">Hotkeys changed how I think about tools</h2>
-<p>Both Factorio and SC2 reward compressing common actions into reliable motor patterns. That maps directly into why I like Vim and terminal workflows so much.</p>
-<p>Once the tool becomes hotkey-native, the interaction stops feeling like “issue a command from scratch every time.” It becomes a vocabulary of rehearsed moves.</p>
-<p>That has two effects:</p>
-<p>First, it reduces friction. I do not want to re-decide how to move, search, select, split, grep, format, diff, or commit every few minutes.</p>
-<p>Second, it preserves cognitive energy for the actual problem.</p>
-<p>That is what good hotkey systems do. They move execution into muscle memory and free working memory for reasoning.</p>
-<p>Vim is excellent at this when it clicks. The terminal is excellent at this too. You start thinking in composable verbs and operators rather than isolated GUI actions.</p>
-<p>Games taught me to respect that style of interaction before I understood it formally.</p>
-<h2 id="map-awareness-became-systems-awareness">Map awareness became systems awareness</h2>
-<p>Another direct transfer from SC2 is the idea of map awareness.</p>
-<p>Strong play depends on more than your current camera position. You need a model of what is happening elsewhere:</p>
-<ul>
-<li>your production,</li>
-<li>your expansions,</li>
-<li>likely enemy timings,</li>
-<li>vulnerable paths,</li>
-<li>information gaps.</li>
-</ul>
-<p>In engineering terms, that becomes system awareness.</p>
-<p>When I work effectively in a terminal environment, I am usually maintaining a rough mental map of:</p>
-<ul>
-<li>what processes are running,</li>
-<li>which files are authoritative,</li>
-<li>where the risky boundaries are,</li>
-<li>which commands are safe,</li>
-<li>what the current bottleneck is,</li>
-<li>and what state the repo is in.</li>
-</ul>
-<p>That is not very different from strategy-game awareness. It is still about managing incomplete information across a live system.</p>
-<h2 id="terminal-work-feels-natural-to-me-for-the-same-reason-these-games-did">Terminal work feels natural to me for the same reason these games did</h2>
-<p>A good terminal workflow feels alive in the same way a strategy game does.</p>
-<p>There is rhythm. There is structure. There is feedback. There are repeated loops. There is economy in movement. There is a constant tradeoff between local action and global awareness.</p>
-<p>That is why I think the transition from those games into terminal/Vim-heavy coding felt natural to me. The surface domain changed, but the cognitive style did not.</p>
-<p>I was still:</p>
-<ul>
-<li>building repeatable flows,</li>
-<li>reducing wasted motion,</li>
-<li>maintaining a global map,</li>
-<li>watching for bottlenecks,</li>
-<li>and turning frequent actions into low-friction habits.</li>
-</ul>
-<h2 id="my-real-takeaway">My real takeaway</h2>
-<p>Factorio and SC2 did not teach me software engineering directly. They taught me habits that made software engineering easier to learn deeply.</p>
-<p>Factorio sharpened my instinct for pipelines, layout, scaling, and bottlenecks.</p>
-<p>StarCraft II sharpened my instinct for tempo, triage, attention management, and hotkey discipline.</p>
-<p>Together, they made terminal and Vim environments feel less like harsh tools and more like expressive systems. And I think that is why those environments still feel so productive to me now: they reward exactly the kind of system-level thinking those games trained over and over again.</p>
-<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
-</div>
-      </article>
       <article class="post" id="the-agentic-era-is-an-economic-system">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-07" data-utc="May 07, 2026 UTC" aria-label="May 07, 2026 UTC" tabindex="0">1778112000</time></p>
@@ -8022,6 +8025,7 @@ type Logger interface {
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#alphago-from-scratch-eric-jang">Building AlphaGo from scratch – Eric Jang</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
+              <a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a>
               <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>
               <a href="#dependency-injection-in-go-with-fx-and-alternatives">Dependency Injection in Go</a>
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Agentic Engineering: Codebase Contracts and Skills</a>
@@ -8029,7 +8033,6 @@ type Logger interface {
               <a href="#studying-local-llm-training-from-scratch">LLM Training: Lessons from Local Experiments</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>
               <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
-              <a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a>
               <a href="#the-agentic-era-is-an-economic-system">Agentic Era: An Economic System</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">SWE-Agent Economics: My Focus</a>
               <a href="#why-go-still-matters-in-the-ai-era">Why Go Still Matters in AI</a>

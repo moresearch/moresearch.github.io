@@ -156,3 +156,6 @@ Together, they made terminal and Vim environments feel less like harsh tools and
 
 
 Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.
+
+
+> Games teach systems thinking because they are systems. Factorio is a supply chain. StarCraft is a resource allocation problem. The player who sees the system behind the graphics wins. The engineer who sees the system behind the code does too.

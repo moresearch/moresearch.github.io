@@ -129,3 +129,6 @@ The catalog that follows is a map of the complexity. Use it to find the simplici
 - [Part 4: On Games in Software](https://blog.hackspree.com/#scarcity-and-software-games)
 - [Part 5: On AI and Mechanism Design](https://blog.hackspree.com/#scarcity-and-mechanism-design)
 - [Part 6: On Practice](https://blog.hackspree.com/#scarcity-in-practice)
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

@@ -1,5 +1,5 @@
 ---
-title: Data Virality
+title: On Data Virality: how data spreads through people
 date: 2026-07-12
 slug: v-virality
 summary: "Virality is the rate at which data usage spreads through an organization. A dataset that one team finds useful spreads to other teams. The spread is the measure of value. A dataset that nobody knows about is worthless, regardless of its quality."

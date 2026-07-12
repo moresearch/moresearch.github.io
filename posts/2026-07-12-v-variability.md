@@ -1,5 +1,5 @@
 ---
-title: Data Variability
+title: On Data Variability: the gap between peak and average
 date: 2026-07-12
 slug: v-variability
 summary: "Variability is the fluctuation in data characteristics over time. It breaks pipelines. A source that produces 1,000 events per hour suddenly produces 100,000. A column of integers suddenly contains strings. The pipeline wasn't designed for this. Variability is the reason pipelines need monitoring, alerting, and circuit breakers."

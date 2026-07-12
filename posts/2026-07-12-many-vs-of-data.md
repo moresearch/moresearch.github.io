@@ -1,5 +1,5 @@
 ---
-title: The Many Vs of Data
+title: On the Many Vs of Data
 date: 2026-07-12
 slug: many-vs-of-data
 summary: "In 2001, Doug Laney wrote a Gartner note describing three dimensions of the data challenge: Volume, Velocity, Variety. It was not meant to launch a framework. It launched a framework. The Vs became the vocabulary for describing why data is hard."

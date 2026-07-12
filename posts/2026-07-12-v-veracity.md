@@ -1,5 +1,5 @@
 ---
-title: Data Veracity
+title: On Data Veracity: trust is the product
 date: 2026-07-12
 slug: v-veracity
 summary: "Veracity is the trustworthiness of data. A pipeline that runs successfully can produce garbage. The tests can pass and the data can still be wrong. Veracity is the gap between what the data says and what is true. Closing that gap is the hardest problem in data engineering."

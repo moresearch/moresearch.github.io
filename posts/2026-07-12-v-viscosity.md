@@ -1,5 +1,5 @@
 ---
-title: Data Viscosity
+title: On Data Viscosity: resistance to flow
 date: 2026-07-12
 slug: v-viscosity
 summary: "Viscosity is the resistance of data to movement. Data locked in legacy systems, undocumented schemas, departed engineers. The harder it is to extract data, the higher the viscosity. Viscosity is technical debt in the data supply chain."

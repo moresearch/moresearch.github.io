@@ -1,5 +1,5 @@
 ---
-title: Data Velocity
+title: On Data Velocity: how fast you must decide
 date: 2026-07-12
 slug: v-velocity
 summary: "Velocity is the speed at which data arrives and the speed at which it must be acted upon. Batch is forgiving. Streaming is not. The choice between them is the most consequential architectural decision in data engineering."

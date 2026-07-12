@@ -1,5 +1,5 @@
 ---
-title: Data Volatility
+title: On Data Volatility: the half-life of data value
 date: 2026-07-12
 slug: v-volatility
 summary: "Volatility is the rate at which data loses relevance. Stock prices matter for milliseconds. Medical records matter for decades. The half-life of data value determines how much to invest in its quality and how long to keep it."

@@ -1,5 +1,5 @@
 ---
-title: Data Visualization
+title: On Data Visualization: the bridge between data and decision
 date: 2026-07-12
 slug: v-visualization
 summary: "Visualization is the bridge between data and decision. A table of numbers is data. A chart is understanding. The difference is the visual encoding that maps data to perception. Design the encoding badly, and the signal is invisible. Design it well, and the signal is impossible to miss."

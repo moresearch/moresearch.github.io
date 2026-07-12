@@ -46,3 +46,6 @@ Hayden Adams, Noah Zinsmeister, Dan Robinson, "Uniswap v3 Core" (2021). The whit
 - Hayden Adams, Noah Zinsmeister, Dan Robinson, "Uniswap v3 Core," 2021.
 - Arrakis Finance, "Concentrated Liquidity Vaults," Arrakis Documentation.
 - Related posts: [AMMs](https://blog.hackspree.com/#dex-trading-amms), [Market Making](https://blog.hackspree.com/#dex-trading-market-making), [MEV](https://blog.hackspree.com/#dex-trading-mev)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

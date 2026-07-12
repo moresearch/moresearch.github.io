@@ -4327,6 +4327,38 @@ func (s *InventoryService) Run() {
 </ul>
 </div>
       </article>
+      <article class="post" id="brooks-design-rational-model">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a></h2><p class="post-summary">&#34;The rational model says gather requirements, design, implement, test, ship. Brooks says it is wrong and harmful. You don&#39;t know the goal at the start. Neither does your client. The Gantt chart is a lie.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">waterfall</span><span class="tag">rational-model</span><span class="tag">co-evolution</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Parts 1-3: who designs (one mind, protected). Parts 4-5: how design works. Spoiler: not the way your project plan says. The project plan was wrong before it was printed.</p>
+<p>The dominant model is wrong. Not slightly. &quot;Earth is flat&quot; wrong.</p>
+<h2 id="definitions">Definitions</h2>
+<p><strong>Rational model (waterfall).</strong> Gather requirements. Design. Implement. Test. Ship. Each phase finishes before the next. Proceeds logically from premises to conclusion. Makes sense on a Gantt chart. Has never once worked in reality. Yet we keep using it because it makes managers feel better.</p>
+<p>Clean. Orderly. Wrong.</p>
+<blockquote>
+<p>&quot;The Waterfall Model is wrong and harmful; we must outgrow it. What is wrong is that it is an essentially rational model, and for wicked problems, the rational model is simply the wrong model.&quot;</p>
+</blockquote>
+<p>Not &quot;sometimes inappropriate.&quot; <em>Wrong and harmful.</em> It demands decisions at maximum ignorance — the beginning — and forbids revisiting them. It's like ordering dessert before you've seen the menu, eaten the meal, or confirmed you're hungry. Then acting surprised when nobody wants the tiramisu. Then blaming the tiramisu.</p>
+<p>The model assumes the designer knows the goal at the start. False. Laughably false. Anyone who has built anything real knows this. Anyone who hasn't nods along with the Gantt chart.</p>
+<p>Herbert Simon: design as systematic search. Goals, utility functions, constraints. Find the optimum. Theory is beautiful. Simon won a Nobel Prize. His theory still doesn't survive contact with a real client who changes their mind after seeing the first prototype. The client is not irrational. The model is wrong about when knowledge arrives.</p>
+<p>Practice: <strong>nobody knows the goal.</strong> Not the designer. Not the client. <em>&quot;That's what I asked for, but that's not what I want.&quot;</em> Every designer has heard this. It means the process is working, not failing. A client cannot articulate needs until they see something. They can spot what's wrong instantly. They cannot describe what's right before anything exists. This is not a communication failure. This is how cognition works. Seeing is knowing. Speculating is guessing.</p>
+<p><strong>Co-evolution.</strong> Requirements and design change each other. Designing reveals new requirements. New requirements change the design. Cycle continues until both stabilize. Or until the budget runs out. Whichever comes first. Usually the budget.</p>
+<blockquote>
+<p>&quot;Requirements and design co-evolve. The act of designing changes the designer's understanding of the problem. As the design emerges, the requirements change. This is not failure; it is discovery.&quot;</p>
+</blockquote>
+<p>Requirements are not extracted like ore. They are produced through designing. Each iteration teaches. The process ends when further iteration yields diminishing returns. In practice, it ends when the PM says &quot;we need to ship.&quot; This is also a form of diminishing returns. Just not the one Brooks had in mind.</p>
+<p>Peter Naur, same era. <strong>Theory building</strong> (1985): a program is not its code. It is the theory its builders hold of the problem. Cannot be extracted upfront. Built through designing. When the last person who understands the system leaves, the theory leaves with them. The code remains. Nobody knows why it works. This is called &quot;legacy.&quot; It is also called &quot;most production systems.&quot;</p>
+<p>Brooks and Naur: the real product is understanding. Understanding emerges through the work. Documentation is not understanding. Documentation is a fossil of understanding that was alive six months ago. The fossil is useful. It is not the animal.</p>
+<hr>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">← Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
+<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
+<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
+</div>
+      </article>
       <article class="post" id="brooks-design-one-mind-rule">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
@@ -4694,37 +4726,6 @@ func (s *InventoryService) Run() {
 <li>GOTO Conferences YouTube — <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/@GOTO-">Kevlin Henney</a></li>
 </ul>
 <p>Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.</p>
-</div>
-      </article>
-      <article class="post" id="brooks-design-rational-model">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a></h2><p class="post-summary">&#34;The rational model says gather requirements, design, implement, test, ship. Brooks says it is wrong and harmful. You don&#39;t know the goal at the start. Neither does your client. The Gantt chart is a lie.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">waterfall</span><span class="tag">rational-model</span><span class="tag">co-evolution</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Parts 1-3: who designs (one mind, protected). Parts 4-5: how design works. Spoiler: not the way your project plan says. The project plan was wrong before it was printed.</p>
-<p>The dominant model is wrong. Not slightly. &quot;Earth is flat&quot; wrong.</p>
-<h2 id="definitions">Definitions</h2>
-<p><strong>Rational model (waterfall).</strong> Gather requirements. Design. Implement. Test. Ship. Each phase finishes before the next. Proceeds logically from premises to conclusion. Makes sense on a Gantt chart. Has never once worked in reality. Yet we keep using it because it makes managers feel better.</p>
-<p>Clean. Orderly. Wrong.</p>
-<blockquote>
-<p>&quot;The Waterfall Model is wrong and harmful; we must outgrow it. What is wrong is that it is an essentially rational model, and for wicked problems, the rational model is simply the wrong model.&quot;</p>
-</blockquote>
-<p>Not &quot;sometimes inappropriate.&quot; <em>Wrong and harmful.</em> It demands decisions at maximum ignorance — the beginning — and forbids revisiting them. It's like ordering dessert before you've seen the menu, eaten the meal, or confirmed you're hungry. Then acting surprised when nobody wants the tiramisu. Then blaming the tiramisu.</p>
-<p>The model assumes the designer knows the goal at the start. False. Laughably false. Anyone who has built anything real knows this. Anyone who hasn't nods along with the Gantt chart.</p>
-<p>Herbert Simon: design as systematic search. Goals, utility functions, constraints. Find the optimum. Theory is beautiful. Simon won a Nobel Prize. His theory still doesn't survive contact with a real client who changes their mind after seeing the first prototype. The client is not irrational. The model is wrong about when knowledge arrives.</p>
-<p>Practice: <strong>nobody knows the goal.</strong> Not the designer. Not the client. <em>&quot;That's what I asked for, but that's not what I want.&quot;</em> Every designer has heard this. It means the process is working, not failing. A client cannot articulate needs until they see something. They can spot what's wrong instantly. They cannot describe what's right before anything exists. This is not a communication failure. This is how cognition works. Seeing is knowing. Speculating is guessing.</p>
-<p><strong>Co-evolution.</strong> Requirements and design change each other. Designing reveals new requirements. New requirements change the design. Cycle continues until both stabilize. Or until the budget runs out. Whichever comes first. Usually the budget.</p>
-<blockquote>
-<p>&quot;Requirements and design co-evolve. The act of designing changes the designer's understanding of the problem. As the design emerges, the requirements change. This is not failure; it is discovery.&quot;</p>
-</blockquote>
-<p>Requirements are not extracted like ore. They are produced through designing. Each iteration teaches. The process ends when further iteration yields diminishing returns. In practice, it ends when the PM says &quot;we need to ship.&quot; This is also a form of diminishing returns. Just not the one Brooks had in mind.</p>
-<p>Peter Naur, same era. <strong>Theory building</strong> (1985): a program is not its code. It is the theory its builders hold of the problem. Cannot be extracted upfront. Built through designing. When the last person who understands the system leaves, the theory leaves with them. The code remains. Nobody knows why it works. This is called &quot;legacy.&quot; It is also called &quot;most production systems.&quot;</p>
-<p>Brooks and Naur: the real product is understanding. Understanding emerges through the work. Documentation is not understanding. Documentation is a fossil of understanding that was alive six months ago. The fossil is useful. It is not the animal.</p>
-<hr>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">← Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
-<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
 </div>
       </article>
       <article class="post" id="brooks-design-protecting-designer">
@@ -7445,12 +7446,12 @@ type Logger interface {
               <a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a>
               <a href="#i-pencil">I, Pencil</a>
               <a href="#lehmans-laws">Lehman&#39;s Software Evolution</a>
+              <a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a>
               <a href="#brooks-design-one-mind-rule">Brooks on Software Design Series: one mind</a>
               <a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a>
               <a href="#parnas-information-hiding">Parnas&#39;s Information Hiding</a>
               <a href="#mcculloch-what-is-a-number">McCulloch&#39;s question: what is a number, that a man may know it?</a>
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>
-              <a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a>
               <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>
               <a href="#brooks-design-great-designers">Brooks on Software Design Series: great designers, not great processes</a>
               <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>

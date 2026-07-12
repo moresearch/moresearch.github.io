@@ -37,4 +37,6 @@ That does not mean every edge team should bet immediately on 1-bit architectures
 
 For edge work, that is the real promise of papers like BitNet. They are not only about squeezing a prettier number out of an efficiency table. They hint at a different hardware participation curve, and that is where product strategy starts to move.
 
+> Efficiency is not a benchmark score. It is a change in what can be built. The model that uses half the memory does not just cost less. It fits on hardware that was previously excluded. The exclusion was the constraint. The efficiency removes it.
+
 This is scarcity economics applied to model deployment. The scarce resource is the compute budget — memory, energy, FLOPs. BitNet changes the cost function. When the cost function changes, the set of feasible deployments changes. The deployments that were uneconomic become economic. The hardware that was too small becomes sufficient. The same logic that determines whether to use a monolith or microservices — what are the constraints, what does each option cost — determines whether a model runs locally or in the cloud. The constraints are compute, memory, latency, and battery. The economics are the same. The domain is different.

@@ -1,5 +1,5 @@
 ---
-title: Scarcity and Mechanism Design
+title: Design the Game
 date: 2026-07-12
 slug: scarcity-and-mechanism-design
 summary: "AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade."
@@ -9,6 +9,8 @@ part: 5
 ---
 
 AI agents are becoming players in the games that software systems constitute. They make choices under scarcity. Their choices affect other agents. Other agents' choices affect them. This is game theory. Governing these agent interactions requires mechanism design — the branch of game theory that works backward from desired outcomes to the rules that produce them.
+
+Mechanism design is the highest-leverage activity in software engineering. A line of code changes behavior once. A mechanism changes behavior every time the game is played. The "no Friday deploys" rule took one minute to write and has prevented a thousand weekend incidents. The automated contract test took a day to set up and has caught every breaking API change since. Mechanisms compound. Code depreciates. The mechanism is the investment. The behavior change is the return. The best engineers design mechanisms. The rest fix the same bug in a different context every sprint.
 
 The convergence of AI and mechanism design is not a future trend. It is happening now. Deep learning is being used to design mechanisms. Mechanisms are being used to govern AI agents. The two fields are merging. Software engineers who understand both will build the infrastructure. Those who don't will consume it without understanding why it behaves as it does.
 

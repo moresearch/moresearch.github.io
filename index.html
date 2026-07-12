@@ -5714,6 +5714,92 @@ If you are a journal editor who has spent more energy protecting your impact fac
 <p>Screenshots: YouTube thumbnails (downloaded and included in this repo). If you prefer different screenshots or specific timestamps as images, say which and a screenshot can be extracted instead.</p>
 </div>
       </article>
+      <article class="post" id="process-mining-with-python-and-solving-real-world-data-science-tasks">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
+          <h2><a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a></h2><p class="post-summary">Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.</p>
+          <div class="tags"><span class="tag">data-science</span><span class="tag">process-mining</span><span class="tag">python</span><span class="tag">tutorial</span>
+          </div>
+        </header>
+        <div class="post-body"><p>TL;DR</p>
+<p>Process mining turns event data into process models and performance insights; Python (pandas + PM4Py) makes it accessible. Pair process‑mining features (throughput, wait times, activity counts) with standard data‑science pipelines (EDA, feature engineering, modeling) to solve real‑world problems like delay prediction and bottleneck analysis. This post synthesizes practical steps and code pointers inspired by two Medium articles: &quot;Process Mining with Python&quot; and &quot;Solving a real‑world data science task with Python.&quot; Links in References.</p>
+<p>Introduction</p>
+<p>Two approachable Medium posts highlight hands‑on ways to extract insights from logs and run pragmatic data‑science projects from end to end. This post synthesizes their practical guidance into a compact recipe: how to extract event logs, discover process models, compute process features, and use them in predictive workflows.</p>
+<ol>
+<li>From raw events to an event log</li>
+</ol>
+<p>Key columns: case id (process instance), activity name, timestamp. Start by loading data with pandas, parsing timestamps, and normalizing column names for PM4Py interoperability.</p>
+<p>Example:</p>
+<pre><code class="language-python">import pandas as pd
+from pm4py.objects.conversion.log import factory as log_converter
+
+df = pd.read_csv('events.csv', parse_dates=['timestamp'])
+# rename columns for PM4Py
+df = df.rename(columns={'case_id':'case:concept:name', 'activity':'concept:name', 'timestamp':'time:timestamp'})
+log = log_converter.apply(df)
+</code></pre>
+<ol start="2">
+<li>Discovering process models and visualizing</li>
+</ol>
+<p>Use discovery algorithms (e.g., Inductive Miner, Heuristics Miner) to build models. PM4Py supports several miners and visualization backends.</p>
+<pre><code class="language-python">from pm4py.algo.discovery.inductive import factory as inductive_miner
+from pm4py.visualization.petrinet import factory as pn_vis
+
+net, im, fm = inductive_miner.apply(log)
+gviz = pn_vis.apply(net, im, fm)
+pn_vis.view(gviz)
+</code></pre>
+<ol start="3">
+<li>Feature engineering for ML</li>
+</ol>
+<p>Process mining yields rich features per case: total throughput time, activity counts, time between specific activities, resource load, and frequency of rare paths. These make strong predictors when combined with static attributes from the business data.</p>
+<p>Practical features:</p>
+<ul>
+<li>case_duration = max(timestamp) - min(timestamp)</li>
+<li>activity_counts: how many times each activity appears per case</li>
+<li>waiting_times: mean/median time between consecutive activities</li>
+<li>path_signature: compressed representation of the activity sequence</li>
+</ul>
+<ol start="4">
+<li>A pragmatic modeling loop</li>
+</ol>
+<p>Apply typical data‑science steps: split by case, build features, train/test, and validate with time‑aware splitting to avoid leakage. For production, monitor model drift and re-run process feature extraction as logs evolve.</p>
+<ol start="5">
+<li>Putting process mining inside a real project</li>
+</ol>
+<p>The Medium examples emphasize real‑world concerns: messy timestamps, missing case identifiers, and schema drift. Good practices:</p>
+<ul>
+<li>validate and canonicalize timestamps early</li>
+<li>infer case IDs when absent (grouping heuristics)</li>
+<li>keep a reproducible ETL script for event extraction</li>
+</ul>
+<ol start="6">
+<li>When to use process features vs raw sequence models</li>
+</ol>
+<p>Simple tabular models with hand‑crafted process features are often more interpretable and cheaper to maintain than sequence models. Use sequence models (RNNs/transformers over activities) when history encoding clearly improves predictive performance and the team can maintain the complexity.</p>
+<p>Checklist to get started</p>
+<ul>
+<li><input disabled="" type="checkbox"> Identify the event sources and the case id column</li>
+<li><input disabled="" type="checkbox"> Export a sample CSV with: case_id, activity, timestamp, and any static attributes</li>
+<li><input disabled="" type="checkbox"> Run PM4Py discovery on the sample; inspect model and logs for obvious issues</li>
+<li><input disabled="" type="checkbox"> Create per‑case features and run exploratory modeling (time‑aware CV)</li>
+<li><input disabled="" type="checkbox"> Add monitoring: data schema checks and drift detection</li>
+</ul>
+<p>Skill curation and SkillOS: making pipelines live</p>
+<p>Google's SkillOS thread (explained in AVB's Paper Breakdown) describes a two-part architecture: a frozen executor that solves tasks by loading reusable &quot;skills&quot; from a SkillRepo, and a trainable Curator that observes executor trajectories and issues structured edits to the SkillRepo (insert/update/delete). The Curator is trained with a group-based curriculum and a composite reward that measures downstream task success, function-call validity, information compression, and content quality.</p>
+<p>For process‑mining pipelines the Curator can distill robust ETL and feature‑engineering recipes into SKILL.md files (frontmatter + concise description used for BM25 retrieval, step‑by‑step workflow, worked example, and &quot;when not to use&quot;). Example skills: <code>extract_event_log</code>, <code>feature_engineer_case_features</code>, <code>build_delay_model</code>.</p>
+<p>Benefits: repeated runs produce distilled, versioned recipes that accelerate reproducible pipelines and improve executor reliability while keeping instructions modular and auditable.</p>
+<p>Operational notes: require human review before promoting automated updates; avoid embedding dataset‑specific constants; maintain test tasks to evaluate curator changes.</p>
+<p>References</p>
+<ul>
+<li>Hussam Alhumsi: &quot;Process Mining with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6">https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6</a></li>
+<li>İ. Cem Özçelik: &quot;Solving a Real‑World Data Science Task with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1">https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1</a></li>
+<li>AVB (SkillOS thread / breakdown): <a target="_blank" rel="noopener noreferrer" href="https://x.com/neural_avb/status/2053873358853591435?s=20">https://x.com/neural_avb/status/2053873358853591435?s=20</a></li>
+</ul>
+<p>Notes: This post paraphrases and synthesizes practical advice from the referenced Medium posts and general process‑mining best practices. For full, article‑level detail, consult the original posts.</p>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+</div>
+      </article>
       <article class="post" id="plano-brasileiro-de-intelig-ncia-artificial-pbia-resumo-e-reflex-es">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
@@ -5859,91 +5945,6 @@ If you are a journal editor who has spent more energy protecting your impact fac
 <h2 id="conclusion">Conclusion</h2>
 <p>A harness is the way a team learns whether its agents are improving. Make harnesses observable, replayable, and concrete. Use layered checks to keep failures legible and prefer boring, robust pipelines that scale with real-world complexity.</p>
 <p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
-</div>
-      </article>
-      <article class="post" id="process-mining-with-python-and-solving-real-world-data-science-tasks">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
-          <h2><a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a></h2><p class="post-summary">Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.</p>
-          <div class="tags"><span class="tag">data-science</span><span class="tag">process-mining</span><span class="tag">python</span><span class="tag">tutorial</span>
-          </div>
-        </header>
-        <div class="post-body"><p>TL;DR</p>
-<p>Process mining turns event data into process models and performance insights; Python (pandas + PM4Py) makes it accessible. Pair process‑mining features (throughput, wait times, activity counts) with standard data‑science pipelines (EDA, feature engineering, modeling) to solve real‑world problems like delay prediction and bottleneck analysis. This post synthesizes practical steps and code pointers inspired by two Medium articles: &quot;Process Mining with Python&quot; and &quot;Solving a real‑world data science task with Python.&quot; Links in References.</p>
-<p>Introduction</p>
-<p>Two approachable Medium posts highlight hands‑on ways to extract insights from logs and run pragmatic data‑science projects from end to end. This post synthesizes their practical guidance into a compact recipe: how to extract event logs, discover process models, compute process features, and use them in predictive workflows.</p>
-<ol>
-<li>From raw events to an event log</li>
-</ol>
-<p>Key columns: case id (process instance), activity name, timestamp. Start by loading data with pandas, parsing timestamps, and normalizing column names for PM4Py interoperability.</p>
-<p>Example:</p>
-<pre><code class="language-python">import pandas as pd
-from pm4py.objects.conversion.log import factory as log_converter
-
-df = pd.read_csv('events.csv', parse_dates=['timestamp'])
-# rename columns for PM4Py
-df = df.rename(columns={'case_id':'case:concept:name', 'activity':'concept:name', 'timestamp':'time:timestamp'})
-log = log_converter.apply(df)
-</code></pre>
-<ol start="2">
-<li>Discovering process models and visualizing</li>
-</ol>
-<p>Use discovery algorithms (e.g., Inductive Miner, Heuristics Miner) to build models. PM4Py supports several miners and visualization backends.</p>
-<pre><code class="language-python">from pm4py.algo.discovery.inductive import factory as inductive_miner
-from pm4py.visualization.petrinet import factory as pn_vis
-
-net, im, fm = inductive_miner.apply(log)
-gviz = pn_vis.apply(net, im, fm)
-pn_vis.view(gviz)
-</code></pre>
-<ol start="3">
-<li>Feature engineering for ML</li>
-</ol>
-<p>Process mining yields rich features per case: total throughput time, activity counts, time between specific activities, resource load, and frequency of rare paths. These make strong predictors when combined with static attributes from the business data.</p>
-<p>Practical features:</p>
-<ul>
-<li>case_duration = max(timestamp) - min(timestamp)</li>
-<li>activity_counts: how many times each activity appears per case</li>
-<li>waiting_times: mean/median time between consecutive activities</li>
-<li>path_signature: compressed representation of the activity sequence</li>
-</ul>
-<ol start="4">
-<li>A pragmatic modeling loop</li>
-</ol>
-<p>Apply typical data‑science steps: split by case, build features, train/test, and validate with time‑aware splitting to avoid leakage. For production, monitor model drift and re-run process feature extraction as logs evolve.</p>
-<ol start="5">
-<li>Putting process mining inside a real project</li>
-</ol>
-<p>The Medium examples emphasize real‑world concerns: messy timestamps, missing case identifiers, and schema drift. Good practices:</p>
-<ul>
-<li>validate and canonicalize timestamps early</li>
-<li>infer case IDs when absent (grouping heuristics)</li>
-<li>keep a reproducible ETL script for event extraction</li>
-</ul>
-<ol start="6">
-<li>When to use process features vs raw sequence models</li>
-</ol>
-<p>Simple tabular models with hand‑crafted process features are often more interpretable and cheaper to maintain than sequence models. Use sequence models (RNNs/transformers over activities) when history encoding clearly improves predictive performance and the team can maintain the complexity.</p>
-<p>Checklist to get started</p>
-<ul>
-<li><input disabled="" type="checkbox"> Identify the event sources and the case id column</li>
-<li><input disabled="" type="checkbox"> Export a sample CSV with: case_id, activity, timestamp, and any static attributes</li>
-<li><input disabled="" type="checkbox"> Run PM4Py discovery on the sample; inspect model and logs for obvious issues</li>
-<li><input disabled="" type="checkbox"> Create per‑case features and run exploratory modeling (time‑aware CV)</li>
-<li><input disabled="" type="checkbox"> Add monitoring: data schema checks and drift detection</li>
-</ul>
-<p>Skill curation and SkillOS: making pipelines live</p>
-<p>Google's SkillOS thread (explained in AVB's Paper Breakdown) describes a two-part architecture: a frozen executor that solves tasks by loading reusable &quot;skills&quot; from a SkillRepo, and a trainable Curator that observes executor trajectories and issues structured edits to the SkillRepo (insert/update/delete). The Curator is trained with a group-based curriculum and a composite reward that measures downstream task success, function-call validity, information compression, and content quality.</p>
-<p>For process‑mining pipelines the Curator can distill robust ETL and feature‑engineering recipes into SKILL.md files (frontmatter + concise description used for BM25 retrieval, step‑by‑step workflow, worked example, and &quot;when not to use&quot;). Example skills: <code>extract_event_log</code>, <code>feature_engineer_case_features</code>, <code>build_delay_model</code>.</p>
-<p>Benefits: repeated runs produce distilled, versioned recipes that accelerate reproducible pipelines and improve executor reliability while keeping instructions modular and auditable.</p>
-<p>Operational notes: require human review before promoting automated updates; avoid embedding dataset‑specific constants; maintain test tasks to evaluate curator changes.</p>
-<p>References</p>
-<ul>
-<li>Hussam Alhumsi: &quot;Process Mining with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6">https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6</a></li>
-<li>İ. Cem Özçelik: &quot;Solving a Real‑World Data Science Task with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1">https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1</a></li>
-<li>AVB (SkillOS thread / breakdown): <a target="_blank" rel="noopener noreferrer" href="https://x.com/neural_avb/status/2053873358853591435?s=20">https://x.com/neural_avb/status/2053873358853591435?s=20</a></li>
-</ul>
-<p>Notes: This post paraphrases and synthesizes practical advice from the referenced Medium posts and general process‑mining best practices. For full, article‑level detail, consult the original posts.</p>
 </div>
       </article>
       <article class="post" id="startups-obsession-as-an-engine">
@@ -7450,9 +7451,9 @@ type Logger interface {
               <a href="#software-dark-factories">Software dark factories: specs in, software out</a>
               <a href="#ai-sovereignty-or-ai-colony">AI sovereignty or AI colony: why domestic capability matters</a>
               <a href="#how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks">How to build self-improving companies and internal AI agents (YC talks)</a>
+              <a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a>
               <a href="#plano-brasileiro-de-intelig-ncia-artificial-pbia-resumo-e-reflex-es">Plano Brasileiro de Inteligência Artificial (PBIA): resumo e reflexões</a>
               <a href="#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>
-              <a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a>
               <a href="#startups-obsession-as-an-engine">Startups: Obsession as an engine</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>

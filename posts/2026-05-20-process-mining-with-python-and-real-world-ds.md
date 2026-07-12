@@ -92,3 +92,6 @@ References
 - AVB (SkillOS thread / breakdown): https://x.com/neural_avb/status/2053873358853591435?s=20
 
 Notes: This post paraphrases and synthesizes practical advice from the referenced Medium posts and general process‑mining best practices. For full, article‑level detail, consult the original posts.
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

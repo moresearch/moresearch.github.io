@@ -4823,6 +4823,52 @@ The difference between knowing a principle and applying it is the difference bet
 </ul>
 </div>
       </article>
+      <article class="post" id="brooks-design-protecting-designer">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
+          <h2><a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a></h2><p class="post-summary">&#34;If conceptual integrity requires one mind, you must protect that mind from the organization. Real authority, organizational backing. Or: how to keep your best designer from quitting.&#34;</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">system-360</span><span class="tag">interface-design</span><span class="tag">architecture</span>
+          </div>
+        </header>
+        <div class="post-body"><p>One mind must control the design. How do you protect that mind? The organization wants features. The designer wants coherence. One of them has to win. The organization has more people. The designer needs better defenses.</p>
+<p>Organizations generate feature requests, compatibility demands, and stakeholder preferences. Each is reasonable alone. Together, they destroy coherence. The designer who says no needs protection, or the no won't stick. &quot;No&quot; costs political capital. &quot;Yes&quot; gets you promoted. Guess which one happens more.</p>
+<h2 id="definitions">Definitions</h2>
+<p><strong>Interface integrity.</strong> The interface <em>is</em> the system for the user. It must have conceptual integrity above all else. The backend can be a disaster. The user should never know. This is the entire job of API design.</p>
+<blockquote>
+<p>&quot;For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies.&quot;</p>
+</blockquote>
+<p>You can distribute the backend across a hundred microservices on five clouds. You cannot distribute the user's mental model. Mental models don't shard. They don't load balance. They don't fail over. They just break.</p>
+<p>The interface owner needs veto power. Real veto — not advisory. Advisory means the VP overrides the designer. VP wins. User loses. Feature ships. Nobody uses it. Everyone is confused. The VP moves to a new role. The designer inherits the mess. This is not hypothetical. This is Tuesday.</p>
+<p><strong>Architecture/implementation separation.</strong> Small team defines <em>what</em>. Large team builds <em>how</em>. Roles distinct. Staffed differently. The architecture team thinks. The implementation team does. Both are essential. Only one gets protected.</p>
+<blockquote>
+<p>&quot;The architecture must be separated from implementation. This was the key organizational insight of System/360: a small architecture team defines what the machine is; a large implementation team builds it. The architecture team must be protected; the implementation team must be coordinated.&quot;</p>
+</blockquote>
+<p>Architecture team: protection from external pressure. Implementation team: coordination across contributors. Conflate them: nobody does either well. This is your startup's &quot;everyone is full-stack&quot; model. It works until it doesn't. Then you hire architects and call it &quot;maturing.&quot; Then the architects complain they have no authority. The cycle is predictable. Nobody reads Brooks. The cycle continues.</p>
+<h2 id="the-system360-pattern">The System/360 pattern</h2>
+<blockquote>
+<p>&quot;On System/360, a small team — Brooks, Amdahl, Blaauw — controlled the architecture. We had the authority to say no. More importantly, we were protected from the organizational forces that dilute design: feature requests from field sales, compatibility demands, performance optimizations that compromise clean abstraction.&quot;</p>
+</blockquote>
+<p>Two things mattered. Authority to say no. Protection to exercise it. Field sales wanted features for customers. Engineering wanted optimizations. Customers demanded compatibility. Each reasonable alone. Together: destroyed coherence. The team had power — and organizational backing. Without backing, power is just a loudly stated opinion that gets overruled in the next steering committee.</p>
+<p>David Parnas reached the same conclusion. <strong>Information hiding</strong> (1972): modules conceal design decisions from each other. Cannot do this with a committee. Hiding requires one mind to decide what to expose and bury. A committee exposes everything and hides nothing, which is also how it makes decisions. The meeting minutes are public. The reasoning is not.</p>
+<p>Every project needs a design owner. One person. Reviews every interface, abstraction, user-visible decision. Authority to say no without escalation. Hard role: hold the entire system in your head, have taste, say no repeatedly — and be trusted. These people are underpaid relative to their value and over-stressed relative to their support. They know this. They stay anyway. That is the only reason your system still works.</p>
+<p>The industry sort of does this. Architects, tech leads, staff engineers. Rarely with enough separation to say no to the VP. We don't train, hire, or protect for this role. Then we wonder why systems feel like patchwork quilts. We built the quilter's guild and asked why nobody weaves.</p>
+<blockquote>
+<p>&quot;Plan to throw one away; you will, anyhow.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
+</blockquote>
+<p>Accept the first version will be wrong. If you're not embarrassed by version one, you shipped too late. Bridges to Part 4.</p>
+<blockquote>
+<p>&quot;The building of a design, indeed, is the forcing of the will of one upon the stuff of the world.&quot;</p>
+</blockquote>
+<p>Design is not consensus. It is imposition. Coherence forced onto a medium with no opinion. An act of authority. Does your organization have the nerve? Most don't. Most call a meeting. The meeting schedules a follow-up. Nothing is forced. Nothing coheres.</p>
+<hr>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">← Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
+<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
+<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
+<blockquote>
+<p>Protecting the designer is not about giving them autonomy. It is about giving them authority. Autonomy without authority is frustration. Authority without protection is theater.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="brooks-design-great-designers">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
@@ -5106,49 +5152,6 @@ The difference between knowing a principle and applying it is the difference bet
 <p>Write nothing: everyone fills in their own model, nobody disagrees. Explicit → testable → correctable. Empiricism applied to the most important unknown. UX designers call these personas. Engineers call them &quot;that thing we should have written down six months ago.&quot; Both are right. The persona would have prevented the rewrite.</p>
 <hr>
 <p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">← Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
-<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
-<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
-</div>
-      </article>
-      <article class="post" id="brooks-design-protecting-designer">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-11" data-utc="Jul 11, 2026 UTC" aria-label="Jul 11, 2026 UTC" tabindex="0">1783728000</time></p>
-          <h2><a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a></h2><p class="post-summary">&#34;If conceptual integrity requires one mind, you must protect that mind from the organization. Real authority, organizational backing. Or: how to keep your best designer from quitting.&#34;</p>
-          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">system-360</span><span class="tag">interface-design</span><span class="tag">architecture</span>
-          </div>
-        </header>
-        <div class="post-body"><p>One mind must control the design. How do you protect that mind? The organization wants features. The designer wants coherence. One of them has to win. The organization has more people. The designer needs better defenses.</p>
-<p>Organizations generate feature requests, compatibility demands, and stakeholder preferences. Each is reasonable alone. Together, they destroy coherence. The designer who says no needs protection, or the no won't stick. &quot;No&quot; costs political capital. &quot;Yes&quot; gets you promoted. Guess which one happens more.</p>
-<h2 id="definitions">Definitions</h2>
-<p><strong>Interface integrity.</strong> The interface <em>is</em> the system for the user. It must have conceptual integrity above all else. The backend can be a disaster. The user should never know. This is the entire job of API design.</p>
-<blockquote>
-<p>&quot;For the user interface, conceptual integrity is even more essential. The interface is the system for the user. If the interface has multiple personalities, the user must learn each one, must decide which to use when, and will be confused by their inconsistencies.&quot;</p>
-</blockquote>
-<p>You can distribute the backend across a hundred microservices on five clouds. You cannot distribute the user's mental model. Mental models don't shard. They don't load balance. They don't fail over. They just break.</p>
-<p>The interface owner needs veto power. Real veto — not advisory. Advisory means the VP overrides the designer. VP wins. User loses. Feature ships. Nobody uses it. Everyone is confused. The VP moves to a new role. The designer inherits the mess. This is not hypothetical. This is Tuesday.</p>
-<p><strong>Architecture/implementation separation.</strong> Small team defines <em>what</em>. Large team builds <em>how</em>. Roles distinct. Staffed differently. The architecture team thinks. The implementation team does. Both are essential. Only one gets protected.</p>
-<blockquote>
-<p>&quot;The architecture must be separated from implementation. This was the key organizational insight of System/360: a small architecture team defines what the machine is; a large implementation team builds it. The architecture team must be protected; the implementation team must be coordinated.&quot;</p>
-</blockquote>
-<p>Architecture team: protection from external pressure. Implementation team: coordination across contributors. Conflate them: nobody does either well. This is your startup's &quot;everyone is full-stack&quot; model. It works until it doesn't. Then you hire architects and call it &quot;maturing.&quot; Then the architects complain they have no authority. The cycle is predictable. Nobody reads Brooks. The cycle continues.</p>
-<h2 id="the-system360-pattern">The System/360 pattern</h2>
-<blockquote>
-<p>&quot;On System/360, a small team — Brooks, Amdahl, Blaauw — controlled the architecture. We had the authority to say no. More importantly, we were protected from the organizational forces that dilute design: feature requests from field sales, compatibility demands, performance optimizations that compromise clean abstraction.&quot;</p>
-</blockquote>
-<p>Two things mattered. Authority to say no. Protection to exercise it. Field sales wanted features for customers. Engineering wanted optimizations. Customers demanded compatibility. Each reasonable alone. Together: destroyed coherence. The team had power — and organizational backing. Without backing, power is just a loudly stated opinion that gets overruled in the next steering committee.</p>
-<p>David Parnas reached the same conclusion. <strong>Information hiding</strong> (1972): modules conceal design decisions from each other. Cannot do this with a committee. Hiding requires one mind to decide what to expose and bury. A committee exposes everything and hides nothing, which is also how it makes decisions. The meeting minutes are public. The reasoning is not.</p>
-<p>Every project needs a design owner. One person. Reviews every interface, abstraction, user-visible decision. Authority to say no without escalation. Hard role: hold the entire system in your head, have taste, say no repeatedly — and be trusted. These people are underpaid relative to their value and over-stressed relative to their support. They know this. They stay anyway. That is the only reason your system still works.</p>
-<p>The industry sort of does this. Architects, tech leads, staff engineers. Rarely with enough separation to say no to the VP. We don't train, hire, or protect for this role. Then we wonder why systems feel like patchwork quilts. We built the quilter's guild and asked why nobody weaves.</p>
-<blockquote>
-<p>&quot;Plan to throw one away; you will, anyhow.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
-</blockquote>
-<p>Accept the first version will be wrong. If you're not embarrassed by version one, you shipped too late. Bridges to Part 4.</p>
-<blockquote>
-<p>&quot;The building of a design, indeed, is the forcing of the will of one upon the stuff of the world.&quot;</p>
-</blockquote>
-<p>Design is not consensus. It is imposition. Coherence forced onto a medium with no opinion. An act of authority. Does your organization have the nerve? Most don't. Most call a meeting. The meeting schedules a follow-up. Nothing is forced. Nothing coheres.</p>
-<hr>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-one-mind-rule">← Part 2</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
 <p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
 <p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
 </div>
@@ -8058,13 +8061,13 @@ type Logger interface {
               <a href="#fi-options">Options and DeFi Derivatives</a>
               <a href="#fi-prediction-markets">Prediction Markets</a>
               <a href="#fi-perpetuals">Perpetual Futures</a>
+              <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>
               <a href="#brooks-design-great-designers">Brooks on Software Design Series: great designers, not great processes</a>
               <a href="#brooks-design-rational-model">Brooks on Software Design Series: the waterfall is wrong</a>
               <a href="#brooks-design-one-mind-rule">Brooks on Software Design Series: one mind</a>
               <a href="#brooks-design-conceptual-integrity">Brooks on Software Design Series: conceptual integrity</a>
               <a href="#brooks-design-experts-divorce">Brooks on Software Design Series: why experts get it wrong</a>
               <a href="#brooks-design-empiricist-alternative">Brooks on Software Design Series: build, test, iterate</a>
-              <a href="#brooks-design-protecting-designer">Brooks on Software Design Series: protect the designer</a>
               <a href="#parnas-information-hiding">Parnas&#39;s Information Hiding</a>
               <a href="#mcculloch-what-is-a-number">McCulloch&#39;s question: what is a number, that a man may know it?</a>
               <a href="#kevlin-henney">Henney&#39;s Microservices</a>

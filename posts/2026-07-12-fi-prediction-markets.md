@@ -36,6 +36,14 @@ The mechanism is incentive-compatible. Traders profit from correcting the market
 
 Robin Hanson, "Shall We Vote on Values, But Bet on Beliefs?" (2013). Hanson is the leading academic advocate for prediction markets. His proposal: futarchy — a form of government where elected officials set goals and prediction markets determine which policies will achieve them. The proposal is radical. The underlying logic is mainstream: markets aggregate information better than committees. Polymarket is the partial implementation of Hanson's vision. The implementation is for elections, not policy. The extension to policy is the next frontier.
 
+## The engineering connection
+
+Prediction markets are information aggregation mechanisms. The price is the signal. The traders are the sensors. The market is the aggregator. This is the same architecture as a distributed monitoring system: each node observes a fragment of the system state, reports its observation, and the aggregator produces a unified view. The market does this without a central aggregator. The price does the aggregation. The price is the emergent output of millions of independent observations, weighted by conviction (position size).
+
+The oracle that resolves the market is a trust-minimized data feed — the same pattern as an API contract. The oracle reports the outcome. The market settles. If the oracle is wrong, the market produces wrong outcomes. The oracle's reliability is the system's reliability. Engineering reliable oracles — UMA's optimistic oracle, Chainlink's decentralized oracle networks — is a distributed systems problem. The problem is: how do you get truthful reports from potentially adversarial reporters? The solution is mechanism design: stake, challenge periods, economic incentives for honesty. The mechanism is the same as staking in proof-of-stake. The engineering is the same. The domain is different.
+
+Prediction markets also teach a software engineering lesson about decision-making. A team estimating a project timeline is a prediction market without prices. Each person has private information. The information is aggregated through discussion, not through trading. Discussion is a worse aggregator than prices because discussion rewards confidence, not accuracy. The person who speaks most confidently shapes the estimate. The person who knows the truth but speaks quietly is ignored. A prediction market would surface the quiet person's knowledge through their willingness to bet on it. The bet is the signal. The price is the aggregation. The engineering team that replaces estimation meetings with internal prediction markets would produce better estimates. No team does this. The technology exists. The adoption is zero.
+
 ---
 
 **References:**

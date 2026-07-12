@@ -112,3 +112,6 @@ The world runs on Linux because the lawsuit froze BSD at the wrong moment and ne
 - Warner Losh, TUHS mailing list, January 2020: "AT&T lawsuit was after Linus started."
 - Linus Torvalds, quoted in multiple sources: "If 386BSD had been available... Linux would probably never have happened."
 - Related posts: [Brooks on Software Design: conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity), [Parnas's Information Hiding](https://blog.hackspree.com/#parnas-information-hiding), [Git is a Unix tool](https://blog.hackspree.com/#git-unix-philosophy)
+
+
+Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.

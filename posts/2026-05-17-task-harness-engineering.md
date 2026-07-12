@@ -71,3 +71,6 @@ Notes and references
 
 
 Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.
+
+
+> A task harness is not a benchmark. It is a specification. The specification defines what success means. Without it, the agent is optimizing for a proxy that may not capture what you actually want.

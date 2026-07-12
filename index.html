@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;No single person on earth knows how to make a pencil. Or a computer mouse. Or any non-trivial software system. The knowledge is distributed across millions of minds, coordinated by exchange. This is the economics that software engineering forgot.&#34;">
+  <meta name="description" content="&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need to know the topic. Modularity lives in the difference.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,130 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="nats-pubsub-microservices">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#nats-pubsub-microservices">&#34;NATS pub/sub beats REST for microservices&#34;</a></h2><p class="post-summary">&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need to know the topic. Modularity lives in the difference.&#34;</p>
+          <div class="tags"><span class="tag">nats</span><span class="tag">pubsub</span><span class="tag">microservices</span><span class="tag">golang</span><span class="tag">rest</span><span class="tag">modularity</span>
+          </div>
+        </header>
+        <div class="post-body"><p>REST is the default microservices communication pattern. It is the default because it is familiar, not because it is good. Every service exposes HTTP endpoints. Every caller knows every callee's address. The system is a web of explicit dependencies, each one hardcoded in configuration or service discovery. When Service A calls Service B via REST, A knows that B exists, where B lives, what B's API looks like, and whether B is currently available. That is not modularity. That is coupling with extra steps.</p>
+<p>NATS pub/sub inverts this. Services publish to subjects. Services subscribe to subjects. No service knows any other service exists. The subject is the interface. The publisher has no idea who is listening. The subscriber has no idea who is publishing. They agree on the subject name and the message format. Nothing else. This is spatial decoupling. This is temporal decoupling. This is modularity.</p>
+<h2 id="the-rest-way">The REST way</h2>
+<p>Here is an order service calling an inventory service over REST in Go:</p>
+<pre><code class="language-go">// Order service: needs to reserve inventory
+func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    // Step 1: Reserve inventory via REST
+    body, _ := json.Marshal(ReserveRequest{
+        ProductID: order.ProductID,
+        Quantity:  order.Quantity,
+    })
+    resp, err := http.Post(
+        &quot;http://inventory-service:8080/api/reserve&quot;,  // knows address
+        &quot;application/json&quot;,
+        bytes.NewReader(body),
+    )
+    if err != nil {
+        return fmt.Errorf(&quot;inventory service unreachable: %w&quot;, err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != 200 {
+        return fmt.Errorf(&quot;reservation failed: %s&quot;, resp.Status)
+    }
+    // Step 2: Save order
+    return s.db.Insert(ctx, order)
+}
+</code></pre>
+<p>The order service knows the inventory service's URL. It knows the endpoint path. It knows the request format. It knows that a 200 means success. It knows the service must be reachable at call time. If the inventory service moves, the order service must be reconfigured. If the inventory service is down, the order fails. If the inventory service's API changes, the order service must be updated. The coupling is total.</p>
+<p>Scale this across fifty services. Each knows the addresses of the others it depends on. Each retry loop is hand-rolled. Each circuit breaker is hand-rolled. Each service discovery integration is hand-rolled. The system is a distributed monolith with HTTP as the in-process communication bus. The network is the new call stack. The latency is the new overhead. The modularity did not improve. The deployment got harder.</p>
+<h2 id="the-nats-way">The NATS way</h2>
+<p>Same system, pub/sub:</p>
+<pre><code class="language-go">// Order service: publishes an event, doesn't know who listens
+func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    // Step 1: Publish intent
+    event, _ := json.Marshal(OrderRequested{
+        OrderID:   order.ID,
+        ProductID: order.ProductID,
+        Quantity:  order.Quantity,
+    })
+    nc.Publish(&quot;orders.requested&quot;, event)
+
+    // Step 2: Wait for inventory to respond (request-reply)
+    msg, err := nc.Request(&quot;inventory.reserve&quot;, event, 5*time.Second)
+    if err != nil {
+        return fmt.Errorf(&quot;reservation failed: %w&quot;, err)
+    }
+
+    var result ReserveResult
+    json.Unmarshal(msg.Data, &amp;result)
+    if !result.Success {
+        return fmt.Errorf(&quot;reservation denied: %s&quot;, result.Reason)
+    }
+
+    return s.db.Insert(ctx, order)
+}
+
+// Inventory service: subscribes, doesn't know who publishes
+func (s *InventoryService) Run() {
+    nc.Subscribe(&quot;inventory.reserve&quot;, func(m *nats.Msg) {
+        var req OrderRequested
+        json.Unmarshal(m.Data, &amp;req)
+
+        err := s.reserveStock(req.ProductID, req.Quantity)
+        result := ReserveResult{Success: err == nil}
+        if err != nil {
+            result.Reason = err.Error()
+        }
+
+        reply, _ := json.Marshal(result)
+        nc.Publish(m.Reply, reply)
+    })
+}
+</code></pre>
+<p>The order service knows two subjects: <code>orders.requested</code> and <code>inventory.reserve</code>. It does not know the inventory service exists. It does not know how many instances are listening. It does not know where they are deployed. The inventory service knows one subject: <code>inventory.reserve</code>. It does not know the order service exists. If the inventory service moves to a different machine, different region, different cloud — nothing changes. The subject is the contract. The subject is the only coupling.</p>
+<p>The difference is not syntax. It is architecture. REST couples spatially — the caller must know the callee's address. NATS couples semantically — the publisher and subscriber agree on the meaning of a subject, not on each other's existence. One is a phone call where you must have the number. The other is a radio broadcast where you only need the frequency. Anyone can tune in. Anyone can transmit. The transmitter and receiver don't know each other. The frequency is the interface.</p>
+<h2 id="queue-groups-scale-without-coordination">Queue groups: scale without coordination</h2>
+<p>REST scaling requires a load balancer. The load balancer must know the addresses of all instances. Health checks must be configured. The load balancer is a single point of failure. It is also a single point of configuration drift. Three teams, three load balancers, three different configurations, three different failure modes.</p>
+<p>NATS queue groups do this with no additional infrastructure:</p>
+<pre><code class="language-go">// Three instances of inventory service, all in the same queue group
+nc.QueueSubscribe(&quot;inventory.reserve&quot;, &quot;inventory-workers&quot;, func(m *nats.Msg) {
+    // Only one instance receives each message
+    processReservation(m)
+})
+</code></pre>
+<p>That's it. No load balancer. No health checks. No service discovery. NATS distributes messages across the queue group. If an instance dies, NATS stops sending it messages. If a new instance starts, NATS includes it. The subject name didn't change. The publisher didn't change. The queue group is an implementation detail hidden behind the subject. This is Parnas's information hiding applied to deployment topology. The subject is the stable interface. The instances are the volatile implementation. Adding instances doesn't change the interface. Removing instances doesn't change the interface. The publisher never knows. The publisher never needs to know.</p>
+<h2 id="temporal-decoupling-survive-the-downtime">Temporal decoupling: survive the downtime</h2>
+<p>REST fails when the callee is unavailable. The caller must retry, back off, circuit-break, or fail. Each of these is hand-rolled in every service. Each retry loop is slightly different. Each circuit breaker has slightly different thresholds. The system's reliability is the sum of individually implemented retry strategies, none of which were tested together.</p>
+<p>NATS provides temporal decoupling out of the box. If the subscriber is offline, the message can be queued in JetStream:</p>
+<pre><code class="language-go">// Publisher: fire and forget with persistence
+js.Publish(ctx, &quot;orders.requested&quot;, event)
+
+// Subscriber: receives when ready, even hours later
+consumer.Consume(func(msg jetstream.Msg) {
+    processOrder(msg)
+    msg.Ack()
+})
+</code></pre>
+<p>The publisher publishes. The subscriber consumes when it's online. If no subscriber is online, the message waits. If the subscriber crashes mid-processing, the message is redelivered. The publisher doesn't retry. The publisher doesn't circuit-break. The publisher publishes and moves on. The infrastructure handles the reliability. The services handle the business logic. This is the separation of concerns that REST promises and never delivers.</p>
+<h2 id="what-coupling-actually-means">What coupling actually means</h2>
+<p>Henney defined coupling as shared knowledge between components. REST maximizes shared knowledge. The caller knows the callee's address, API, availability, response format, error codes, authentication method, rate limits. Each of these is knowledge. Each is coupling. When the callee changes any of them, the caller must change or break. The deployment is independent. The knowledge is shared. The coupling is real.</p>
+<p>NATS minimizes shared knowledge. The publisher knows the subject name and the message schema. The subscriber knows the subject name and the message schema. Neither knows the other exists. Neither knows how many of the other exist. Neither knows where the other is deployed. Neither knows whether the other is currently online. The subject name and the schema: that is the total shared knowledge. Everything else is hidden. This is Parnas's criterion, applied to inter-service communication. Hide the volatile decisions — deployment location, instance count, availability, internal API changes — behind a stable interface. The subject is the stable interface. The service is the volatile implementation. The interface doesn't change when the implementation scales, moves, or restarts. The coupling is minimized. The modularity is real.</p>
+<h2 id="when-rest-makes-sense">When REST makes sense</h2>
+<p>REST is not universally wrong. It is appropriate when:</p>
+<p><strong>The client needs an immediate response.</strong> Request-reply over NATS works for this, but REST is simpler for simple cases. If one service genuinely needs a synchronous answer from another, and the dependency is stable, REST is fine. The issue is not REST. The issue is using REST as the default for everything.</p>
+<p><strong>The API is externally consumed.</strong> External clients — mobile apps, web browsers, third-party integrations — don't speak NATS. They speak HTTP. The edge of the system is REST. The interior of the system should not be. Expose REST at the boundary. Use NATS internally. The boundary is where HTTP belongs. The interior is where it doesn't.</p>
+<p><strong>The dependency is genuinely stable.</strong> If Service A will always need Service B, and B's API will never change, and B will never move, and B will never be replaced — REST is fine. This is a rare set of conditions. Most service dependencies are less stable than architects assume. The REST interface hardcodes assumptions that will be invalidated. The NATS subject survives the invalidation because it doesn't encode the assumptions.</p>
+<p>For everything else — internal service communication, event-driven workflows, systems that must scale, systems that must survive partial failure — NATS pub/sub is not just better. It is what REST pretends to be: modular, decoupled, and resilient to change. The difference is not in the syntax. It is in the architecture of knowledge. REST shares knowledge by default. NATS hides knowledge by default. Modularity lives in what you don't know about the other service. NATS lets you know less. That is the definition of better modularity.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/nats-io/nats.go">NATS Go Client</a> — official Go client with JetStream v2 API</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://natsbyexample.com/">NATS by Example</a> — runnable cross-client examples</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#parnas-information-hiding">Parnas's Information Hiding</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#software-dark-factories">Software dark factories</a></li>
+</ul>
+</div>
+      </article>
       <article class="post" id="i-pencil">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -4108,6 +4232,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#nats-pubsub-microservices">&#34;NATS pub/sub beats REST for microservices&#34;</a>
               <a href="#i-pencil">&#34;I, Pencil&#34;</a>
               <a href="#disruptive-innovation">&#34;the electric light was not a better candle&#34;</a>
               <a href="#this-statement-is-false">&#34;this statement is false&#34;</a>

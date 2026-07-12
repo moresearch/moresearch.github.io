@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.&#34;">
+  <meta name="description" content="&#34;One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it&#39;s costly enough that only the &#39;good&#39; type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn&#39;t teach skills, it proves you had the skills to get in. In software: the RFC that&#39;s too detailed, the rewrite proposal that comes with a prototype.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-signaling">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-signaling">Signaling Games</a></h2><p class="post-summary">&#34;One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it&#39;s costly enough that only the &#39;good&#39; type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn&#39;t teach skills, it proves you had the skills to get in. In software: the RFC that&#39;s too detailed, the rewrite proposal that comes with a prototype.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">signaling</span><span class="tag">spence</span><span class="tag">private-information</span><span class="tag">separating-equilibrium</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A signaling game has two players. The sender has private information about their type. The sender takes an action — sends a signal. The receiver observes the signal and responds. The sender's payoff depends on the receiver's response and the sender's type. The receiver's payoff depends on the sender's type and the receiver's response.</p>
+<p>The classic model is Michael Spence's job market signaling (1973). A worker knows their own productivity (high or low). The employer doesn't. The worker can acquire education — a costly signal. If education is more costly for low-productivity workers than for high-productivity workers, there exists a separating equilibrium: high types acquire education, low types don't, employers pay high wages to educated workers and low wages to uneducated workers. The education doesn't need to increase productivity. It only needs to be differentially costly. The differential cost is what makes the signal informative.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Economics (Spence, 1973 Nobel 2001).</strong> The separating equilibrium exists when the single-crossing property holds — the marginal cost of signaling differs across types. Education signals productivity not because education teaches skills but because it is harder for low-productivity people to acquire. The hardship is the signal. The credential is the evidence of hardship.</p>
+<p><strong>Biology (Zahavi's handicap principle, 1975).</strong> The peacock's tail is a signal of genetic fitness. The tail is costly — it requires energy, attracts predators, impedes movement. Only a genetically fit peacock can afford such a handicap. The cost is the signal. The tail doesn't help the peacock survive. It proves the peacock <em>can</em> survive despite the tail. The handicap is honest because it's too expensive to fake.</p>
+<p><strong>Political science (Fearon, 1994).</strong> Audience costs in international relations are signaling games. A leader who makes a public threat — &quot;we will retaliate&quot; — pays an audience cost if they back down. The cost is domestic political damage. Only a leader who is genuinely committed can afford to make the threat. The threat is credible because backing down is costly. The cost is the signal.</p>
+<p><strong>Computer science (mechanism design).</strong> Screening is the reverse of signaling. In screening, the uninformed party moves first, offering a menu of contracts. Each type self-selects into the contract designed for it. The menu separates types by making each contract optimal for the intended type. Screening is mechanism design. Signaling is sender-driven. Screening is receiver-driven.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>The rewrite proposal.</strong> A team proposes rewriting a legacy service. The proposal is cheap talk — anyone can propose. The architecture review must decide whether the team genuinely believes the rewrite is necessary or is bored and wants greenfield work. A prototype requirement is a screening mechanism. A sincere team will build the prototype. An insincere team won't. The prototype is costly. The cost separates types.</p>
+<p><strong>The detailed RFC.</strong> Writing a thorough RFC — with trade-off analysis, migration plans, and risk assessment — is costly. It takes days. The cost signals seriousness. A team that writes a one-paragraph proposal is signaling low investment. The architecture review discounts the proposal accordingly. The RFC's length is not about information transfer. It is about signaling commitment.</p>
+<p><strong>Open-source contributions as job market signaling.</strong> A developer contributes to a well-known open-source project. The contribution is publicly visible. It signals skill to potential employers. The contribution is costly — it takes time outside work. The cost signals passion and competence. The signal works because it's harder to fake than a resume bullet point. The code doesn't lie. The commit history is the credential.</p>
+<p><strong>The production incident response.</strong> How an engineer handles a production incident signals competence to the entire organization. The signal is costly — incidents are high-stress, high-visibility, and occur at inconvenient times. The engineer who stays calm, diagnoses systematically, and communicates clearly is signaling a type that cannot be faked under pressure. The pressure is the cost. The calm is the signal.</p>
+<h2 id="separating-vs-pooling-equilibria">Separating vs. pooling equilibria</h2>
+<p>A signaling game has two kinds of equilibria. In a separating equilibrium, different types send different signals. The receiver can infer the type from the signal. In a pooling equilibrium, all types send the same signal. The receiver learns nothing. Which equilibrium emerges depends on the cost structure and the prior distribution of types. If the cost of the signal is too low for all types, everyone sends it — credential inflation. If too high, nobody does. The sweet spot is where the cost is differentially burdensome.</p>
+<p>In software: if writing a prototype is too easy, everyone writes one. The prototype stops separating types. If it's too hard, nobody writes one. The review process loses the signal. The optimal screening cost is calibrated to the distribution of sincere and insincere proposers. The calibration is mechanism design.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Michael Spence, &quot;Job Market Signaling,&quot; <em>Quarterly Journal of Economics</em>, 1973.</li>
+<li>Amotz Zahavi, &quot;Mate Selection — A Selection for a Handicap,&quot; <em>Journal of Theoretical Biology</em>, 1975.</li>
+<li>James D. Fearon, &quot;Domestic Political Audiences and the Escalation of International Disputes,&quot; <em>American Political Science Review</em>, 1994.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-repeated-games">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2953,38 +2986,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Jean-Jacques Rousseau, <em>Discourse on the Origin and Basis of Inequality Among Men</em>, 1755.</li>
 <li>Brian Skyrms, <em>The Stag Hunt and the Evolution of Social Structure</em>, Cambridge University Press, 2004.</li>
 <li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-signaling">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-signaling">Signaling Games</a></h2><p class="post-summary">&#34;One player has private information. They take an action that may reveal it. The action is a signal. A signal works if it&#39;s costly enough that only the &#39;good&#39; type would send it. Michael Spence won a Nobel for proving that education can be a pure signal — it doesn&#39;t teach skills, it proves you had the skills to get in. In software: the RFC that&#39;s too detailed, the rewrite proposal that comes with a prototype.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">signaling</span><span class="tag">spence</span><span class="tag">private-information</span><span class="tag">separating-equilibrium</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A signaling game has two players. The sender has private information about their type. The sender takes an action — sends a signal. The receiver observes the signal and responds. The sender's payoff depends on the receiver's response and the sender's type. The receiver's payoff depends on the sender's type and the receiver's response.</p>
-<p>The classic model is Michael Spence's job market signaling (1973). A worker knows their own productivity (high or low). The employer doesn't. The worker can acquire education — a costly signal. If education is more costly for low-productivity workers than for high-productivity workers, there exists a separating equilibrium: high types acquire education, low types don't, employers pay high wages to educated workers and low wages to uneducated workers. The education doesn't need to increase productivity. It only needs to be differentially costly. The differential cost is what makes the signal informative.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Economics (Spence, 1973 Nobel 2001).</strong> The separating equilibrium exists when the single-crossing property holds — the marginal cost of signaling differs across types. Education signals productivity not because education teaches skills but because it is harder for low-productivity people to acquire. The hardship is the signal. The credential is the evidence of hardship.</p>
-<p><strong>Biology (Zahavi's handicap principle, 1975).</strong> The peacock's tail is a signal of genetic fitness. The tail is costly — it requires energy, attracts predators, impedes movement. Only a genetically fit peacock can afford such a handicap. The cost is the signal. The tail doesn't help the peacock survive. It proves the peacock <em>can</em> survive despite the tail. The handicap is honest because it's too expensive to fake.</p>
-<p><strong>Political science (Fearon, 1994).</strong> Audience costs in international relations are signaling games. A leader who makes a public threat — &quot;we will retaliate&quot; — pays an audience cost if they back down. The cost is domestic political damage. Only a leader who is genuinely committed can afford to make the threat. The threat is credible because backing down is costly. The cost is the signal.</p>
-<p><strong>Computer science (mechanism design).</strong> Screening is the reverse of signaling. In screening, the uninformed party moves first, offering a menu of contracts. Each type self-selects into the contract designed for it. The menu separates types by making each contract optimal for the intended type. Screening is mechanism design. Signaling is sender-driven. Screening is receiver-driven.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>The rewrite proposal.</strong> A team proposes rewriting a legacy service. The proposal is cheap talk — anyone can propose. The architecture review must decide whether the team genuinely believes the rewrite is necessary or is bored and wants greenfield work. A prototype requirement is a screening mechanism. A sincere team will build the prototype. An insincere team won't. The prototype is costly. The cost separates types.</p>
-<p><strong>The detailed RFC.</strong> Writing a thorough RFC — with trade-off analysis, migration plans, and risk assessment — is costly. It takes days. The cost signals seriousness. A team that writes a one-paragraph proposal is signaling low investment. The architecture review discounts the proposal accordingly. The RFC's length is not about information transfer. It is about signaling commitment.</p>
-<p><strong>Open-source contributions as job market signaling.</strong> A developer contributes to a well-known open-source project. The contribution is publicly visible. It signals skill to potential employers. The contribution is costly — it takes time outside work. The cost signals passion and competence. The signal works because it's harder to fake than a resume bullet point. The code doesn't lie. The commit history is the credential.</p>
-<p><strong>The production incident response.</strong> How an engineer handles a production incident signals competence to the entire organization. The signal is costly — incidents are high-stress, high-visibility, and occur at inconvenient times. The engineer who stays calm, diagnoses systematically, and communicates clearly is signaling a type that cannot be faked under pressure. The pressure is the cost. The calm is the signal.</p>
-<h2 id="separating-vs-pooling-equilibria">Separating vs. pooling equilibria</h2>
-<p>A signaling game has two kinds of equilibria. In a separating equilibrium, different types send different signals. The receiver can infer the type from the signal. In a pooling equilibrium, all types send the same signal. The receiver learns nothing. Which equilibrium emerges depends on the cost structure and the prior distribution of types. If the cost of the signal is too low for all types, everyone sends it — credential inflation. If too high, nobody does. The sweet spot is where the cost is differentially burdensome.</p>
-<p>In software: if writing a prototype is too easy, everyone writes one. The prototype stops separating types. If it's too hard, nobody writes one. The review process loses the signal. The optimal screening cost is calibrated to the distribution of sincere and insincere proposers. The calibration is mechanism design.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Michael Spence, &quot;Job Market Signaling,&quot; <em>Quarterly Journal of Economics</em>, 1973.</li>
-<li>Amotz Zahavi, &quot;Mate Selection — A Selection for a Handicap,&quot; <em>Journal of Theoretical Biology</em>, 1975.</li>
-<li>James D. Fearon, &quot;Domestic Political Audiences and the Escalation of International Disputes,&quot; <em>American Political Science Review</em>, 1994.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
 </ul>
 </div>
@@ -7400,6 +7401,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-signaling">Signaling Games</a>
               <a href="#game-repeated-games">Repeated Games and the Folk Theorem</a>
               <a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a>
               <a href="#game-principal-agent">The Principal-Agent Problem</a>
@@ -7448,7 +7450,6 @@ type Logger interface {
               <a href="#game-ultimatum">The Ultimatum Game</a>
               <a href="#game-tragedy-of-commons">The Tragedy of the Commons</a>
               <a href="#game-stag-hunt">The Stag Hunt</a>
-              <a href="#game-signaling">Signaling Games</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

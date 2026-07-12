@@ -45,3 +45,6 @@ In software: if writing a prototype is too easy, everyone writes one. The protot
 - Amotz Zahavi, "Mate Selection — A Selection for a Handicap," *Journal of Theoretical Biology*, 1975.
 - James D. Fearon, "Domestic Political Audiences and the Escalation of International Disputes," *American Political Science Review*, 1994.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [Scarcity and Software Games](https://blog.hackspree.com/#scarcity-and-software-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

@@ -68,3 +68,6 @@ Notes and references
 
 - Video source (conceptual reference): https://www.youtube.com/watch?v=C_GG5g38vLU (video id: C_GG5g38vLU)
 - Encourage readers to run the referenced talk for additional context and examples.
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

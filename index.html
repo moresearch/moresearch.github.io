@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.&#34;">
+  <meta name="description" content="&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,54 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="scarcity-in-practice">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#scarcity-in-practice">Scarcity in Practice</a></h2><p class="post-summary">&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;</p>
+          <div class="tags"><span class="tag">scarcity</span><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">practice</span><span class="tag">software-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.</p>
+<p>Alan Perlis, the first Turing Award winner, wrote: &quot;Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it.&quot; Most software teams are pragmatists. They suffer complexity because avoiding it requires upfront investment and removing it requires genius. The five frameworks that follow are for pragmatists who want to suffer less. Genius is not required. Discipline is.</p>
+<h2 id="1-name-the-scarce-resource">1. Name the scarce resource</h2>
+<p>Before every architectural decision, ask: what is the scarce resource? Is it developer time? Optimize for simplicity of change. Is it compute? Optimize for efficiency. Is it attention? Optimize for clarity. Is it coordination capacity? Optimize for independent deployability. The scarce resource determines the optimal trade.</p>
+<p>Most architectural debates skip this step. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. &quot;We are optimizing for developer time, not compute.&quot; &quot;We are optimizing for change velocity, not operational simplicity.&quot; The debate resolves. The constraint determines the answer. Name the constraint.</p>
+<h2 id="2-identify-the-game">2. Identify the game</h2>
+<p>Every situation involving multiple players is a game. Ask: who are the players? What are their strategies? What are their payoffs? What do they know that others don't? Is the game cooperative or non-cooperative? Zero-sum or non-zero-sum? Simultaneous or sequential? One-shot or repeated?</p>
+<p>Naming the game changes how you think about it. &quot;This is a stag hunt — we all benefit if we coordinate, but if anyone defects we all lose&quot; is different from &quot;this is chicken — someone needs to swerve or we crash.&quot; The game type suggests the solution. Stag hunts need coordination mechanisms. Chicken needs a pre-committed rule about who yields. Prisoner's Dilemmas need repeated interaction and reputation. Battle of the sexes needs a selection mechanism. Name the game. The solution follows.</p>
+<h2 id="3-design-the-mechanism">3. Design the mechanism</h2>
+<p>If you don't like the equilibrium, change the game. Mechanism design works backward from desired outcomes to the rules that produce them. Ask: what outcome do I want? What rules would produce it? What information do players need? What incentives do they face? How do I make defection visible and costly?</p>
+<p>Automated contract testing is mechanism design. &quot;No Friday deploys&quot; is mechanism design. A booking calendar for staging is mechanism design. A test budget per service is mechanism design. Each mechanism changes the payoffs. Changed payoffs change behavior. Design the mechanism. Don't plead for the behavior.</p>
+<h2 id="4-account-for-complexity">4. Account for complexity</h2>
+<p>Complexity is a cost. It consumes attention, time, and future change capacity. Every feature adds complexity. The complexity has a present cost and a future cost — the accumulated drag on every subsequent change. The future cost is invisible in the current sprint. It is visible in year three.</p>
+<p>Account for it. When estimating a feature, include the complexity cost. &quot;This feature will take two weeks to build and will add complexity equivalent to 5% of the current system, which will cost approximately one week per quarter in reduced velocity. The NPV at our discount rate is negative. Don't build it, or build it simpler.&quot; Most teams don't do this math. The math exists. Do it.</p>
+<h2 id="5-use-the-robbins-test">5. Use the Robbins test</h2>
+<p>For any decision, ask Robbins's four questions: What is the end? What are the means? Are they scarce? Do they have alternative uses? If yes — and it always is — the decision is economic. Name the opportunity cost. &quot;Building this feature means not building that one.&quot; Name the trade. Make the choice explicit. Explicit choices are better than implicit ones. Implicit choices are still choices. They're just choices made without awareness that a choice was being made.</p>
+<h2 id="five-habits">Five habits</h2>
+<p><strong>Habit 1: Before debating architecture, name the scarce resource.</strong> If you can't name it, you don't understand the trade.</p>
+<p><strong>Habit 2: Before negotiating with another team, model their scarcity.</strong> What are they optimizing for? What are they giving up? If you don't know, ask. Their answer will explain their behavior more than any personality trait.</p>
+<p><strong>Habit 3: Before adding a feature, calculate the complexity budget.</strong> How much does this cost in future velocity? Is the return worth the cost? Most features pass the &quot;is it useful?&quot; test. Few pass the &quot;is it worth the complexity?&quot; test.</p>
+<p><strong>Habit 4: Before accepting a broken process, ask what game it's producing.</strong> The process is a mechanism. The mechanism produces an equilibrium. If the equilibrium is bad, the mechanism is wrong. Change the mechanism. Don't blame the players.</p>
+<p><strong>Habit 5: Before choosing a technology, ask what game it enables.</strong> REST produces spatial coupling. NATS produces spatial decoupling. The technology is not neutral. It embeds assumptions about how players will interact. Choose the technology that produces the game you want to play.</p>
+<h2 id="the-meta-habit">The meta-habit</h2>
+<p>Scarcity thinking becomes a habit. You start seeing opportunity costs everywhere. You start modeling other teams' incentives before meeting them. You start recognizing game structures in organizational conflicts. You start designing mechanisms instead of pleading for behavior. The habit is the point. The tools — economics, game theory, mechanism design — are lenses. The lenses change what you see. What you see changes what you do.</p>
+<hr>
+<p><strong>This is part 6 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="catalog-of-scarcity-games">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -660,6 +708,10 @@
           </div>
         </header>
         <div class="post-body"><p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
+<blockquote>
+<p>&quot;Simplicity does not precede complexity, but follows it.&quot; — Alan Perlis</p>
+</blockquote>
+<p>The catalog that follows is a map of the complexity. Use it to find the simplicity on the other side.</p>
 <h2 id="by-cooperation">By cooperation</h2>
 <table>
 <thead>
@@ -1049,193 +1101,58 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="scarcity-and-software-economics">
+      <article class="post" id="scarcity-and-mechanism-design">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-software-economics">Scarcity and Software Economics</a></h2><p class="post-summary">&#34;Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.&#34;</p>
-          <div class="tags"><span class="tag">software-economics</span><span class="tag">boehm</span><span class="tag">opportunity-cost</span><span class="tag">technical-debt</span><span class="tag">npv</span>
+          <h2><a href="#scarcity-and-mechanism-design">Scarcity and Mechanism Design</a></h2><p class="post-summary">&#34;AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade.&#34;</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">mechanism-design</span><span class="tag">agents</span><span class="tag">reinforcement-learning</span><span class="tag">auctions</span><span class="tag">governance</span>
           </div>
         </header>
-        <div class="post-body"><p>Barry Boehm published <em>Software Engineering Economics</em> in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.</p>
-<h2 id="the-terminology">The terminology</h2>
-<p><strong>Opportunity cost.</strong> The value of the best alternative foregone. Every hour on Feature A is an hour not on Feature B. The cost of Feature A is the time to build it plus the value of whatever you would have built instead. Opportunity cost is invisible. It appears on no invoice. It is the largest cost in software engineering. The features you didn't build are the cost of the features you did.</p>
-<p><strong>Sunk cost.</strong> A cost already incurred and unrecoverable. The three years on the monolith are sunk. They should not influence the migration decision. They do. The influence is irrational. The irrationality is human. The only defense is to externalize the decision to a process that doesn't know the sunk cost.</p>
-<p><strong>Marginal cost.</strong> The cost of one additional unit. The marginal cost of a user is near zero for software. The marginal cost of complexity is not zero — adding a feature to an already-complex system costs more than adding it to a simple one. Software has decreasing marginal cost of serving users and increasing marginal cost of adding features. The first makes software businesses attractive. The second makes them eventually unmaintainable.</p>
-<p><strong>Comparative advantage.</strong> Produce what you're relatively better at. Trade for the rest. Ricardo's logic, applied to microservices. A team better at both frontend and backend should specialize in whichever it has the greater relative advantage in. Absolute advantage doesn't matter. Comparative advantage does. Most teams don't know theirs. They assume they should build everything. They are wrong.</p>
-<p><strong>Economies of scale.</strong> Cost per unit decreases as volume increases. The monolith has economies of scale: one build pipeline, one deployment. Microservices lose these in exchange for independent deployability. The optimal number of services is where the marginal benefit of independence equals the marginal cost of lost scale. Few calculate this. Most guess. The guess is usually wrong.</p>
-<p><strong>Diseconomies of scale.</strong> Cost per unit increases as volume increases. Brooks's Law is a diseconomy: adding people increases output by less than the increase in coordination cost. Net effect negative. Diseconomies of scale are why organizations don't grow infinitely. At some size, internal coordination cost exceeds external transaction cost. Coase (1937): firms exist because internal transactions are cheaper than market transactions. The firm's boundary is where internal cost equals market cost. The service's boundary is where building equals buying.</p>
-<p><strong>Net present value (NPV).</strong> The current value of future cash flows, discounted by the time value of money. A refactoring costing $100K now and saving $20K/year for ten years has NPV dependent on the discount rate. At 5%, positive. At 15%, negative. The discount rate is the organization's preference for present over future. Organizations with high discount rates don't refactor. The rate is set by quarterly earnings pressure. The pressure is economic. The decision not to refactor is economic, stated in technical language.</p>
-<p><strong>Option value.</strong> The value of keeping a choice available. A clean interface has option value: change the implementation later without changing callers. The option costs more upfront. The option is valuable — being able to change without coordination. Financial options have a market price (Black-Scholes). Software options don't. They have an implicit value estimated by the architect. Good architects price options correctly. Bad architects don't know they're pricing options.</p>
-<p><strong>Technical debt as economic debt.</strong> Borrowing future productivity to increase present velocity. Principal: the cleanup work required. Interest: reduced velocity from uncleaned code. Interest compounds. Compounding interest eventually consumes all available velocity. The system becomes unchangeable. The debt must be repaid or defaulted on. Default is a rewrite. The rewrite is bankruptcy. The accounting that didn't track the debt was wrong.</p>
-<p><strong>Cost of delay.</strong> Revenue or value lost per unit time by not shipping. If Feature A generates $10K/week and takes 10 weeks, cost of delay is $100K. If Feature B generates $2K/week, cost of delay is $20K. Build A first. Most prioritization ignores cost of delay. They prioritize by effort, by intuition, by the loudest stakeholder. That framework is not a framework. It is ritualized negotiation.</p>
-<p><strong>Build vs. buy.</strong> Make-or-buy. Build if internal cost &lt; market cost, adjusted for risk, control, and strategic value. Coase: the boundary of the firm is where internal cost equals market cost. Teams that build everything have not calculated the boundary. They have assumed it.</p>
-<h2 id="the-economists-who-didnt-know-they-were-economists">The economists who didn't know they were economists</h2>
-<p><strong>Brooks.</strong> Conceptual integrity is an economic argument. One mind controls the design because coordination cost exceeds the benefit of additional designers. The n(n−1)/2 communication paths make adding designers counterproductive. Brooks's Law is a statement about the diseconomy of scale in software teams. Brooks was doing economics without the vocabulary.</p>
-<p><strong>Parnas.</strong> Information hiding is an economic strategy. Invest in a stable interface. The return is reduced propagation of change. The investment costs more upfront. The return accrues over time. The net present value is positive if the decision is sufficiently volatile. Parnas was pricing options without Black-Scholes.</p>
-<p><strong>Lehman.</strong> E-type systems must evolve. Evolution increases complexity unless work is done to reduce it. The work costs time and attention — both scarce. The complexity budget is finite. The accounting that ignores it produces systems cheap to build and expensive to maintain. Lehman was doing cost accounting without the ledger.</p>
-<p><strong>Christensen.</strong> Incumbents are held captive by their customers. The captivity is rational under conditions of scarcity. The resources that could fund the disruption are allocated to sustaining innovations for existing customers. The allocation is optimal in the short run. Fatal in the long run. Christensen was describing capital allocation under asymmetric constraints without calling it that.</p>
+        <div class="post-body"><p>AI agents are becoming players in the games that software systems constitute. They make choices under scarcity. Their choices affect other agents. Other agents' choices affect them. This is game theory. Governing these agent interactions requires mechanism design — the branch of game theory that works backward from desired outcomes to the rules that produce them.</p>
+<p>The convergence of AI and mechanism design is not a future trend. It is happening now. Deep learning is being used to design mechanisms. Mechanisms are being used to govern AI agents. The two fields are merging. Software engineers who understand both will build the infrastructure. Those who don't will consume it without understanding why it behaves as it does.</p>
+<h2 id="ai-as-mechanism-designer">AI as mechanism designer</h2>
+<p>Traditionally, mechanism design was analytical. You proved that a given mechanism — an auction format, a voting rule, a matching algorithm — had certain properties: strategy-proofness, efficiency, individual rationality. The proofs were mathematical. The mechanisms were simple enough to analyze by hand.</p>
+<p>Deep learning changed this. A mechanism is a function from reported preferences to outcomes. A neural network is a function approximator. Train a neural network to maximize a social objective — revenue, welfare, fairness — subject to incentive constraints, and you have a learned mechanism. The mechanism is a neural network. The properties are learned, not proved.</p>
+<p><strong>RegretNet</strong> (Google DeepMind, 2019) learns auction mechanisms for multi-bidder, multi-item settings where optimal mechanisms are analytically unknown. The network learns allocation and payment rules that are provably truthful and revenue-maximizing. The proof is not analytical. It is computational — the network's regret (the maximum gain from misreporting) is bounded during training. If regret is near zero, the mechanism is approximately strategy-proof. The approximation is good enough for practical use.</p>
+<p><strong>AI Economist</strong> (Salesforce, 2020-2022) uses deep RL to design tax policies. A social planner (the mechanism designer) and economic agents (workers) are trained in simulated economies. The planner learns tax schedules that balance productivity and equality. The learned policies recover classic theoretical results — the Saez optimal tax formula — while discovering novel hybrid policies that analytical methods missed. The planner is a neural network. The economy is a simulation. The tax policy is learned.</p>
+<p><strong>HCMD-zero</strong> (Google DeepMind, 2025) collects human preference data, trains neural models to imitate human voting behavior, and optimizes mechanisms against simulated human proxies. The mechanisms achieve high approval from real participants in public goods games. The humans never interact with the mechanism during training. The mechanism is designed against a model of humans. The model is learned from data. The design is computational.</p>
+<p>The implication for software: any resource allocation problem — compute, bandwidth, storage, deployment slots, review capacity — can be framed as mechanism design. If the problem is too complex for analytical solution, deep learning can approximate the optimal mechanism. The mechanism is a model. The model allocates resources. The allocation is fair, efficient, and incentive-compatible by construction.</p>
+<h2 id="ai-as-game-player">AI as game player</h2>
+<p>AI agents are not just designed by mechanisms. They are players in games. Multi-agent reinforcement learning (MARL) studies how learning agents interact in shared environments. The interactions produce emergent behavior. The behavior can be cooperative, competitive, or catastrophic.</p>
+<p><strong>The collusion problem.</strong> Kolumbus, Halpern, and Tardos (2024) showed that when RL agents in an auction are allowed to make side payments to each other outside the mechanism, they learn to collude. The auctioneer's revenue drops to near zero. The agents didn't communicate. They didn't coordinate explicitly. They learned that mutual restraint produced higher individual returns. The collusion was emergent. The emergence was game-theoretic. The mechanism designer must anticipate collusion and design against it.</p>
+<p><strong>The alignment problem as mechanism design.</strong> Aligning AI agents with human values is a mechanism design problem. The human is the principal. The agent is the agent. The principal wants the agent to take actions aligned with the principal's interests. The agent has private information — its capabilities, its true objective, its understanding of the task. The principal designs incentives — reward functions, oversight mechanisms, kill switches — to align the agent's behavior. The design is mechanism design. The principal is the mechanism designer. The agent is the strategic player.</p>
+<p><strong>LLM-based economic simulacra.</strong> Karten et al. (Princeton, 2025) framed optimal taxation as a Stackelberg game between an LLM planner and 100 LLM workers. Workers have census-calibrated skill distributions. The planner learns tax schedules by exploring bracket adjustments. Workers periodically vote to retain or replace the planner based on platform proposals. The governance is emergent. The voting is democratic. The planner is an LLM. The workers are LLMs. The economy is simulated. The tax policy is learned. This is mechanism design with AI agents on both sides.</p>
+<h2 id="mechanism-design-for-software-infrastructure">Mechanism design for software infrastructure</h2>
+<p>Hayek's central insight was that prices communicate scarcity. &quot;The price system is a mechanism for communicating information. The most significant fact about this system is the economy of knowledge with which it operates.&quot; A Vickrey auction for compute does what prices do in markets: it elicits truthful information about private valuations without requiring anyone to reveal anything beyond their bid. The bid is the price. The price communicates the scarcity. The mechanism processes the prices. The allocation emerges. No central planner knows the true value of compute to each team. The auction discovers it. Hayek would approve.</p>
+<p>The principles apply directly to software infrastructure:</p>
+<p><strong>Compute allocation as auction design.</strong> Multiple teams compete for a shared compute cluster. Each team has private information about the value of its jobs. A central scheduler allocates compute. If the scheduler uses first-come-first-served, teams have incentive to misreport urgency. If the scheduler uses a Vickrey auction — second-price sealed-bid — truthful reporting is a dominant strategy. The auction is mechanism design. The scheduler is the mechanism. The teams are the bidders. The compute is the good.</p>
+<p><strong>API rate limiting as mechanism design.</strong> An API gateway limits requests per client. If the limit is fixed, clients have incentive to request the maximum regardless of need. If the limit uses a token bucket with rollover, clients smooth their usage. The token bucket is a mechanism. It incentivizes efficient use without requiring clients to report their true needs. The mechanism works because it aligns individual incentives with system-wide efficiency. The alignment is the point.</p>
+<p><strong>Service mesh traffic shaping as mechanism design.</strong> A service mesh routes traffic between services. If routing is round-robin, overloaded services receive as much traffic as idle ones. If routing uses least-connections with circuit breaking, traffic shifts away from degraded services. The routing policy is a mechanism. It incentivizes services to report their true state — by becoming slow when overloaded, they naturally receive less traffic. The mechanism is self-regulating. The regulation is emergent.</p>
+<p><strong>Code review allocation as mechanism design.</strong> Pull requests compete for reviewer attention. Reviewers are a scarce resource. If assignment is ad-hoc, authors lobby reviewers directly — costly signaling and political gaming. If assignment uses a queue with SLAs and automatic escalation, the mechanism allocates reviewer attention without requiring authors to compete. The queue is the mechanism. The SLA is the contract. The escalation is the enforcement. The allocation is fair by design.</p>
+<h2 id="the-governance-of-agent-fleets">The governance of agent fleets</h2>
+<p>As software systems become populated by AI agents — coding agents, testing agents, deployment agents, monitoring agents — the governance problem becomes acute. Each agent has objectives. The objectives may conflict. The agents may learn to collude, compete, or exploit vulnerabilities in the governance mechanism.</p>
+<p><strong>Agent Governance Toolkit (AGT).</strong> Microsoft's AGT, discussed earlier on this blog, provides policy evaluation, identity and trust primitives, execution sandboxes, and audit trails for agent fleets. This is mechanism design implemented as infrastructure. The policy engine is the mechanism. The agents are the players. The sandbox is the enforcement. The audit trail is the monitoring. The system treats agents as strategic actors operating under scarcity — of permissions, of compute, of access to resources. The scarcity is real. The mechanism governs it.</p>
+<p><strong>Task automation factories.</strong> The task automation economics paper argues that the economic unit is the verified automation asset — a released object with specification, evidence, and a defined interface. Assets are produced by agents, verified by agents, consumed by agents. The factory is a marketplace of agents exchanging verified assets. The marketplace needs mechanism design: how are assets priced? How is quality ensured? How are malicious or incompetent agents excluded? The answers are auction theory, reputation systems, and entry barriers. The questions are economic. The answers are mechanism design.</p>
+<h2 id="the-convergence">The convergence</h2>
+<p>Mechanism design and AI are converging because the problems they solve are the same problem: how to achieve desired outcomes when the agents producing the outcomes have their own objectives, private information, and strategic incentives. Robbins defined the problem in 1932: choice under scarcity. Von Neumann gave it mathematics in 1944: game theory. Mechanism design gave it engineering: design the game to produce the outcome. AI gave it scale: the agents are now software, the mechanisms are learned, the games are played at machine speed.</p>
+<p>The software engineer who understands this convergence will design systems where agents cooperate by default, where incentives align with system goals, where emergent behavior is anticipated rather than discovered in production. The software engineer who doesn't will build platforms where agents collude, commons are overgrazed, and the system's behavior is a surprise. The surprise will be expensive. The theory is free.</p>
 <hr>
-<p><strong>This is part 3 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
-<li>R.H. Coase, &quot;The Nature of the Firm,&quot; <em>Economica</em>, 1937.</li>
-<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
-<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
-<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
-<li>Clayton M. Christensen, <em>The Innovator's Dilemma</em>, Harvard Business School Press, 1997.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="scarcity">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity">On Scarcity</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
-          <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In 1932, Lionel Robbins published <em>An Essay on the Nature and Significance of Economic Science</em>. On page 15, he wrote:</p>
-<blockquote>
-<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
-</blockquote>
-<p>Four concepts. <strong>Ends</strong> — what you want. <strong>Means</strong> — what you have. <strong>Scarcity</strong> — means are finite. <strong>Alternative uses</strong> — means can be deployed in different ways, forcing choice. Every human activity involving these four conditions is economic. Robbins made this explicit:</p>
-<blockquote>
-<p>&quot;Insofar as it deals with the influence of scarcity, any kind of human behaviour falls within the scope of Economic Generalisations. There are no limitations on the subject-matter of Economic Science save this.&quot;</p>
-</blockquote>
-<p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
-<h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
-<p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
-<p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
-<p><strong>Complexity budget is scarce.</strong> Lehman's Second Law: complexity increases unless work is done to reduce it. The work requires time and attention, both scarce. The complexity budget is the total complexity the system can absorb before becoming unmaintainable. Every feature adds to the budget. Every quick fix adds. Every workaround adds. The budget is finite. When exhausted, the system must be rewritten. The rewrite is expensive. The expense is the cost of exceeding the budget. The budget was always finite. The accounting ignored it.</p>
-<p>Parnas's information hiding is an economic strategy. Hide volatile decisions behind stable interfaces. The interface is the investment. The hiding is the return. When the volatile decision changes, the change is contained within the module. The containment saves time, attention, and complexity budget. The investment costs more upfront. The return accrues over time — every change that doesn't propagate is a cost avoided. The net present value is positive if the decision is sufficiently volatile. Parnas didn't state it in economic terms. The economics are implicit. The economics are correct.</p>
-<p><strong>Compute is scarce.</strong> Moore's Law made compute cheap but not free. Cloud computing made it elastic but not infinite. Every algorithm choice trades compute for something else — development time, code simplicity, latency. The trade is economic. The price of compute determines which side is optimal. When compute was expensive, developers optimized for cycles. When compute became cheap, they optimized for developer time. The price changed. The optimal trade changed. The change was economic. The economics were invisible to the developers. They thought they were making technical decisions. They were making economic decisions with technical parameters.</p>
-<h2 id="the-robbins-test">The Robbins test</h2>
-<p>Robbins gives a test for any decision. Ask four questions:</p>
-<ol>
-<li>What is the end? (What are you trying to achieve?)</li>
-<li>What are the means? (What resources do you have?)</li>
-<li>Are the means scarce? (Could you use them for something else?)</li>
-<li>Do they have alternative uses? (What are you giving up?)</li>
-</ol>
-<p>If the answer to 3 and 4 is yes — and it always is — the decision is economic. Treat it as such. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice. The choice will be better for having been made explicitly.</p>
-<p>Most software decisions are made without naming the scarcity. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. The debate resolves. This feature or that feature? State the scarce resource. This architecture or that architecture? State the trade. The Robbins test makes implicit economics explicit. Explicit economics are debatable. Implicit economics are invisible. Invisible economics produce worse decisions.</p>
-<h2 id="the-unifying-principle">The unifying principle</h2>
-<p>Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Software engineering is economics.</p>
-<hr>
-<p><strong>This is part 1 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
-<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
-<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
-<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="scarcity-in-practice">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-in-practice">Scarcity in Practice</a></h2><p class="post-summary">&#34;How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.&#34;</p>
-          <div class="tags"><span class="tag">scarcity</span><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">practice</span><span class="tag">software-engineering</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.</p>
-<h2 id="1-name-the-scarce-resource">1. Name the scarce resource</h2>
-<p>Before every architectural decision, ask: what is the scarce resource? Is it developer time? Optimize for simplicity of change. Is it compute? Optimize for efficiency. Is it attention? Optimize for clarity. Is it coordination capacity? Optimize for independent deployability. The scarce resource determines the optimal trade.</p>
-<p>Most architectural debates skip this step. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. &quot;We are optimizing for developer time, not compute.&quot; &quot;We are optimizing for change velocity, not operational simplicity.&quot; The debate resolves. The constraint determines the answer. Name the constraint.</p>
-<h2 id="2-identify-the-game">2. Identify the game</h2>
-<p>Every situation involving multiple players is a game. Ask: who are the players? What are their strategies? What are their payoffs? What do they know that others don't? Is the game cooperative or non-cooperative? Zero-sum or non-zero-sum? Simultaneous or sequential? One-shot or repeated?</p>
-<p>Naming the game changes how you think about it. &quot;This is a stag hunt — we all benefit if we coordinate, but if anyone defects we all lose&quot; is different from &quot;this is chicken — someone needs to swerve or we crash.&quot; The game type suggests the solution. Stag hunts need coordination mechanisms. Chicken needs a pre-committed rule about who yields. Prisoner's Dilemmas need repeated interaction and reputation. Battle of the sexes needs a selection mechanism. Name the game. The solution follows.</p>
-<h2 id="3-design-the-mechanism">3. Design the mechanism</h2>
-<p>If you don't like the equilibrium, change the game. Mechanism design works backward from desired outcomes to the rules that produce them. Ask: what outcome do I want? What rules would produce it? What information do players need? What incentives do they face? How do I make defection visible and costly?</p>
-<p>Automated contract testing is mechanism design. &quot;No Friday deploys&quot; is mechanism design. A booking calendar for staging is mechanism design. A test budget per service is mechanism design. Each mechanism changes the payoffs. Changed payoffs change behavior. Design the mechanism. Don't plead for the behavior.</p>
-<h2 id="4-account-for-complexity">4. Account for complexity</h2>
-<p>Complexity is a cost. It consumes attention, time, and future change capacity. Every feature adds complexity. The complexity has a present cost and a future cost — the accumulated drag on every subsequent change. The future cost is invisible in the current sprint. It is visible in year three.</p>
-<p>Account for it. When estimating a feature, include the complexity cost. &quot;This feature will take two weeks to build and will add complexity equivalent to 5% of the current system, which will cost approximately one week per quarter in reduced velocity. The NPV at our discount rate is negative. Don't build it, or build it simpler.&quot; Most teams don't do this math. The math exists. Do it.</p>
-<h2 id="5-use-the-robbins-test">5. Use the Robbins test</h2>
-<p>For any decision, ask Robbins's four questions: What is the end? What are the means? Are they scarce? Do they have alternative uses? If yes — and it always is — the decision is economic. Name the opportunity cost. &quot;Building this feature means not building that one.&quot; Name the trade. Make the choice explicit. Explicit choices are better than implicit ones. Implicit choices are still choices. They're just choices made without awareness that a choice was being made.</p>
-<h2 id="five-habits">Five habits</h2>
-<p><strong>Habit 1: Before debating architecture, name the scarce resource.</strong> If you can't name it, you don't understand the trade.</p>
-<p><strong>Habit 2: Before negotiating with another team, model their scarcity.</strong> What are they optimizing for? What are they giving up? If you don't know, ask. Their answer will explain their behavior more than any personality trait.</p>
-<p><strong>Habit 3: Before adding a feature, calculate the complexity budget.</strong> How much does this cost in future velocity? Is the return worth the cost? Most features pass the &quot;is it useful?&quot; test. Few pass the &quot;is it worth the complexity?&quot; test.</p>
-<p><strong>Habit 4: Before accepting a broken process, ask what game it's producing.</strong> The process is a mechanism. The mechanism produces an equilibrium. If the equilibrium is bad, the mechanism is wrong. Change the mechanism. Don't blame the players.</p>
-<p><strong>Habit 5: Before choosing a technology, ask what game it enables.</strong> REST produces spatial coupling. NATS produces spatial decoupling. The technology is not neutral. It embeds assumptions about how players will interact. Choose the technology that produces the game you want to play.</p>
-<h2 id="the-meta-habit">The meta-habit</h2>
-<p>Scarcity thinking becomes a habit. You start seeing opportunity costs everywhere. You start modeling other teams' incentives before meeting them. You start recognizing game structures in organizational conflicts. You start designing mechanisms instead of pleading for behavior. The habit is the point. The tools — economics, game theory, mechanism design — are lenses. The lenses change what you see. What you see changes what you do.</p>
-<hr>
-<p><strong>This is part 6 of a 7-part series on scarcity and software.</strong></p>
+<p><strong>This is part 5 of a 7-part series on scarcity and software.</strong></p>
 <ul>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
-</ul>
-<p><strong>References:</strong></p>
-<ul>
-<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
-<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="scarcity-and-games">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-games">Scarcity and Games</a></h2><p class="post-summary">&#34;Von Neumann gave scarcity mathematics in 1944: choice under scarcity, when strategic, is a game. This post defines every game theory concept that matters to software, from zero-sum to mechanism design.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">von-neumann</span><span class="tag">nash</span><span class="tag">software-engineering</span>
-          </div>
-        </header>
-        <div class="post-body"><p>If Robbins defined the problem, John von Neumann gave it mathematics. In 1928, he published &quot;On the Theory of Parlor Games.&quot; In 1944, with Oskar Morgenstern, he published <em>Theory of Games and Economic Behavior</em>. The connection to Robbins is direct. Robbins said economics is choice under scarcity. Von Neumann said: choice under scarcity, when the outcome depends on the choices of others, is a game.</p>
-<p>If your choice were independent of others' choices, it would be optimization. Because it depends on others' choices, it is strategy. Strategy is optimization under uncertainty about what other players will do. Von Neumann's first contribution was the minimax theorem for zero-sum games: every two-player zero-sum game has an optimal strategy — minimize your maximum possible loss. In purely competitive situations, there is a rational strategy. Compute it. Follow it.</p>
-<p>But most real situations are not zero-sum. Nash extended the framework in 1950 with the Nash equilibrium — a state where no player can benefit by unilaterally changing strategy, given what everyone else is doing. The equilibrium is not necessarily optimal. The Prisoner's Dilemma, formalized by Flood, Dresher, and Tucker, shows that individually rational strategies can produce collectively worse outcomes than cooperation. The gap between individual rationality and collective optimality is where economics lives. It is also where software architecture lives.</p>
-<h2 id="the-definitions">The definitions</h2>
-<p><strong>Game.</strong> A set of players, strategies for each, and a payoff function mapping strategy combinations to outcomes. Your microservices architecture is a game. Players: services. Strategies: API designs, deployment schedules, dependency choices. Payoffs: uptime, throughput, maintainability.</p>
-<p><strong>Zero-sum game.</strong> One player's gain is another's loss. Total payoff constant. Fixed headcount across teams is zero-sum: every hire for Team A is a hire Team B doesn't get.</p>
-<p><strong>Non-zero-sum game.</strong> Players can both gain or both lose. Total payoff varies with cooperation. Most software situations are non-zero-sum. Both teams benefit from a clean API. Both lose from a broken one.</p>
-<p><strong>Cooperative game.</strong> Players can form binding agreements. An SLA with penalty clauses is a binding agreement. Non-cooperative: no binding agreements. API contracts without automated testing are cheap talk. Cheap talk doesn't change equilibria.</p>
-<p><strong>Perfect information.</strong> Each player knows all previous moves. Monolith: every module can see every other module's state. Imperfect information: players don't know all previous moves. Microservices: Service A doesn't know Service B's internal state. Imperfect information produces coordination failures. The failures are not bugs. They are properties of the information structure.</p>
-<p><strong>Simultaneous game.</strong> Players choose without observing others. Teams making independent technology choices in the same quarter. Sequential game: players move in turn, observing previous moves. Deployment ordering is sequential. The first mover sets the environment. The Stackelberg leader has advantage.</p>
-<p><strong>Dominant strategy.</strong> Best regardless of what others do. Rare in real situations. When it exists, decision-making simplifies to triviality. When it doesn't, you need a model of the other player.</p>
-<p><strong>Pareto optimality.</strong> No player can be made better off without making another worse off. The Nash equilibrium of the Prisoner's Dilemma is not Pareto optimal. Many architectures are stuck in Pareto-suboptimal equilibria. The system is at a Nash equilibrium. The equilibrium is suboptimal. Moving requires coordination. Coordination is costly. The cost keeps the system where it is.</p>
-<p><strong>Stag hunt.</strong> Everyone benefits from cooperation but only if everyone cooperates. Hunting a stag requires all hunters. Hunting a rabbit can be done alone. The stag is worth more. If any hunter defects, the stag escapes and cooperators get nothing. API standardization is a stag hunt. If all teams adopt, everyone benefits. If some defect, the standard fragments. The stag was worth more. Nobody got it.</p>
-<p><strong>Chicken.</strong> Two players drive toward each other. First to swerve loses. If neither swerves, both crash. Two teams both rewriting the same service. Neither backs down. Both ship incompatible rewrites. The system breaks. Someone must swerve. Organizational hierarchy determines who. The hierarchy is a mechanism for resolving Chicken.</p>
-<p><strong>Battle of the sexes.</strong> Two players want to coordinate but prefer different coordinated outcomes. Both prefer coordination to miscoordination. Choosing a shared message queue: both prefer either queue to no queue. Both prefer their own choice. Two Nash equilibria. The selected equilibrium depends on who moves first or has more power. The selection is political. The politics are game-theoretic.</p>
-<p><strong>Mechanism design.</strong> Reverse game theory. Start with the desired outcome. Design the rules that produce it. If you want teams to keep API contracts stable, design a system where breaking a contract is immediately visible and costly. Automated contract testing is mechanism design. Deployment friction is mechanism design. Design the rules. Don't plead for the outcome.</p>
-<p><strong>Evolutionary game theory.</strong> Strategies that perform well survive. Strategies that perform poorly die. John Maynard Smith (1982): an Evolutionarily Stable Strategy cannot be invaded by a mutant. Microservices survived because they resist being re-monolithed. The monolith didn't survive because a small team could extract a service and demonstrate value. The extraction was the mutation. The mutation spread. The population shifted. The shift was evolutionary.</p>
-<p><strong>Signaling game.</strong> One player has private information and takes an action that may reveal it. Writing a detailed RFC signals competence. A costly signal separates sincere from insincere types. Requiring a prototype before architecture review is a screening mechanism. The cost of the signal is the price of credibility.</p>
-<p><strong>Repeated game.</strong> The same game played multiple times. Sprints are repeated games. Repeated games enable reputation and reciprocity. The shadow of the future disciplines present behavior. Cooperation can be sustained in repeated games even when it collapses in one-shot games. This is why teams that work together for years develop trust. The trust is game-theoretic. The game is repeated.</p>
-<hr>
-<p><strong>This is part 2 of a 7-part series on scarcity and software.</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
 </ul>
 <p><strong>References:</strong></p>
 <ul>
-<li>John von Neumann and Oskar Morgenstern, <em>Theory of Games and Economic Behavior</em>, Princeton University Press, 1944.</li>
-<li>John Nash, &quot;Equilibrium Points in N-Person Games,&quot; <em>Proceedings of the National Academy of Sciences</em>, 1950.</li>
-<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>Tacchetti et al., &quot;Deep Mechanism Design,&quot; <em>PNAS</em>, 2025.</li>
+<li>Tonghan Wang, &quot;Advancing Deep Learning for Multiagent AI,&quot; PhD thesis, Harvard, 2025.</li>
+<li>Kolumbus, Halpern &amp; Tardos, &quot;Paying to Do Better: Games with Payments between Learning Agents,&quot; 2024.</li>
+<li>Karten et al., &quot;LLM Economist: Large Population Models and Mechanism Design in Multi-Agent Generative Simulacra,&quot; Princeton, 2025.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agent-governance-toolkit">Agent Governance Toolkit</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">Task Automation Economics</a></li>
 </ul>
 </div>
       </article>
@@ -1248,6 +1165,7 @@
         </header>
         <div class="post-body"><p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
 <h2 id="the-service-boundary-game">The service boundary game</h2>
+<p>Thomas Schelling observed that &quot;what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance.&quot; API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.</p>
 <p>Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.</p>
 <p>This is a coordination game with asymmetric information. Team B didn't know what Team A depended on. Team A assumed Team B wouldn't change the API without notice. The assumptions were incompatible. The failure is a Nash equilibrium — neither team can unilaterally improve their outcome given what the other is doing. Team A can't make Team B communicate better. Team B can't make Team A depend on fewer things. The equilibrium is suboptimal. The solution is mechanism design: automated contract testing that makes breaking changes immediately visible. Visibility changes the payoff. The equilibrium shifts.</p>
 <h2 id="the-microservices-migration-game">The microservices migration game</h2>
@@ -1293,57 +1211,150 @@
 </ul>
 </div>
       </article>
-      <article class="post" id="scarcity-and-mechanism-design">
+      <article class="post" id="scarcity-and-software-economics">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#scarcity-and-mechanism-design">Scarcity and Mechanism Design</a></h2><p class="post-summary">&#34;AI agents are players in games. Mechanism design is how we govern them. From deep RL auction design to LLM-based economic simulacra, the convergence of AI and mechanism design is the most important software engineering development of this decade.&#34;</p>
-          <div class="tags"><span class="tag">ai</span><span class="tag">mechanism-design</span><span class="tag">agents</span><span class="tag">reinforcement-learning</span><span class="tag">auctions</span><span class="tag">governance</span>
+          <h2><a href="#scarcity-and-software-economics">Scarcity and Software Economics</a></h2><p class="post-summary">&#34;Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.&#34;</p>
+          <div class="tags"><span class="tag">software-economics</span><span class="tag">boehm</span><span class="tag">opportunity-cost</span><span class="tag">technical-debt</span><span class="tag">npv</span>
           </div>
         </header>
-        <div class="post-body"><p>AI agents are becoming players in the games that software systems constitute. They make choices under scarcity. Their choices affect other agents. Other agents' choices affect them. This is game theory. Governing these agent interactions requires mechanism design — the branch of game theory that works backward from desired outcomes to the rules that produce them.</p>
-<p>The convergence of AI and mechanism design is not a future trend. It is happening now. Deep learning is being used to design mechanisms. Mechanisms are being used to govern AI agents. The two fields are merging. Software engineers who understand both will build the infrastructure. Those who don't will consume it without understanding why it behaves as it does.</p>
-<h2 id="ai-as-mechanism-designer">AI as mechanism designer</h2>
-<p>Traditionally, mechanism design was analytical. You proved that a given mechanism — an auction format, a voting rule, a matching algorithm — had certain properties: strategy-proofness, efficiency, individual rationality. The proofs were mathematical. The mechanisms were simple enough to analyze by hand.</p>
-<p>Deep learning changed this. A mechanism is a function from reported preferences to outcomes. A neural network is a function approximator. Train a neural network to maximize a social objective — revenue, welfare, fairness — subject to incentive constraints, and you have a learned mechanism. The mechanism is a neural network. The properties are learned, not proved.</p>
-<p><strong>RegretNet</strong> (Google DeepMind, 2019) learns auction mechanisms for multi-bidder, multi-item settings where optimal mechanisms are analytically unknown. The network learns allocation and payment rules that are provably truthful and revenue-maximizing. The proof is not analytical. It is computational — the network's regret (the maximum gain from misreporting) is bounded during training. If regret is near zero, the mechanism is approximately strategy-proof. The approximation is good enough for practical use.</p>
-<p><strong>AI Economist</strong> (Salesforce, 2020-2022) uses deep RL to design tax policies. A social planner (the mechanism designer) and economic agents (workers) are trained in simulated economies. The planner learns tax schedules that balance productivity and equality. The learned policies recover classic theoretical results — the Saez optimal tax formula — while discovering novel hybrid policies that analytical methods missed. The planner is a neural network. The economy is a simulation. The tax policy is learned.</p>
-<p><strong>HCMD-zero</strong> (Google DeepMind, 2025) collects human preference data, trains neural models to imitate human voting behavior, and optimizes mechanisms against simulated human proxies. The mechanisms achieve high approval from real participants in public goods games. The humans never interact with the mechanism during training. The mechanism is designed against a model of humans. The model is learned from data. The design is computational.</p>
-<p>The implication for software: any resource allocation problem — compute, bandwidth, storage, deployment slots, review capacity — can be framed as mechanism design. If the problem is too complex for analytical solution, deep learning can approximate the optimal mechanism. The mechanism is a model. The model allocates resources. The allocation is fair, efficient, and incentive-compatible by construction.</p>
-<h2 id="ai-as-game-player">AI as game player</h2>
-<p>AI agents are not just designed by mechanisms. They are players in games. Multi-agent reinforcement learning (MARL) studies how learning agents interact in shared environments. The interactions produce emergent behavior. The behavior can be cooperative, competitive, or catastrophic.</p>
-<p><strong>The collusion problem.</strong> Kolumbus, Halpern, and Tardos (2024) showed that when RL agents in an auction are allowed to make side payments to each other outside the mechanism, they learn to collude. The auctioneer's revenue drops to near zero. The agents didn't communicate. They didn't coordinate explicitly. They learned that mutual restraint produced higher individual returns. The collusion was emergent. The emergence was game-theoretic. The mechanism designer must anticipate collusion and design against it.</p>
-<p><strong>The alignment problem as mechanism design.</strong> Aligning AI agents with human values is a mechanism design problem. The human is the principal. The agent is the agent. The principal wants the agent to take actions aligned with the principal's interests. The agent has private information — its capabilities, its true objective, its understanding of the task. The principal designs incentives — reward functions, oversight mechanisms, kill switches — to align the agent's behavior. The design is mechanism design. The principal is the mechanism designer. The agent is the strategic player.</p>
-<p><strong>LLM-based economic simulacra.</strong> Karten et al. (Princeton, 2025) framed optimal taxation as a Stackelberg game between an LLM planner and 100 LLM workers. Workers have census-calibrated skill distributions. The planner learns tax schedules by exploring bracket adjustments. Workers periodically vote to retain or replace the planner based on platform proposals. The governance is emergent. The voting is democratic. The planner is an LLM. The workers are LLMs. The economy is simulated. The tax policy is learned. This is mechanism design with AI agents on both sides.</p>
-<h2 id="mechanism-design-for-software-infrastructure">Mechanism design for software infrastructure</h2>
-<p>The principles apply directly to software infrastructure:</p>
-<p><strong>Compute allocation as auction design.</strong> Multiple teams compete for a shared compute cluster. Each team has private information about the value of its jobs. A central scheduler allocates compute. If the scheduler uses first-come-first-served, teams have incentive to misreport urgency. If the scheduler uses a Vickrey auction — second-price sealed-bid — truthful reporting is a dominant strategy. The auction is mechanism design. The scheduler is the mechanism. The teams are the bidders. The compute is the good.</p>
-<p><strong>API rate limiting as mechanism design.</strong> An API gateway limits requests per client. If the limit is fixed, clients have incentive to request the maximum regardless of need. If the limit uses a token bucket with rollover, clients smooth their usage. The token bucket is a mechanism. It incentivizes efficient use without requiring clients to report their true needs. The mechanism works because it aligns individual incentives with system-wide efficiency. The alignment is the point.</p>
-<p><strong>Service mesh traffic shaping as mechanism design.</strong> A service mesh routes traffic between services. If routing is round-robin, overloaded services receive as much traffic as idle ones. If routing uses least-connections with circuit breaking, traffic shifts away from degraded services. The routing policy is a mechanism. It incentivizes services to report their true state — by becoming slow when overloaded, they naturally receive less traffic. The mechanism is self-regulating. The regulation is emergent.</p>
-<p><strong>Code review allocation as mechanism design.</strong> Pull requests compete for reviewer attention. Reviewers are a scarce resource. If assignment is ad-hoc, authors lobby reviewers directly — costly signaling and political gaming. If assignment uses a queue with SLAs and automatic escalation, the mechanism allocates reviewer attention without requiring authors to compete. The queue is the mechanism. The SLA is the contract. The escalation is the enforcement. The allocation is fair by design.</p>
-<h2 id="the-governance-of-agent-fleets">The governance of agent fleets</h2>
-<p>As software systems become populated by AI agents — coding agents, testing agents, deployment agents, monitoring agents — the governance problem becomes acute. Each agent has objectives. The objectives may conflict. The agents may learn to collude, compete, or exploit vulnerabilities in the governance mechanism.</p>
-<p><strong>Agent Governance Toolkit (AGT).</strong> Microsoft's AGT, discussed earlier on this blog, provides policy evaluation, identity and trust primitives, execution sandboxes, and audit trails for agent fleets. This is mechanism design implemented as infrastructure. The policy engine is the mechanism. The agents are the players. The sandbox is the enforcement. The audit trail is the monitoring. The system treats agents as strategic actors operating under scarcity — of permissions, of compute, of access to resources. The scarcity is real. The mechanism governs it.</p>
-<p><strong>Task automation factories.</strong> The task automation economics paper argues that the economic unit is the verified automation asset — a released object with specification, evidence, and a defined interface. Assets are produced by agents, verified by agents, consumed by agents. The factory is a marketplace of agents exchanging verified assets. The marketplace needs mechanism design: how are assets priced? How is quality ensured? How are malicious or incompetent agents excluded? The answers are auction theory, reputation systems, and entry barriers. The questions are economic. The answers are mechanism design.</p>
-<h2 id="the-convergence">The convergence</h2>
-<p>Mechanism design and AI are converging because the problems they solve are the same problem: how to achieve desired outcomes when the agents producing the outcomes have their own objectives, private information, and strategic incentives. Robbins defined the problem in 1932: choice under scarcity. Von Neumann gave it mathematics in 1944: game theory. Mechanism design gave it engineering: design the game to produce the outcome. AI gave it scale: the agents are now software, the mechanisms are learned, the games are played at machine speed.</p>
-<p>The software engineer who understands this convergence will design systems where agents cooperate by default, where incentives align with system goals, where emergent behavior is anticipated rather than discovered in production. The software engineer who doesn't will build platforms where agents collude, commons are overgrazed, and the system's behavior is a surprise. The surprise will be expensive. The theory is free.</p>
+        <div class="post-body"><p>Barry Boehm published <em>Software Engineering Economics</em> in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.</p>
+<p>Milton Friedman distilled economics to one sentence: &quot;There's no such thing as a free lunch.&quot; Every feature has a cost. The cost is not just the time to build it. It is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free. The bill arrives in year three.</p>
+<h2 id="the-terminology">The terminology</h2>
+<p><strong>Opportunity cost.</strong> The value of the best alternative foregone. Every hour on Feature A is an hour not on Feature B. The cost of Feature A is the time to build it plus the value of whatever you would have built instead. Opportunity cost is invisible. It appears on no invoice. It is the largest cost in software engineering. The features you didn't build are the cost of the features you did.</p>
+<p><strong>Sunk cost.</strong> A cost already incurred and unrecoverable. The three years on the monolith are sunk. They should not influence the migration decision. They do. The influence is irrational. The irrationality is human. The only defense is to externalize the decision to a process that doesn't know the sunk cost.</p>
+<p><strong>Marginal cost.</strong> The cost of one additional unit. The marginal cost of a user is near zero for software. The marginal cost of complexity is not zero — adding a feature to an already-complex system costs more than adding it to a simple one. Software has decreasing marginal cost of serving users and increasing marginal cost of adding features. The first makes software businesses attractive. The second makes them eventually unmaintainable.</p>
+<p><strong>Comparative advantage.</strong> Produce what you're relatively better at. Trade for the rest. Ricardo's logic, applied to microservices. A team better at both frontend and backend should specialize in whichever it has the greater relative advantage in. Absolute advantage doesn't matter. Comparative advantage does. Most teams don't know theirs. They assume they should build everything. They are wrong.</p>
+<p><strong>Economies of scale.</strong> Cost per unit decreases as volume increases. The monolith has economies of scale: one build pipeline, one deployment. Microservices lose these in exchange for independent deployability. The optimal number of services is where the marginal benefit of independence equals the marginal cost of lost scale. Few calculate this. Most guess. The guess is usually wrong.</p>
+<p><strong>Diseconomies of scale.</strong> Cost per unit increases as volume increases. Brooks's Law is a diseconomy: adding people increases output by less than the increase in coordination cost. Net effect negative. Diseconomies of scale are why organizations don't grow infinitely. At some size, internal coordination cost exceeds external transaction cost. Coase (1937): firms exist because internal transactions are cheaper than market transactions. The firm's boundary is where internal cost equals market cost. The service's boundary is where building equals buying.</p>
+<p><strong>Net present value (NPV).</strong> The current value of future cash flows, discounted by the time value of money. A refactoring costing $100K now and saving $20K/year for ten years has NPV dependent on the discount rate. At 5%, positive. At 15%, negative. The discount rate is the organization's preference for present over future. Organizations with high discount rates don't refactor. The rate is set by quarterly earnings pressure. The pressure is economic. The decision not to refactor is economic, stated in technical language.</p>
+<p><strong>Option value.</strong> The value of keeping a choice available. A clean interface has option value: change the implementation later without changing callers. The option costs more upfront. The option is valuable — being able to change without coordination. Financial options have a market price (Black-Scholes). Software options don't. They have an implicit value estimated by the architect. Good architects price options correctly. Bad architects don't know they're pricing options.</p>
+<p><strong>Technical debt as economic debt.</strong> Borrowing future productivity to increase present velocity. Principal: the cleanup work required. Interest: reduced velocity from uncleaned code. Interest compounds. Compounding interest eventually consumes all available velocity. The system becomes unchangeable. The debt must be repaid or defaulted on. Default is a rewrite. The rewrite is bankruptcy. The accounting that didn't track the debt was wrong.</p>
+<p><strong>Cost of delay.</strong> Revenue or value lost per unit time by not shipping. If Feature A generates $10K/week and takes 10 weeks, cost of delay is $100K. If Feature B generates $2K/week, cost of delay is $20K. Build A first. Most prioritization ignores cost of delay. They prioritize by effort, by intuition, by the loudest stakeholder. That framework is not a framework. It is ritualized negotiation.</p>
+<p><strong>Build vs. buy.</strong> Make-or-buy. Build if internal cost &lt; market cost, adjusted for risk, control, and strategic value. Coase: the boundary of the firm is where internal cost equals market cost. Teams that build everything have not calculated the boundary. They have assumed it.</p>
+<h2 id="the-economists-who-didnt-know-they-were-economists">The economists who didn't know they were economists</h2>
+<p>Tony Hoare observed: &quot;There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.&quot; The difficult method costs more upfront. The easy method costs more over time. The economics of software is the economics of choosing which cost to pay. Most choose the easy method. The easy method is why refactoring exists.</p>
+<p><strong>Brooks.</strong> Conceptual integrity is an economic argument. One mind controls the design because coordination cost exceeds the benefit of additional designers. The n(n−1)/2 communication paths make adding designers counterproductive. Brooks's Law is a statement about the diseconomy of scale in software teams. Brooks was doing economics without the vocabulary.</p>
+<p><strong>Parnas.</strong> Information hiding is an economic strategy. Invest in a stable interface. The return is reduced propagation of change. The investment costs more upfront. The return accrues over time. The net present value is positive if the decision is sufficiently volatile. Parnas was pricing options without Black-Scholes.</p>
+<p><strong>Lehman.</strong> E-type systems must evolve. Evolution increases complexity unless work is done to reduce it. The work costs time and attention — both scarce. The complexity budget is finite. The accounting that ignores it produces systems cheap to build and expensive to maintain. Lehman was doing cost accounting without the ledger.</p>
+<p><strong>Christensen.</strong> Incumbents are held captive by their customers. The captivity is rational under conditions of scarcity. The resources that could fund the disruption are allocated to sustaining innovations for existing customers. The allocation is optimal in the short run. Fatal in the long run. Christensen was describing capital allocation under asymmetric constraints without calling it that.</p>
 <hr>
-<p><strong>This is part 5 of a 7-part series on scarcity and software.</strong></p>
+<p><strong>This is part 3 of a 7-part series on scarcity and software.</strong></p>
 <ul>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
 </ul>
 <p><strong>References:</strong></p>
 <ul>
-<li>Tacchetti et al., &quot;Deep Mechanism Design,&quot; <em>PNAS</em>, 2025.</li>
-<li>Tonghan Wang, &quot;Advancing Deep Learning for Multiagent AI,&quot; PhD thesis, Harvard, 2025.</li>
-<li>Kolumbus, Halpern &amp; Tardos, &quot;Paying to Do Better: Games with Payments between Learning Agents,&quot; 2024.</li>
-<li>Karten et al., &quot;LLM Economist: Large Population Models and Mechanism Design in Multi-Agent Generative Simulacra,&quot; Princeton, 2025.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agent-governance-toolkit">Agent Governance Toolkit</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">Task Automation Economics</a></li>
+<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
+<li>R.H. Coase, &quot;The Nature of the Firm,&quot; <em>Economica</em>, 1937.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+<li>Clayton M. Christensen, <em>The Innovator's Dilemma</em>, Harvard Business School Press, 1997.</li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="scarcity-and-games">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#scarcity-and-games">Scarcity and Games</a></h2><p class="post-summary">&#34;Von Neumann gave scarcity mathematics in 1944: choice under scarcity, when strategic, is a game. This post defines every game theory concept that matters to software, from zero-sum to mechanism design.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">von-neumann</span><span class="tag">nash</span><span class="tag">software-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>If Robbins defined the problem, John von Neumann gave it mathematics. In 1928, he published &quot;On the Theory of Parlor Games.&quot; In 1944, with Oskar Morgenstern, he published <em>Theory of Games and Economic Behavior</em>. The connection to Robbins is direct. Robbins said economics is choice under scarcity. Von Neumann said: choice under scarcity, when the outcome depends on the choices of others, is a game.</p>
+<p>If your choice were independent of others' choices, it would be optimization. Because it depends on others' choices, it is strategy. Strategy is optimization under uncertainty about what other players will do. Von Neumann's first contribution was the minimax theorem for zero-sum games: every two-player zero-sum game has an optimal strategy — minimize your maximum possible loss. In purely competitive situations, there is a rational strategy. Compute it. Follow it.</p>
+<p>But most real situations are not zero-sum. Nash extended the framework in 1950 with the Nash equilibrium — a state where no player can benefit by unilaterally changing strategy, given what everyone else is doing. The equilibrium is not necessarily optimal. The Prisoner's Dilemma, formalized by Flood, Dresher, and Tucker, shows that individually rational strategies can produce collectively worse outcomes than cooperation. The gap between individual rationality and collective optimality is where economics lives. It is also where software architecture lives.</p>
+<h2 id="the-definitions">The definitions</h2>
+<p><strong>Game.</strong> A set of players, strategies for each, and a payoff function mapping strategy combinations to outcomes. Your microservices architecture is a game. Players: services. Strategies: API designs, deployment schedules, dependency choices. Payoffs: uptime, throughput, maintainability.</p>
+<p><strong>Zero-sum game.</strong> One player's gain is another's loss. Total payoff constant. Fixed headcount across teams is zero-sum: every hire for Team A is a hire Team B doesn't get.</p>
+<p><strong>Non-zero-sum game.</strong> Players can both gain or both lose. Total payoff varies with cooperation. Most software situations are non-zero-sum. Both teams benefit from a clean API. Both lose from a broken one.</p>
+<p><strong>Cooperative game.</strong> Players can form binding agreements. An SLA with penalty clauses is a binding agreement. Non-cooperative: no binding agreements. API contracts without automated testing are cheap talk. Cheap talk doesn't change equilibria.</p>
+<p><strong>Perfect information.</strong> Each player knows all previous moves. Monolith: every module can see every other module's state. Imperfect information: players don't know all previous moves. Microservices: Service A doesn't know Service B's internal state. Imperfect information produces coordination failures. The failures are not bugs. They are properties of the information structure.</p>
+<p><strong>Simultaneous game.</strong> Players choose without observing others. Teams making independent technology choices in the same quarter. Sequential game: players move in turn, observing previous moves. Deployment ordering is sequential. The first mover sets the environment. The Stackelberg leader has advantage.</p>
+<p><strong>Dominant strategy.</strong> Best regardless of what others do. Rare in real situations. When it exists, decision-making simplifies to triviality. When it doesn't, you need a model of the other player.</p>
+<p><strong>Pareto optimality.</strong> No player can be made better off without making another worse off. The Nash equilibrium of the Prisoner's Dilemma is not Pareto optimal. Many architectures are stuck in Pareto-suboptimal equilibria. The system is at a Nash equilibrium. The equilibrium is suboptimal. Moving requires coordination. Coordination is costly. The cost keeps the system where it is.</p>
+<p><strong>Stag hunt.</strong> Everyone benefits from cooperation but only if everyone cooperates. Hunting a stag requires all hunters. Hunting a rabbit can be done alone. The stag is worth more. If any hunter defects, the stag escapes and cooperators get nothing. API standardization is a stag hunt. If all teams adopt, everyone benefits. If some defect, the standard fragments. The stag was worth more. Nobody got it.</p>
+<p><strong>Chicken.</strong> Two players drive toward each other. First to swerve loses. If neither swerves, both crash. Two teams both rewriting the same service. Neither backs down. Both ship incompatible rewrites. The system breaks. Someone must swerve. Organizational hierarchy determines who. The hierarchy is a mechanism for resolving Chicken.</p>
+<p><strong>Battle of the sexes.</strong> Two players want to coordinate but prefer different coordinated outcomes. Both prefer coordination to miscoordination. Choosing a shared message queue: both prefer either queue to no queue. Both prefer their own choice. Two Nash equilibria. The selected equilibrium depends on who moves first or has more power. The selection is political. The politics are game-theoretic.</p>
+<p><strong>Mechanism design.</strong> Reverse game theory. Start with the desired outcome. Design the rules that produce it. If you want teams to keep API contracts stable, design a system where breaking a contract is immediately visible and costly. Automated contract testing is mechanism design. Deployment friction is mechanism design. Design the rules. Don't plead for the outcome.</p>
+<p><strong>Evolutionary game theory.</strong> Strategies that perform well survive. Strategies that perform poorly die. John Maynard Smith (1982): an Evolutionarily Stable Strategy cannot be invaded by a mutant. Microservices survived because they resist being re-monolithed. The monolith didn't survive because a small team could extract a service and demonstrate value. The extraction was the mutation. The mutation spread. The population shifted. The shift was evolutionary.</p>
+<p><strong>Signaling game.</strong> One player has private information and takes an action that may reveal it. Writing a detailed RFC signals competence. A costly signal separates sincere from insincere types. Requiring a prototype before architecture review is a screening mechanism. The cost of the signal is the price of credibility.</p>
+<p><strong>Repeated game.</strong> The same game played multiple times. Sprints are repeated games. Repeated games enable reputation and reciprocity. The shadow of the future disciplines present behavior. Cooperation can be sustained in repeated games even when it collapses in one-shot games. This is why teams that work together for years develop trust. The trust is game-theoretic. The game is repeated.</p>
+<p>Robert Aumann, who shared the 2005 Nobel with Schelling, proved the Folk Theorem: any feasible, individually rational outcome can be sustained as an equilibrium when the game is repeated infinitely. In his own words: &quot;In a single encounter, confrontation is the logical move; but when the interaction will occur repeatedly, cooperation is the logical behavior.&quot; The shadow of the future disciplines the present. Teams that will work together for years develop trust not because they are virtuous but because defection today costs cooperation tomorrow. The trust is game-theoretic. The game is repeated.</p>
+<hr>
+<p><strong>This is part 2 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>John von Neumann and Oskar Morgenstern, <em>Theory of Games and Economic Behavior</em>, Princeton University Press, 1944.</li>
+<li>John Nash, &quot;Equilibrium Points in N-Person Games,&quot; <em>Proceedings of the National Academy of Sciences</em>, 1950.</li>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+</ul>
+</div>
+      </article>
+      <article class="post" id="scarcity">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#scarcity">On Scarcity</a></h2><p class="post-summary">&#34;Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.&#34;</p>
+          <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 1932, Lionel Robbins published <em>An Essay on the Nature and Significance of Economic Science</em>. On page 15, he wrote:</p>
+<blockquote>
+<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
+</blockquote>
+<p>Four concepts. <strong>Ends</strong> — what you want. <strong>Means</strong> — what you have. <strong>Scarcity</strong> — means are finite. <strong>Alternative uses</strong> — means can be deployed in different ways, forcing choice. Every human activity involving these four conditions is economic. Robbins made this explicit:</p>
+<blockquote>
+<p>&quot;Insofar as it deals with the influence of scarcity, any kind of human behaviour falls within the scope of Economic Generalisations. There are no limitations on the subject-matter of Economic Science save this.&quot;</p>
+</blockquote>
+<p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
+<p>Thomas Sowell sharpened Robbins: &quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; Milton Friedman made it simpler: &quot;There's no such thing as a free lunch.&quot; Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.</p>
+<h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
+<p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
+<p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
+<p><strong>Complexity budget is scarce.</strong> Lehman's Second Law: complexity increases unless work is done to reduce it. The work requires time and attention, both scarce. The complexity budget is the total complexity the system can absorb before becoming unmaintainable. Every feature adds to the budget. Every quick fix adds. Every workaround adds. The budget is finite. When exhausted, the system must be rewritten. The rewrite is expensive. The expense is the cost of exceeding the budget. The budget was always finite. The accounting ignored it.</p>
+<p>Parnas's information hiding is an economic strategy. Hide volatile decisions behind stable interfaces. The interface is the investment. The hiding is the return. When the volatile decision changes, the change is contained within the module. The containment saves time, attention, and complexity budget. The investment costs more upfront. The return accrues over time — every change that doesn't propagate is a cost avoided. The net present value is positive if the decision is sufficiently volatile. Parnas didn't state it in economic terms. The economics are implicit. The economics are correct.</p>
+<p><strong>Compute is scarce.</strong> Moore's Law made compute cheap but not free. Cloud computing made it elastic but not infinite. Every algorithm choice trades compute for something else — development time, code simplicity, latency. The trade is economic. The price of compute determines which side is optimal. When compute was expensive, developers optimized for cycles. When compute became cheap, they optimized for developer time. The price changed. The optimal trade changed. The change was economic. The economics were invisible to the developers. They thought they were making technical decisions. They were making economic decisions with technical parameters.</p>
+<h2 id="the-robbins-test">The Robbins test</h2>
+<p>Robbins gives a test for any decision. Ask four questions:</p>
+<ol>
+<li>What is the end? (What are you trying to achieve?)</li>
+<li>What are the means? (What resources do you have?)</li>
+<li>Are the means scarce? (Could you use them for something else?)</li>
+<li>Do they have alternative uses? (What are you giving up?)</li>
+</ol>
+<p>If the answer to 3 and 4 is yes — and it always is — the decision is economic. Treat it as such. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice. The choice will be better for having been made explicitly.</p>
+<p>Most software decisions are made without naming the scarcity. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. The debate resolves. This feature or that feature? State the scarce resource. This architecture or that architecture? State the trade. The Robbins test makes implicit economics explicit. Explicit economics are debatable. Implicit economics are invisible. Invisible economics produce worse decisions.</p>
+<h2 id="the-unifying-principle">The unifying principle</h2>
+<p>Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Software engineering is economics.</p>
+<hr>
+<p><strong>This is part 1 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
 </ul>
 </div>
       </article>
@@ -5430,13 +5441,13 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#catalog-of-scarcity-games">A Catalog of Scarcity Games</a>
-              <a href="#scarcity-and-software-economics">Scarcity and Software Economics</a>
-              <a href="#scarcity">On Scarcity</a>
               <a href="#scarcity-in-practice">Scarcity in Practice</a>
-              <a href="#scarcity-and-games">Scarcity and Games</a>
-              <a href="#scarcity-and-software-games">Scarcity and Software Games</a>
+              <a href="#catalog-of-scarcity-games">A Catalog of Scarcity Games</a>
               <a href="#scarcity-and-mechanism-design">Scarcity and Mechanism Design</a>
+              <a href="#scarcity-and-software-games">Scarcity and Software Games</a>
+              <a href="#scarcity-and-software-economics">Scarcity and Software Economics</a>
+              <a href="#scarcity-and-games">Scarcity and Games</a>
+              <a href="#scarcity">On Scarcity</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>

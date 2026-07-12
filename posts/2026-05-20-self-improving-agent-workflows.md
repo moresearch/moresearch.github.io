@@ -66,3 +66,6 @@ References
 ---
 
 Notes: Figures 1–2 are from SEP's public blog (linked above). Figure 3 is a synthesized diagram included in this post to show how SEP's skill loop maps to harness layers described in the OpenDev paper and the architecture survey.
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

@@ -104,3 +104,6 @@ The switch was GitHub. The community built the porcelain. The community built th
 
 
 Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.
+
+
+> Git is not a version control system. It is a content-addressable filesystem with a version control interface. The interface is porcelain. The filesystem is plumbing. The plumbing is stable. The porcelain evolves. The architecture survives because the interface between them has not changed in twenty years.

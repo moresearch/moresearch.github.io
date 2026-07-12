@@ -45,3 +45,6 @@ The principal-agent problem is the alignment problem in economic form. Align the
 - Oliver Hart and Bengt Holmström, "The Theory of Contracts," 1987.
 - Michael Jensen and William Meckling, "Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure," *Journal of Financial Economics*, 1976.
 - Related posts: [Design the Game](https://blog.hackspree.com/#scarcity-and-mechanism-design), [Mechanism Design](https://blog.hackspree.com/#game-mechanism-design)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Mechanism design is reverse game theory. Start with the outcome you want. Design the rules that produce it. It explains SLAs, automated contract testing, deployment gates, code review requirements, and every organizational rule that works. It was worth a Nobel Prize in 2007. It is the highest-leverage activity in software engineering.&#34;">
+  <meta name="description" content="&#34;A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent&#39;s effort. The problem: how to design a contract that aligns the agent&#39;s incentives with the principal&#39;s goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-principal-agent">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-principal-agent">The Principal-Agent Problem</a></h2><p class="post-summary">&#34;A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent&#39;s effort. The problem: how to design a contract that aligns the agent&#39;s incentives with the principal&#39;s goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">principal-agent</span><span class="tag">moral-hazard</span><span class="tag">contract-theory</span><span class="tag">incentives</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The principal-agent problem is the foundational model of contract theory. A principal wants a task performed. An agent can perform it. The agent's effort is unobservable — the principal sees the outcome but not the effort. The outcome depends on effort and on random factors beyond the agent's control. The principal must design a contract — a payment scheme contingent on observable outcomes — that incentivizes the agent to exert the desired level of effort.</p>
+<p>The tension: the principal wants high effort at low cost. The agent wants high payment for low effort. If the principal pays a fixed wage, the agent exerts minimum effort — there's no incentive to do more. If the principal pays entirely based on outcome, the agent bears all the risk from random factors. The optimal contract balances insurance (protecting the agent from randomness) with incentives (rewarding effort). The balance is the contract. The contract is the mechanism.</p>
+<p>The problem has two variants. Moral hazard: the agent takes hidden actions after the contract is signed. Adverse selection: the agent has hidden information before the contract is signed — the agent knows their own type, and the principal doesn't. Both are information asymmetries. Both require mechanism design to resolve.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Contract theory (Hart, Holmström, 2016 Nobel).</strong> Oliver Hart and Bengt Holmström shared the 2016 Nobel for contract theory. Holmström's informativeness principle: any performance measure that provides information about effort should be included in the contract. If the measure is informative, including it reduces the agent's risk for a given level of incentives. Hart's incomplete contracts: real contracts cannot specify every contingency. When contracts are incomplete, the allocation of residual control rights — who decides what happens in unforeseen circumstances — determines outcomes. Ownership matters because ownership confers residual control.</p>
+<p><strong>Corporate governance (Jensen and Meckling, 1976).</strong> The separation of ownership and control in corporations is a principal-agent problem. Shareholders are principals. Managers are agents. Managers may pursue their own interests — empire-building, risk-aversion, short-term stock price — rather than shareholder value. The mechanisms: stock options (aligning incentives), boards of directors (monitoring), hostile takeovers (discipline). The mechanisms are imperfect. The imperfection is the cost of the agency relationship.</p>
+<p><strong>Regulation (Laffont and Tirole, 1993 Nobel 2014).</strong> Regulating a monopoly is a principal-agent problem. The regulator (principal) wants the monopoly (agent) to operate efficiently. The monopoly has private information about its costs. The regulator designs a pricing scheme that incentivizes cost reduction while preventing excessive pricing. The scheme is a contract. The contract is mechanism design applied to public utility regulation.</p>
+<p><strong>Political science.</strong> Voters are principals. Politicians are agents. The agency problem is accountability. Elections are the incentive mechanism — politicians who perform poorly are voted out. The mechanism is imperfect because voters have incomplete information, politicians control the flow of information, and election cycles are coarse. The imperfections are the subject of political economy.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Team and manager.</strong> The manager (principal) wants the team (agent) to produce high-quality work. The manager cannot perfectly observe effort — code quality is partly effort, partly skill, partly the difficulty of the task. The contract: salary, performance review, promotion. The mechanisms: code review (monitoring), OKRs (outcome-based incentives), peer feedback (multi-source monitoring). Each mechanism reduces the information asymmetry.</p>
+<p><strong>Outsourcing vendor management.</strong> The company (principal) hires a vendor (agent) to build a system. The vendor has private information about their true costs, their true timeline, and the quality of their engineers. The contract: fixed-price or time-and-materials. Fixed-price transfers risk to the vendor but creates incentive to cut corners. Time-and-materials transfers risk to the company but creates incentive to inflate hours. The optimal contract balances risk-sharing with incentive alignment. The balance is the principal-agent problem in procurement form.</p>
+<p><strong>Platform team and service teams.</strong> The platform team (agent) provides infrastructure to service teams (principals). The service teams cannot observe the platform team's effort. The platform team may optimize for its own interests — interesting technical work, clean architecture — rather than service team needs. The contract: SLAs with penalties, internal billing (chargebacks), user satisfaction surveys. The mechanisms align the platform team's incentives with service team outcomes.</p>
+<p><strong>Open-source maintainer and corporate user.</strong> The maintainer (agent) produces a library. The corporation (principal) depends on it. The maintainer's effort is unobservable. The corporation cannot compel the maintainer to fix bugs or accept patches. The contract is social, not legal — reputation, sponsorship, contribution guidelines. The principal-agent problem in open source is acute because the mechanisms are weak. The weakness is why maintainers burn out.</p>
+<h2 id="the-alignment-problem">The alignment problem</h2>
+<p>The principal-agent problem is the alignment problem in economic form. Align the agent's incentives with the principal's goals. The alignment is never perfect because information is never perfect. The residual misalignment is the agency cost. The cost is irreducible. The mechanism designer's job is to minimize it. Minimize it by making outcomes observable, linking rewards to observables, and accepting that some misalignment will remain. The acceptance is realism. The minimization is engineering.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Bengt Holmström, &quot;Moral Hazard and Observability,&quot; <em>Bell Journal of Economics</em>, 1979.</li>
+<li>Oliver Hart and Bengt Holmström, &quot;The Theory of Contracts,&quot; 1987.</li>
+<li>Michael Jensen and William Meckling, &quot;Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure,&quot; <em>Journal of Financial Economics</em>, 1976.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-mechanism-design">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2951,38 +2984,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Robert Aumann, &quot;Acceptance Speech,&quot; Nobel Prize in Economics, 2005.</li>
 <li>Anatol Rapoport and Albert Chammah, <em>Prisoner's Dilemma</em>, University of Michigan Press, 1965.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cooperation-is-logical">Cooperation is logical</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-principal-agent">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-principal-agent">The Principal-Agent Problem</a></h2><p class="post-summary">&#34;A principal hires an agent to do work. The agent has private information and their own objectives. The principal cannot perfectly monitor the agent&#39;s effort. The problem: how to design a contract that aligns the agent&#39;s incentives with the principal&#39;s goals. This is the model for every employment relationship, every outsourcing decision, and every API contract between teams.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">principal-agent</span><span class="tag">moral-hazard</span><span class="tag">contract-theory</span><span class="tag">incentives</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The principal-agent problem is the foundational model of contract theory. A principal wants a task performed. An agent can perform it. The agent's effort is unobservable — the principal sees the outcome but not the effort. The outcome depends on effort and on random factors beyond the agent's control. The principal must design a contract — a payment scheme contingent on observable outcomes — that incentivizes the agent to exert the desired level of effort.</p>
-<p>The tension: the principal wants high effort at low cost. The agent wants high payment for low effort. If the principal pays a fixed wage, the agent exerts minimum effort — there's no incentive to do more. If the principal pays entirely based on outcome, the agent bears all the risk from random factors. The optimal contract balances insurance (protecting the agent from randomness) with incentives (rewarding effort). The balance is the contract. The contract is the mechanism.</p>
-<p>The problem has two variants. Moral hazard: the agent takes hidden actions after the contract is signed. Adverse selection: the agent has hidden information before the contract is signed — the agent knows their own type, and the principal doesn't. Both are information asymmetries. Both require mechanism design to resolve.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Contract theory (Hart, Holmström, 2016 Nobel).</strong> Oliver Hart and Bengt Holmström shared the 2016 Nobel for contract theory. Holmström's informativeness principle: any performance measure that provides information about effort should be included in the contract. If the measure is informative, including it reduces the agent's risk for a given level of incentives. Hart's incomplete contracts: real contracts cannot specify every contingency. When contracts are incomplete, the allocation of residual control rights — who decides what happens in unforeseen circumstances — determines outcomes. Ownership matters because ownership confers residual control.</p>
-<p><strong>Corporate governance (Jensen and Meckling, 1976).</strong> The separation of ownership and control in corporations is a principal-agent problem. Shareholders are principals. Managers are agents. Managers may pursue their own interests — empire-building, risk-aversion, short-term stock price — rather than shareholder value. The mechanisms: stock options (aligning incentives), boards of directors (monitoring), hostile takeovers (discipline). The mechanisms are imperfect. The imperfection is the cost of the agency relationship.</p>
-<p><strong>Regulation (Laffont and Tirole, 1993 Nobel 2014).</strong> Regulating a monopoly is a principal-agent problem. The regulator (principal) wants the monopoly (agent) to operate efficiently. The monopoly has private information about its costs. The regulator designs a pricing scheme that incentivizes cost reduction while preventing excessive pricing. The scheme is a contract. The contract is mechanism design applied to public utility regulation.</p>
-<p><strong>Political science.</strong> Voters are principals. Politicians are agents. The agency problem is accountability. Elections are the incentive mechanism — politicians who perform poorly are voted out. The mechanism is imperfect because voters have incomplete information, politicians control the flow of information, and election cycles are coarse. The imperfections are the subject of political economy.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Team and manager.</strong> The manager (principal) wants the team (agent) to produce high-quality work. The manager cannot perfectly observe effort — code quality is partly effort, partly skill, partly the difficulty of the task. The contract: salary, performance review, promotion. The mechanisms: code review (monitoring), OKRs (outcome-based incentives), peer feedback (multi-source monitoring). Each mechanism reduces the information asymmetry.</p>
-<p><strong>Outsourcing vendor management.</strong> The company (principal) hires a vendor (agent) to build a system. The vendor has private information about their true costs, their true timeline, and the quality of their engineers. The contract: fixed-price or time-and-materials. Fixed-price transfers risk to the vendor but creates incentive to cut corners. Time-and-materials transfers risk to the company but creates incentive to inflate hours. The optimal contract balances risk-sharing with incentive alignment. The balance is the principal-agent problem in procurement form.</p>
-<p><strong>Platform team and service teams.</strong> The platform team (agent) provides infrastructure to service teams (principals). The service teams cannot observe the platform team's effort. The platform team may optimize for its own interests — interesting technical work, clean architecture — rather than service team needs. The contract: SLAs with penalties, internal billing (chargebacks), user satisfaction surveys. The mechanisms align the platform team's incentives with service team outcomes.</p>
-<p><strong>Open-source maintainer and corporate user.</strong> The maintainer (agent) produces a library. The corporation (principal) depends on it. The maintainer's effort is unobservable. The corporation cannot compel the maintainer to fix bugs or accept patches. The contract is social, not legal — reputation, sponsorship, contribution guidelines. The principal-agent problem in open source is acute because the mechanisms are weak. The weakness is why maintainers burn out.</p>
-<h2 id="the-alignment-problem">The alignment problem</h2>
-<p>The principal-agent problem is the alignment problem in economic form. Align the agent's incentives with the principal's goals. The alignment is never perfect because information is never perfect. The residual misalignment is the agency cost. The cost is irreducible. The mechanism designer's job is to minimize it. Minimize it by making outcomes observable, linking rewards to observables, and accepting that some misalignment will remain. The acceptance is realism. The minimization is engineering.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Bengt Holmström, &quot;Moral Hazard and Observability,&quot; <em>Bell Journal of Economics</em>, 1979.</li>
-<li>Oliver Hart and Bengt Holmström, &quot;The Theory of Contracts,&quot; 1987.</li>
-<li>Michael Jensen and William Meckling, &quot;Theory of the Firm: Managerial Behavior, Agency Costs and Ownership Structure,&quot; <em>Journal of Financial Economics</em>, 1976.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a></li>
 </ul>
 </div>
       </article>
@@ -7397,6 +7398,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-principal-agent">The Principal-Agent Problem</a>
               <a href="#game-mechanism-design">Mechanism Design</a>
               <a href="#game-evolutionary">Evolutionary Game Theory</a>
               <a href="#game-chicken">Chicken</a>
@@ -7445,7 +7447,6 @@ type Logger interface {
               <a href="#game-signaling">Signaling Games</a>
               <a href="#game-repeated-games">Repeated Games and the Folk Theorem</a>
               <a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a>
-              <a href="#game-principal-agent">The Principal-Agent Problem</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

@@ -162,3 +162,6 @@ Henney never wrote *Building Microservices*. He wrote the theory that explains w
 - *Simplicity Before Generality, Use Before Reuse*, [Artima](https://www.artima.com/weblogs/viewpost.jsp?thread=351149), 2012.
 - *From Mechanism to Method: Generic Decoupling*, [Overload 60](https://accu.org/journals/overload/12/60/henney_308), 2004.
 - GOTO Conferences YouTube — [Kevlin Henney](https://www.youtube.com/@GOTO-)
+
+
+Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.

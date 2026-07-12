@@ -87,3 +87,6 @@ The economic prize is enormous: a large fraction of professional software develo
 - Dan Shapiro, [The Five Levels: from spicy autocomplete to the software factory](https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/) (2026)
 - CodeRabbit — automated code review for AI-generated code
 - Barry Boehm, *Software Engineering Economics* (1981) — foundational cost-modeling framework
+
+
+Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.

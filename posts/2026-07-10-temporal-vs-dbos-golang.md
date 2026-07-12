@@ -334,3 +334,6 @@ Neither is wrong. The platform approach wins when the problem is large enough to
 - [DBOS Transact Golang](https://github.com/dbos-inc/dbos-transact-golang) — `dbos-transact-golang` v0.18
 - [DBOS Go Workflow Tutorial](https://docs.dbos.dev/golang/tutorials/workflow-tutorial)
 - [Temporal Standalone Activities](https://temporal.io/blog/standalone-activities-durable-job-processing-now-in-public-preview)
+
+
+Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.

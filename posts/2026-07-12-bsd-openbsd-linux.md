@@ -115,3 +115,6 @@ The world runs on Linux because the lawsuit froze BSD at the wrong moment and ne
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> Clean code is not an aesthetic preference. It is a property of systems designed as a whole. BSD is clean because one group designed the whole. Linux is not because a thousand groups designed the parts.

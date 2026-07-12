@@ -46,3 +46,6 @@ Fred Brooks, *The Mythical Man-Month* (1975, Anniversary Ed. 1995), *No Silver B
 
 
 Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.
+
+
+> The expert's greatest vulnerability is their own expertise. What worked in the old paradigm is precisely what fails in the new one. The expert is the last to see the shift because they are the most invested in the old way.

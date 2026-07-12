@@ -214,3 +214,6 @@ And in the era of agentic software engineering, boring seams are a superpower.
 - [Claude Code skills](https://code.claude.com/docs/en/skills.md)
 - [Claude Code worktrees](https://code.claude.com/docs/en/worktrees.md)
 - [agent-ready-repo example](https://github.com/eugenelim/agent-ready-repo)
+
+
+This is Brooks's conceptual integrity inverted. Instead of one mind controlling the design, we have agents generating code and humans reviewing the diffs. The design authority shifts from the architect to the spec writer. The spec becomes the source of truth. The code becomes a generated artifact. The engineering question: how do you maintain conceptual integrity when the code is written by agents that don't understand the design? The answer is the same as Brooks's: one mind — the spec — controls the output. The spec is the architect. The agents are the builders.

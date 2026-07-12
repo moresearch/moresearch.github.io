@@ -38,6 +38,12 @@ The utilization curve is a market mechanism. When utilization is low, rates are 
 
 Sidney Homer and Richard Sylla, *A History of Interest Rates* (1963, 4th edition 2005). The definitive history of lending from ancient Mesopotamia to the modern era. The book documents 5,000 years of interest rates across civilizations, tracing the evolution of credit from temple loans in Babylon to the Eurodollar market. The data shows that interest rates reflect the intersection of time preference, risk, and institutional structure. DeFi lending changes the institutional structure. Time preference and risk remain. The book is the context. The context is essential.
 
+## The engineering connection
+
+DeFi lending is a state machine. The pool is the state. Deposits, borrows, repays, liquidations are the transitions. The utilization curve is the control law. The entire protocol is a finite state machine with economic incentives as the transition guards. The engineering pattern is the same as any event-sourced system: each transaction is an event, the pool state is the projection, the interest rate is a derived value computed from the utilization ratio. The architecture would be familiar to any engineer who has built a CQRS system. The domain is lending. The pattern is event sourcing.
+
+The liquidation mechanism is a watchdog timer. If collateral value falls below threshold, liquidate. The watchdog is decentralized — anyone can trigger it. The incentive is the liquidation discount. The mechanism is the same as a circuit breaker in a distributed system: detect the fault condition, trigger the protective action, compensate the responder. The domain is different. The control flow is identical.
+
 ---
 
 **References:**

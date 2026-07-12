@@ -40,6 +40,12 @@ The lesson: stablecoins require backing. The backing can be fiat (USDT, USDC), c
 
 Friedrich Hayek, *The Denationalisation of Money* (1976). Hayek argued that the government monopoly on currency issuance should be abolished and replaced with competing private currencies. Each issuer would maintain its currency's value by promising redeemability and managing supply. The market would select the currencies that maintained stable purchasing power. Hayek's vision was dismissed as utopian. Stablecoins are the partial realization of that vision. Competing private currencies. Redeemability as the mechanism. Market selection as the arbiter. UST failed the market test. DAI passed it. The market is the selector. The selection is ongoing.
 
+## The engineering connection
+
+A stablecoin is a control system. The peg is the setpoint. The collateral is the actuator. The oracle is the sensor. When the price deviates from the peg, the mechanism acts: mint, burn, liquidate. The control loop is the same as a thermostat, an autoscaler, a PID controller. The domain is monetary. The engineering is control theory.
+
+DAI and USDC are different control strategies for the same objective — stability. DAI uses crypto collateral and automated liquidation, a reactive strategy. USDC uses fiat reserves and legal redemption, a preventive strategy. The choice between reactive and preventive control is an engineering trade-off between capital efficiency and tail risk. The engineer who understands control theory can evaluate the trade-off. The investor who doesn't is evaluating a black box.
+
 ---
 
 **References:**

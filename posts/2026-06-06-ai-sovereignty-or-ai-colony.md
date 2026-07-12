@@ -26,3 +26,6 @@ Reference: [Japan risks becoming an AI colony, its digital minister warns](https
 
 
 Engineering is always embedded in a context of constraints — economic, political, organizational. The engineer who ignores the context builds systems that are technically correct and operationally irrelevant. The engineer who understands the context builds systems that survive. The context is part of the specification. The specification is incomplete without it.
+
+
+> AI sovereignty is not about having a national model. It is about having the capacity to build one. The capacity is infrastructure, talent, and data. Without all three, sovereignty is aspirational. With all three, it is operational.

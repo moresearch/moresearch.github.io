@@ -74,3 +74,6 @@ To me, that is one of the most exciting parts of the whole field. It means softw
 
 
 Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.
+
+
+> The agentic era is not about agents doing what humans did. It is about agents doing what humans could not. The economics change when the cost of a task drops from an hour of labor to a penny of compute. The change is not incremental. It is structural.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;In crypto trading, latency is the edge. The bot with the fastest mempool access, the lowest-latency path to the sequencer, the colocated server wins the arbitrage. The difference is milliseconds. The investment in infrastructure is the rent paid for speed. The rent is extracted from slower traders.&#34;">
+  <meta name="description" content="&#34;A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,40 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="dex-trading-market-making">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#dex-trading-market-making">Market Making</a></h2><p class="post-summary">&#34;A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.&#34;</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">market-making</span><span class="tag">avellaneda-stoikov</span><span class="tag">adverse-selection</span><span class="tag">inventory</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A market maker provides liquidity. They post a bid — a price at which they will buy. They post an ask — a price at which they will sell. They earn the spread between the bid and the ask. They lose when the price moves against their inventory. The market maker's art is setting the bid and ask such that spread income exceeds inventory losses over time.</p>
+<p>The market maker is the counterparty to every impatient trader. The trader who must buy now crosses the spread and pays the ask. The trader who must sell now crosses the spread and receives the bid. The market maker absorbs the order flow imbalance. When there are more buyers than sellers, the market maker accumulates a short position — selling to buyers, hoping the price doesn't rise too far before sellers arrive. When there are more sellers than buyers, the market maker accumulates a long position. The inventory is the risk. The spread is the compensation for bearing it.</p>
+<h2 id="the-functional-origin-the-jobber">The functional origin: the jobber</h2>
+<p>The market maker's role emerged on the London Stock Exchange in the 19th century. The jobber was a member who made markets in specific securities. The jobber quoted two prices — the bid and the ask — and stood ready to trade at those prices with any broker who approached. The jobber did not deal with the public. The jobber dealt only with brokers. The brokers dealt with the public. The jobber's profit was the spread. The jobber's risk was adverse selection: a broker with better information about the security's true value would trade against the jobber's quote, profiting at the jobber's expense.</p>
+<p>The jobber's defense was the spread. A wider spread compensated for higher adverse selection risk. A narrower spread attracted more order flow. The optimal spread balanced the two. The jobber who set spreads too wide lost business. The jobber who set spreads too narrow lost money to informed traders. The balance was learned through experience. The learning was trial and error. The errors were expensive. The experience was the jobber's edge.</p>
+<p>The electronic market maker of today is the jobber, automated. The spread is set by an algorithm. The algorithm reads the order book, estimates adverse selection risk, tracks inventory, and adjusts quotes in microseconds. The algorithm is faster than any human jobber. It is also less judgmental. The human jobber could sense when a broker was informed — the broker was nervous, the broker was eager, the broker asked for an unusually large size. The algorithm sees only the order flow. The signal is statistical. The edge is quantitative. The quantification is the subject of this post.</p>
+<h2 id="the-avellaneda-stoikov-model">The Avellaneda-Stoikov model</h2>
+<p>Marco Avellaneda and Sasha Stoikov published &quot;High-Frequency Trading in a Limit Order Book&quot; in 2008. The paper formalized the market maker's problem as stochastic optimal control. The market maker chooses bid and ask quotes to maximize expected utility of terminal wealth, subject to inventory risk and adverse selection. The solution is a closed-form approximation: the optimal bid and ask are functions of the market maker's current inventory, the volatility of the asset, the market maker's risk aversion, and the intensity of order arrival.</p>
+<p>The key insight: the market maker should skew quotes away from their inventory. If the market maker is long — has bought more than they've sold — they should lower their bid (less willing to buy more) and lower their ask (more willing to sell). The skew reduces inventory risk. If the market maker is short, they should raise both bid and ask. The spread widens with volatility and risk aversion. The spread narrows with order arrival intensity — more competition means tighter spreads.</p>
+<p>The model is implemented in production market-making systems. It is the standard. It is taught in quantitative finance programs. It is adapted for crypto with modifications: gas costs replace exchange fees, AMM curves replace order book depth, and the discrete block time of blockchains replaces the continuous time of traditional markets. The adaptations are engineering. The core model is the same. The model works. The work is in the calibration.</p>
+<h2 id="market-making-in-crypto">Market making in crypto</h2>
+<p>Crypto market making has three forms:</p>
+<p><strong>CEX market making.</strong> Traditional order book market making on centralized exchanges. The market maker runs a server colocated with the exchange, streams order book updates, adjusts quotes in microseconds. The model is Avellaneda-Stoikov with exchange-specific calibrations. The competition is intense. The margins are thin. The thin margins are the evidence of competition.</p>
+<p><strong>AMM liquidity provision.</strong> Providing liquidity to a constant-function market maker. The LP deposits tokens into a pool. The pool's formula sets the price. The LP earns fees from trades. The LP bears impermanent loss. The LP's problem is similar to the market maker's: earn fee income while managing inventory risk. The difference: the AMM LP doesn't set the spread. The formula sets the spread. The LP only chooses the range (in Uniswap V3) and the amount. The LP's optimization is passive — choose parameters, deposit, wait. The active management is the subject of concentrated liquidity strategies.</p>
+<p><strong>On-chain order book market making.</strong> Running a market-making bot on a DEX with an on-chain order book (Serum, dYdX, Hyperliquid). The bot posts bids and asks as transactions. Each quote update costs gas. The gas cost constrains the update frequency. The constraint creates a trade-off: update frequently for tighter spreads (higher gas cost, more accurate quotes) or update infrequently to save gas (wider spreads to protect against adverse selection). The trade-off is the gas cost of decentralization. The gas cost is paid by the market maker. The cost is passed to traders in wider spreads. The wider spreads are the price of trustlessness.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008. The foundational paper on algorithmic market making. It is 25 pages. It assumes knowledge of stochastic calculus. The key result — the optimal quote skew formula — is implementable in a few lines of code. The implementation is the easy part. The calibration — estimating volatility, order arrival intensity, adverse selection — is the hard part. The calibration is the edge. The edge is the market maker's competitive advantage. The advantage erodes as competitors adopt the same model. The erosion is the subject of the arms race.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008.</li>
+<li>Larry Harris, <em>Trading and Exchanges</em>, Oxford University Press, 2003.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
       <article class="post" id="dex-trading-latency">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2742,39 +2776,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Robert Engle and Clive Granger, &quot;Co-Integration and Error Correction: Representation, Estimation, and Testing,&quot; <em>Econometrica</em>, 1987.</li>
 <li>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em>, Princeton University Press, 2017.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="dex-trading-market-making">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#dex-trading-market-making">Market Making</a></h2><p class="post-summary">&#34;A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.&#34;</p>
-          <div class="tags"><span class="tag">dex</span><span class="tag">market-making</span><span class="tag">avellaneda-stoikov</span><span class="tag">adverse-selection</span><span class="tag">inventory</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A market maker provides liquidity. They post a bid — a price at which they will buy. They post an ask — a price at which they will sell. They earn the spread between the bid and the ask. They lose when the price moves against their inventory. The market maker's art is setting the bid and ask such that spread income exceeds inventory losses over time.</p>
-<p>The market maker is the counterparty to every impatient trader. The trader who must buy now crosses the spread and pays the ask. The trader who must sell now crosses the spread and receives the bid. The market maker absorbs the order flow imbalance. When there are more buyers than sellers, the market maker accumulates a short position — selling to buyers, hoping the price doesn't rise too far before sellers arrive. When there are more sellers than buyers, the market maker accumulates a long position. The inventory is the risk. The spread is the compensation for bearing it.</p>
-<h2 id="the-functional-origin-the-jobber">The functional origin: the jobber</h2>
-<p>The market maker's role emerged on the London Stock Exchange in the 19th century. The jobber was a member who made markets in specific securities. The jobber quoted two prices — the bid and the ask — and stood ready to trade at those prices with any broker who approached. The jobber did not deal with the public. The jobber dealt only with brokers. The brokers dealt with the public. The jobber's profit was the spread. The jobber's risk was adverse selection: a broker with better information about the security's true value would trade against the jobber's quote, profiting at the jobber's expense.</p>
-<p>The jobber's defense was the spread. A wider spread compensated for higher adverse selection risk. A narrower spread attracted more order flow. The optimal spread balanced the two. The jobber who set spreads too wide lost business. The jobber who set spreads too narrow lost money to informed traders. The balance was learned through experience. The learning was trial and error. The errors were expensive. The experience was the jobber's edge.</p>
-<p>The electronic market maker of today is the jobber, automated. The spread is set by an algorithm. The algorithm reads the order book, estimates adverse selection risk, tracks inventory, and adjusts quotes in microseconds. The algorithm is faster than any human jobber. It is also less judgmental. The human jobber could sense when a broker was informed — the broker was nervous, the broker was eager, the broker asked for an unusually large size. The algorithm sees only the order flow. The signal is statistical. The edge is quantitative. The quantification is the subject of this post.</p>
-<h2 id="the-avellaneda-stoikov-model">The Avellaneda-Stoikov model</h2>
-<p>Marco Avellaneda and Sasha Stoikov published &quot;High-Frequency Trading in a Limit Order Book&quot; in 2008. The paper formalized the market maker's problem as stochastic optimal control. The market maker chooses bid and ask quotes to maximize expected utility of terminal wealth, subject to inventory risk and adverse selection. The solution is a closed-form approximation: the optimal bid and ask are functions of the market maker's current inventory, the volatility of the asset, the market maker's risk aversion, and the intensity of order arrival.</p>
-<p>The key insight: the market maker should skew quotes away from their inventory. If the market maker is long — has bought more than they've sold — they should lower their bid (less willing to buy more) and lower their ask (more willing to sell). The skew reduces inventory risk. If the market maker is short, they should raise both bid and ask. The spread widens with volatility and risk aversion. The spread narrows with order arrival intensity — more competition means tighter spreads.</p>
-<p>The model is implemented in production market-making systems. It is the standard. It is taught in quantitative finance programs. It is adapted for crypto with modifications: gas costs replace exchange fees, AMM curves replace order book depth, and the discrete block time of blockchains replaces the continuous time of traditional markets. The adaptations are engineering. The core model is the same. The model works. The work is in the calibration.</p>
-<h2 id="market-making-in-crypto">Market making in crypto</h2>
-<p>Crypto market making has three forms:</p>
-<p><strong>CEX market making.</strong> Traditional order book market making on centralized exchanges. The market maker runs a server colocated with the exchange, streams order book updates, adjusts quotes in microseconds. The model is Avellaneda-Stoikov with exchange-specific calibrations. The competition is intense. The margins are thin. The thin margins are the evidence of competition.</p>
-<p><strong>AMM liquidity provision.</strong> Providing liquidity to a constant-function market maker. The LP deposits tokens into a pool. The pool's formula sets the price. The LP earns fees from trades. The LP bears impermanent loss. The LP's problem is similar to the market maker's: earn fee income while managing inventory risk. The difference: the AMM LP doesn't set the spread. The formula sets the spread. The LP only chooses the range (in Uniswap V3) and the amount. The LP's optimization is passive — choose parameters, deposit, wait. The active management is the subject of concentrated liquidity strategies.</p>
-<p><strong>On-chain order book market making.</strong> Running a market-making bot on a DEX with an on-chain order book (Serum, dYdX, Hyperliquid). The bot posts bids and asks as transactions. Each quote update costs gas. The gas cost constrains the update frequency. The constraint creates a trade-off: update frequently for tighter spreads (higher gas cost, more accurate quotes) or update infrequently to save gas (wider spreads to protect against adverse selection). The trade-off is the gas cost of decentralization. The gas cost is paid by the market maker. The cost is passed to traders in wider spreads. The wider spreads are the price of trustlessness.</p>
-<h2 id="the-reference">The reference</h2>
-<p>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008. The foundational paper on algorithmic market making. It is 25 pages. It assumes knowledge of stochastic calculus. The key result — the optimal quote skew formula — is implementable in a few lines of code. The implementation is the easy part. The calibration — estimating volatility, order arrival intensity, adverse selection — is the hard part. The calibration is the edge. The edge is the market maker's competitive advantage. The advantage erodes as competitors adopt the same model. The erosion is the subject of the arms race.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008.</li>
-<li>Larry Harris, <em>Trading and Exchanges</em>, Oxford University Press, 2003.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a></li>
 </ul>
 </div>
       </article>
@@ -7412,6 +7413,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#dex-trading-market-making">Market Making</a>
               <a href="#dex-trading-latency">Latency and Infrastructure</a>
               <a href="#dex-trading-flash-loans">Flash Loans</a>
               <a href="#dex-trading-concentrated-liquidity">Concentrated Liquidity and JIT Attacks</a>
@@ -7455,7 +7457,6 @@ type Logger interface {
               <a href="#colibri">Colibri</a>
               <a href="#dex-trading-sandwich">Sandwich Attacks</a>
               <a href="#dex-trading-stat-arb">Statistical Arbitrage</a>
-              <a href="#dex-trading-market-making">Market Making</a>
               <a href="#dex-trading-mev">Maximal Extractable Value</a>
               <a href="#dex-trading-order-book">The Order Book</a>
               <a href="#verification-horizon">The Verification Horizon</a>

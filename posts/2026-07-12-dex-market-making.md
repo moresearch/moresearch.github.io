@@ -48,3 +48,6 @@ Marco Avellaneda and Sasha Stoikov, "High-Frequency Trading in a Limit Order Boo
 - Marco Avellaneda and Sasha Stoikov, "High-Frequency Trading in a Limit Order Book," *Quantitative Finance*, 2008.
 - Larry Harris, *Trading and Exchanges*, Oxford University Press, 2003.
 - Related posts: [AMMs](https://blog.hackspree.com/#dex-trading-amms), [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

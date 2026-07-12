@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;BSD is an operating system designed as a whole. Linux is a kernel assembled into an operating system by distributions. The difference in design quality follows directly from the difference in architecture. OpenBSD takes the logic to its extreme: correctness over features, every time.&#34;">
+  <meta name="description" content="&#34;US export controls forced Chinese AI labs to optimize for efficiency. The result is models that run on consumer hardware while American labs build ever-larger cloud-only systems. Local-first is the next battleground. China has the structural advantage.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,81 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="chinese-models-local-first">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#chinese-models-local-first">Chinese models will win the local-first race</a></h2><p class="post-summary">&#34;US export controls forced Chinese AI labs to optimize for efficiency. The result is models that run on consumer hardware while American labs build ever-larger cloud-only systems. Local-first is the next battleground. China has the structural advantage.&#34;</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">china</span><span class="tag">local-first</span><span class="tag">deepseek</span><span class="tag">qwen</span><span class="tag">open-source</span><span class="tag">economics</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In October 2022, the US banned Nvidia from selling its most advanced AI chips to China. The intent was to slow China's AI progress by denying it compute. The effect was the opposite: it forced Chinese labs to become the most efficient model builders in the world. America built bigger. China built smarter. The local-first race is now between American models that require datacenters and Chinese models that run on your laptop. The laptop will win.</p>
+<p>This is not a prediction about which country will build the most powerful model. America still holds the frontier — GPT-5, Claude Opus 4.6, Gemini Ultra. The largest models, trained on the largest clusters, achieving the highest benchmark scores, are American. The argument is about a different race: who will own the models that run on devices. Phones. Laptops. Edge servers. The models that work offline, cost nothing per query, and keep data local. That race is determined by efficiency, not scale. And efficiency is what the export controls forced China to master.</p>
+<h2 id="the-sanctions-that-backfired">The sanctions that backfired</h2>
+<p>The US export controls escalated through multiple rounds. October 2022: ban on A100 and H100 chips. October 2023: the H800 — Nvidia's bandwidth-crippled H100 designed specifically to comply with the earlier ban — was itself banned. December 2024: high-bandwidth memory restricted. Each round tightened the screws. Each round was met with Chinese efficiency gains that erased the intended advantage.</p>
+<p>DeepSeek trained its V3 model on a cluster of H800 GPUs — chips deliberately hobbled by export controls to have reduced inter-chip bandwidth. The H800 was supposed to be too slow for frontier training. DeepSeek programmed 20 of the 132 processing units on each H800 specifically for cross-chip communication, working below Nvidia's CUDA layer to overcome the bandwidth limits. The result was a model that matched GPT-4o on most benchmarks at roughly 1/30th the training cost. The export controls didn't prevent the model. They provoked the optimization that made it possible.</p>
+<blockquote>
+<p>&quot;Forced to operate under a far more constrained computing environment, AI engineers in China are innovating in ways that their computing-rich American counterparts are not.&quot; — Brookings Institution, 2025</p>
+</blockquote>
+<p>DeepSeek's CEO stated the dynamic directly: &quot;Money has never been the problem; bans on advanced chips are the problem.&quot; The problem produced the solution. The constraint produced the efficiency. The efficiency produced models that can run on consumer hardware — not because that was the goal, but because the optimization path that the sanctions forced converged on it. Models that fit in 16GB of RAM. Models that run at interactive speeds on a MacBook Air. Models that can be downloaded, run locally, and never phone home. American labs, with essentially unlimited compute, never had to optimize for this. Chinese labs had no choice.</p>
+<p>By April 2026, DeepSeek V4 was trained entirely on Huawei Ascend chips — zero Nvidia dependency. The Flash variant runs at 17–31 tokens per second on a Mac Studio. Qwen3.5-4B runs at 147 tokens per second on a MacBook Air using 2.4GB of RAM. These are not research curiosities. These are production-ready models that run on hardware you already own, at speeds that feel instant, with no API key, no rate limit, no privacy policy, no vendor that can revoke your access or raise your price.</p>
+<h2 id="the-american-bet-scale">The American bet: scale</h2>
+<p>American labs — OpenAI, Anthropic, Google — are built on a different bet. The bet is that intelligence scales with compute, that the largest models will be the most capable, and that capability at the frontier justifies the infrastructure cost. This bet has produced extraordinary results. GPT-5.4, Claude Opus 4.6, Gemini 2.5 Ultra are remarkable. They solve problems that smaller models cannot. They are the best at what they do.</p>
+<p>But they cannot run on your device. They cannot run offline. They cost money per query. They require an internet connection. They require you to send your data to a server owned by a company whose incentives are not aligned with yours. They can revoke your access, raise your price, change their terms, or go out of business. The model is theirs. You rent access.</p>
+<p>This bet also makes American labs structurally disinterested in efficiency. When you have effectively unlimited compute, you optimize for capability, not efficiency. You train larger models on larger clusters because that's what your infrastructure, your talent, and your economics are built for. You don't spend your best researchers' time squeezing a 7B model to run on a phone when they could be training a 1.6T model on a 100,000-GPU cluster. The incentives point toward scale. The economics point toward scale. The culture points toward scale.</p>
+<p>The result is that American frontier models are better, and American local models are worse, than they would be if the incentives were reversed. The gap at the top is large. The gap at the bottom — the models that can run on consumer devices — is also large, but in the opposite direction. Chinese labs own the bottom. The bottom is where volume lives.</p>
+<h2 id="the-chinese-bet-efficiency">The Chinese bet: efficiency</h2>
+<p>Chinese labs optimize for efficiency not by choice but by necessity. The export controls cut off access to the largest training clusters. The response was systematic:</p>
+<ul>
+<li>
+<p><strong>Mixture of Experts architectures:</strong> DeepSeek V3 and V4 use MoE with hundreds of experts but only activate 37–158 billion parameters per token. The model is 1.6T parameters. The inference cost is for 158B. The capability is from 1.6T. The efficiency is from 158B.</p>
+</li>
+<li>
+<p><strong>Low-level GPU optimization:</strong> When the H800's inter-chip bandwidth was artificially limited, DeepSeek programmed around the limit at the hardware level. When Nvidia chips became unavailable, they ported to Huawei Ascend. The model is hardware-agnostic because it had to be.</p>
+</li>
+<li>
+<p><strong>Aggressive quantization:</strong> Chinese models ship with 4-bit, 2-bit, and mixed-precision variants optimized for consumer hardware. Qwen3.5-4B at 4-bit uses 2.4GB of RAM and runs at 147 tokens per second. A full GPT-4 class model in 2019 required a datacenter. A capable reasoning model in 2026 requires a MacBook Air.</p>
+</li>
+<li>
+<p><strong>Distillation as a first-class technique:</strong> Large models train small models. DeepSeek R1 distilled its reasoning capability into 7B and 14B variants that retain most of the capability at a fraction of the size. OpenAI accused DeepSeek of distilling from ChatGPT outputs — an accusation later walked back. The technique is legal. The results are effective. The small models run locally. The large models run in datacenters. The capability leaks downward.</p>
+</li>
+<li>
+<p><strong>Open-weight licensing:</strong> DeepSeek, Qwen, Yi, and most Chinese frontier labs release their models under permissive licenses — Apache 2.0, MIT, or custom open-weight terms. You can download the weights. You can run them locally. You can fine-tune them. You can build products on them. American models are API-gated. You can access them. You cannot own them.</p>
+</li>
+</ul>
+<p>The combination is powerful: efficient architectures, hardware-portable implementations, aggressive quantization, distillation to small sizes, and permissive licensing. Each factor compounds the others. The result is a Chinese open-weight model ecosystem that dominates the local-first deployment landscape. American labs have nothing comparable because their incentives never produced it.</p>
+<h2 id="the-economics-of-local-first">The economics of local-first</h2>
+<p>The economics favor local models for a large and growing fraction of use cases. The cost structure is different in kind, not just in degree.</p>
+<p>A cloud API charges per token. Heavy usage gets expensive fast. A local model costs the hardware once, then zero per token forever. The crossover point — the usage volume at which buying hardware is cheaper than paying per token — keeps moving lower. As models get more efficient, cheaper hardware can run capable models. As hardware gets faster, the same model runs at higher throughput. Both trends favor local.</p>
+<p>Privacy is economic. Sending data to a cloud API means trusting the provider's privacy policy, security practices, and government access policies. For medical data, legal data, financial data, personal correspondence, internal company documents — the risk of a breach or a policy change is a real cost. Local models eliminate it. The data stays on the device. There is no provider to trust, breach, subpoena, or change.</p>
+<p>Availability is economic. Cloud APIs go down. Rate limits apply. Accounts are suspended. Pricing changes. Terms of service shift. A local model works when the internet is down, when the API is overloaded, when the provider has disabled your account, when the provider has gone out of business. The model is a file. The file is yours. It works as long as the hardware works.</p>
+<p>The market for local-first AI is not the market for frontier intelligence. It is the market for everyday intelligence — summarization, coding assistance, document analysis, email drafting, translation, data extraction. These tasks do not require a trillion-parameter model. They require a model that is fast, private, available, and free to use. That is the Chinese open-weight model ecosystem. That is what the export controls inadvertently created.</p>
+<h2 id="the-cultural-consequences">The cultural consequences</h2>
+<p>The local-first race is not only about efficiency and economics. It is about who controls the models that run on the world's devices.</p>
+<p>If the models running locally are predominantly Chinese open-weight models, then the default AI experience for hundreds of millions of users will be shaped by models trained in China, on Chinese data, reflecting Chinese assumptions about what an AI should say and not say. The biases will be Chinese biases. The safety filters will be Chinese safety filters. The alignment will be Chinese alignment. American models will be available as cloud APIs — better at the frontier, more expensive, less private, less available. The everyday AI experience will be Chinese not because users chose Chinese models but because Chinese models were the ones that ran on their devices.</p>
+<p>If the models running locally are predominantly American, the dynamic reverses. But American models don't run locally. They are not designed to. They are not licensed to. They are not optimized to. The American AI industry has bet on the cloud. The cloud bet may win the frontier. It will lose the local-first market because it is not competing in it.</p>
+<p>The open-weight licensing difference is structural. Chinese labs release weights. You can inspect them, modify them, fine-tune them, deploy them. American labs release APIs. You can call them. The Chinese approach builds an ecosystem — tooling, quantization methods, inference engines, fine-tuning datasets, deployment guides — around open weights. The American approach builds an ecosystem around API integration. The open-weight ecosystem produces local-first capability as a byproduct. The API ecosystem produces nothing local. The ecosystem divergence is self-reinforcing. More developers build tools for open weights. More tools make open weights more capable. More capability attracts more developers. The flywheel spins.</p>
+<h2 id="what-happens-next">What happens next</h2>
+<p>The export controls will not be reversed in any meaningful way. The US political consensus on containing China's AI capability is bipartisan and durable. The controls may tighten further. If they do, Chinese labs will become more efficient still — because they will have to.</p>
+<p>American labs will continue to lead the frontier. The largest, most capable models will be American for the foreseeable future. The gap at the top may even widen as American labs deploy ever-larger training clusters.</p>
+<p>But the local-first race is not about the frontier. It is about ubiquity. Models that run everywhere, on everything, for free, with privacy, without permission. That race is determined by efficiency, openness, and ecosystem. On all three dimensions, Chinese labs have the structural advantage — an advantage created, perversely, by American policy.</p>
+<p>The export controls were intended to contain Chinese AI. They contained Chinese access to American chips. They accelerated Chinese innovation in everything else. The local-first future was an unintended consequence. It is now the likely outcome. The world will run American models in the cloud and Chinese models on devices. The cloud is where the capability is. The devices are where the people are. The people are more numerous than the datacenters. That is the math. The math is unfavorable to the American bet.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Brookings Institution, &quot;DeepSeek shows the limits of US export controls on AI chips,&quot; January 2025.</li>
+<li>Epoch AI, &quot;What did US export controls mean for China's AI capabilities?&quot; December 2024.</li>
+<li>Andrew L., &quot;Chinese AI Models 2026: The Agentic Revolution, Hardware Independence,&quot; dev.to, 2026.</li>
+<li>David Lin, testimony to US Congressional hearing, 2025.</li>
+<li>DeepSeek technical reports, V3 (2025), R1 (2025), V4 (2026).</li>
+<li>Qwen technical reports, Qwen2.5 (2025), Qwen3.5 (2026).</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#disruptive-innovation">Disruptive Innovation</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#disruptive-innovation">The electric light was not a better candle</a></li>
+</ul>
+<p>Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.</p>
+<blockquote>
+<p>Export controls did not stop Chinese AI. They redirected it. The controls made large training clusters unavailable. Chinese labs optimized for efficiency. The optimization produced models that run on laptops. The laptops are everywhere.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="bsd-openbsd-linux">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -1622,78 +1697,6 @@
 <li>Robert Aumann and Michael Maschler, <em>Repeated Games with Incomplete Information</em>, MIT Press, 1995.</li>
 <li>Anatol Rapoport and Albert Chammah, <em>Prisoner's Dilemma</em>, University of Michigan Press, 1965.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a></li>
-</ul>
-<p>Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.</p>
-</div>
-      </article>
-      <article class="post" id="chinese-models-local-first">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#chinese-models-local-first">Chinese models will win the local-first race</a></h2><p class="post-summary">&#34;US export controls forced Chinese AI labs to optimize for efficiency. The result is models that run on consumer hardware while American labs build ever-larger cloud-only systems. Local-first is the next battleground. China has the structural advantage.&#34;</p>
-          <div class="tags"><span class="tag">ai</span><span class="tag">china</span><span class="tag">local-first</span><span class="tag">deepseek</span><span class="tag">qwen</span><span class="tag">open-source</span><span class="tag">economics</span>
-          </div>
-        </header>
-        <div class="post-body"><p>In October 2022, the US banned Nvidia from selling its most advanced AI chips to China. The intent was to slow China's AI progress by denying it compute. The effect was the opposite: it forced Chinese labs to become the most efficient model builders in the world. America built bigger. China built smarter. The local-first race is now between American models that require datacenters and Chinese models that run on your laptop. The laptop will win.</p>
-<p>This is not a prediction about which country will build the most powerful model. America still holds the frontier — GPT-5, Claude Opus 4.6, Gemini Ultra. The largest models, trained on the largest clusters, achieving the highest benchmark scores, are American. The argument is about a different race: who will own the models that run on devices. Phones. Laptops. Edge servers. The models that work offline, cost nothing per query, and keep data local. That race is determined by efficiency, not scale. And efficiency is what the export controls forced China to master.</p>
-<h2 id="the-sanctions-that-backfired">The sanctions that backfired</h2>
-<p>The US export controls escalated through multiple rounds. October 2022: ban on A100 and H100 chips. October 2023: the H800 — Nvidia's bandwidth-crippled H100 designed specifically to comply with the earlier ban — was itself banned. December 2024: high-bandwidth memory restricted. Each round tightened the screws. Each round was met with Chinese efficiency gains that erased the intended advantage.</p>
-<p>DeepSeek trained its V3 model on a cluster of H800 GPUs — chips deliberately hobbled by export controls to have reduced inter-chip bandwidth. The H800 was supposed to be too slow for frontier training. DeepSeek programmed 20 of the 132 processing units on each H800 specifically for cross-chip communication, working below Nvidia's CUDA layer to overcome the bandwidth limits. The result was a model that matched GPT-4o on most benchmarks at roughly 1/30th the training cost. The export controls didn't prevent the model. They provoked the optimization that made it possible.</p>
-<blockquote>
-<p>&quot;Forced to operate under a far more constrained computing environment, AI engineers in China are innovating in ways that their computing-rich American counterparts are not.&quot; — Brookings Institution, 2025</p>
-</blockquote>
-<p>DeepSeek's CEO stated the dynamic directly: &quot;Money has never been the problem; bans on advanced chips are the problem.&quot; The problem produced the solution. The constraint produced the efficiency. The efficiency produced models that can run on consumer hardware — not because that was the goal, but because the optimization path that the sanctions forced converged on it. Models that fit in 16GB of RAM. Models that run at interactive speeds on a MacBook Air. Models that can be downloaded, run locally, and never phone home. American labs, with essentially unlimited compute, never had to optimize for this. Chinese labs had no choice.</p>
-<p>By April 2026, DeepSeek V4 was trained entirely on Huawei Ascend chips — zero Nvidia dependency. The Flash variant runs at 17–31 tokens per second on a Mac Studio. Qwen3.5-4B runs at 147 tokens per second on a MacBook Air using 2.4GB of RAM. These are not research curiosities. These are production-ready models that run on hardware you already own, at speeds that feel instant, with no API key, no rate limit, no privacy policy, no vendor that can revoke your access or raise your price.</p>
-<h2 id="the-american-bet-scale">The American bet: scale</h2>
-<p>American labs — OpenAI, Anthropic, Google — are built on a different bet. The bet is that intelligence scales with compute, that the largest models will be the most capable, and that capability at the frontier justifies the infrastructure cost. This bet has produced extraordinary results. GPT-5.4, Claude Opus 4.6, Gemini 2.5 Ultra are remarkable. They solve problems that smaller models cannot. They are the best at what they do.</p>
-<p>But they cannot run on your device. They cannot run offline. They cost money per query. They require an internet connection. They require you to send your data to a server owned by a company whose incentives are not aligned with yours. They can revoke your access, raise your price, change their terms, or go out of business. The model is theirs. You rent access.</p>
-<p>This bet also makes American labs structurally disinterested in efficiency. When you have effectively unlimited compute, you optimize for capability, not efficiency. You train larger models on larger clusters because that's what your infrastructure, your talent, and your economics are built for. You don't spend your best researchers' time squeezing a 7B model to run on a phone when they could be training a 1.6T model on a 100,000-GPU cluster. The incentives point toward scale. The economics point toward scale. The culture points toward scale.</p>
-<p>The result is that American frontier models are better, and American local models are worse, than they would be if the incentives were reversed. The gap at the top is large. The gap at the bottom — the models that can run on consumer devices — is also large, but in the opposite direction. Chinese labs own the bottom. The bottom is where volume lives.</p>
-<h2 id="the-chinese-bet-efficiency">The Chinese bet: efficiency</h2>
-<p>Chinese labs optimize for efficiency not by choice but by necessity. The export controls cut off access to the largest training clusters. The response was systematic:</p>
-<ul>
-<li>
-<p><strong>Mixture of Experts architectures:</strong> DeepSeek V3 and V4 use MoE with hundreds of experts but only activate 37–158 billion parameters per token. The model is 1.6T parameters. The inference cost is for 158B. The capability is from 1.6T. The efficiency is from 158B.</p>
-</li>
-<li>
-<p><strong>Low-level GPU optimization:</strong> When the H800's inter-chip bandwidth was artificially limited, DeepSeek programmed around the limit at the hardware level. When Nvidia chips became unavailable, they ported to Huawei Ascend. The model is hardware-agnostic because it had to be.</p>
-</li>
-<li>
-<p><strong>Aggressive quantization:</strong> Chinese models ship with 4-bit, 2-bit, and mixed-precision variants optimized for consumer hardware. Qwen3.5-4B at 4-bit uses 2.4GB of RAM and runs at 147 tokens per second. A full GPT-4 class model in 2019 required a datacenter. A capable reasoning model in 2026 requires a MacBook Air.</p>
-</li>
-<li>
-<p><strong>Distillation as a first-class technique:</strong> Large models train small models. DeepSeek R1 distilled its reasoning capability into 7B and 14B variants that retain most of the capability at a fraction of the size. OpenAI accused DeepSeek of distilling from ChatGPT outputs — an accusation later walked back. The technique is legal. The results are effective. The small models run locally. The large models run in datacenters. The capability leaks downward.</p>
-</li>
-<li>
-<p><strong>Open-weight licensing:</strong> DeepSeek, Qwen, Yi, and most Chinese frontier labs release their models under permissive licenses — Apache 2.0, MIT, or custom open-weight terms. You can download the weights. You can run them locally. You can fine-tune them. You can build products on them. American models are API-gated. You can access them. You cannot own them.</p>
-</li>
-</ul>
-<p>The combination is powerful: efficient architectures, hardware-portable implementations, aggressive quantization, distillation to small sizes, and permissive licensing. Each factor compounds the others. The result is a Chinese open-weight model ecosystem that dominates the local-first deployment landscape. American labs have nothing comparable because their incentives never produced it.</p>
-<h2 id="the-economics-of-local-first">The economics of local-first</h2>
-<p>The economics favor local models for a large and growing fraction of use cases. The cost structure is different in kind, not just in degree.</p>
-<p>A cloud API charges per token. Heavy usage gets expensive fast. A local model costs the hardware once, then zero per token forever. The crossover point — the usage volume at which buying hardware is cheaper than paying per token — keeps moving lower. As models get more efficient, cheaper hardware can run capable models. As hardware gets faster, the same model runs at higher throughput. Both trends favor local.</p>
-<p>Privacy is economic. Sending data to a cloud API means trusting the provider's privacy policy, security practices, and government access policies. For medical data, legal data, financial data, personal correspondence, internal company documents — the risk of a breach or a policy change is a real cost. Local models eliminate it. The data stays on the device. There is no provider to trust, breach, subpoena, or change.</p>
-<p>Availability is economic. Cloud APIs go down. Rate limits apply. Accounts are suspended. Pricing changes. Terms of service shift. A local model works when the internet is down, when the API is overloaded, when the provider has disabled your account, when the provider has gone out of business. The model is a file. The file is yours. It works as long as the hardware works.</p>
-<p>The market for local-first AI is not the market for frontier intelligence. It is the market for everyday intelligence — summarization, coding assistance, document analysis, email drafting, translation, data extraction. These tasks do not require a trillion-parameter model. They require a model that is fast, private, available, and free to use. That is the Chinese open-weight model ecosystem. That is what the export controls inadvertently created.</p>
-<h2 id="the-cultural-consequences">The cultural consequences</h2>
-<p>The local-first race is not only about efficiency and economics. It is about who controls the models that run on the world's devices.</p>
-<p>If the models running locally are predominantly Chinese open-weight models, then the default AI experience for hundreds of millions of users will be shaped by models trained in China, on Chinese data, reflecting Chinese assumptions about what an AI should say and not say. The biases will be Chinese biases. The safety filters will be Chinese safety filters. The alignment will be Chinese alignment. American models will be available as cloud APIs — better at the frontier, more expensive, less private, less available. The everyday AI experience will be Chinese not because users chose Chinese models but because Chinese models were the ones that ran on their devices.</p>
-<p>If the models running locally are predominantly American, the dynamic reverses. But American models don't run locally. They are not designed to. They are not licensed to. They are not optimized to. The American AI industry has bet on the cloud. The cloud bet may win the frontier. It will lose the local-first market because it is not competing in it.</p>
-<p>The open-weight licensing difference is structural. Chinese labs release weights. You can inspect them, modify them, fine-tune them, deploy them. American labs release APIs. You can call them. The Chinese approach builds an ecosystem — tooling, quantization methods, inference engines, fine-tuning datasets, deployment guides — around open weights. The American approach builds an ecosystem around API integration. The open-weight ecosystem produces local-first capability as a byproduct. The API ecosystem produces nothing local. The ecosystem divergence is self-reinforcing. More developers build tools for open weights. More tools make open weights more capable. More capability attracts more developers. The flywheel spins.</p>
-<h2 id="what-happens-next">What happens next</h2>
-<p>The export controls will not be reversed in any meaningful way. The US political consensus on containing China's AI capability is bipartisan and durable. The controls may tighten further. If they do, Chinese labs will become more efficient still — because they will have to.</p>
-<p>American labs will continue to lead the frontier. The largest, most capable models will be American for the foreseeable future. The gap at the top may even widen as American labs deploy ever-larger training clusters.</p>
-<p>But the local-first race is not about the frontier. It is about ubiquity. Models that run everywhere, on everything, for free, with privacy, without permission. That race is determined by efficiency, openness, and ecosystem. On all three dimensions, Chinese labs have the structural advantage — an advantage created, perversely, by American policy.</p>
-<p>The export controls were intended to contain Chinese AI. They contained Chinese access to American chips. They accelerated Chinese innovation in everything else. The local-first future was an unintended consequence. It is now the likely outcome. The world will run American models in the cloud and Chinese models on devices. The cloud is where the capability is. The devices are where the people are. The people are more numerous than the datacenters. That is the math. The math is unfavorable to the American bet.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Brookings Institution, &quot;DeepSeek shows the limits of US export controls on AI chips,&quot; January 2025.</li>
-<li>Epoch AI, &quot;What did US export controls mean for China's AI capabilities?&quot; December 2024.</li>
-<li>Andrew L., &quot;Chinese AI Models 2026: The Agentic Revolution, Hardware Independence,&quot; dev.to, 2026.</li>
-<li>David Lin, testimony to US Congressional hearing, 2025.</li>
-<li>DeepSeek technical reports, V3 (2025), R1 (2025), V4 (2026).</li>
-<li>Qwen technical reports, Qwen2.5 (2025), Qwen3.5 (2026).</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#disruptive-innovation">Disruptive Innovation</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#disruptive-innovation">The electric light was not a better candle</a></li>
 </ul>
 <p>Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.</p>
 </div>
@@ -8006,6 +8009,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>
               <a href="#bsd-openbsd-linux">BSD is clean, OpenBSD is cleaner</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>
               <a href="#algorithmic-trading-crypto">Algorithmic trading in crypto</a>
@@ -8031,7 +8035,6 @@ type Logger interface {
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>
               <a href="#cosmos-sdk-ai-agents">Cosmos SDK is the substrate for AI agents</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
-              <a href="#chinese-models-local-first">Chinese models will win the local-first race</a>
               <a href="#colibri">Colibri</a>
               <a href="#verification-horizon">The Verification Horizon</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>

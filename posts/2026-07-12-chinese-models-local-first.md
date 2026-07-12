@@ -93,3 +93,6 @@ The export controls were intended to contain Chinese AI. They contained Chinese 
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> Export controls did not stop Chinese AI. They redirected it. The controls made large training clusters unavailable. Chinese labs optimized for efficiency. The optimization produced models that run on laptops. The laptops are everywhere.

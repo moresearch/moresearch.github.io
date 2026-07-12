@@ -1,5 +1,5 @@
 ---
-title: Visualization
+title: Data Visualization
 date: 2026-07-12
 slug: v-visualization
 summary: "Visualization is the bridge between data and decision. A table of numbers is data. A chart is understanding. The difference is the visual encoding that maps data to perception. Design the encoding badly, and the signal is invisible. Design it well, and the signal is impossible to miss."
@@ -19,3 +19,6 @@ Edward Tufte's *The Visual Display of Quantitative Information* (1983) defined t
 A hospital infection control dashboard illustrates the stakes. Raw data: 50,000 surgeries, 200 columns. The dashboard visualizes infection rates as a control chart — a line graph with upper and lower control limits, each theater as a separate line. When Theater 7 exceeds the upper control limit, the point turns red. The red point triggers a signal. The signal triggers an investigation. The investigation finds a changed sterilization protocol. The protocol is reverted. Infections decline. The visualization saved lives. The visualization worked because the design made the anomaly perceptible. A table of 50,000 rows would not have. The table is data. The chart is a decision support system.
 
 *See: Edward Tufte, "The Visual Display of Quantitative Information" (Graphics Press, 1983). Jacques Bertin, "Semiology of Graphics" (1967, English translation 1983). Leland Wilkinson, "The Grammar of Graphics" (Springer, 1999) — the theoretical foundation of ggplot2 and Vega-Lite.*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

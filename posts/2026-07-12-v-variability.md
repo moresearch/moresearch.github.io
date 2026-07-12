@@ -1,5 +1,5 @@
 ---
-title: Variability
+title: Data Variability
 date: 2026-07-12
 slug: v-variability
 summary: "Variability is the fluctuation in data characteristics over time. It breaks pipelines. A source that produces 1,000 events per hour suddenly produces 100,000. A column of integers suddenly contains strings. The pipeline wasn't designed for this. Variability is the reason pipelines need monitoring, alerting, and circuit breakers."
@@ -19,3 +19,6 @@ The engineering response is elastic infrastructure. Cloud warehouses scale compu
 The deeper response is defensive pipeline design. Pipelines should degrade gracefully under load — process what they can, queue what they can't, alert on what they're dropping. Pipelines should be tested against synthetic spikes — double the volume, triple the volume, ten times the volume — to find the breaking point before production does. Pipelines should have circuit breakers — if the output is anomalous (zero rows, ten times the expected count, nulls in required fields), stop the pipeline and alert. The circuit breaker prevents bad data from propagating downstream. Stopping the pipeline is better than publishing wrong numbers. Wrong numbers are worse than no numbers. No numbers prompt a question. Wrong numbers prompt a wrong decision.
 
 *See: John Allspaw, "The Art of Capacity Planning" (O'Reilly, 2008) — the operations engineering approach to sizing for variability. Betsy Beyer et al., "Site Reliability Engineering" (O'Reilly, 2016), Chapter 13, on managing overload. Daniel Abadi et al., "The Design and Implementation of Modern Column-Oriented Database Systems" (Foundations and Trends in Databases, 2013) — why cloud elasticity changes the trade-offs.*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

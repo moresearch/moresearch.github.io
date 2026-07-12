@@ -1,5 +1,5 @@
 ---
-title: Velocity
+title: Data Velocity
 date: 2026-07-12
 slug: v-velocity
 summary: "Velocity is the speed at which data arrives and the speed at which it must be acted upon. Batch is forgiving. Streaming is not. The choice between them is the most consequential architectural decision in data engineering."
@@ -19,3 +19,6 @@ Streaming is harder than batch. Batch systems are forgiving — if a job fails, 
 The modern synthesis is the Lambda architecture and its successor, Kappa. Lambda: maintain two parallel pipelines — a batch layer for accurate but delayed results, a speed layer for approximate but immediate results, a serving layer that merges them. Kappa: process everything as a stream, replaying historical data from the stream's retention log when reprocessing is needed. Kappa won because it simplifies the operational burden — one code path, not two. The simplification is the engineering insight: the stream is the source of truth. The batch is a special case of the stream — a stream with a very long window.
 
 *See: Tyler Akidau et al., "The Dataflow Model" (VLDB, 2015) — the paper that unified batch and streaming under event-time windowing, now the basis for Apache Beam. Jay Kreps, "Questioning the Lambda Architecture" (O'Reilly, 2014) — why maintaining two code paths is a maintenance disaster. Martin Kleppmann, "Designing Data-Intensive Applications" (O'Reilly, 2017), Chapter 11, on stream processing and the Kappa architecture.*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

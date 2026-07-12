@@ -1,5 +1,5 @@
 ---
-title: Viscosity
+title: Data Viscosity
 date: 2026-07-12
 slug: v-viscosity
 summary: "Viscosity is the resistance of data to movement. Data locked in legacy systems, undocumented schemas, departed engineers. The harder it is to extract data, the higher the viscosity. Viscosity is technical debt in the data supply chain."
@@ -19,3 +19,6 @@ Viscosity is technical debt in the data supply chain. Every system that produces
 The engineering response is to treat data extraction as a first-class requirement for any system that produces data. Every application should expose its data through a standard interface — a read replica, a change data capture feed, an API with documented schemas. The interface should be designed before the application ships. Retrofitting extraction onto an existing system is ten times more expensive than designing it in. The design-in is the investment. The retrofit is the debt repayment. The debt repayment is always more expensive than the investment would have been.
 
 *See: Zhamak Dehghani, "Data Mesh: Delivering Data-Driven Value at Scale" (O'Reilly, 2021) — on domain ownership as the organizational response to viscosity. Maxime Beauchemin, "Functional Data Engineering" (2018) — on treating data pipelines as software engineering with API design standards. Martin Fowler, "Patterns of Enterprise Application Architecture" (Addison-Wesley, 2002), Chapter 9, on data access patterns.*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

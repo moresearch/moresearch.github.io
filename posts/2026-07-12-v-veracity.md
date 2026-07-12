@@ -1,5 +1,5 @@
 ---
-title: Veracity
+title: Data Veracity
 date: 2026-07-12
 slug: v-veracity
 summary: "Veracity is the trustworthiness of data. A pipeline that runs successfully can produce garbage. The tests can pass and the data can still be wrong. Veracity is the gap between what the data says and what is true. Closing that gap is the hardest problem in data engineering."
@@ -19,3 +19,6 @@ The data quality testing pyramid — column-level tests (nulls, ranges, allowed 
 Data lineage — the ability to trace any number in any dashboard back to its source, through every transformation — is the mechanism for debugging veracity failures. When the CFO asks why revenue is down, the data engineer must be able to trace the revenue number backward: this table → that pipeline → this source → that extraction. The trace is the answer. The inability to trace is the failure. Lineage is the data engineer's call stack. Without it, debugging is archaeology. With it, debugging is engineering.
 
 *See: Tom Redman, "Data Driven: Profiting from Your Most Important Business Asset" (Harvard Business Review Press, 2008) — the foundational text on data quality as a management discipline. Barr Moses et al., "Data Quality Management at Scale" (Monte Carlo, 2022) — modern operational practices for data observability. Wenfei Fan and Floris Geerts, "Foundations of Data Quality Management" (Morgan & Claypool, 2012) — a formal treatment of data consistency, currency, and accuracy.*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

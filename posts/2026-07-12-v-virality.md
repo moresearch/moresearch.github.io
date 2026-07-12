@@ -1,5 +1,5 @@
 ---
-title: Virality
+title: Data Virality
 date: 2026-07-12
 slug: v-virality
 summary: "Virality is the rate at which data usage spreads through an organization. A dataset that one team finds useful spreads to other teams. The spread is the measure of value. A dataset that nobody knows about is worthless, regardless of its quality."
@@ -19,3 +19,6 @@ The engineering response to the virality problem is the data catalog. A catalog 
 But discoverability is not enough. The data must also be understandable. A dataset with cryptic column names and no documentation is discoverable but unusable. The user finds it, opens it, sees `col_37 VARCHAR`, and closes it. The data dictionary — column descriptions, business definitions, example values — is the mechanism for understandability. The data quality dashboard — freshness, completeness, accuracy metrics — is the mechanism for trust. Discoverability, understandability, trust. All three are required for virality. Most platforms have one. Some have two. Few have all three. The ones that have all three have viral data.
 
 *See: Prukalpa Sankar, "The Data Maturity Curve" (Atlan, 2021) — on the stages of data culture from fragmented to viral. Michelle Casbon et al., "Data Governance: The Definitive Guide" (O'Reilly, 2021) — on how governance enables rather than restricts data adoption. Alation, "The Data Catalog: The Foundation of Data Culture" (Whitepaper, 2020).*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

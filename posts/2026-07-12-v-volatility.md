@@ -1,5 +1,5 @@
 ---
-title: Volatility
+title: Data Volatility
 date: 2026-07-12
 slug: v-volatility
 summary: "Volatility is the rate at which data loses relevance. Stock prices matter for milliseconds. Medical records matter for decades. The half-life of data value determines how much to invest in its quality and how long to keep it."
@@ -21,3 +21,6 @@ The engineering response is automated data lifecycle management. Define retentio
 Gordon Moore's 1965 paper predicted that transistor density would double every two years. The prediction held. Storage became cheap enough that keeping everything seemed rational. The rationality was an illusion. Storage is cheap per gigabyte. The total cost — storage plus maintenance plus cognitive load — is not cheap. The total cost accumulates. The accumulation is the reason retention policies exist. The policy is the recognition that data has a finite useful life. The useful life is shorter than the organizational memory. The data outlives its usefulness. The outliving is the problem. The deletion is the solution.
 
 *See: Apache Iceberg, "Table Spec: Snapshots and Time Travel" (Iceberg Documentation) — on the table format features that make retention management programmable. Netflix Tech Blog, "Evolution of Data Lifecycle Management at Netflix" (2021) — a real-world architecture for automated data retention. Gordon Moore, "Cramming More Components onto Integrated Circuits" (Electronics, 1965).*
+
+
+*This post is part of a series on [The Many Vs of Data](https://blog.hackspree.com/#many-vs-of-data), originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.*

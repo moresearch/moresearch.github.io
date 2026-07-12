@@ -50,3 +50,6 @@ Hoare's sentence is not a preference for elegance. It is a statement of economic
 - C.A.R. Hoare, "The Emperor's Old Clothes," Turing Award Lecture, *Communications of the ACM*, Vol. 24, No. 2, February 1981.
 - Alan Perlis, "Epigrams on Programming," *SIGPLAN Notices*, 1982.
 - Related posts: [Simplicity does not precede complexity, but follows it](https://blog.hackspree.com/#simplicity-follows-complexity), [No solutions, only trade-offs](https://blog.hackspree.com/#no-solutions-only-tradeoffs), [Engineering is art and philosophy](https://blog.hackspree.com/#engineering-is-economics)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

@@ -48,3 +48,6 @@ The economy of knowledge. The system operates without anyone needing to know the
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> The knowledge is dispersed. No single person knows how to build the system. The architect who pretends to is making decisions with incomplete information. The market aggregates the dispersed knowledge through prices. The architecture must aggregate it through interfaces.

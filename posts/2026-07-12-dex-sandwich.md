@@ -45,3 +45,6 @@ Phil Daian et al., "Flash Boys 2.0" (2019). The paper documented sandwich attack
 - Flashbots, "MEV-Boost and Sandwich Attacks," Flashbots Documentation.
 - CoWSwap, "Batch Auctions," CoWSwap Documentation.
 - Related posts: [MEV](https://blog.hackspree.com/#dex-trading-mev), [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

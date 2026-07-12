@@ -1,5 +1,5 @@
 ---
-title: "The dark factory doesn't eliminate complexity — it moves it"
+title: The dark factory doesn't eliminate complexity — it moves it
 date: 2026-07-07
 slug: dark-factory-complexity
 summary: "Dark factories shift the bottleneck from implementation to specification. The complexity doesn't vanish — it concentrates upstream, and the skill that matters is the ability to say exactly what you mean."

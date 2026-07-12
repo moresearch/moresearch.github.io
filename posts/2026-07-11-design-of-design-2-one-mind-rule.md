@@ -1,5 +1,5 @@
 ---
-title: "Brooks on Software Design Series: one mind"
+title: Brooks on Software Design Series: one mind
 date: 2026-07-11
 slug: brooks-design-one-mind-rule
 summary: "Conceptual integrity requires one mind — or at most a resonant pair. Committees produce compromises, not coherence. Three people is already a negotiation."

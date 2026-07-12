@@ -1,6 +1,6 @@
 ---
 draft: true
-title: "Harness Engineering (Martin Fowler)"
+title: Harness Engineering (Martin Fowler)
 date: 2026-05-17
 slug: harness-engineering-fowler
 summary: "Reflection and practical takeaways from Martin Fowler's 'Harness Engineering' — designing feedforward/feedback controls and harness templates to govern coding agents."

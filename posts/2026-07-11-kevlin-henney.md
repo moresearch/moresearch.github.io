@@ -1,5 +1,5 @@
 ---
-title: "Henney's Microservices"
+title: Henney's Microservices
 date: 2026-07-11
 slug: kevlin-henney
 summary: "Kevlin Henney never wrote a microservices book. He wrote the books you should have read before adopting microservices. Coupling is shared knowledge. Architecture is measured by cost of change. Modularity is in the relationships, not the services."

@@ -1,5 +1,5 @@
 ---
-title: "The economics of the dark factory: what happens when code is free"
+title: The economics of the dark factory: what happens when code is free
 date: 2026-07-07
 slug: dark-factory-economics
 summary: "When implementation cost approaches zero, the economics of software production invert. The scarce resource is no longer coding — it's specification, validation, and trust."

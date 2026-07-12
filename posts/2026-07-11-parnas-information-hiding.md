@@ -1,5 +1,5 @@
 ---
-title: "Parnas's Information Hiding"
+title: Parnas's Information Hiding
 date: 2026-07-11
 slug: parnas-information-hiding
 summary: "David Parnas's 1972 paper introduced information hiding: modularize around design decisions likely to change, not around processing steps. The interface reveals as little as possible."

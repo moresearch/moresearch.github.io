@@ -1,5 +1,5 @@
 ---
-title: "AI sovereignty or AI colony: why domestic capability matters"
+title: AI sovereignty or AI colony: why domestic capability matters
 date: 2026-06-06
 slug: ai-sovereignty-or-ai-colony
 summary: "If a country cannot build and operate its own AI stack, it becomes dependent on foreign models, cloud capacity, and policy defaults."

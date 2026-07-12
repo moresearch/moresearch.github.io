@@ -1,5 +1,5 @@
 ---
-title: "Software dark factories: specs in, software out"
+title: Software dark factories: specs in, software out
 date: 2026-07-07
 slug: software-dark-factories
 summary: "The dark factory model — where humans write specs and AI agents handle everything else — is not a thought experiment. StrongDM is already running one. Here's what that means for how we build software."

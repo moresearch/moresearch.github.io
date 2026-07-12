@@ -1,5 +1,5 @@
 ---
-title: "this statement is false"
+title: this statement is false
 date: 2026-07-12
 slug: this-statement-is-false
 summary: "Six words that broke mathematics, launched a thousand puzzles, and may explain consciousness. From the Liar Paradox through Gödel, Smullyan's knights and knaves, and Hofstadter's strange loops — self-reference is the thread."

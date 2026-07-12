@@ -1,5 +1,5 @@
 ---
-title: "Lehman's Software Evolution"
+title: Lehman's Software Evolution
 date: 2026-07-12
 slug: lehmans-laws
 summary: "Meir Lehman observed that software doesn't age — it evolves according to laws as regular as thermodynamics. E-type programs change or die. Complexity increases unless you fight it. The process is self-regulating whether you like it or not. Maintenance is not a phase. It is the process."

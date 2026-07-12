@@ -1,5 +1,5 @@
 ---
-title: "Academics without academic integrity: shame on you"
+title: Academics without academic integrity: shame on you
 date: 2026-07-07
 slug: academics-without-integrity-shame
 summary: "When senior academics steal ideas from students, manuscripts, and grant proposals — and the system protects them — they burn down the trust that makes research possible."

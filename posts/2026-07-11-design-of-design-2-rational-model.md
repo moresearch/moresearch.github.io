@@ -1,5 +1,5 @@
 ---
-title: "Brooks on Software Design Series: the waterfall is wrong"
+title: Brooks on Software Design Series: the waterfall is wrong
 date: 2026-07-11
 slug: brooks-design-rational-model
 summary: "The rational model says gather requirements, design, implement, test, ship. Brooks says it is wrong and harmful. You don't know the goal at the start. Neither does your client. The Gantt chart is a lie."

@@ -1,5 +1,5 @@
 ---
-title: "Always-on agents: state, memory, and the governance gap"
+title: Always-on agents: state, memory, and the governance gap
 date: 2026-07-07
 slug: always-on-agents
 summary: "A new survey of 435 papers argues that making agents truly always-on requires treating state as a first-class systems concern — not just remembering, but governing, recovering, and forgetting."

@@ -1,5 +1,5 @@
 ---
-title: "NATS pub/sub beats REST for microservices"
+title: NATS pub/sub beats REST for microservices
 date: 2026-07-12
 slug: nats-pubsub-microservices
 summary: "REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need the frequency. Modularity lives in the difference."

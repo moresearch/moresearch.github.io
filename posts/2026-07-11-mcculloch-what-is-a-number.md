@@ -1,5 +1,5 @@
 ---
-title: "McCulloch's question: what is a number, that a man may know it?"
+title: McCulloch's question: what is a number, that a man may know it?
 date: 2026-07-11
 slug: mcculloch-what-is-a-number
 summary: "Warren McCulloch's 1960 lecture traces a single question — asked at age 19 — through Augustine, Duns Scotus, Hume, Russell, Turing, and the neural circuitry of the brain, ending with a probabilistic logic for fallible neurons."

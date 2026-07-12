@@ -1,6 +1,6 @@
 ---
 draft: true
-title: "Task Harness Engineering: how it compares to Eval and Agent Harnesses"
+title: Task Harness Engineering: how it compares to Eval and Agent Harnesses
 date: 2026-05-17
 slug: task-harness-engineering
 summary: "A practical guide to building task harnesses and how they differ from evaluation and agent harnesses (informed by the referenced talk)."

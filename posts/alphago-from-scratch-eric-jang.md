@@ -1,5 +1,5 @@
 ---
-title: "Building AlphaGo from scratch – Eric Jang"
+title: Building AlphaGo from scratch – Eric Jang
 date: 2026-05-16
 slug: alphago-from-scratch-eric-jang
 external: https://www.youtube.com/watch?v=X_ZVSPcZhtw

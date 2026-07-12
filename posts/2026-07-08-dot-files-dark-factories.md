@@ -1,5 +1,5 @@
 ---
-title: "Why DOT files work for dark factories"
+title: Why DOT files work for dark factories
 date: 2026-07-08
 slug: dot-files-dark-factories
 summary: "Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents."

@@ -1,5 +1,5 @@
 ---
-title: "Agent Governance Toolkit: deterministic, auditable governance for agent fleets"
+title: Agent Governance Toolkit: deterministic, auditable governance for agent fleets
 date: 2026-05-21
 slug: agent-governance-toolkit
 summary: "A practical look at Microsoft’s Agent Governance Toolkit (AGT): what it solves, core capabilities, and how to get started governing agent actions safely and audibly."

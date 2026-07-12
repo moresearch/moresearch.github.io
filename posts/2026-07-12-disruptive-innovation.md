@@ -1,5 +1,5 @@
 ---
-title: "the electric light was not a better candle"
+title: the electric light was not a better candle
 date: 2026-07-12
 slug: disruptive-innovation
 summary: "The electric light did not emerge from gas companies improving their mantles. Schumpeter named the force. Christensen named the mechanism. Thom named the moment. Software design lives inside all three."

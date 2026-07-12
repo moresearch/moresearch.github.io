@@ -1,5 +1,5 @@
 ---
-title: "Temporal vs DBOS for Go: two paths to durable execution"
+title: Temporal vs DBOS for Go: two paths to durable execution
 date: 2026-07-10
 slug: temporal-vs-dbos-golang
 summary: "Temporal gives you a battle-tested orchestration platform with event-sourced replay. DBOS gives you durable workflows in a single Postgres-backed binary. Which one fits your Go stack?"

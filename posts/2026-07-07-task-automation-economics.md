@@ -1,5 +1,5 @@
 ---
-title: "Task automation economics: why an agent run is not automation"
+title: Task automation economics: why an agent run is not automation
 date: 2026-07-07
 slug: task-automation-economics
 summary: "A new paper argues that agentic AI execution is not automation — and that the real economic unit is the verified automation asset, not the agent run."

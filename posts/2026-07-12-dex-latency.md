@@ -47,3 +47,6 @@ Crypto latency infrastructure is evolving along the same trajectory as tradition
 - Phil Daian et al., "Flash Boys 2.0," 2019.
 - "First-Spammed, First-Served: MEV Extraction on Fast-Finality Blockchains," June 2025.
 - Related posts: [MEV](https://blog.hackspree.com/#dex-trading-mev), [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

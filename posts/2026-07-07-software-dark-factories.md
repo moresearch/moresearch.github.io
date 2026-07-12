@@ -87,3 +87,6 @@ But the direction of travel is set. The dark factory is not science fiction. It 
 - Dark Factory, [What is dark factory software development?](https://darkfactory.dev/blog/what-is-dark-factory-software-development)
 - Simon Willison's commentary on the StrongDM dark factory approach (referenced in the Dark Factory post above)
 - FANUC's lights-out factory — the manufacturing origin of the "dark factory" term
+
+
+Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.

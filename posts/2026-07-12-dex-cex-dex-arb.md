@@ -53,3 +53,6 @@ This is the same dynamic that occurred in traditional equity markets, documented
 - AFT 2025, "The CEX-DEX Arbitrage Landscape on Ethereum: 2023–2025."
 - Michael Lewis, *Flash Boys*, W.W. Norton, 2014.
 - Related posts: [Arbitrage](https://blog.hackspree.com/#dex-trading-arbitrage), [MEV](https://blog.hackspree.com/#dex-trading-mev), [Latency](https://blog.hackspree.com/#dex-trading-latency)
+
+
+Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.

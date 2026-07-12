@@ -63,3 +63,6 @@ The convergence of Kilroy and Mammoth on DOT is not a coincidence. It is a signa
 
 
 Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.
+
+
+> DOT is not a file format. It is a contract between humans and agents. The human reads the graph. The agent executes the graph. The DOT file is the shared artifact. The artifact is the interface.

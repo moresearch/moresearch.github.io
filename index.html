@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Meir Lehman observed that software doesn&#39;t age — it evolves according to laws as regular as thermodynamics. E-type programs change or die. Complexity increases unless you fight it. The process is self-regulating whether you like it or not. Maintenance is not a phase. It is the process.&#34;">
+  <meta name="description" content="&#34;libp2p began as the networking layer of IPFS. It became the networking layer of Ethereum, Filecoin, and the decentralized web. Its architecture is a masterclass in modular protocol design — identity, transport, security, discovery, and messaging, each a swappable module. The client-server internet is the past. The peer-to-peer internet is already here.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,88 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="libp2p">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#libp2p">libp2p is the internet, rewired</a></h2><p class="post-summary">&#34;libp2p began as the networking layer of IPFS. It became the networking layer of Ethereum, Filecoin, and the decentralized web. Its architecture is a masterclass in modular protocol design — identity, transport, security, discovery, and messaging, each a swappable module. The client-server internet is the past. The peer-to-peer internet is already here.&#34;</p>
+          <div class="tags"><span class="tag">libp2p</span><span class="tag">p2p</span><span class="tag">networking</span><span class="tag">ipfs</span><span class="tag">ethereum</span><span class="tag">decentralized</span>
+          </div>
+        </header>
+        <div class="post-body"><p>libp2p began as a networking layer inside IPFS. Juan Benet and the Protocol Labs team were building the InterPlanetary File System — a content-addressed, peer-to-peer file system — and they kept solving the same problems that every peer-to-peer application solves. Peer identity. Peer discovery. Transport negotiation. Secure channels. NAT traversal. Message routing. These are not file-sharing problems. They are networking problems. Every P2P application faces them. Most solve them poorly, in tightly coupled code that can't be reused.</p>
+<p>Protocol Labs made the decision that elevated libp2p from an internal component to a universal standard: they extracted the networking layer into a standalone, modular, language-agnostic framework. The decision was strategic. A clean networking stack that any P2P application could use would attract contributors beyond the IPFS ecosystem. It would become infrastructure. It did.</p>
+<h2 id="the-stack">The stack</h2>
+<p>libp2p is not a protocol. It is a suite of protocols, each solving one layer of the peer-to-peer problem. The layers are composable. Applications pick the modules they need.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Peer Identity</strong></td>
+<td>Every peer has a PeerID — a cryptographic hash of its public key. Identity is self-sovereign. No certificate authority. No registration. Generate a keypair. You exist.</td>
+</tr>
+<tr>
+<td><strong>Multiaddress</strong></td>
+<td>Self-describing network addresses: <code>/ip4/192.168.1.100/tcp/8001/p2p/QmPeerID</code>. The address encodes the transport, the IP, the port, and the peer identity in one string. One format for every possible way to reach a peer.</td>
+</tr>
+<tr>
+<td><strong>Transport</strong></td>
+<td>Transport-agnostic. TCP, QUIC, WebSockets, WebRTC, WebTransport — all first-class. An application listens on multiple transports simultaneously. Peers connect using whatever transport they share.</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>Mandatory encryption upgrade. Every connection upgrades to an encrypted channel using TLS 1.3 or Noise. No unencrypted fallback. No &quot;encryption is optional.&quot; The connection is secure or the connection doesn't happen.</td>
+</tr>
+<tr>
+<td><strong>Stream Multiplexing</strong></td>
+<td>Multiple independent bidirectional streams over a single transport connection. Yamux, Mplex, or QUIC-native multiplexing. One TCP connection, dozens of concurrent protocol interactions.</td>
+</tr>
+<tr>
+<td><strong>Protocol Negotiation</strong></td>
+<td><code>multistream-select</code> lets peers agree on protocols at connection time. A peer requests <code>/ipfs/bitswap/1.2.0</code>. The remote peer responds: supported, or not. The negotiation is inline. The protocol version is explicit.</td>
+</tr>
+<tr>
+<td><strong>Peer Discovery</strong></td>
+<td>Bootstrap nodes for initial entry. mDNS for LAN discovery. Kademlia DHT for global peer routing. Rendezvous points for ephemeral meetups. The discovery mechanism is a module. Swap it without changing anything above.</td>
+</tr>
+<tr>
+<td><strong>Messaging</strong></td>
+<td>GossipSub — a scalable, attack-resistant pub/sub system. Messages flood through a mesh of peers. Peers score each other's behavior. Malicious peers are pruned. The mesh heals. Ethereum's consensus layer runs on GossipSub. It delivers blocks and attestations across tens of thousands of validators.</td>
+</tr>
+<tr>
+<td><strong>NAT Traversal</strong></td>
+<td>AutoNAT detects whether a peer is publicly reachable. Circuit Relay v2 routes traffic through a relay when direct connection fails. Hole punching establishes direct connections between NATed peers. The internet was not designed for peer-to-peer. libp2p works around that.</td>
+</tr>
+</tbody>
+</table>
+<p>Each layer is a module. Each module implements an interface. Swap the transport from TCP to QUIC. Swap the crypto from Noise to TLS. Swap the multiplexer from Yamux to Mplex. The layers above don't know. The layers below don't care. This is Parnas's information hiding applied to the network stack. The volatile decision — which transport, which cipher, which discovery mechanism — is hidden behind a stable interface. The interface is the protocol. The implementation is the module.</p>
+<h2 id="the-origin">The origin</h2>
+<p>libp2p was extracted from IPFS, but its intellectual lineage goes deeper. The peer-to-peer era of the early 2000s — Napster, Gnutella, BitTorrent, Kademlia — produced a generation of protocols that solved individual P2P problems. BitTorrent solved efficient file distribution. Kademlia solved distributed hash tables. Gossip protocols solved epidemic message propagation. But each protocol was a monolith. BitTorrent's peer discovery was coupled to its file transfer. Gnutella's search was coupled to its network topology. You couldn't take Kademlia out of BitTorrent and use it elsewhere. You couldn't take BitTorrent's choking algorithm and use it in a chat application.</p>
+<p>libp2p is the recognition that these problems are orthogonal. Peer discovery is not a file-sharing problem. It is a networking problem. NAT traversal is not a VoIP problem. It is a networking problem. Pub/sub is not a blockchain problem. It is a networking problem. The solutions should be libraries, not features embedded in monoliths. libp2p made them libraries. The monoliths became consumers of the libraries. Ethereum didn't have to write a pub/sub system. It imported GossipSub. Filecoin didn't have to write a DHT. It imported Kademlia. The specialization that the P2P era produced became composable modules in a universal stack.</p>
+<h2 id="the-applications">The applications</h2>
+<p><strong>IPFS.</strong> libp2p's origin and still its largest deployment. The IPFS public DHT runs on go-libp2p with thousands of globally reachable peers. Content routing, peer routing, and block exchange all run over libp2p protocols. The content-addressed web has a networking layer. It is libp2p.</p>
+<p><strong>Ethereum.</strong> The beacon chain's consensus layer uses GossipSub for block and attestation propagation. Thousands of validators broadcast messages. The mesh must be reliable, low-latency, and resistant to eclipse attacks. GossipSub provides adaptive peer scoring — peers that behave badly are scored down and eventually pruned. The scoring is the defense against Sybil attacks. The defense is built into the pub/sub layer. The consensus layer doesn't implement it. It inherits it.</p>
+<p><strong>Filecoin.</strong> Storage miners announce themselves via the Kademlia DHT. Clients resolve miner PeerIDs to network addresses. Block propagation runs over GossipSub. The storage retrieval market uses an extended Bitswap protocol. Filecoin is a marketplace for storage. The marketplace runs on libp2p.</p>
+<p><strong>Optimism.</strong> Layer 2 rollup nodes use libp2p for peer-to-peer communication between sequencers. The L2 inherits the networking stack from the L1 ecosystem. The stack is the same. The chain is different.</p>
+<p>Beyond the major chains, libp2p is the default networking layer for decentralized applications. Secure file transfer (CipherStream). Decentralized databases (Source Network, DefraDB). Peer-to-peer gaming. IoT mesh networks. Federated learning — training AI models across decentralized nodes without centralizing data. Each application imports the modules it needs. Peer discovery for the database. GossipSub for the game state. Circuit relay for the IoT device behind NAT. The modules compose. The composition is the application's networking layer.</p>
+<h2 id="why-it-won">Why it won</h2>
+<p>libp2p won because it made the right architectural choice at the right time: modularity over monolith, protocol suite over framework, composition over integration. The alternative — every application building its own networking stack — produced fragmented, incompatible, under-tested implementations. libp2p produced a shared stack maintained by contributors from multiple ecosystems, tested at the scale of Ethereum's consensus layer, hardened against the attacks that real P2P networks face.</p>
+<p>The modularity is the moat. When QUIC becomes the dominant transport, libp2p applications swap the transport module. When a better DHT algorithm is discovered, they swap the routing module. When a novel NAT traversal technique emerges, they add a new module. The interfaces are stable. The implementations evolve. This is the architecture of systems that survive technological change. The architecture was not an accident. It was the founding insight: separate the concerns, define the interfaces, let the implementations compete.</p>
+<p>The client-server internet was an accident of history. The early internet was peer-to-peer. Client-server won because NATs and firewalls made peer-to-peer hard, because ISPs gave consumers dynamic IPs, because the economics of centralized services were compelling. libp2p is the recognition that those constraints are dissolving. IPv6 restores end-to-end addressing. QUIC makes secure, multiplexed connections trivial. WebRTC gives browsers direct peer connections. The technical barriers to peer-to-peer are falling. The remaining barriers are architectural — the assumption that every application needs a server, that every message must pass through a data center. libp2p challenges that assumption at the network layer. The challenge is working.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Juan Benet and David Dias, libp2p Specification, Protocol Labs.</li>
+<li>libp2p Documentation, <a target="_blank" rel="noopener noreferrer" href="https://docs.libp2p.io">docs.libp2p.io</a>.</li>
+<li>IPFS, Filecoin, Ethereum — libp2p integration documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#nats-pubsub-microservices">NATS pub/sub beats REST</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#git-unix-philosophy">Git is a Unix tool</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a></li>
+</ul>
+<p>Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.</p>
+</div>
+      </article>
       <article class="post" id="lehmans-laws">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -3499,87 +3581,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Thomas Sowell, <em>A Conflict of Visions</em>, William Morrow, 1987.</li>
 <li>Thomas Sowell, <em>Basic Economics</em>, Basic Books, 2000.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">No Free Lunch</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="libp2p">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#libp2p">libp2p is the internet, rewired</a></h2><p class="post-summary">&#34;libp2p began as the networking layer of IPFS. It became the networking layer of Ethereum, Filecoin, and the decentralized web. Its architecture is a masterclass in modular protocol design — identity, transport, security, discovery, and messaging, each a swappable module. The client-server internet is the past. The peer-to-peer internet is already here.&#34;</p>
-          <div class="tags"><span class="tag">libp2p</span><span class="tag">p2p</span><span class="tag">networking</span><span class="tag">ipfs</span><span class="tag">ethereum</span><span class="tag">decentralized</span>
-          </div>
-        </header>
-        <div class="post-body"><p>libp2p began as a networking layer inside IPFS. Juan Benet and the Protocol Labs team were building the InterPlanetary File System — a content-addressed, peer-to-peer file system — and they kept solving the same problems that every peer-to-peer application solves. Peer identity. Peer discovery. Transport negotiation. Secure channels. NAT traversal. Message routing. These are not file-sharing problems. They are networking problems. Every P2P application faces them. Most solve them poorly, in tightly coupled code that can't be reused.</p>
-<p>Protocol Labs made the decision that elevated libp2p from an internal component to a universal standard: they extracted the networking layer into a standalone, modular, language-agnostic framework. The decision was strategic. A clean networking stack that any P2P application could use would attract contributors beyond the IPFS ecosystem. It would become infrastructure. It did.</p>
-<h2 id="the-stack">The stack</h2>
-<p>libp2p is not a protocol. It is a suite of protocols, each solving one layer of the peer-to-peer problem. The layers are composable. Applications pick the modules they need.</p>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Peer Identity</strong></td>
-<td>Every peer has a PeerID — a cryptographic hash of its public key. Identity is self-sovereign. No certificate authority. No registration. Generate a keypair. You exist.</td>
-</tr>
-<tr>
-<td><strong>Multiaddress</strong></td>
-<td>Self-describing network addresses: <code>/ip4/192.168.1.100/tcp/8001/p2p/QmPeerID</code>. The address encodes the transport, the IP, the port, and the peer identity in one string. One format for every possible way to reach a peer.</td>
-</tr>
-<tr>
-<td><strong>Transport</strong></td>
-<td>Transport-agnostic. TCP, QUIC, WebSockets, WebRTC, WebTransport — all first-class. An application listens on multiple transports simultaneously. Peers connect using whatever transport they share.</td>
-</tr>
-<tr>
-<td><strong>Security</strong></td>
-<td>Mandatory encryption upgrade. Every connection upgrades to an encrypted channel using TLS 1.3 or Noise. No unencrypted fallback. No &quot;encryption is optional.&quot; The connection is secure or the connection doesn't happen.</td>
-</tr>
-<tr>
-<td><strong>Stream Multiplexing</strong></td>
-<td>Multiple independent bidirectional streams over a single transport connection. Yamux, Mplex, or QUIC-native multiplexing. One TCP connection, dozens of concurrent protocol interactions.</td>
-</tr>
-<tr>
-<td><strong>Protocol Negotiation</strong></td>
-<td><code>multistream-select</code> lets peers agree on protocols at connection time. A peer requests <code>/ipfs/bitswap/1.2.0</code>. The remote peer responds: supported, or not. The negotiation is inline. The protocol version is explicit.</td>
-</tr>
-<tr>
-<td><strong>Peer Discovery</strong></td>
-<td>Bootstrap nodes for initial entry. mDNS for LAN discovery. Kademlia DHT for global peer routing. Rendezvous points for ephemeral meetups. The discovery mechanism is a module. Swap it without changing anything above.</td>
-</tr>
-<tr>
-<td><strong>Messaging</strong></td>
-<td>GossipSub — a scalable, attack-resistant pub/sub system. Messages flood through a mesh of peers. Peers score each other's behavior. Malicious peers are pruned. The mesh heals. Ethereum's consensus layer runs on GossipSub. It delivers blocks and attestations across tens of thousands of validators.</td>
-</tr>
-<tr>
-<td><strong>NAT Traversal</strong></td>
-<td>AutoNAT detects whether a peer is publicly reachable. Circuit Relay v2 routes traffic through a relay when direct connection fails. Hole punching establishes direct connections between NATed peers. The internet was not designed for peer-to-peer. libp2p works around that.</td>
-</tr>
-</tbody>
-</table>
-<p>Each layer is a module. Each module implements an interface. Swap the transport from TCP to QUIC. Swap the crypto from Noise to TLS. Swap the multiplexer from Yamux to Mplex. The layers above don't know. The layers below don't care. This is Parnas's information hiding applied to the network stack. The volatile decision — which transport, which cipher, which discovery mechanism — is hidden behind a stable interface. The interface is the protocol. The implementation is the module.</p>
-<h2 id="the-origin">The origin</h2>
-<p>libp2p was extracted from IPFS, but its intellectual lineage goes deeper. The peer-to-peer era of the early 2000s — Napster, Gnutella, BitTorrent, Kademlia — produced a generation of protocols that solved individual P2P problems. BitTorrent solved efficient file distribution. Kademlia solved distributed hash tables. Gossip protocols solved epidemic message propagation. But each protocol was a monolith. BitTorrent's peer discovery was coupled to its file transfer. Gnutella's search was coupled to its network topology. You couldn't take Kademlia out of BitTorrent and use it elsewhere. You couldn't take BitTorrent's choking algorithm and use it in a chat application.</p>
-<p>libp2p is the recognition that these problems are orthogonal. Peer discovery is not a file-sharing problem. It is a networking problem. NAT traversal is not a VoIP problem. It is a networking problem. Pub/sub is not a blockchain problem. It is a networking problem. The solutions should be libraries, not features embedded in monoliths. libp2p made them libraries. The monoliths became consumers of the libraries. Ethereum didn't have to write a pub/sub system. It imported GossipSub. Filecoin didn't have to write a DHT. It imported Kademlia. The specialization that the P2P era produced became composable modules in a universal stack.</p>
-<h2 id="the-applications">The applications</h2>
-<p><strong>IPFS.</strong> libp2p's origin and still its largest deployment. The IPFS public DHT runs on go-libp2p with thousands of globally reachable peers. Content routing, peer routing, and block exchange all run over libp2p protocols. The content-addressed web has a networking layer. It is libp2p.</p>
-<p><strong>Ethereum.</strong> The beacon chain's consensus layer uses GossipSub for block and attestation propagation. Thousands of validators broadcast messages. The mesh must be reliable, low-latency, and resistant to eclipse attacks. GossipSub provides adaptive peer scoring — peers that behave badly are scored down and eventually pruned. The scoring is the defense against Sybil attacks. The defense is built into the pub/sub layer. The consensus layer doesn't implement it. It inherits it.</p>
-<p><strong>Filecoin.</strong> Storage miners announce themselves via the Kademlia DHT. Clients resolve miner PeerIDs to network addresses. Block propagation runs over GossipSub. The storage retrieval market uses an extended Bitswap protocol. Filecoin is a marketplace for storage. The marketplace runs on libp2p.</p>
-<p><strong>Optimism.</strong> Layer 2 rollup nodes use libp2p for peer-to-peer communication between sequencers. The L2 inherits the networking stack from the L1 ecosystem. The stack is the same. The chain is different.</p>
-<p>Beyond the major chains, libp2p is the default networking layer for decentralized applications. Secure file transfer (CipherStream). Decentralized databases (Source Network, DefraDB). Peer-to-peer gaming. IoT mesh networks. Federated learning — training AI models across decentralized nodes without centralizing data. Each application imports the modules it needs. Peer discovery for the database. GossipSub for the game state. Circuit relay for the IoT device behind NAT. The modules compose. The composition is the application's networking layer.</p>
-<h2 id="why-it-won">Why it won</h2>
-<p>libp2p won because it made the right architectural choice at the right time: modularity over monolith, protocol suite over framework, composition over integration. The alternative — every application building its own networking stack — produced fragmented, incompatible, under-tested implementations. libp2p produced a shared stack maintained by contributors from multiple ecosystems, tested at the scale of Ethereum's consensus layer, hardened against the attacks that real P2P networks face.</p>
-<p>The modularity is the moat. When QUIC becomes the dominant transport, libp2p applications swap the transport module. When a better DHT algorithm is discovered, they swap the routing module. When a novel NAT traversal technique emerges, they add a new module. The interfaces are stable. The implementations evolve. This is the architecture of systems that survive technological change. The architecture was not an accident. It was the founding insight: separate the concerns, define the interfaces, let the implementations compete.</p>
-<p>The client-server internet was an accident of history. The early internet was peer-to-peer. Client-server won because NATs and firewalls made peer-to-peer hard, because ISPs gave consumers dynamic IPs, because the economics of centralized services were compelling. libp2p is the recognition that those constraints are dissolving. IPv6 restores end-to-end addressing. QUIC makes secure, multiplexed connections trivial. WebRTC gives browsers direct peer connections. The technical barriers to peer-to-peer are falling. The remaining barriers are architectural — the assumption that every application needs a server, that every message must pass through a data center. libp2p challenges that assumption at the network layer. The challenge is working.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Juan Benet and David Dias, libp2p Specification, Protocol Labs.</li>
-<li>libp2p Documentation, <a target="_blank" rel="noopener noreferrer" href="https://docs.libp2p.io">docs.libp2p.io</a>.</li>
-<li>IPFS, Filecoin, Ethereum — libp2p integration documentation.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#nats-pubsub-microservices">NATS pub/sub beats REST</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#git-unix-philosophy">Git is a Unix tool</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a></li>
 </ul>
 </div>
       </article>
@@ -7420,6 +7421,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#libp2p">libp2p is the internet, rewired</a>
               <a href="#lehmans-laws">Lehman&#39;s Software Evolution</a>
               <a href="#i-pencil">I, Pencil</a>
               <a href="#git-unix-philosophy">Git is a Unix tool</a>
@@ -7476,7 +7478,6 @@ type Logger interface {
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>
               <a href="#no-solutions-only-tradeoffs">No solutions, only trade-offs</a>
-              <a href="#libp2p">libp2p is the internet, rewired</a>
               <a href="#simplicity-follows-complexity">Simplicity does not precede complexity, but follows it</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>

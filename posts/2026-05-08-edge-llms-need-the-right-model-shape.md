@@ -33,3 +33,6 @@ A model shape that behaves well under tight resource limits can simplify the res
 A bad fit does the opposite. The serving layer ends up compensating for an architecture that was never comfortable on the target hardware.
 
 That is the practical lesson I keep taking from work like MobileLLM. Edge success is not about forcing a cloud story onto smaller hardware. It is about choosing a model form that respects the hardware from day one. When teams do that, the rest of the product conversation gets much cleaner.
+
+
+Model architecture is a constraint on deployment. The model shape — parameter count, layer structure, attention mechanism — determines what hardware can run it. This is the engineering problem of fitting a solution to a resource budget. The same problem appears in embedded systems (fitting firmware to ROM), mobile development (fitting UI to screen), and cloud infrastructure (fitting services to instance types). The constraints are different. The discipline — measure the budget, design within it, test at the boundary — is the same.

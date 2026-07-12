@@ -265,3 +265,6 @@ If your application has grown into a startup graph with real operational structu
 - [Uber Fx docs](https://uber-go.github.io/fx/)
 - [Uber Dig README](https://github.com/uber-go/dig)
 - [Google Wire README](https://github.com/google/wire)
+
+
+Dependency injection is the engineering response to the problem of coupling. Every component depends on other components. The dependencies must be satisfied for the system to function. Manual wiring creates tight coupling — each component knows exactly which implementation it uses. DI inverts the dependency: the component declares what it needs, the injector provides it. The component doesn't know the implementation. The pattern is information hiding applied to object construction. Parnas argued that modules should hide design decisions from each other. DI hides the decision of which implementation to use. The principle is the same. The granularity is different.

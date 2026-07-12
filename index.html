@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.&#34;">
+  <meta name="description" content="&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,39 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="game-evolutionary">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#game-evolutionary">Evolutionary Game Theory</a></h2><p class="post-summary">&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">evolutionary</span><span class="tag">maynard-smith</span><span class="tag">replicator-dynamics</span><span class="tag">ESS</span>
+          </div>
+        </header>
+        <div class="post-body"><p>John Maynard Smith published <em>Evolution and the Theory of Games</em> in 1982. He asked: what if players don't choose strategies rationally but inherit them genetically? The question launched evolutionary game theory. The key concepts: replicator dynamics and the Evolutionarily Stable Strategy (ESS).</p>
+<p>Replicator dynamics describe how the proportions of different strategies in a population change over time. Strategies that earn above-average payoffs grow. Strategies that earn below-average payoffs shrink. The growth rate is proportional to the difference between the strategy's payoff and the population average. The dynamics are deterministic. Given the initial proportions and the payoff matrix, the trajectory is determined.</p>
+<p>An Evolutionarily Stable Strategy is a strategy that, if adopted by the entire population, cannot be invaded by any small group of mutants playing a different strategy. The ESS is a refinement of Nash equilibrium for biological contexts. Every ESS is a Nash equilibrium. Not every Nash equilibrium is an ESS. The ESS requires that if a mutant strategy appears, it does worse against the existing population than the existing strategy does. The condition is stricter than Nash. The strictness is appropriate for evolution, where stability means resistance to invasion, not just mutual best response.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Biology (Maynard Smith, 1982).</strong> The hawk-dove game models animal conflict. Hawks fight for resources. Doves display but retreat if attacked. Hawk vs. Hawk: one wins, one is injured. Hawk vs. Dove: Hawk wins. Dove vs. Dove: both share. The ESS is a mixed population — some proportion of Hawks, some of Doves. The proportion depends on the value of the resource relative to the cost of injury. The prediction matches observed behavior in multiple species. Evolution is a game. The game has an equilibrium. The equilibrium is the observed behavior.</p>
+<p><strong>Economics (evolutionary game theory, Nelson and Winter, 1982).</strong> Firms don't optimize. They follow routines — organizational habits inherited from the past. Routines that produce profits survive. Routines that produce losses are replaced. The market is the selection environment. The replicator is the firm's growth rate. The ESS is the industry equilibrium. The dynamics explain why industries converge on similar practices. The practices are not optimal in any absolute sense. They are stable against invasion by alternatives.</p>
+<p><strong>Anthropology (Boyd and Richerson, 1985).</strong> Culture evolves through imitation and social learning. Cultural variants — beliefs, practices, technologies — are strategies. Successful variants are copied. Unsuccessful variants are abandoned. The replicator dynamics are cultural transmission. The ESS is a cultural equilibrium. The dynamics explain why some cultural practices persist despite being individually costly — they are stable against invasion by alternatives, even if alternatives would be better for individuals.</p>
+<p><strong>Computer science (genetic algorithms, classifier systems).</strong> Evolutionary computation uses replicator dynamics to solve optimization problems. A population of candidate solutions. Fitness evaluation. Selection. Recombination. Mutation. Repeat. The algorithm is replicator dynamics implemented in code. The solutions evolve. The evolution finds optima that gradient-based methods miss. The search is stochastic. The convergence is evolutionary.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Architecture pattern evolution.</strong> Microservices emerged as a mutant strategy. The monolith was the incumbent. Early microservices adopters demonstrated advantages — independent deployability, team autonomy, fault isolation. Other teams observed the success and adopted. The replicator dynamics: adoption rate proportional to observed advantage. The ESS: microservices are now the default for new systems. The monolith couldn't resist the invasion. Not because microservices are universally better. Because they are stable against re-invasion by the monolith pattern. Once adopted, the switching cost back to monolith is high. The switching cost is the invasion barrier.</p>
+<p><strong>Language and framework adoption.</strong> React emerged as a mutant in a jQuery-dominant ecosystem. Early adopters demonstrated advantages — component model, virtual DOM, unidirectional data flow. Adoption accelerated as the advantages became visible. jQuery declined. The replicator dynamics: framework popularity follows relative fitness. The fitness landscape changes as tooling, community, and hiring markets co-evolve. Today's ESS may not be tomorrow's. The dynamics continue.</p>
+<p><strong>Process evolution.</strong> Agile emerged as a mutant in a waterfall-dominant ecosystem. Early adopters demonstrated faster delivery, better responsiveness to change. Adoption accelerated. Waterfall declined — not eliminated, but no longer the default. The replicator dynamics: process fitness is measured by organizational survival. Organizations that adopted agile survived at higher rates. The surviving organizations shaped the hiring market. The hiring market shaped the training pipeline. The pipeline reinforced agile. The equilibrium is self-reinforcing.</p>
+<p><strong>The persistence of patterns.</strong> Some architecture patterns persist despite being widely criticized. The distributed monolith — microservices with tight coupling — persists because it is an ESS in certain environments. A team that inherits a distributed monolith can't unilaterally refactor to clean boundaries. The refactoring requires coordination across teams. The coordination is a public good. The individually rational choice is to work within the existing architecture. The equilibrium is suboptimal but stable. Stability doesn't mean goodness. It means resistance to change.</p>
+<h2 id="the-evolutionary-lens">The evolutionary lens</h2>
+<p>Evolutionary game theory gives the software engineer a lens: what strategies are growing in the population? What strategies are stable against invasion? The dominant architecture, the dominant language, the dominant process — they are not necessarily optimal. They are evolutionary equilibria. They persist because they resist invasion. Understanding the invasion barrier — switching cost, coordination cost, network effects — explains why they persist. Changing them requires lowering the barrier or raising the fitness of the alternative. The lowering is mechanism design. The raising is engineering. Both are evolutionary.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
+<li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
       <article class="post" id="game-chicken">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -2949,38 +2982,6 @@ The difference between knowing a principle and applying it is the difference bet
 <li>Eric Maskin, &quot;Nash Equilibrium and Welfare Optimality,&quot; <em>Review of Economic Studies</em>, 1977.</li>
 <li>Roger Myerson, &quot;Optimal Auction Design,&quot; <em>Mathematics of Operations Research</em>, 1981.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="game-evolutionary">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#game-evolutionary">Evolutionary Game Theory</a></h2><p class="post-summary">&#34;Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.&#34;</p>
-          <div class="tags"><span class="tag">game-theory</span><span class="tag">evolutionary</span><span class="tag">maynard-smith</span><span class="tag">replicator-dynamics</span><span class="tag">ESS</span>
-          </div>
-        </header>
-        <div class="post-body"><p>John Maynard Smith published <em>Evolution and the Theory of Games</em> in 1982. He asked: what if players don't choose strategies rationally but inherit them genetically? The question launched evolutionary game theory. The key concepts: replicator dynamics and the Evolutionarily Stable Strategy (ESS).</p>
-<p>Replicator dynamics describe how the proportions of different strategies in a population change over time. Strategies that earn above-average payoffs grow. Strategies that earn below-average payoffs shrink. The growth rate is proportional to the difference between the strategy's payoff and the population average. The dynamics are deterministic. Given the initial proportions and the payoff matrix, the trajectory is determined.</p>
-<p>An Evolutionarily Stable Strategy is a strategy that, if adopted by the entire population, cannot be invaded by any small group of mutants playing a different strategy. The ESS is a refinement of Nash equilibrium for biological contexts. Every ESS is a Nash equilibrium. Not every Nash equilibrium is an ESS. The ESS requires that if a mutant strategy appears, it does worse against the existing population than the existing strategy does. The condition is stricter than Nash. The strictness is appropriate for evolution, where stability means resistance to invasion, not just mutual best response.</p>
-<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
-<p><strong>Biology (Maynard Smith, 1982).</strong> The hawk-dove game models animal conflict. Hawks fight for resources. Doves display but retreat if attacked. Hawk vs. Hawk: one wins, one is injured. Hawk vs. Dove: Hawk wins. Dove vs. Dove: both share. The ESS is a mixed population — some proportion of Hawks, some of Doves. The proportion depends on the value of the resource relative to the cost of injury. The prediction matches observed behavior in multiple species. Evolution is a game. The game has an equilibrium. The equilibrium is the observed behavior.</p>
-<p><strong>Economics (evolutionary game theory, Nelson and Winter, 1982).</strong> Firms don't optimize. They follow routines — organizational habits inherited from the past. Routines that produce profits survive. Routines that produce losses are replaced. The market is the selection environment. The replicator is the firm's growth rate. The ESS is the industry equilibrium. The dynamics explain why industries converge on similar practices. The practices are not optimal in any absolute sense. They are stable against invasion by alternatives.</p>
-<p><strong>Anthropology (Boyd and Richerson, 1985).</strong> Culture evolves through imitation and social learning. Cultural variants — beliefs, practices, technologies — are strategies. Successful variants are copied. Unsuccessful variants are abandoned. The replicator dynamics are cultural transmission. The ESS is a cultural equilibrium. The dynamics explain why some cultural practices persist despite being individually costly — they are stable against invasion by alternatives, even if alternatives would be better for individuals.</p>
-<p><strong>Computer science (genetic algorithms, classifier systems).</strong> Evolutionary computation uses replicator dynamics to solve optimization problems. A population of candidate solutions. Fitness evaluation. Selection. Recombination. Mutation. Repeat. The algorithm is replicator dynamics implemented in code. The solutions evolve. The evolution finds optima that gradient-based methods miss. The search is stochastic. The convergence is evolutionary.</p>
-<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
-<p><strong>Architecture pattern evolution.</strong> Microservices emerged as a mutant strategy. The monolith was the incumbent. Early microservices adopters demonstrated advantages — independent deployability, team autonomy, fault isolation. Other teams observed the success and adopted. The replicator dynamics: adoption rate proportional to observed advantage. The ESS: microservices are now the default for new systems. The monolith couldn't resist the invasion. Not because microservices are universally better. Because they are stable against re-invasion by the monolith pattern. Once adopted, the switching cost back to monolith is high. The switching cost is the invasion barrier.</p>
-<p><strong>Language and framework adoption.</strong> React emerged as a mutant in a jQuery-dominant ecosystem. Early adopters demonstrated advantages — component model, virtual DOM, unidirectional data flow. Adoption accelerated as the advantages became visible. jQuery declined. The replicator dynamics: framework popularity follows relative fitness. The fitness landscape changes as tooling, community, and hiring markets co-evolve. Today's ESS may not be tomorrow's. The dynamics continue.</p>
-<p><strong>Process evolution.</strong> Agile emerged as a mutant in a waterfall-dominant ecosystem. Early adopters demonstrated faster delivery, better responsiveness to change. Adoption accelerated. Waterfall declined — not eliminated, but no longer the default. The replicator dynamics: process fitness is measured by organizational survival. Organizations that adopted agile survived at higher rates. The surviving organizations shaped the hiring market. The hiring market shaped the training pipeline. The pipeline reinforced agile. The equilibrium is self-reinforcing.</p>
-<p><strong>The persistence of patterns.</strong> Some architecture patterns persist despite being widely criticized. The distributed monolith — microservices with tight coupling — persists because it is an ESS in certain environments. A team that inherits a distributed monolith can't unilaterally refactor to clean boundaries. The refactoring requires coordination across teams. The coordination is a public good. The individually rational choice is to work within the existing architecture. The equilibrium is suboptimal but stable. Stability doesn't mean goodness. It means resistance to change.</p>
-<h2 id="the-evolutionary-lens">The evolutionary lens</h2>
-<p>Evolutionary game theory gives the software engineer a lens: what strategies are growing in the population? What strategies are stable against invasion? The dominant architecture, the dominant language, the dominant process — they are not necessarily optimal. They are evolutionary equilibria. They persist because they resist invasion. Understanding the invasion barrier — switching cost, coordination cost, network effects — explains why they persist. Changing them requires lowering the barrier or raising the fitness of the alternative. The lowering is mechanism design. The raising is engineering. Both are evolutionary.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
-<li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
-<li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
 </ul>
 </div>
       </article>
@@ -7395,6 +7396,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#game-evolutionary">Evolutionary Game Theory</a>
               <a href="#game-chicken">Chicken</a>
               <a href="#game-battle-of-sexes">The Battle of the Sexes</a>
               <a href="#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>
@@ -7443,7 +7445,6 @@ type Logger interface {
               <a href="#game-prisoners-dilemma">The Prisoner&#39;s Dilemma</a>
               <a href="#game-principal-agent">The Principal-Agent Problem</a>
               <a href="#game-mechanism-design">Mechanism Design</a>
-              <a href="#game-evolutionary">Evolutionary Game Theory</a>
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>

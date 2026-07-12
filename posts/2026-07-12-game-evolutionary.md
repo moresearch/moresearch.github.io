@@ -45,3 +45,6 @@ Evolutionary game theory gives the software engineer a lens: what strategies are
 - John Maynard Smith and George Price, "The Logic of Animal Conflict," *Nature*, 1973.
 - Richard Nelson and Sidney Winter, *An Evolutionary Theory of Economic Change*, Harvard University Press, 1982.
 - Related posts: [Scarcity and Games](https://blog.hackspree.com/#scarcity-and-games), [Field Guide to Scarcity Games](https://blog.hackspree.com/#catalog-of-scarcity-games)
+
+
+Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.

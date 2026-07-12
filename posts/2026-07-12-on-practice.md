@@ -71,3 +71,6 @@ Scarcity thinking becomes a habit. You start seeing opportunity costs everywhere
 **References:**
 - Lionel Robbins, *An Essay on the Nature and Significance of Economic Science*, Macmillan, 1932.
 - Barry W. Boehm, *Software Engineering Economics*, Prentice-Hall, 1981.
+
+
+Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.

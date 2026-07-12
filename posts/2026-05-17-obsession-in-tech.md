@@ -57,3 +57,6 @@ References
 - The Prestige (scene): https://www.youtube.com/watch?v=88_6SQKuTHk
 - Whiplash (film clip): https://www.youtube.com/watch?v=Vnr-PFs7dEQ
 
+
+
+Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.

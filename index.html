@@ -6643,6 +6643,83 @@ pn_vis.view(gviz)
 <p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
 </div>
       </article>
+      <article class="post" id="mechanism-design-and-network-economics-for-agentic-markets">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
+          <h2><a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a></h2><p class="post-summary">As software agents increasingly interact in shared digital markets, the principles of mechanism design and network economics become essential operating requirements. This post unpacks how allocation, pricing, and incentive structures shape agentic systems, moving beyond theory to practical implications for real-world platforms. We explore the challenges of designing fair, efficient, and robust mechanisms, the role of network effects, and the risks of gaming and congestion. Readers will gain actionable frameworks for thinking about agent coordination, market design, and the economic forces that drive modern distributed systems.</p>
+          <div class="tags"><span class="tag">economics</span><span class="tag">mechanism-design</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>As more software systems become agentic, I keep coming back to two areas that feel more practical every month: <strong>mechanism design</strong> and <strong>network economics</strong>.</p>
+<p>Mechanism design matters because agentic systems increasingly need explicit rules for allocation, pricing, ranking, and settlement. Network economics matters because those same systems almost never run in isolation. They run as connected markets with reputation effects, liquidity effects, congestion, switching costs, and platform power.</p>
+<p>I do not think this is academic garnish. I think it is the control plane.</p>
+<h2 id="mechanism-design-starts-where-just-rank-the-best-answer-stops">Mechanism design starts where “just rank the best answer” stops</h2>
+<p>A lot of AI product discussions still talk as if orchestration is mostly about accuracy. But once there are many agents, many tasks, many cost profiles, and many principals, the real problem becomes: <strong>what rule determines who gets what, under which incentives?</strong></p>
+<p>That is mechanism design.</p>
+<p>If you let multiple agents compete for work, you need to think about:</p>
+<ul>
+<li>how bids are expressed,</li>
+<li>which signals count as quality,</li>
+<li>whether specialization is rewarded,</li>
+<li>whether the platform optimizes for cost, quality, speed, or some weighted combination,</li>
+<li>how gaming is discouraged,</li>
+<li>and how failure or low-quality delivery changes future allocation.</li>
+</ul>
+<p>Even a simple auction-like scheduler already embeds a mechanism:</p>
+<pre><code class="language-go">package market
+
+type Bid struct {
+	AgentID   string
+	TaskID    string
+	Price     int64
+	Quality   float64
+	LatencyMS int
+}
+
+func Score(b Bid) float64 {
+	// Encode the market's current preference for quality, price, and speed.
+	return b.Quality - float64(b.Price)/100.0 - float64(b.LatencyMS)/1000.0
+}
+</code></pre>
+<p>That scoring function is not “just implementation.” It is policy. It tells the market what behavior wins.</p>
+<p>This is why I think mechanism design belongs close to agent infrastructure. If a system says it values reliable, cheap, fast execution, then that preference should be expressed explicitly in the allocation rule rather than buried inside ad hoc heuristics.</p>
+<h2 id="network-economics-explains-why-the-best-local-rule-can-still-lose-globally">Network economics explains why the best local rule can still lose globally</h2>
+<p>Mechanism design gives you local rules. Network economics helps explain the larger system those rules sit inside.</p>
+<p>Suppose a platform routes more work to agents with the richest historical traces. That may look efficient in the short run, but it can also create a network effect where already-dominant agents get richer data, better reputation, more settlement history, and therefore even more future work. The result can be lock-in rather than healthy competition.</p>
+<p>That is a network-economics problem.</p>
+<p>The same thing shows up in developer platforms, model marketplaces, and tool ecosystems:</p>
+<ol>
+<li>participants join where liquidity already exists,</li>
+<li>liquidity improves matching quality,</li>
+<li>better matching attracts more participants,</li>
+<li>the platform becomes more dominant,</li>
+<li>switching costs rise.</li>
+</ol>
+<p>Those effects are powerful even when the underlying ranking rule looks neutral. That is why network economics matters for agentic systems. It explains why market structure cannot be reduced to a single matching equation.</p>
+<h2 id="agentic-platforms-will-have-to-think-about-congestion-and-interoperability">Agentic platforms will have to think about congestion and interoperability</h2>
+<p>Another reason I care about network economics is that agents consume shared infrastructure. They hit APIs, vector indexes, GPUs, browsers, queues, and payment rails. When many of them converge on the same substrate, congestion becomes a real cost.</p>
+<p>In classical network economics, you would ask how pricing, access rules, or interoperability constraints change the equilibrium. In agentic systems, those same questions show up as rate limits, priority queues, token budgets, or differentiated service levels.</p>
+<p>A platform that ignores those constraints will not stay neutral for long. It will accidentally encode advantages for whoever can tolerate latency, prepay for capacity, or absorb more failed runs.</p>
+<h2 id="the-books-i-keep-returning-to">The books I keep returning to</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829"><img src="https://assets.cambridge.org/97805218/72829/cover/9780521872829.jpg" alt="Algorithmic Game Theory cover"></a></p>
+<p><em>Algorithmic Game Theory</em> is still one of the clearest bridges between computational systems and economic allocation. It matters here because many modern agent-routing problems are really computational market-design problems wearing infrastructure clothing.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049"><img src="https://assets.cambridge.org/97805218/05049/large_cover/9780521805049i.jpg" alt="Network Economics cover"></a></p>
+<p>Oz Shy's <em>Network Economics</em> is useful because it keeps reminding me that value is often endogenous to the network itself. In other words, the platform changes the payoff structure simply by shaping who can interact, how often, and at what switching cost.</p>
+<h2 id="my-practical-takeaway">My practical takeaway</h2>
+<p>If you are building agentic systems, mechanism design tells you how to allocate. Network economics tells you what repeated allocation does to the whole ecosystem.</p>
+<p>That combination matters more than most teams admit.</p>
+<p>An agent platform that ignores mechanism design gets manipulation, low trust, and inconsistent incentives. An agent platform that ignores network economics gets concentration, lock-in, and distorted participation. You need both lenses if you want a system that is not only locally efficient, but sustainably legible.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829">Algorithmic Game Theory</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049">Network Economics</a></li>
+</ul>
+<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
+<blockquote>
+<p>Mechanism design is the recognition that incentives determine outcomes. You can plead for cooperation, or you can design a system where cooperation is the dominant strategy. Pleading is cheaper upfront. Design works.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="how-factorio-and-sc2-shaped-my-systems-thinking">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
@@ -7456,80 +7533,6 @@ func makeBatch(tokens []int, starts []int, blockSize int) ([][]int, [][]int) {
 <p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
 </div>
       </article>
-      <article class="post" id="mechanism-design-and-network-economics-for-agentic-markets">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-05-08" data-utc="May 08, 2026 UTC" aria-label="May 08, 2026 UTC" tabindex="0">1778198400</time></p>
-          <h2><a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a></h2><p class="post-summary">As software agents increasingly interact in shared digital markets, the principles of mechanism design and network economics become essential operating requirements. This post unpacks how allocation, pricing, and incentive structures shape agentic systems, moving beyond theory to practical implications for real-world platforms. We explore the challenges of designing fair, efficient, and robust mechanisms, the role of network effects, and the risks of gaming and congestion. Readers will gain actionable frameworks for thinking about agent coordination, market design, and the economic forces that drive modern distributed systems.</p>
-          <div class="tags"><span class="tag">economics</span><span class="tag">mechanism-design</span><span class="tag">agents</span>
-          </div>
-        </header>
-        <div class="post-body"><p>As more software systems become agentic, I keep coming back to two areas that feel more practical every month: <strong>mechanism design</strong> and <strong>network economics</strong>.</p>
-<p>Mechanism design matters because agentic systems increasingly need explicit rules for allocation, pricing, ranking, and settlement. Network economics matters because those same systems almost never run in isolation. They run as connected markets with reputation effects, liquidity effects, congestion, switching costs, and platform power.</p>
-<p>I do not think this is academic garnish. I think it is the control plane.</p>
-<h2 id="mechanism-design-starts-where-just-rank-the-best-answer-stops">Mechanism design starts where “just rank the best answer” stops</h2>
-<p>A lot of AI product discussions still talk as if orchestration is mostly about accuracy. But once there are many agents, many tasks, many cost profiles, and many principals, the real problem becomes: <strong>what rule determines who gets what, under which incentives?</strong></p>
-<p>That is mechanism design.</p>
-<p>If you let multiple agents compete for work, you need to think about:</p>
-<ul>
-<li>how bids are expressed,</li>
-<li>which signals count as quality,</li>
-<li>whether specialization is rewarded,</li>
-<li>whether the platform optimizes for cost, quality, speed, or some weighted combination,</li>
-<li>how gaming is discouraged,</li>
-<li>and how failure or low-quality delivery changes future allocation.</li>
-</ul>
-<p>Even a simple auction-like scheduler already embeds a mechanism:</p>
-<pre><code class="language-go">package market
-
-type Bid struct {
-	AgentID   string
-	TaskID    string
-	Price     int64
-	Quality   float64
-	LatencyMS int
-}
-
-func Score(b Bid) float64 {
-	// Encode the market's current preference for quality, price, and speed.
-	return b.Quality - float64(b.Price)/100.0 - float64(b.LatencyMS)/1000.0
-}
-</code></pre>
-<p>That scoring function is not “just implementation.” It is policy. It tells the market what behavior wins.</p>
-<p>This is why I think mechanism design belongs close to agent infrastructure. If a system says it values reliable, cheap, fast execution, then that preference should be expressed explicitly in the allocation rule rather than buried inside ad hoc heuristics.</p>
-<h2 id="network-economics-explains-why-the-best-local-rule-can-still-lose-globally">Network economics explains why the best local rule can still lose globally</h2>
-<p>Mechanism design gives you local rules. Network economics helps explain the larger system those rules sit inside.</p>
-<p>Suppose a platform routes more work to agents with the richest historical traces. That may look efficient in the short run, but it can also create a network effect where already-dominant agents get richer data, better reputation, more settlement history, and therefore even more future work. The result can be lock-in rather than healthy competition.</p>
-<p>That is a network-economics problem.</p>
-<p>The same thing shows up in developer platforms, model marketplaces, and tool ecosystems:</p>
-<ol>
-<li>participants join where liquidity already exists,</li>
-<li>liquidity improves matching quality,</li>
-<li>better matching attracts more participants,</li>
-<li>the platform becomes more dominant,</li>
-<li>switching costs rise.</li>
-</ol>
-<p>Those effects are powerful even when the underlying ranking rule looks neutral. That is why network economics matters for agentic systems. It explains why market structure cannot be reduced to a single matching equation.</p>
-<h2 id="agentic-platforms-will-have-to-think-about-congestion-and-interoperability">Agentic platforms will have to think about congestion and interoperability</h2>
-<p>Another reason I care about network economics is that agents consume shared infrastructure. They hit APIs, vector indexes, GPUs, browsers, queues, and payment rails. When many of them converge on the same substrate, congestion becomes a real cost.</p>
-<p>In classical network economics, you would ask how pricing, access rules, or interoperability constraints change the equilibrium. In agentic systems, those same questions show up as rate limits, priority queues, token budgets, or differentiated service levels.</p>
-<p>A platform that ignores those constraints will not stay neutral for long. It will accidentally encode advantages for whoever can tolerate latency, prepay for capacity, or absorb more failed runs.</p>
-<h2 id="the-books-i-keep-returning-to">The books I keep returning to</h2>
-<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829"><img src="https://assets.cambridge.org/97805218/72829/cover/9780521872829.jpg" alt="Algorithmic Game Theory cover"></a></p>
-<p><em>Algorithmic Game Theory</em> is still one of the clearest bridges between computational systems and economic allocation. It matters here because many modern agent-routing problems are really computational market-design problems wearing infrastructure clothing.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049"><img src="https://assets.cambridge.org/97805218/05049/large_cover/9780521805049i.jpg" alt="Network Economics cover"></a></p>
-<p>Oz Shy's <em>Network Economics</em> is useful because it keeps reminding me that value is often endogenous to the network itself. In other words, the platform changes the payoff structure simply by shaping who can interact, how often, and at what switching cost.</p>
-<h2 id="my-practical-takeaway">My practical takeaway</h2>
-<p>If you are building agentic systems, mechanism design tells you how to allocate. Network economics tells you what repeated allocation does to the whole ecosystem.</p>
-<p>That combination matters more than most teams admit.</p>
-<p>An agent platform that ignores mechanism design gets manipulation, low trust, and inconsistent incentives. An agent platform that ignores network economics gets concentration, lock-in, and distorted participation. You need both lenses if you want a system that is not only locally efficient, but sustainably legible.</p>
-<h2 id="sources">Sources</h2>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521872829">Algorithmic Game Theory</a></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/9780521805049">Network Economics</a></li>
-</ul>
-<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
-</div>
-      </article>
       <article class="post" id="the-agentic-era-is-an-economic-system">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-05-07" data-utc="May 07, 2026 UTC" aria-label="May 07, 2026 UTC" tabindex="0">1778112000</time></p>
@@ -8025,6 +8028,7 @@ type Logger interface {
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
               <a href="#alphago-from-scratch-eric-jang">Building AlphaGo from scratch – Eric Jang</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
+              <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
               <a href="#how-factorio-and-sc2-shaped-my-systems-thinking">Factorio &amp; SC2: Systems Thinking</a>
               <a href="#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>
               <a href="#dependency-injection-in-go-with-fx-and-alternatives">Dependency Injection in Go</a>
@@ -8032,7 +8036,6 @@ type Logger interface {
               <a href="#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a>
               <a href="#studying-local-llm-training-from-scratch">LLM Training: Lessons from Local Experiments</a>
               <a href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>
-              <a href="#mechanism-design-and-network-economics-for-agentic-markets">Agentic Markets: Mechanism Design and Network Economics</a>
               <a href="#the-agentic-era-is-an-economic-system">Agentic Era: An Economic System</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">SWE-Agent Economics: My Focus</a>
               <a href="#why-go-still-matters-in-the-ai-era">Why Go Still Matters in AI</a>

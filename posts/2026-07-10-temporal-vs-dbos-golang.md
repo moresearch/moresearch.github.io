@@ -337,3 +337,6 @@ Neither is wrong. The platform approach wins when the problem is large enough to
 
 
 Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.
+
+
+> Durable execution is not about surviving crashes. It is about making crashes irrelevant. The system that resumes from the last checkpoint does not care that it crashed. The crash is a footnote. The resume is the story.

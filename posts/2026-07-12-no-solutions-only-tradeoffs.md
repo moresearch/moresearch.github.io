@@ -46,3 +46,6 @@ The sentence is small. The discipline is large. The sentence is the discipline. 
 - Thomas Sowell, *A Conflict of Visions*, William Morrow, 1987.
 - Thomas Sowell, *Basic Economics*, Basic Books, 2000.
 - Related posts: [Engineering is art and philosophy, grounded in economic law](https://blog.hackspree.com/#engineering-is-economics), [On Scarcity](https://blog.hackspree.com/#scarcity), [No Free Lunch](https://blog.hackspree.com/#scarcity-and-software-economics)
+
+
+Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.

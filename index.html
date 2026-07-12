@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="&#34;REST couples services by address. NATS couples them by subject. One is a phone call where you must know the number. The other is a broadcast where you only need the frequency. Modularity lives in the difference.&#34;">
+  <meta name="description" content="&#34;Thomas Sowell wrote: &#39;There are no solutions, only trade-offs.&#39; This is the hardest sentence in economics. It is also the hardest sentence in software engineering. Every architecture decision is a trade. The engineer who looks for a solution is looking for something that doesn&#39;t exist.&#34;">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,46 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="no-solutions-only-tradeoffs">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
+          <h2><a href="#no-solutions-only-tradeoffs">No solutions, only trade-offs</a></h2><p class="post-summary">&#34;Thomas Sowell wrote: &#39;There are no solutions, only trade-offs.&#39; This is the hardest sentence in economics. It is also the hardest sentence in software engineering. Every architecture decision is a trade. The engineer who looks for a solution is looking for something that doesn&#39;t exist.&#34;</p>
+          <div class="tags"><span class="tag">sowell</span><span class="tag">trade-offs</span><span class="tag">economics</span><span class="tag">software-design</span><span class="tag">architecture</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Thomas Sowell, the economist who has probably done more than anyone since Milton Friedman to explain scarcity to the general public, wrote a sentence so compressed it can be missed:</p>
+<blockquote>
+<p>&quot;There are no solutions, only trade-offs.&quot;</p>
+</blockquote>
+<p>This is not cynicism. It is clarity. A solution is something that makes a problem go away. A trade-off is something that makes one problem smaller at the cost of making another problem larger. Most of what we call solutions are trade-offs where we like the outcome and prefer not to think about what we gave up. The preference is human. The trade is real. The thing we gave up didn't disappear. It became someone else's problem.</p>
+<p>Software engineering is trade-offs all the way down. Microservices trade coordination complexity for deployment independence. Monoliths trade deployment independence for coordination simplicity. Type systems trade expressiveness for safety. Dynamic languages trade safety for velocity. Relational databases trade flexibility for consistency. NoSQL trades consistency for scale. Synchronous calls trade resilience for simplicity. Asynchronous messages trade simplicity for resilience. Every architecture decision is a bet that the thing you're gaining is worth the thing you're losing. The bet is economic. The economics are usually implicit. Making them explicit is the discipline.</p>
+<h2 id="the-trade-off-you-cant-see">The trade-off you can't see</h2>
+<p>The dangerous trade-offs are the ones where the cost is invisible. You gain something now — a feature, a shortcut, a simpler implementation. You pay later — in complexity, in reduced velocity, in a rewrite. The gain is visible. The cost is deferred. Deferred costs are easy to ignore. Ignored costs compound. Compounding costs produce bankruptcy. The bankruptcy is the rewrite. The rewrite is the admission that the original trade-off was mispriced.</p>
+<blockquote>
+<p>&quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; — Thomas Sowell</p>
+</blockquote>
+<p>The first lesson of software engineering management is also to disregard the first lesson of economics. Every unrealistic deadline is a refusal to accept the trade-off between time and quality. Every under-resourced project is a refusal to accept the trade-off between scope and resources. Every &quot;do more with less&quot; is a refusal to accept that more of one thing means less of another. The refusal is not neutral. It pushes the cost somewhere. Usually onto the people doing the work. Usually onto the maintainability of the system. Usually onto the future, where it will be someone else's problem.</p>
+<h2 id="the-trade-off-you-choose">The trade-off you choose</h2>
+<p>The mature engineer accepts that every decision is a trade. They don't look for the solution. They look for the trade-off they can live with. The question is not &quot;what is the right answer?&quot; The question is &quot;what are we willing to give up?&quot;</p>
+<p>A team choosing between a monolith and microservices is not choosing between good and bad. They are choosing between coordination overhead distributed across teams and coordination overhead concentrated in a single codebase. The overhead doesn't disappear. It changes form. The form change may be worth it. The overhead is still there. The team that thinks microservices eliminate coordination overhead will discover that coordination overhead in a distributed system manifests as API versioning conflicts, data inconsistency, deployment ordering dependencies, and the distributed monolith. The overhead was not eliminated. It was moved. The move may have been worth it. It was not free.</p>
+<p>A team choosing between REST and NATS is not choosing between simple and complex. They are choosing between spatial coupling (REST: callers know callees) and semantic coupling (NATS: callers and callees agree on subjects). The coupling doesn't disappear. It changes form. The form change means different failure modes, different debugging tools, different operational practices. The choice is not about which is better. It is about which form of coupling the team is equipped to manage.</p>
+<h2 id="the-trade-off-as-discipline">The trade-off as discipline</h2>
+<p>Naming the trade-off is the discipline. Most architecture debates are arguments about which trade-off to make, conducted by people who haven't named what they're trading. &quot;We should use microservices.&quot; &quot;We should stick with the monolith.&quot; The debate is unresolvable because the trade is unstated. State the trade: &quot;Microservices will reduce coordination overhead between teams at the cost of increased operational complexity.&quot; &quot;The monolith will reduce operational complexity at the cost of increased coordination overhead within the codebase.&quot; Now the debate is about which cost the organization is better equipped to bear. That is a debate that can be resolved. It requires knowing the organization — its team structure, its operational maturity, its tolerance for distributed complexity. The knowledge is local. The trade-off is universal.</p>
+<p>Sowell's sentence is a tool. Apply it to every decision. When someone says &quot;the solution is X,&quot; ask: what are we trading? When someone says &quot;we need to do Y,&quot; ask: what are we giving up? When you find yourself certain that Z is right, ask: what cost am I not seeing? The cost is there. The certainty is hiding it. The sentence pierces the certainty. The piercing is uncomfortable. The discomfort is productive.</p>
+<blockquote>
+<p>&quot;No solutions, only trade-offs.&quot;</p>
+</blockquote>
+<p>The sentence is small. The discipline is large. The sentence is the discipline. Apply it. The decisions will improve. The systems will survive longer. The rewrites will be postponed. The postponement is a trade-off too. Everything is.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Thomas Sowell, <em>A Conflict of Visions</em>, William Morrow, 1987.</li>
+<li>Thomas Sowell, <em>Basic Economics</em>, Basic Books, 2000.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">No Free Lunch</a></li>
+</ul>
+<p>Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.</p>
+</div>
+      </article>
       <article class="post" id="nats-pubsub-microservices">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
@@ -3759,45 +3799,6 @@ The difference between knowing a principle and applying it is the difference bet
 <ul>
 <li>Friedrich Hayek, &quot;The Use of Knowledge in Society,&quot; <em>American Economic Review</em>, Vol. 35, No. 4, September 1945.</li>
 <li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy</a></li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="no-solutions-only-tradeoffs">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-12" data-utc="Jul 12, 2026 UTC" aria-label="Jul 12, 2026 UTC" tabindex="0">1783814400</time></p>
-          <h2><a href="#no-solutions-only-tradeoffs">No solutions, only trade-offs</a></h2><p class="post-summary">&#34;Thomas Sowell wrote: &#39;There are no solutions, only trade-offs.&#39; This is the hardest sentence in economics. It is also the hardest sentence in software engineering. Every architecture decision is a trade. The engineer who looks for a solution is looking for something that doesn&#39;t exist.&#34;</p>
-          <div class="tags"><span class="tag">sowell</span><span class="tag">trade-offs</span><span class="tag">economics</span><span class="tag">software-design</span><span class="tag">architecture</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Thomas Sowell, the economist who has probably done more than anyone since Milton Friedman to explain scarcity to the general public, wrote a sentence so compressed it can be missed:</p>
-<blockquote>
-<p>&quot;There are no solutions, only trade-offs.&quot;</p>
-</blockquote>
-<p>This is not cynicism. It is clarity. A solution is something that makes a problem go away. A trade-off is something that makes one problem smaller at the cost of making another problem larger. Most of what we call solutions are trade-offs where we like the outcome and prefer not to think about what we gave up. The preference is human. The trade is real. The thing we gave up didn't disappear. It became someone else's problem.</p>
-<p>Software engineering is trade-offs all the way down. Microservices trade coordination complexity for deployment independence. Monoliths trade deployment independence for coordination simplicity. Type systems trade expressiveness for safety. Dynamic languages trade safety for velocity. Relational databases trade flexibility for consistency. NoSQL trades consistency for scale. Synchronous calls trade resilience for simplicity. Asynchronous messages trade simplicity for resilience. Every architecture decision is a bet that the thing you're gaining is worth the thing you're losing. The bet is economic. The economics are usually implicit. Making them explicit is the discipline.</p>
-<h2 id="the-trade-off-you-cant-see">The trade-off you can't see</h2>
-<p>The dangerous trade-offs are the ones where the cost is invisible. You gain something now — a feature, a shortcut, a simpler implementation. You pay later — in complexity, in reduced velocity, in a rewrite. The gain is visible. The cost is deferred. Deferred costs are easy to ignore. Ignored costs compound. Compounding costs produce bankruptcy. The bankruptcy is the rewrite. The rewrite is the admission that the original trade-off was mispriced.</p>
-<blockquote>
-<p>&quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; — Thomas Sowell</p>
-</blockquote>
-<p>The first lesson of software engineering management is also to disregard the first lesson of economics. Every unrealistic deadline is a refusal to accept the trade-off between time and quality. Every under-resourced project is a refusal to accept the trade-off between scope and resources. Every &quot;do more with less&quot; is a refusal to accept that more of one thing means less of another. The refusal is not neutral. It pushes the cost somewhere. Usually onto the people doing the work. Usually onto the maintainability of the system. Usually onto the future, where it will be someone else's problem.</p>
-<h2 id="the-trade-off-you-choose">The trade-off you choose</h2>
-<p>The mature engineer accepts that every decision is a trade. They don't look for the solution. They look for the trade-off they can live with. The question is not &quot;what is the right answer?&quot; The question is &quot;what are we willing to give up?&quot;</p>
-<p>A team choosing between a monolith and microservices is not choosing between good and bad. They are choosing between coordination overhead distributed across teams and coordination overhead concentrated in a single codebase. The overhead doesn't disappear. It changes form. The form change may be worth it. The overhead is still there. The team that thinks microservices eliminate coordination overhead will discover that coordination overhead in a distributed system manifests as API versioning conflicts, data inconsistency, deployment ordering dependencies, and the distributed monolith. The overhead was not eliminated. It was moved. The move may have been worth it. It was not free.</p>
-<p>A team choosing between REST and NATS is not choosing between simple and complex. They are choosing between spatial coupling (REST: callers know callees) and semantic coupling (NATS: callers and callees agree on subjects). The coupling doesn't disappear. It changes form. The form change means different failure modes, different debugging tools, different operational practices. The choice is not about which is better. It is about which form of coupling the team is equipped to manage.</p>
-<h2 id="the-trade-off-as-discipline">The trade-off as discipline</h2>
-<p>Naming the trade-off is the discipline. Most architecture debates are arguments about which trade-off to make, conducted by people who haven't named what they're trading. &quot;We should use microservices.&quot; &quot;We should stick with the monolith.&quot; The debate is unresolvable because the trade is unstated. State the trade: &quot;Microservices will reduce coordination overhead between teams at the cost of increased operational complexity.&quot; &quot;The monolith will reduce operational complexity at the cost of increased coordination overhead within the codebase.&quot; Now the debate is about which cost the organization is better equipped to bear. That is a debate that can be resolved. It requires knowing the organization — its team structure, its operational maturity, its tolerance for distributed complexity. The knowledge is local. The trade-off is universal.</p>
-<p>Sowell's sentence is a tool. Apply it to every decision. When someone says &quot;the solution is X,&quot; ask: what are we trading? When someone says &quot;we need to do Y,&quot; ask: what are we giving up? When you find yourself certain that Z is right, ask: what cost am I not seeing? The cost is there. The certainty is hiding it. The sentence pierces the certainty. The piercing is uncomfortable. The discomfort is productive.</p>
-<blockquote>
-<p>&quot;No solutions, only trade-offs.&quot;</p>
-</blockquote>
-<p>The sentence is small. The discipline is large. The sentence is the discipline. Apply it. The decisions will improve. The systems will survive longer. The rewrites will be postponed. The postponement is a trade-off too. Everything is.</p>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Thomas Sowell, <em>A Conflict of Visions</em>, William Morrow, 1987.</li>
-<li>Thomas Sowell, <em>Basic Economics</em>, Basic Books, 2000.</li>
-<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy, grounded in economic law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">No Free Lunch</a></li>
 </ul>
 </div>
       </article>
@@ -7422,6 +7423,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#no-solutions-only-tradeoffs">No solutions, only trade-offs</a>
               <a href="#nats-pubsub-microservices">NATS pub/sub beats REST for microservices</a>
               <a href="#libp2p">libp2p is the internet, rewired</a>
               <a href="#lehmans-laws">Lehman&#39;s Software Evolution</a>
@@ -7479,7 +7481,6 @@ type Logger interface {
               <a href="#two-ways-to-design">Two ways to design software</a>
               <a href="#cooperation-is-logical">In a single encounter, confrontation is logical</a>
               <a href="#dispersed-knowledge">The knowledge is dispersed</a>
-              <a href="#no-solutions-only-tradeoffs">No solutions, only trade-offs</a>
               <a href="#simplicity-follows-complexity">Simplicity does not precede complexity, but follows it</a>
               <a href="#unix-philosophy">The Unix philosophy is the only software engineering theory that works</a>
               <a href="#bell-labs-freedom-to-innovate">The freedom to innovate was a historical accident</a>

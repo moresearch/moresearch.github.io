@@ -285,7 +285,7 @@ They could build this in Temporal too — with signals and timers. The Temporal 
 
 ## Head-to-head
 
-| | Temporal | DBOS |
+| Property | Temporal | DBOS |
 |---|---|---|
 | **Architecture** | External server + workers | Embedded library + Postgres |
 | **Persistence model** | Event-sourced, replay-based | Checkpoint-based, step-level |

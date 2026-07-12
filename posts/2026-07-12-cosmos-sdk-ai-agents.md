@@ -58,3 +58,6 @@ This architecture mirrors the Unix philosophy: each agent does one thing well, c
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> An AI agent that runs on a shared blockchain is a tenant. An agent that runs on its own chain is sovereign. The difference is not technical. It is architectural. Sovereignty means nobody can change your rules without your consent.

@@ -1,5 +1,5 @@
 ---
-title: Scarcity and Software Games
+title: The Architecture Is a Game
 date: 2026-07-12
 slug: scarcity-and-software-games
 summary: "Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do."
@@ -7,6 +7,8 @@ tags: game-theory, software-architecture, microservices, coordination
 series: scarcity
 part: 4
 ---
+
+The most dangerous games are the ones you don't know you're playing. Nobody told you that logging format choice was a stag hunt. Nobody announced that the rewrite proposal was a signaling game. The games are invisible. Their outcomes are visible — the broken APIs, the fragmented standards, the stalled migrations. The outcomes are blamed on individuals. "Team B should have communicated better." "The SRE team should have enforced the standard." But the individuals were playing rationally given the game they were in. Blaming the player is easier than recognizing the game. Recognizing the game is easier than changing it. Change the game.
 
 Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.
 

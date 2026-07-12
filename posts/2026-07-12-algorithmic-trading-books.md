@@ -124,3 +124,6 @@ The bookshelf is a curriculum. The curriculum is a career. The career is a conti
 
 
 Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.
+
+
+> Trading is applied epistemology. Every trade is a hypothesis. Every P&L is a test result. The market is the laboratory. The laboratory never closes. The experiment never ends.

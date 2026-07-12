@@ -88,3 +88,6 @@ This is a call to action. If you are building agent infrastructure, the question
 
 
 Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.
+
+
+> An always-on agent is not a faster request-response loop. It is a different architecture. The agent that persists state across interactions is a system. The system must be governed. Governance is the hard part.

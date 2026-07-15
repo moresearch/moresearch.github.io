@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151"/>
+    </marker>
+    <marker id="arrowBack" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <linearGradient id="llmGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="ruleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="300" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#111827">Figure 3: Rule Reasoning Driving Natural Language Processing with LLM</text>
+
+  <!-- Rule Engine — center -->
+  <rect x="260" y="110" width="200" height="80" rx="10" fill="url(#ruleGrad)"/>
+  <text x="360" y="140" text-anchor="middle" font-size="15" font-weight="700" fill="white">Rule Engine</text>
+  <text x="360" y="158" text-anchor="middle" font-size="11" fill="#D1FAE5">(Master Orchestrator)</text>
+  <text x="360" y="178" text-anchor="middle" font-size="10" fill="#D1FAE5">ODM / ADS</text>
+
+  <!-- Input on left -->
+  <rect x="30" y="120" width="110" height="60" rx="8" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="85" y="147" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">Structured</text>
+  <text x="85" y="163" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">Input Data</text>
+
+  <!-- Arrow input → rule engine -->
+  <line x1="140" y1="150" x2="260" y2="150" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- LLM NLU — invoked on demand (top right) -->
+  <rect x="530" y="50" width="160" height="65" rx="8" fill="url(#llmGrad)" opacity="0.9"/>
+  <text x="610" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="white">LLM — NLU</text>
+  <text x="610" y="94" text-anchor="middle" font-size="10" fill="#DBEAFE">Entity Extraction</text>
+  <text x="610" y="108" text-anchor="middle" font-size="10" fill="#DBEAFE">Intent Classification</text>
+
+  <!-- Arrow rule → LLM NLU -->
+  <line x1="460" y1="120" x2="530" y2="75" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrowBack)"/>
+  <text x="500" y="90" text-anchor="middle" font-size="9" fill="#2563EB">invoke on demand</text>
+
+  <!-- Arrow LLM NLU → rule (return) -->
+  <line x1="580" y1="115" x2="460" y2="135" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="515" y="130" text-anchor="middle" font-size="9" fill="#059669">structured result</text>
+
+  <!-- LLM NLG — invoked on demand (bottom right) -->
+  <rect x="530" y="200" width="160" height="65" rx="8" fill="url(#llmGrad)" opacity="0.9"/>
+  <text x="610" y="226" text-anchor="middle" font-size="12" font-weight="700" fill="white">LLM — NLG</text>
+  <text x="610" y="244" text-anchor="middle" font-size="10" fill="#DBEAFE">Text Summarization</text>
+  <text x="610" y="258" text-anchor="middle" font-size="10" fill="#DBEAFE">Explanation Generation</text>
+
+  <!-- Arrow rule → LLM NLG -->
+  <line x1="460" y1="170" x2="530" y2="225" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrowBack)"/>
+  <text x="500" y="205" text-anchor="middle" font-size="9" fill="#2563EB">invoke on demand</text>
+
+  <!-- Arrow LLM NLG → rule (return) -->
+  <line x1="580" y1="240" x2="460" y2="180" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="515" y="218" text-anchor="middle" font-size="9" fill="#059669">generated text</text>
+
+  <!-- Output -->
+  <rect x="30" y="220" width="110" height="45" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="85" y="248" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">Decision +</text>
+  <text x="85" y="260" text-anchor="middle" font-size="10" fill="#92400E">Explanation</text>
+
+  <!-- Arrow rule → output -->
+  <line x1="260" y1="190" x2="140" y2="238" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>

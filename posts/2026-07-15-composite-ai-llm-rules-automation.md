@@ -72,6 +72,30 @@ The convergence is not confined to enterprise platforms. **[RuleGo](https://gith
 
 The significance is not that RuleGo replaces IBM ODM. It is that the composite AI pattern has become general enough to appear in a Go library running on a Raspberry Pi. The 40-year arc from RETE to MCP passes through `go get github.com/rulego/rulego`.
 
+## Finite state machines vs. rule engines
+
+Before discussing composite AI patterns, there is an architectural distinction worth making explicit: the difference between finite state machines and rule engines, and why confusing them leads to brittle systems.
+
+A **finite state machine** answers the question *what happens next?* It encodes a fixed set of states and explicit transitions between them. You are in state S. Event E arrives. If a transition from S on E is defined, you move to the target state. The FSM knows where you are, what you can do, and where you go next. Its logic is procedural: the sequence matters, the state matters, the transition guard matters.
+
+A **rule engine** answers the question *what should we conclude?* It encodes condition-action pairs evaluated against a working memory of facts. Any rule whose conditions are satisfied is eligible to fire. The rule engine does not care about sequence — it cares about satisfaction. Its logic is declarative: the facts matter, the conditions matter, the conclusions matter. Order of rule evaluation is the engine's concern, not the author's.
+
+The distinction is sharp:
+
+| Dimension | FSM | Rule Engine |
+|---|---|---|
+| Core question | What happens next? | What should we conclude? |
+| Logic style | Procedural | Declarative |
+| State model | Explicit states + transitions | Working memory of facts |
+| Control flow | Defined by transition graph | Defined by rule firing (agenda) |
+| Best for | Workflows, protocols, pipelines | Policies, decisions, classifications |
+| Determinism | Deterministic given state + event | Deterministic given rule set + facts |
+| Complexity grows with | Number of states × transitions | Number of rules × fact combinations |
+
+The mistake is using one where the other belongs. Encoding a loan eligibility policy as an FSM produces an explosion of states — one for every combination of credit score band, debt ratio, collateral type, and regulatory jurisdiction. Encoding a multi-step claims workflow as a flat rule set produces fragile priority chains (`rule-1: if step=pending_review then...`) where the implicit process state is smuggled through working memory facts. Each approach can express the other's domain, but the expression is awkward, verbose, and hard to maintain.
+
+The rule of thumb: if the problem is *procedural* — steps, stages, sequences, approvals, handoffs — reach for an FSM or a workflow engine. If the problem is *decisional* — eligibility, pricing, risk, compliance, classification — reach for a rule engine. Most real business processes are both.
+
 ## What an enterprise decision requires
 
 Before discussing architectures, Feillet's 2023 article enumerates eight criteria. They explain why the LLM-only approach keeps hitting a wall.
@@ -99,7 +123,7 @@ The 2023 article's core contribution is a practitioner's taxonomy: five integrat
 
 ### Pattern 1: NLU → Rules
 
-![Natural Language Understanding followed by Rule Reasoning](images/composite-ai-fig1-nlu-rules.svg)
+<img src="images/composite-ai-fig1-nlu-rules.svg" alt="Natural Language Understanding followed by Rule Reasoning" style="width:100%;max-width:720px;">
 
 An LLM comprehends unstructured text and extracts structured data; a rule engine reasons deterministically on that data. An insurance claim — "I was rear-ended at Main and Oak last Tuesday" — becomes structured fields (`incident_type: rear_end_collision`, `fault_party: other_driver`), which the rule engine processes against policy terms.
 
@@ -107,7 +131,7 @@ Integration is straightforward. The LLM never makes a business decision; the rul
 
 ### Pattern 2: Rules → NLG
 
-![Rule Reasoning followed by Natural Language Generation with LLM](images/composite-ai-fig2-rules-nlg.svg)
+<img src="images/composite-ai-fig2-rules-nlg.svg" alt="Rule Reasoning followed by Natural Language Generation with LLM" style="width:100%;max-width:720px;">
 
 The flow reverses: a rule engine decides on structured data, then an LLM generates natural language. A loan decision (`approved, $350,000, 6.25%`) becomes a customer letter.
 
@@ -117,7 +141,7 @@ The hard problem is testing. The LLM may phrase the same information in dozens o
 
 ### Pattern 3: Rules orchestrate LLM
 
-![Rule Reasoning Driving Natural Language Processing with LLM](images/composite-ai-fig3-rules-orchestrate.svg)
+<img src="images/composite-ai-fig3-rules-orchestrate.svg" alt="Rule Reasoning Driving Natural Language Processing with LLM" style="width:100%;max-width:720px;">
 
 The rule engine is the master orchestrator, invoking LLMs on demand for delegated NLP tasks. A claims adjudication flow confirms coverage, verifies liability, then hits a fraud review threshold. The rule engine invokes an LLM: "Summarize inconsistencies in the claim description and three years of claim notes." The LLM returns structured analysis; the rule engine incorporates it and continues.
 
@@ -125,7 +149,7 @@ Costs are proportional to actual need — not every transaction invokes the LLM.
 
 ### Pattern 4: LLM extracts rules
 
-![Extract Business Rules from Plain Text with an LLM, Run in a Logical Engine](images/composite-ai-fig4-llm-extract-rules.svg)
+<img src="images/composite-ai-fig4-llm-extract-rules.svg" alt="Extract Business Rules from Plain Text with an LLM, Run in a Logical Engine" style="width:100%;max-width:720px;">
 
 The most ambitious pattern: LLMs at *design time* extract automation assets — business rules, data models, decision tables — from plain-text policy documents. The extracted assets generate an automation project. Rules then execute deterministically, decoupled from the LLM that helped author them.
 
@@ -135,13 +159,61 @@ The challenges: prompt chains or fine-tuned models, companion tools for validati
 
 ### Pattern 5: Chatbot delegates to rules
 
-![Rules to Bring Reliable Reasoning in a Chatbot](images/composite-ai-fig5-chatbot-rules.svg)
+<img src="images/composite-ai-fig5-chatbot-rules.svg" alt="Rules to Bring Reliable Reasoning in a Chatbot" style="width:100%;max-width:720px;">
 
 An LLM drives the conversation; when a business decision is needed, the chatbot delegates to a rule engine. It recognizes the trigger, gathers parameters across dialogue turns, invokes the engine, and restitutes results through NLG. This is Pattern 1 and Pattern 2 stitched together in a conversational loop.
 
 Two hard problems. **Decision trigger detection:** in open-ended conversation, when has the user crossed from "what are your rates?" to "I'd like to apply"? False positives annoy; false negatives lose business. **Incomplete context:** "my income is around 80K" when the engine needs an exact figure. The chatbot must ask, not fabricate.
 
 The delegation boundary needs a formal contract: the rule engine exposes a decision service with a defined input schema, and the chatbot populates that schema conversationally. This is a form-filling dialogue where the form is the DMN model's input requirements — precisely the framing that Etikala, Goossens, Van Veldhoven, and Vanthienen developed in their 2021 work on generating chatbots from DMN models.
+
+## FSMs with rule engines: process skeleton, decision muscle
+
+The five Feillet patterns describe how to combine LLMs with rule engines. But there is an orthogonal dimension: combining finite state machines with rule engines, with or without an LLM in the loop. This pattern — FSM as process skeleton, rule engine as decision muscle — predates LLMs entirely and remains one of the most underappreciated architectural choices in enterprise systems.
+
+### The pattern
+
+An FSM manages the process lifecycle: which stage the transaction is in, which transitions are valid, what happens on entry and exit to each state. At each state where a decision is required, the FSM delegates to a rule engine. The rule engine receives the accumulated facts — data gathered across prior states, enriched from systems of record, validated by previous transitions — and produces a structured decision. That decision determines the next transition.
+
+Consider a mortgage origination pipeline:
+
+```
+[Application] → [Review] → [Underwriting] → [Approval] → [Closing]
+                    |            |               |
+                    v            v               v
+               Rule Engine   Rule Engine    Rule Engine
+               (completeness (credit risk,   (final conditions,
+                check)        collateral)     compliance)
+```
+
+The FSM owns the pipeline. It knows the application moves from Review to Underwriting only after completeness checks pass. It knows Underwriting can transition to Approval (decision: approve), Rejection (decision: deny), or back to Review (decision: need more information). The rule engines own the decisions at each gate. The completeness rule engine checks required fields and document presence. The underwriting rule engine evaluates creditworthiness, debt-to-income ratio, collateral value, and regulatory constraints. The approval rule engine applies final conditions, rate locks, and compliance sign-offs.
+
+### Why this works
+
+Each component does what it is best at. The FSM is procedural — it encodes the *process* that the business designed. The rule engine is declarative — it encodes the *policy* that the business wrote. Separating them means:
+
+**Process changes do not touch policy.** Adding a new "Fraud Check" state between Review and Underwriting requires modifying the FSM transition graph. None of the rule sets change. The fraud check state invokes its own rule engine with fraud-specific rules, but the underwriting rules remain untouched.
+
+**Policy changes do not touch process.** Changing the debt-to-income threshold from 43% to 45% is a one-line rule change. The FSM never knows about it. The underwriting state delegates and receives a decision; the threshold is the rule engine's concern.
+
+**Testing is independently tractable.** The FSM can be tested with mocked rule engine responses — does it transition correctly for approve/deny/need-info outcomes? The rule engine can be tested with canned fact sets — does it produce the correct decision for this borrower profile? The combinatorial explosion of testing both together is avoided.
+
+**Auditability is layered.** A regulator asks: "Why was this loan denied?" The audit trail shows: (a) the application reached the Underwriting state via valid transitions from Application → Review → Underwriting, (b) the rule engine fired rules R-17, R-23, and R-41 based on facts F-1 through F-14, (c) the combined output was `decision: deny, reason: [DTI exceeds threshold, insufficient collateral]`. Process trace and decision trace are separate, composable artifacts.
+
+### Where LLMs fit in
+
+The FSM + rule engine pattern is independent of LLMs, but it composes naturally with Feillet's five patterns. At any state in the FSM:
+
+- **Pattern 1 (NLU → Rules):** The FSM is in the Intake state. Unstructured text arrives (a claim description, a loan application narrative). An LLM extracts structured fields. The rule engine decides on completeness and routing. The FSM transitions to the next state.
+- **Pattern 2 (Rules → NLG):** The FSM reaches the Notification state. The rule engine has produced a decision. An LLM generates the customer communication. The FSM transitions to Closed.
+- **Pattern 3 (Rules orchestrate LLM):** The FSM is in the Investigation state. The rule engine determines that additional analysis is needed, invokes an LLM for anomaly detection in claim notes, incorporates the result, and produces a decision that drives the next FSM transition.
+- **Pattern 5 (Chatbot + Rules):** The entire FSM is wrapped in a conversational interface. The chatbot tracks which FSM state the conversation is in, gathers parameters for the next rule engine invocation, and communicates decisions back to the user.
+
+### The architectural principle
+
+The FSM manages *where you are in the process*. The rule engine manages *what you know and what you should conclude*. The LLM manages *how you communicate at the boundaries*. Three concerns. Three tools. One system.
+
+This principle is old — it predates LLMs, predates the RETE algorithm, goes back to the early days of business process management and expert systems. But it is worth restating because the current AI discourse tends to collapse everything into "ask the LLM." A mortgage origination system is not one decision. It is a sequence of decisions embedded in a process, each with its own policies, data requirements, and regulatory constraints. The FSM provides the sequence. The rule engines provide the decisions. The LLM provides the natural language interface at the boundaries. The composite is greater than any single approach.
 
 ## The KU Leuven research program: automating decision model acquisition
 
@@ -210,7 +282,7 @@ The patterns compose. A real system might use Pattern 4 to extract rules during 
 
 ## The composite AI thesis
 
-![Composite AI — Blending Neuronal and Symbolic Approaches](images/composite-ai-fig6-overview.svg)
+<img src="images/composite-ai-fig6-overview.svg" alt="Composite AI — Blending Neuronal and Symbolic Approaches" style="width:100%;max-width:720px;">
 
 The central thesis, running through Feillet's two articles and validated by the KU Leuven research, is that the future of enterprise AI is composite. LLMs handle the perception layer — understanding text, classifying intents, generating fluent language. They are statistical engines optimized for flexibility. Rule engines, built on Forgy's insight from 1979, handle the reasoning layer — deterministic logic, auditable decisions, regulatory compliance, predictable performance at scale. They are logical engines optimized for reliability.
 

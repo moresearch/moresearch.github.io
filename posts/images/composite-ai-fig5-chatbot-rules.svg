@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151"/>
+    </marker>
+    <linearGradient id="llmGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="ruleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="280" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#111827">Figure 5: Rules to Bring Reliable Reasoning in a Chatbot</text>
+
+  <!-- User icon -->
+  <circle cx="60" cy="155" r="22" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="2"/>
+  <text x="60" y="160" text-anchor="middle" font-size="14" fill="#374151">👤</text>
+  <text x="60" y="195" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">User</text>
+
+  <!-- Chatbot / LLM — center -->
+  <rect x="225" y="110" width="200" height="90" rx="10" fill="url(#llmGrad)"/>
+  <text x="325" y="140" text-anchor="middle" font-size="15" font-weight="700" fill="white">Chatbot</text>
+  <text x="325" y="158" text-anchor="middle" font-size="11" fill="#DBEAFE">LLM-powered</text>
+  <text x="325" y="178" text-anchor="middle" font-size="10" fill="#DBEAFE">Conversation Management</text>
+  <text x="325" y="194" text-anchor="middle" font-size="9" fill="#93C5FD">Context gathering · NLU · NLG</text>
+
+  <!-- Rule Engine — right -->
+  <rect x="530" y="115" width="160" height="80" rx="8" fill="url(#ruleGrad)"/>
+  <text x="610" y="145" text-anchor="middle" font-size="13" font-weight="700" fill="white">Decision Service</text>
+  <text x="610" y="163" text-anchor="middle" font-size="11" fill="#D1FAE5">Rule Engine</text>
+  <text x="610" y="181" text-anchor="middle" font-size="10" fill="#D1FAE5">(ODM / Watson)</text>
+
+  <!-- Conversation flow: user ↔ chatbot -->
+  <line x1="82" y1="145" x2="225" y2="140" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="155" y="133" text-anchor="middle" font-size="9" fill="#6B7280">"I need a loan..."</text>
+
+  <line x1="225" y1="170" x2="82" y2="165" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="155" y="185" text-anchor="middle" font-size="9" fill="#6B7280">response / clarification</text>
+
+  <!-- Delegation: chatbot → rule engine -->
+  <line x1="425" y1="140" x2="530" y2="140" stroke="#059669" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="477" y="133" text-anchor="middle" font-size="9" fill="#059669">delegate decision</text>
+
+  <!-- Return: rule engine → chatbot -->
+  <line x1="530" y1="170" x2="425" y2="170" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="477" y="188" text-anchor="middle" font-size="9" fill="#059669">decision result</text>
+
+  <!-- Decision output -->
+  <rect x="310" y="230" width="100" height="32" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="360" y="251" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">Final Response</text>
+
+  <!-- Arrow chatbot → output -->
+  <line x1="325" y1="200" x2="325" y2="215" stroke="#374151" stroke-width="1.5"/>
+  <line x1="325" y1="215" x2="360" y2="215" stroke="#374151" stroke-width="1.5"/>
+  <line x1="360" y1="215" x2="360" y2="230" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>

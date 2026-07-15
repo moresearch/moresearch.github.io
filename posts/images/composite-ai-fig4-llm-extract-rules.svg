@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151"/>
+    </marker>
+    <linearGradient id="llmGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="ruleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="280" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#111827">Figure 4: Extract Business Rules from Plain Text with an LLM, Run in a Logical Engine</text>
+
+  <!-- Policy Documents -->
+  <rect x="25" y="55" width="130" height="70" rx="8" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="90" y="80" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">Policy Documents</text>
+  <text x="90" y="98" text-anchor="middle" font-size="10" fill="#6B7280">Regulations</text>
+  <text x="90" y="114" text-anchor="middle" font-size="10" fill="#6B7280">Business Rules</text>
+
+  <!-- Arrow docs → LLM -->
+  <line x1="155" y1="90" x2="205" y2="90" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- LLM Extraction -->
+  <rect x="210" y="55" width="170" height="70" rx="8" fill="url(#llmGrad)"/>
+  <text x="295" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="white">LLM</text>
+  <text x="295" y="96" text-anchor="middle" font-size="11" fill="#DBEAFE">Knowledge Extraction</text>
+  <text x="295" y="113" text-anchor="middle" font-size="10" fill="#DBEAFE">(prompt chain / fine-tuned)</text>
+
+  <!-- Arrow LLM → assets -->
+  <line x1="380" y1="90" x2="430" y2="90" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Generated assets -->
+  <rect x="435" y="50" width="145" height="80" rx="8" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="507" y="73" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">Extracted Assets</text>
+  <text x="507" y="91" text-anchor="middle" font-size="10" fill="#3B82F6">Business Rules</text>
+  <text x="507" y="107" text-anchor="middle" font-size="10" fill="#3B82F6">Data Models</text>
+  <text x="507" y="123" text-anchor="middle" font-size="10" fill="#3B82F6">Decision Tables</text>
+
+  <!-- Arrow assets → rule engine -->
+  <line x1="580" y1="90" x2="595" y2="90" stroke="#374151" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Rule Engine -->
+  <rect x="600" y="50" width="105" height="80" rx="8" fill="url(#ruleGrad)"/>
+  <text x="652" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="white">Rule</text>
+  <text x="652" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="white">Engine</text>
+  <text x="652" y="112" text-anchor="middle" font-size="10" fill="#D1FAE5">Execution</text>
+
+  <!-- Human review feedback loop -->
+  <rect x="290" y="155" width="140" height="40" rx="6" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/>
+  <text x="360" y="180" text-anchor="middle" font-size="11" font-weight="600" fill="#991B1B">Human Review Gate</text>
+
+  <!-- Arrow assets → human review -->
+  <line x1="507" y1="130" x2="507" y2="148" stroke="#991B1B" stroke-width="1.5"/>
+  <line x1="507" y1="148" x2="430" y2="148" stroke="#991B1B" stroke-width="1.5"/>
+  <line x1="430" y1="148" x2="430" y2="155" stroke="#991B1B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrow human review → rule engine -->
+  <line x1="430" y1="175" x2="600" y2="175" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="515" y="170" text-anchor="middle" font-size="9" fill="#059669">approved assets deployed</text>
+
+  <!-- Key insight -->
+  <rect x="90" y="220" width="540" height="36" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+  <text x="360" y="243" text-anchor="middle" font-size="11" fill="#065F46">
+    Design-time pattern: LLM accelerates rule authoring, human validates, engine executes deterministically. Prototyped with IBM ADS.
+  </text>
+</svg>

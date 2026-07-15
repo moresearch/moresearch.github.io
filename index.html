@@ -660,122 +660,211 @@
           </div>
         </header>
         <div class="post-body"><p>Enterprise decision automation sits at an uncomfortable intersection. Large Language Models promise natural interaction and flexibility. Business decisions demand auditability, determinism, and compliance with regulations that do not negotiate. The question is not which technology wins. The question is how to combine them — and the answer has roots going back nearly half a century.</p>
+<blockquote>
+<p>The question is not which technology wins. The question is how to combine them.</p>
+</blockquote>
 <p>Pierre Feillet addressed this in his 2023 article <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a> and his 2026 follow-up <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/rule-engines-never-died-theyre-running-alongside-your-lrm-6f39cad6e1d3"><em>Rule Engines Never Died — They're Running Alongside Your Large Reasoning Models</em></a>. The second article traces a 40-year arc from Charles Forgy's RETE algorithm to the Model Context Protocol and argues that the most important trend in enterprise AI is not replacement but convergence.</p>
-<p>This essay — the first in a three-part series — begins where the story begins: with the RETE algorithm, the architecture of rule engines, the rise of large reasoning models, and the fundamental distinction between finite state machines and rule engines that every system architect should understand.</p>
+<p>This essay — the first in a five-part series — begins where the story begins: with the RETE algorithm, the architecture of rule engines, the rise of large reasoning models, and the fundamental distinction between finite state machines and rule engines that every system architect should understand.</p>
 <h2 id="the-rete-algorithm-1979">The RETE algorithm (1979)</h2>
 <p>In 1979, Charles L. Forgy, a PhD student at Carnegie Mellon University, solved a problem that would shape the next four decades of enterprise computing. Given a large set of IF-THEN rules and a working memory full of facts, how do you efficiently determine which rules should fire?</p>
 <p>The naive approach — test every rule against every fact on every cycle — is catastrophically slow. Ten thousand rules against a hundred thousand facts is a billion comparisons per cycle. Production systems in the 1970s ground to a halt under realistic workloads.</p>
 <p>Forgy's insight was that working memory changes slowly between cycles. Typically only a few facts are added or removed at each step. Re-evaluating every rule from scratch means repeating vast amounts of work that has not changed. What if you could <em>remember</em> partial matches and only recompute what actually changed?</p>
+<blockquote>
+<p>The RETE algorithm trades memory for speed — and achieves performance theoretically independent of the number of rules.</p>
+</blockquote>
 <p>The result was the RETE algorithm — Latin for &quot;net&quot; — published in Forgy's 1979 PhD thesis and in a landmark 1982 paper in <em>Artificial Intelligence</em>: <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>.</p>
 <h3 id="how-it-works">How it works</h3>
-<p>RETE has two phases. <strong>Compilation:</strong> rules are compiled into a discrimination network — a directed acyclic graph where each node tests a condition. Conditions appearing in multiple rules are compiled once and shared. If twenty rules check <code>customer.tier == &quot;premium&quot;</code>, there is one node, not twenty. Forgy defined four node types: root nodes (entry points for facts), one-input nodes (test a single condition), two-input nodes (join facts that satisfy different patterns), and terminal nodes (all patterns satisfied — fire the rule).</p>
-<p><strong>Runtime:</strong> facts enter at the root and propagate through the network. Each node caches the facts — or partial matches, at join nodes — that satisfy its condition. When a new fact arrives, only the branches affected by that fact are re-evaluated. When a fact is removed, its matches are retracted from the caches. The algorithm trades memory for speed — storing partial match state at every node — and achieves performance that is, in Forgy's words, theoretically independent of the number of rules.</p>
+<p>RETE has two phases. <strong>Compilation:</strong> rules are compiled into a discrimination network — a directed acyclic graph where each node tests a condition. Conditions appearing in multiple rules are compiled once and shared. If twenty rules check <code>customer.tier == &quot;premium&quot;</code>, there is one node, not twenty.</p>
+<p>Consider these three loan underwriting rules:</p>
+<pre><code class="language-python"># Rule 1: High-value loan requires collateral
+if loan.amount &gt; 500_000 and loan.type == &quot;mortgage&quot;:
+    loan.requires_collateral = True
+
+# Rule 2: Premium customers get rate discount
+if customer.tier == &quot;premium&quot; and loan.type == &quot;mortgage&quot;:
+    loan.rate_discount = 0.25
+
+# Rule 3: High-value premium mortgage gets priority review
+if loan.amount &gt; 500_000 and customer.tier == &quot;premium&quot; and loan.type == &quot;mortgage&quot;:
+    loan.review_priority = &quot;high&quot;
+</code></pre>
+<p>A RETE network compiles these into shared condition nodes. The test <code>loan.type == &quot;mortgage&quot;</code> appears in all three rules but exists once in the network. The test <code>loan.amount &gt; 500_000</code> appears in two rules but exists once. When a fact changes — say the loan amount updates — only the branches downstream of the <code>loan.amount</code> node re-evaluate. Rules 1 and 3 might be affected; Rule 2 is untouched.</p>
+<p><strong>Runtime:</strong> facts enter at the root and propagate through the network. Each node caches the facts — or partial matches, at join nodes — that satisfy its condition. When a fact changes, only affected branches re-evaluate. When a fact is removed, its matches are retracted from the caches. The algorithm trades memory for speed — storing partial match state at every node — and achieves performance that is, in Forgy's words, theoretically independent of the number of rules.</p>
 <h3 id="the-lineage">The lineage</h3>
 <p>RETE became the core of <strong>OPS5</strong>, which powered <strong>R1/XCON</strong> — an expert system that configured VAX computer orders for Digital Equipment Corporation, one of the first commercially successful AI systems, reportedly saving DEC millions of dollars per year by catching configuration errors that human order processors missed.</p>
 <p>It went on to become the backbone of production rule systems across the industry: <strong>CLIPS</strong> (NASA's C Language Integrated Production System), <strong>Jess</strong> (the Java Expert System Shell), <strong>Drools</strong> (open-source, now Apache, which evolved RETE into ReteOO and later PHREAK), <strong>IBM Operational Decision Manager</strong> (enterprise-grade decision automation with governance, versioning, and deployment pipelines), <strong>Soar</strong> (the cognitive architecture), <strong>Blaze Advisor</strong>, and <strong>TIBCO BusinessEvents</strong>.</p>
-<p>Banks used it for loan origination. Insurers for claims adjudication. Governments for eligibility determination. The RETE network was invisible infrastructure, humming inside systems that made consequential decisions about people's money, health, and legal status.</p>
+<blockquote>
+<p>The RETE network was invisible infrastructure, humming inside systems that made consequential decisions about people's money, health, and legal status.</p>
+</blockquote>
+<p>Banks used it for loan origination. Insurers for claims adjudication. Governments for eligibility determination. For four decades, RETE was the silent backbone of automated decision-making.</p>
 <p>And then, around 2022, the world became captivated by a different kind of AI — one that produced fluent text rather than deterministic decisions. The question became: are rule engines obsolete?</p>
 <p>Feillet's 2026 answer is unequivocal: no. They never died. They are running alongside your LLM right now.</p>
 <h3 id="beyond-rete">Beyond RETE</h3>
-<p>Modern rule engines have also evolved beyond the discrimination network. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> — an open-source rule engine in Go (Apache 2.0) — uses a Directed Acyclic Graph rather than a RETE network. Business logic is composed of component nodes wired into rule chains; messages flow along predetermined DAG paths rather than being matched against all rules. This trades RETE's expressive forward-chaining for deterministic execution with extremely low resource consumption — ~19 MB of memory under 500 concurrent requests on a Raspberry Pi 2. Both approaches have their place, and both are finding their way into composite AI architectures.</p>
+<p>Modern rule engines have evolved beyond the discrimination network. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> — an open-source rule engine in Go (Apache 2.0) — uses a Directed Acyclic Graph. Business logic is composed of component nodes wired into rule chains; messages flow along predetermined DAG paths rather than being matched against all rules. A RuleGo rule chain looks like this:</p>
+<pre><code class="language-go">// A RuleGo rule chain for loan application intake
+ruleChain := rulego.NewRuleChain(&quot;loan-intake&quot;,
+    // Node 1: Validate required fields
+    rulego.NewTransformNode(&quot;validate-fields&quot;).
+        WithScript(`msg.Metadata.valid = msg.Data.amount &gt; 0 &amp;&amp; msg.Data.applicantId != &quot;&quot;`),
+    // Node 2: Branch on validation result
+    rulego.NewSwitchNode(&quot;route&quot;).
+        WithCase(&quot;valid&quot;, &quot;extract-intent&quot;).
+        WithCase(&quot;invalid&quot;, &quot;return-error&quot;),
+    // Node 3: LLM intent extraction
+    rulego.NewRestNode(&quot;extract-intent&quot;).
+        WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+        WithBodyTemplate(`Extract intent from: {{.Data.description}}`),
+    // Node 4: Route to decision engine
+    rulego.NewRestNode(&quot;decision-engine&quot;).
+        WithEndpoint(&quot;http://odm.example/decisions/loan-eligibility&quot;),
+)
+</code></pre>
+<p>This trades RETE's expressive forward-chaining for deterministic execution with extremely low resource consumption — ~19 MB of memory under 500 concurrent requests on a Raspberry Pi 2. Both approaches have their place.</p>
 <h2 id="two-ways-to-answer-the-same-question">Two ways to answer the same question</h2>
-<p>Feillet's 2026 article opens with a simple observation: both rule engines and Large Reasoning Models address the identical problem — <em>given what we know, what should we conclude?</em> The methods differ significantly. The objective is the same. This is more than a philosophical point. It means these technologies can and should be compared, contrasted, and combined.</p>
+<p>Feillet's 2026 article opens with a deceptively simple observation: both rule engines and Large Reasoning Models address the identical problem — <em>given what we know, what should we conclude?</em></p>
+<blockquote>
+<p>The methods differ. The objective is the same. This means they can — and should — be compared, contrasted, and combined.</p>
+</blockquote>
 <h3 id="how-rule-engines-reason">How rule engines reason</h3>
-<p>Rule engines separate knowledge from execution. Business logic is expressed as declarative condition-action pairs (IF/THEN structures). Facts enter working memory. The inference engine continuously evaluates which rules are satisfied. When multiple rules fire simultaneously, a conflict resolution mechanism called the <em>agenda</em> determines firing order.</p>
-<p>The key architectural property is that the rule author specifies <em>what</em> should happen; the engine handles <em>how</em>. This separation is the source of the rule engine's transparency. Every inference step is explicit. An auditor can trace precisely which rule fired, what triggered it, and why a decision was reached. Rule engines do not generate post-hoc rationalizations. They produce <em>proofs</em> — logical derivations that are mechanically verifiable.</p>
+<p>Rule engines separate knowledge from execution. Business logic is declarative. Facts enter working memory. The inference engine evaluates which rules are satisfied. When multiple rules fire, a conflict resolution mechanism — the <em>agenda</em> — determines firing order.</p>
+<pre><code class="language-python"># Declarative: you say WHAT, not HOW
+rules = [
+    Rule(
+        when=[Fact(&quot;loan.amount&quot;, &quot;&gt;&quot;, 500_000), Fact(&quot;loan.type&quot;, &quot;==&quot;, &quot;mortgage&quot;)],
+        then=[Action(&quot;set&quot;, &quot;loan.requires_collateral&quot;, True)]
+    ),
+    Rule(
+        when=[Fact(&quot;customer.tier&quot;, &quot;==&quot;, &quot;premium&quot;), Fact(&quot;loan.type&quot;, &quot;==&quot;, &quot;mortgage&quot;)],
+        then=[Action(&quot;set&quot;, &quot;loan.rate_discount&quot;, 0.25)]
+    ),
+]
+
+# The engine handles: which rules to evaluate, in what order,
+# what happens when multiple rules fire, how to resolve conflicts.
+engine = RuleEngine(rules)
+engine.insert(loan_facts)
+engine.run()  # produces: {requires_collateral: True, rate_discount: 0.25}
+</code></pre>
+<p>Every inference step is explicit. An auditor can trace precisely which rule fired, what triggered it, and why a decision was reached. Rule engines do not generate post-hoc rationalizations. <strong>They produce proofs.</strong></p>
 <h3 id="how-large-reasoning-models-reason">How Large Reasoning Models reason</h3>
-<p>LRMs store knowledge not as explicit rules but as distributed numerical representations learned across billions of training examples. When solving problems, they navigate a high-dimensional conceptual space rather than pattern-matching against a predicate database. Their reasoning traces may look like rule chaining, but as Feillet puts it, this reasoning is &quot;an approximation of modus ponens&quot; executed through statistical pattern completion rather than logical evaluation.</p>
-<p>The power is extraordinary flexibility — generalization across novel inputs, ambiguity handling, cross-domain reasoning without explicit programming.</p>
-<p>The fragility is hallucination — producing plausible-sounding but logically invalid conclusions because, as Feillet puts it, &quot;plausibility and logical validity are different things.&quot;</p>
+<p>LRMs store knowledge not as explicit rules but as distributed numerical representations learned across billions of examples. Their reasoning is what Feillet calls &quot;an approximation of modus ponens&quot; executed through statistical pattern completion.</p>
+<pre><code>Prompt: &quot;Should this $600K mortgage for a premium-tier customer require collateral?&quot;
+
+LLM: &quot;Based on the loan amount of $600K exceeding the typical threshold of
+$500K for mortgages, and considering this is a premium-tier customer...&quot;
+</code></pre>
+<p>The power is flexibility — generalization across novel inputs, ambiguity handling, cross-domain reasoning without explicit programming. The fragility is hallucination — producing plausible-sounding but logically invalid conclusions.</p>
+<blockquote>
+<p>Plausibility and logical validity are different things. One yields proofs. The other yields rationales. Both are useful. Confusing them is dangerous.</p>
+</blockquote>
 <h3 id="the-core-distinction">The core distinction</h3>
-<p><strong>Rule engines guarantee correctness relative to their rules; LRMs generate probabilistically plausible conclusions.</strong> One yields proofs, the other rationales. Both are useful. Confusing them is dangerous.</p>
-<p>Feillet gives a concrete example from the 2023 article: a pizza ordering bot from DeepLearning.ai's tutorial that &quot;depending on the runs, provides the expected outcome or a surprising one.&quot; Wrong pizza toppings are annoying. Wrong loan decisions are measured in lawsuits and regulatory actions. The stochastic parrot is not a bug — it is the architecture. For creative tasks, probabilistic variation is a feature. For mortgage decisions, it is a liability.</p>
+<p>Feillet gives a concrete example from the 2023 article: a pizza ordering bot that &quot;depending on the runs, provides the expected outcome or a surprising one.&quot; Wrong pizza toppings are annoying. Wrong loan decisions are lawsuits.</p>
+<pre><code class="language-python"># Rule engine: same input → same output, every time
+result1 = engine.decide(loan_application)  # deny, DTI 47%
+result2 = engine.decide(loan_application)  # deny, DTI 47%
+assert result1 == result2  # always passes
+
+# LLM: same input → statistically similar output, maybe not the same
+response1 = llm.generate(&quot;Review this loan: &quot; + application)  # &quot;I recommend denial...&quot;
+response2 = llm.generate(&quot;Review this loan: &quot; + application)  # &quot;This application should be...&quot;
+# response1 and response2 may differ in wording, tone, or even conclusion
+</code></pre>
+<blockquote>
+<p>The rule engine guarantees correctness relative to its encoded rules. The LRM generates text that sounds like reasoning. In enterprise contexts, you need the first and want the second — which is exactly why you combine them.</p>
+</blockquote>
 <h2 id="the-hybrid-inference-loop">The hybrid inference loop</h2>
-<p>Modern reasoning models have evolved beyond raw token prediction. When a calculation is needed, the model can generate and execute Python code — an exact, deterministic result fed back into the reasoning context. This is a pattern: stochastic reasoning delegating to deterministic execution at moments where precision matters.</p>
-<p>The Model Context Protocol formalizes this delegation:</p>
-<ol>
-<li>Reason with available context</li>
-<li>Identify what is uncertain or requires precision</li>
-<li>Delegate to a tool</li>
-<li>Receive facts</li>
-<li>Continue reasoning</li>
-</ol>
-<p>Feillet draws a structural parallel to how production rule systems invoke external actions and continue with newly acquired working memory — except the orchestration is now performed by a neural model rather than a symbolic agenda. IBM ODM and Decision Intelligence expose their decision services via MCP, enabling a reasoning model to invoke a full rule engine at the precise point in its inference trace where governed, auditable, deterministic decisions are needed. The LRM handles interpretation, planning, and contextual understanding; the rule engine handles logic requiring correctness, traceability, and compliance.</p>
+<p>Modern reasoning models have evolved beyond raw token prediction. When a calculation is needed, the model generates and executes code — an exact result fed back into context. This is a pattern: stochastic reasoning delegating to deterministic execution at moments where precision matters.</p>
+<p>The Model Context Protocol formalizes this delegation. An MCP tool definition for a decision service looks like:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;check_loan_eligibility&quot;,
+  &quot;description&quot;: &quot;Evaluate a mortgage application against underwriting rules&quot;,
+  &quot;inputSchema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;loan_amount&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;applicant_income&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;credit_score&quot;: {&quot;type&quot;: &quot;integer&quot;},
+      &quot;property_value&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;loan_type&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;mortgage&quot;, &quot;heloc&quot;, &quot;refinance&quot;]}
+    },
+    &quot;required&quot;: [&quot;loan_amount&quot;, &quot;applicant_income&quot;, &quot;credit_score&quot;, &quot;property_value&quot;]
+  }
+}
+</code></pre>
+<p>The loop is:</p>
+<pre><code>1. Reason with available context
+2. Identify what is uncertain or requires precision
+3. Delegate to a tool (MCP call to the rule engine)
+4. Receive deterministic facts
+5. Continue reasoning with grounded information
+</code></pre>
+<p>Feillet draws a structural parallel to production rule systems invoking external actions — except orchestration is now performed by a neural model rather than a symbolic agenda. IBM ODM and Decision Intelligence expose their decision services via MCP, enabling a reasoning model to invoke a full rule engine at the precise point where governed, deterministic decisions are needed.</p>
+<blockquote>
+<p>The LRM handles interpretation and context. The rule engine handles logic requiring correctness and traceability. Neither is asked to do the other's job.</p>
+</blockquote>
 <h3 id="attention-and-rete-same-purpose-different-mechanism">Attention and RETE: same purpose, different mechanism</h3>
-<p>Feillet is careful not to equate the two, but he notes a shared architectural role:</p>
-<ul>
-<li><strong>RETE:</strong> symbolic pattern matching with Boolean conditions, exact matches, discrete sets of eligible rules</li>
-<li><strong>Attention:</strong> differentiable relevance computation with continuous weights, weighted sums of representations</li>
-<li><strong>Commonality:</strong> both determine which information is most relevant for the next inference step — one operating on facts and predicates, the other on learned representations</li>
-</ul>
-<p>This is not a coincidence. Both architectures face the same fundamental challenge: given a large set of knowledge and a specific context, what is relevant <em>right now</em>? RETE solves it by pre-compiling condition tests into a network and caching partial matches. Attention solves it by learning to compute relevance scores from data. The mechanisms are different. The function is the same.</p>
-<h3 id="converging-trends">Converging trends</h3>
-<p>Feillet identifies three:</p>
-<ol>
-<li><strong>Rule engines incorporating generative AI</strong> for authoring, explaining, and maintaining policies in natural language</li>
-<li><strong>Reasoning models incorporating deterministic subsystems</strong> — code execution, retrieval, decision services — to ground outputs in verifiable reality</li>
-<li><strong>Hybrid inference architectures</strong> where stochastic reasoning orchestrates deterministic reasoning, and neural inference delegates to symbolic inference at the moments that matter</li>
-</ol>
+<p>Feillet is careful not to equate the two, but he notes a shared architectural role. Both answer the question <em>what is relevant right now?</em></p>
+<p>RETE pre-compiles condition tests into a network and caches partial matches. Attention learns to compute relevance scores from data. The mechanisms differ. The function is identical.</p>
 <h3 id="rulego-the-convergence-in-a-go-library">RuleGo: the convergence in a Go library</h3>
-<p>The convergence is not confined to enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> is a modern rule engine that already embodies the hybrid architecture. Its DAG-based component model treats an LLM call as just another node in the rule chain graph — a filter, a transformer, an HTTP push, an LLM intent extractor, all share the same interface. The <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a></strong> extension provides LLM integration and MCP server/client support.</p>
-<p>A RuleGo instance can expose its rule chains as MCP tools, making them discoverable and invocable by an LLM-based reasoning model. Conversely, RuleGo can act as an MCP client, calling out to LLM endpoints when its rule chain logic requires it. The hybrid inference loop Feillet describes — reason, identify uncertainty, delegate, receive, continue — is directly implementable as a RuleGo rule chain alternating between deterministic component nodes and MCP-mediated LLM calls.</p>
-<p>The significance is not that RuleGo replaces IBM ODM. It is that the composite AI pattern has become general enough to appear in a Go library running on a Raspberry Pi. The 40-year arc from RETE to MCP passes through <code>go get github.com/rulego/rulego</code>.</p>
+<p>The convergence is not confined to enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> embodies the hybrid architecture in a Go library. An LLM call is just another node in the rule chain:</p>
+<pre><code class="language-go">// RuleGo rule chain: deterministic nodes + LLM nodes, same interface
+chain := rulego.NewRuleChain(&quot;claims-fraud-check&quot;,
+    // Deterministic: validate claim data
+    rulego.NewTransformNode(&quot;validate&quot;).
+        WithScript(`msg.Metadata.skip = msg.Data.claimAmount &lt; 10000`),
+    // Deterministic: branch
+    rulego.NewSwitchNode(&quot;threshold-check&quot;).
+        WithCase(&quot;skip&quot;, &quot;approve&quot;).
+        WithCase(&quot;review&quot;, &quot;llm-analysis&quot;),
+    // LLM call: anomaly detection in claim notes
+    rulego.NewRestNode(&quot;llm-analysis&quot;).
+        WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+        WithBodyTemplate(`Review for anomalies:
+            Claim: {{.Data.description}}
+            History: {{.Data.priorClaims}}
+            Amount: {{.Data.claimAmount}}`),
+    // Deterministic: route based on LLM result
+    rulego.NewSwitchNode(&quot;fraud-route&quot;).
+        WithCase(&quot;clean&quot;, &quot;approve&quot;).
+        WithCase(&quot;suspicious&quot;, &quot;investigate&quot;),
+)
+</code></pre>
+<p>The <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a></strong> extension provides LLM integration and MCP server/client support. A RuleGo instance exposes its rule chains as MCP tools, discoverable by any reasoning model. The hybrid inference loop Feillet describes — reason, identify uncertainty, delegate, receive, continue — is directly implementable.</p>
+<blockquote>
+<p>The 40-year arc from RETE to MCP passes through <code>go get github.com/rulego/rulego</code>.</p>
+</blockquote>
 <h2 id="finite-state-machines-vs-rule-engines">Finite state machines vs. rule engines</h2>
-<p>Before moving to composite AI patterns — the subject of the second essay in this series — there is an architectural distinction worth making explicit: the difference between finite state machines and rule engines, and why confusing them leads to brittle systems.</p>
-<p>A <strong>finite state machine</strong> answers the question <em>what happens next?</em> It encodes a fixed set of states and explicit transitions between them. You are in state S. Event E arrives. If a transition from S on E is defined, you move to the target state. The FSM knows where you are, what you can do, and where you go next. Its logic is procedural: the sequence matters, the state matters, the transition guard matters.</p>
-<p>A <strong>rule engine</strong> answers the question <em>what should we conclude?</em> It encodes condition-action pairs evaluated against a working memory of facts. Any rule whose conditions are satisfied is eligible to fire. The rule engine does not care about sequence — it cares about satisfaction. Its logic is declarative: the facts matter, the conditions matter, the conclusions matter. Order of rule evaluation is the engine's concern, not the author's.</p>
-<p>The distinction is sharp:</p>
-<table>
-<thead>
-<tr>
-<th>Dimension</th>
-<th>FSM</th>
-<th>Rule Engine</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Core question</td>
-<td>What happens next?</td>
-<td>What should we conclude?</td>
-</tr>
-<tr>
-<td>Logic style</td>
-<td>Procedural</td>
-<td>Declarative</td>
-</tr>
-<tr>
-<td>State model</td>
-<td>Explicit states + transitions</td>
-<td>Working memory of facts</td>
-</tr>
-<tr>
-<td>Control flow</td>
-<td>Defined by transition graph</td>
-<td>Defined by rule firing (agenda)</td>
-</tr>
-<tr>
-<td>Best for</td>
-<td>Workflows, protocols, pipelines</td>
-<td>Policies, decisions, classifications</td>
-</tr>
-<tr>
-<td>Determinism</td>
-<td>Deterministic given state + event</td>
-<td>Deterministic given rule set + facts</td>
-</tr>
-<tr>
-<td>Complexity grows with</td>
-<td>Number of states × transitions</td>
-<td>Number of rules × fact combinations</td>
-</tr>
-</tbody>
-</table>
-<p>The mistake is using one where the other belongs. Encoding a loan eligibility policy as an FSM produces an explosion of states — one for every combination of credit score band, debt ratio, collateral type, and regulatory jurisdiction. Encoding a multi-step claims workflow as a flat rule set produces fragile priority chains (<code>rule-1: if step=pending_review then...</code>) where the implicit process state is smuggled through working memory facts. Each approach can express the other's domain, but the expression is awkward, verbose, and hard to maintain.</p>
-<p>The rule of thumb: if the problem is <em>procedural</em> — steps, stages, sequences, approvals, handoffs — reach for an FSM or a workflow engine. If the problem is <em>decisional</em> — eligibility, pricing, risk, compliance, classification — reach for a rule engine. Most real business processes are both, and that is the subject of the third essay.</p>
+<p>Before moving to composite AI patterns — the subject of the next essay — there is an architectural distinction worth making explicit.</p>
+<p>A <strong>finite state machine</strong> answers <em>what happens next?</em> It encodes explicit states and transitions. Its logic is procedural.</p>
+<p>A <strong>rule engine</strong> answers <em>what should we conclude?</em> It encodes condition-action pairs against a working memory. Its logic is declarative.</p>
+<pre><code class="language-go">// FSM: procedural — you define the sequence
+type LoanFSM struct { state string }
+func (f *LoanFSM) Transition(event string) error {
+    switch f.state {
+    case &quot;application&quot;:
+        if event == &quot;submit&quot; { f.state = &quot;review&quot; }
+    case &quot;review&quot;:
+        if event == &quot;approve&quot; { f.state = &quot;underwriting&quot; }
+        if event == &quot;reject&quot; { f.state = &quot;closed&quot; }
+    }
+}
+
+// Rule Engine: declarative — you define the conditions
+rules := []Rule{
+    {When: &quot;loan.amount &gt; 500K AND loan.type = mortgage&quot;, Then: &quot;require_collateral&quot;},
+    {When: &quot;customer.tier = premium AND loan.amount &gt; 250K&quot;, Then: &quot;priority_review&quot;},
+}
+</code></pre>
+<blockquote>
+<p>If the problem is procedural — steps, stages, sequences — reach for an FSM. If the problem is decisional — eligibility, pricing, risk, compliance — reach for a rule engine. Most real business processes are both. That is the subject of the fourth and fifth essays.</p>
+</blockquote>
+<p>The full comparison and anti-patterns are explored in Part 4 of this series. The composed architecture — FSM as process skeleton, rule engine as decision muscle — is developed in Part 5.</p>
 <h2 id="the-40-year-arc">The 40-year arc</h2>
 <!-- raw HTML omitted -->
 <p>The story from RETE to MCP is not obsolescence and replacement. It is infrastructure that works being augmented by capabilities that are new. The RETE network matches facts against rules with Boolean precision. The attention mechanism computes relevance over learned representations. Both answer the same question — <em>what is relevant right now?</em> — at different layers of the stack.</p>
+<blockquote>
+<p>A decision system that cannot explain itself is not enterprise-grade. A decision system that cannot handle ambiguity is not useful. The composite approach accepts both constraints and designs for them.</p>
+</blockquote>
 <p>The next essay examines the five composite AI patterns that Feillet and his co-authors proposed in 2023: concrete architectures for combining neuronal and symbolic AI in production systems.</p>
 <hr>
 <p><strong>References</strong></p>
@@ -794,7 +883,7 @@
 </li>
 </ol>
 <blockquote>
-<p><em>Continue to Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines: Five Patterns for Composite AI</a></em></p>
+<p><em>Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
 </blockquote>
 </div>
       </article>
@@ -806,8 +895,10 @@
           </div>
         </header>
         <div class="post-body"><p>The first essay in this series traced the 40-year arc from Forgy's RETE algorithm to the Model Context Protocol and established the core distinction: rule engines produce proofs, large reasoning models produce rationales. Both are useful. Neither alone suffices for production AI.</p>
-<p>This essay — the second in the series — examines the five architectural patterns that Pierre Feillet, Allen Chan, Luigi Pichett, and Yazan Obeidi proposed in their 2023 article <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. They let an architect reason about <em>where</em> in the pipeline the LLM should sit and <em>what role</em> it should play. Each pattern is explained with its tradeoffs, failure modes, and the hidden engineering work that makes it production-ready.</p>
-<p>But first: what does an enterprise decision actually require?</p>
+<p>This essay — the second in a five-part series — examines the five architectural patterns that Pierre Feillet, Allen Chan, Luigi Pichett, and Yazan Obeidi proposed in their 2023 article <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. They let an architect reason about <em>where</em> in the pipeline the LLM should sit and <em>what role</em> it should play.</p>
+<blockquote>
+<p>These are not theoretical constructs. They are battle-tested integration topologies from enterprise practice.</p>
+</blockquote>
 <h2 id="what-an-enterprise-decision-requires">What an enterprise decision requires</h2>
 <p>Feillet's article enumerates eight criteria. They explain why the LLM-only approach keeps hitting a wall in production.</p>
 <ol>
@@ -815,114 +906,274 @@
 <li><strong>Scalability.</strong> Millions of claims per day cannot degrade when the rule base grows to tens of thousands of rules. RETE's performance-independence from rule count matters here.</li>
 <li><strong>Adaptability.</strong> Regulations and policies change. The system must accommodate new rules without a multi-month DevOps cycle.</li>
 <li><strong>Latency.</strong> Budgets vary — milliseconds for fraud, seconds for pre-approval, minutes for underwriting — but must be predictable. LLM latency is variable; rule engine latency is not.</li>
-<li><strong>Auditability.</strong> &quot;The model's attention weights converged on that outcome&quot; is not an acceptable answer to a regulator. Rule engines produce proofs, not rationales.</li>
+<li><strong>Auditability.</strong> &quot;The model's attention weights converged on that outcome&quot; is not an acceptable answer to a regulator.</li>
 <li><strong>Privacy.</strong> Enterprise decisions involve PII, financial data, and health records. Sending sensitive data to a third-party LLM API is often not an option.</li>
-<li><strong>Monitoring.</strong> Decision volumes, rule firing frequencies, exception rates, and performance trends are operational requirements, not afterthoughts.</li>
+<li><strong>Monitoring.</strong> Decision volumes, rule firing frequencies, exception rates — operational requirements, not afterthoughts.</li>
 <li><strong>Cost.</strong> LLM inference at scale is expensive. Rule engine execution is cheap. The composite system's cost profile varies dramatically by pattern.</li>
 </ol>
+<blockquote>
+<p>Every one of these criteria pushes in the same direction: the LLM should not be the decision-maker.</p>
+</blockquote>
 <h2 id="why-llms-alone-fail">Why LLMs alone fail</h2>
-<p>LLMs &quot;show impressive results and some reasoning capabilities&quot; yet &quot;fail as easily when repeating the experience.&quot; This is the architecture, not a bug. LLMs are probability distributions over token sequences. For creative tasks, variation is a feature. For mortgage decisions, it is a liability. The same prompt run twice can produce different results. A slightly reworded prompt can produce a wrong result where the original produced a correct one.</p>
-<p>The rule engine guarantees correctness relative to its encoded rules. The LRM generates text that <em>sounds like</em> reasoning. In enterprise contexts, you need the first and want the second — which is exactly why you combine them.</p>
+<p>LLMs &quot;show impressive results and some reasoning capabilities&quot; yet &quot;fail as easily when repeating the experience.&quot; This is the architecture, not a bug. LLMs are probability distributions over token sequences. For creative tasks, variation is a feature. For mortgage decisions, it is a liability.</p>
+<pre><code class="language-python"># The fundamental problem in one line:
+# An LLM called 3 times on the same loan application may give 3 different answers.
+for i in range(3):
+    decision = llm.generate(f&quot;Decide on this loan: {application}&quot;)
+    print(decision)  # &quot;Approved&quot; → &quot;Denied&quot; → &quot;Approved with conditions&quot;
+</code></pre>
+<blockquote>
+<p>The rule engine guarantees correctness relative to its encoded rules. The LRM generates text that sounds like reasoning. In enterprise contexts, you need the first and want the second — which is exactly why you combine them.</p>
+</blockquote>
 <h2 id="five-patterns-for-composite-ai">Five patterns for composite AI</h2>
-<p>The 2023 article's core contribution is a practitioner's taxonomy: five integration patterns, each with defined tradeoffs. They come from experience with IBM ODM and ADS, but the patterns are general. They are not theoretical constructs. They are battle-tested integration topologies.</p>
 <h3 id="pattern-1-nlu--rules">Pattern 1: NLU → Rules</h3>
 <!-- raw HTML omitted -->
-<p>An LLM comprehends unstructured text and extracts structured data; a rule engine reasons deterministically on that data. An insurance claim — &quot;I was rear-ended at Main and Oak last Tuesday. The other driver ran the red light. My bumper is damaged and my neck hurts.&quot; — becomes structured fields (<code>incident_type: rear_end_collision</code>, <code>fault_party: other_driver</code>, <code>damage_types: [property, bodily_injury]</code>), which the rule engine processes against policy terms, coverage rules, and state regulations.</p>
-<p><strong>What works.</strong> Integration is straightforward — sequential API calls passing a parameter context between engines. The LLM never makes a business decision; the rule engine never parses messy natural language. The separation of concerns is clean.</p>
-<p><strong>What doesn't.</strong> When expected data is missing from the text, the system needs guardrails. Does it reject the claim? Ask for clarification? Escalate to a human? These failure modes must be designed explicitly.</p>
-<p><strong>The hidden work.</strong> Schema design is where the abstraction leaks. If you ask the LLM to extract <code>damage_severity</code> as free text, the rule engine must parse &quot;pretty bad,&quot; &quot;minor,&quot; and &quot;totaled&quot; into actionable categories. If you constrain the LLM to a controlled vocabulary, the LLM must map ambiguous descriptions onto discrete labels — itself a classification task with error potential. Schema design at the structured/unstructured boundary is the engineering problem that determines whether Pattern 1 works in production.</p>
+<p>An LLM comprehends unstructured text and extracts structured data; a rule engine reasons deterministically on that data.</p>
+<pre><code class="language-go">// Pattern 1: NLU extracts, rules decide
+func intakeClaim(description string) (Decision, error) {
+    // Step 1: LLM extracts structured fields from free text
+    structured, err := llm.Extract(description, ClaimSchema{
+        Fields: []string{&quot;incident_type&quot;, &quot;fault_party&quot;, &quot;damage_types&quot;, &quot;date&quot;},
+    })
+    if err != nil {
+        return Decision{}, fmt.Errorf(&quot;extraction failed: %w&quot;, err)
+    }
+
+    // Step 2: Rule engine decides on structured data
+    decision, err := ruleEngine.Decide(&quot;claims-coverage&quot;, map[string]interface{}{
+        &quot;incident_type&quot;: structured.IncidentType,
+        &quot;fault_party&quot;:   structured.FaultParty,
+        &quot;damage_types&quot;:  structured.DamageTypes,
+        &quot;policy_terms&quot;:  loadPolicy(structured.PolicyID),
+    })
+    if err != nil {
+        return Decision{}, fmt.Errorf(&quot;decision failed: %w&quot;, err)
+    }
+
+    return decision, nil
+}
+</code></pre>
+<p><strong>What works.</strong> Sequential API calls. The LLM never makes a business decision. The rule engine never parses messy language.</p>
+<p><strong>What doesn't.</strong> When expected data is missing, the system needs guardrails. Does it reject? Clarify? Escalate?</p>
+<blockquote>
+<p>The abstraction leaks at the schema boundary. Schema design is the hidden engineering work in Pattern 1.</p>
+</blockquote>
 <h3 id="pattern-2-rules--nlg">Pattern 2: Rules → NLG</h3>
 <!-- raw HTML omitted -->
-<p>The flow reverses: a rule engine decides on structured data, then an LLM generates natural language output. A loan decision (<code>approved, $350,000, 6.25%, conditions: [income_verification, property_appraisal]</code>) becomes a customer letter.</p>
-<p>This is the most common production pattern and the safest from a compliance perspective — the LLM never influences the decision, only communicates it. The real win is <em>consistency at scale with personalization</em>: every customer gets a correctly structured, deterministic communication whose surface text varies by tone, language, channel, and customer segment.</p>
-<p><strong>What doesn't.</strong> Testing NLG output is genuinely hard. The LLM may phrase the same information in dozens of valid ways. You cannot assert on output strings. You need semantic testing: does the output contain required decision fields? Does it omit restrictions, conditions, or deadlines? Does the tone match the channel?</p>
-<p>A Spanish-language denial letter that subtly softens rejection language in a way that could be read as leaving the door open for appeal creates compliance exposure. Constrained generation — not free-form text from a decision payload, but generation within guardrails that prevent legally meaningful variation — is the requirement.</p>
+<p>The flow reverses: a rule engine decides on structured data, then an LLM generates natural language.</p>
+<pre><code class="language-go">// Pattern 2: Rules decide, LLM communicates
+func notifyCustomer(application LoanApplication) (string, error) {
+    // Step 1: Rule engine produces a structured decision
+    decision, err := ruleEngine.Decide(&quot;loan-underwriting&quot;, map[string]interface{}{
+        &quot;amount&quot;:        application.Amount,
+        &quot;credit_score&quot;:  application.CreditScore,
+        &quot;dti_ratio&quot;:     application.DTIRatio,
+        &quot;collateral&quot;:    application.CollateralValue,
+    })
+    if err != nil {
+        return &quot;&quot;, err
+    }
+
+    // Step 2: LLM generates the customer letter from the decision
+    letter, err := llm.Generate(LetterTemplate, map[string]interface{}{
+        &quot;decision&quot;:     decision.Outcome,    // &quot;approved&quot;
+        &quot;amount&quot;:       decision.Amount,     // 350000
+        &quot;rate&quot;:         decision.Rate,       // 6.25
+        &quot;conditions&quot;:   decision.Conditions, // [&quot;income_verification&quot;, &quot;appraisal&quot;]
+        &quot;tone&quot;:         application.Channel, // &quot;email_formal&quot;
+        &quot;language&quot;:     application.Locale,  // &quot;es-MX&quot;
+    })
+
+    return letter, err
+}
+</code></pre>
+<blockquote>
+<p>This is the safest pattern from a compliance perspective. The LLM never influences the decision — it only communicates it.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> Testing NLG output is genuinely hard. The LLM may phrase the same decision in dozens of valid ways. You need semantic testing:</p>
+<pre><code class="language-go">func TestNotificationLetter(t *testing.T) {
+    decision := Decision{Outcome: &quot;denied&quot;, Reason: &quot;DTI exceeds threshold&quot;}
+    letter := generateLetter(decision)
+
+    // Can't assert on exact string — assert on invariants
+    if !strings.Contains(letter, &quot;denied&quot;) {
+        t.Error(&quot;letter must communicate denial&quot;)
+    }
+    if !strings.Contains(letter, &quot;debt-to-income&quot;) {
+        t.Error(&quot;letter must mention the reason&quot;)
+    }
+    if strings.Contains(letter, &quot;approved&quot;) {
+        t.Error(&quot;letter must not imply approval&quot;)
+    }
+}
+</code></pre>
+<blockquote>
+<p>Constrained generation — not free-form text — is the requirement. A Spanish-language denial letter that subtly softens rejection language creates compliance exposure.</p>
+</blockquote>
 <h3 id="pattern-3-rules-orchestrate-llm">Pattern 3: Rules orchestrate LLM</h3>
 <!-- raw HTML omitted -->
-<p>The rule engine is the master orchestrator, invoking LLMs on demand for delegated NLP tasks. This extends the ML model calling capability that already exists in enterprise rule engines like IBM ODM and ADS — instead of calling a classification model for a score, the rule engine calls an LLM for text understanding or generation, but only when the reasoning path requires it.</p>
-<p>Consider a complex claims adjudication: coverage is confirmed, liability is clear, but the claimed amount triggers a fraud review. The rule engine invokes an LLM: &quot;Here is the claim description, the policy holder's history, and three years of claim notes. Summarize any inconsistencies or unusual patterns.&quot; The LLM returns structured analysis. The rule engine incorporates it into its decision path. The LLM is a tool the rule engine uses, not a peer.</p>
-<p><strong>What works.</strong> Costs are proportional to actual need — not every transaction invokes the LLM.</p>
-<p><strong>What doesn't.</strong> The rule engine needs orchestration rules: <em>when</em> to call the LLM, <em>what prompt</em> to send, <em>how to interpret</em> the response, <em>what fallback</em> to use if the response is malformed or nonsensical. These are not business rules but meta-rules governing the LLM interaction itself. A production implementation requires an orchestration framework that abstracts LLM invocation behind a clean interface — timeouts, retries, fallbacks, and guardrails against calling the LLM in a tight loop.</p>
+<p>The rule engine is the master orchestrator, invoking LLMs on demand for delegated NLP tasks.</p>
+<pre><code class="language-go">// Pattern 3: Rules drive the process, LLM is a tool called on demand
+func adjudicateClaim(claim Claim) (Decision, error) {
+    engine := rulego.NewRuleChain(&quot;claims-adjudication&quot;,
+        // Step 1: Validate coverage
+        rulego.NewTransformNode(&quot;validate-coverage&quot;).
+            WithScript(`msg.Metadata.covered = msg.Data.policyActive &amp;&amp; msg.Data.claimType == &quot;covered&quot;`),
+        // Step 2: If covered, check amount threshold
+        rulego.NewSwitchNode(&quot;threshold-check&quot;).
+            WithCase(&quot;below_10k&quot;, &quot;auto-approve&quot;).
+            WithCase(&quot;above_10k&quot;, &quot;fraud-review&quot;),
+        // Step 3: Invoke LLM for fraud review — only when threshold exceeded
+        rulego.NewRestNode(&quot;fraud-review&quot;).
+            WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+            WithBodyTemplate(`Analyze for anomalies:
+                Claim: {{.Data.description}}
+                History: {{.Data.priorClaims}}
+                Amount: {{.Data.claimAmount}}
+                Respond with JSON: {&quot;risk&quot;: &quot;low|medium|high&quot;, &quot;findings&quot;: [...]}`),
+        // Step 4: Route based on LLM result
+        rulego.NewSwitchNode(&quot;fraud-route&quot;).
+            WithCase(&quot;low_risk&quot;, &quot;auto-approve&quot;).
+            WithCase(&quot;medium_risk&quot;, &quot;manual-review&quot;).
+            WithCase(&quot;high_risk&quot;, &quot;investigate&quot;),
+    )
+    return engine.Run(claim)
+}
+</code></pre>
+<p><strong>What works.</strong> Costs are proportional to actual need — not every transaction invokes the LLM. The rule engine remains in control.</p>
+<blockquote>
+<p>The rule engine needs orchestration rules: when to call the LLM, what prompt to send, how to interpret the response, what fallback to use if the LLM returns nonsense.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> The coupling is tight. The rule engine must mediate the structured-unstructured frontier — taking probabilistic LLM output and converting it into deterministic actions. These are not business rules. They are meta-rules governing the LLM interaction itself.</p>
 <h3 id="pattern-4-llm-extracts-rules">Pattern 4: LLM extracts rules</h3>
 <!-- raw HTML omitted -->
-<p>The most ambitious pattern: LLMs at <em>design time</em> extract automation assets — business rules, data models, decision tables, rule signatures — from plain-text policy documents. The extracted assets generate an automation project in a decision platform. Rules then execute deterministically, completely decoupled from the LLM that helped author them. The article notes this was prototyped with IBM ADS.</p>
-<p>Policy documents, regulations, and procedure manuals are ground truth. Today, human analysts manually encode them as decision tables — slow, expensive, error-prone, and creating a synchronization problem when source documents change. An LLM that extracts rules with traceability (each extracted rule links back to its source paragraph) promises dramatically decreased total cost of ownership.</p>
-<p><strong>What doesn't.</strong> This requires prompt chains or fine-tuned models, companion tools for validation and synchronization, and a human review gate. The LLM can turn weeks of manual rule writing into hours of review — but cannot replace expert judgment about whether a rule correctly captures policy intent. The lifecycle problem — keeping extracted rules in sync with evolving source documents — is the hard part that persists long after initial extraction.</p>
+<p>The most ambitious pattern: LLMs at <em>design time</em> extract automation assets from plain-text policy documents.</p>
+<pre><code class="language-python"># Pattern 4: LLM reads policy, generates executable rules
+policy_text = &quot;&quot;&quot;
+4.2.3 Loan Eligibility: Applicants with a credit score below 620
+shall be denied. Applicants with credit score 620-699 and debt-to-income
+ratio below 43% may be approved with standard rates. Applicants with
+credit score 700+ and DTI below 36% qualify for preferred rates.
+&quot;&quot;&quot;
+
+rules = llm.extract(policy_text, format=&quot;decision_table&quot;)
+# Output:
+# [
+#   { &quot;when&quot;: &quot;credit_score &lt; 620&quot;, &quot;then&quot;: &quot;deny&quot; },
+#   { &quot;when&quot;: &quot;620 &lt;= credit_score &lt;= 699 AND dti &lt; 43%&quot;, &quot;then&quot;: &quot;approve_standard&quot; },
+#   { &quot;when&quot;: &quot;credit_score &gt;= 700 AND dti &lt; 36%&quot;, &quot;then&quot;: &quot;approve_preferred&quot; },
+# ]
+
+# Rules are validated, reviewed by humans, then deployed to the engine.
+# The LLM is not in the runtime path. The rules execute deterministically.
+for rule in rules:
+    ruleEngine.addRule(rule, source=policy_text, paragraph=&quot;4.2.3&quot;)
+</code></pre>
+<blockquote>
+<p>Pattern 4 moves the LLM from the runtime path — where its latency, cost, and non-determinism are liabilities — to the development path, where its ability to process large volumes of unstructured text is an asset.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> Prompt chains or fine-tuned models, companion tools for validation and synchronization, and a human review gate. The LLM turns weeks of manual rule writing into hours of review — but cannot replace expert judgment. The lifecycle problem — keeping extracted rules in sync with evolving source documents — persists long after initial extraction. This is where the KU Leuven research program enters (Part 3).</p>
 <h3 id="pattern-5-chatbot-delegates-to-rules">Pattern 5: Chatbot delegates to rules</h3>
 <!-- raw HTML omitted -->
-<p>An LLM drives the full conversational experience — understanding user intents, managing dialogue state, gathering context across turns. When a business decision is needed, the chatbot delegates to a rule-based decision engine. It recognizes the decision trigger, gathers required parameters from the conversation, invokes the rule engine, and restitutes results through NLG. This is Pattern 1 and Pattern 2 stitched together in a conversational loop.</p>
-<p>The article references IBM Watson Orchestrate and a LangChain + ODM integration as examples.</p>
-<p><strong>What works.</strong> The chatbot benefits from conversational UX while delegating corporate reasoning to deterministic engines. This is the pattern most end-users actually interact with.</p>
-<p><strong>What doesn't.</strong> Two hard problems. <strong>Decision trigger detection:</strong> in open-ended conversation, when has the user crossed from &quot;what are your rates?&quot; to &quot;I'd like to apply&quot;? False positives annoy; false negatives lose business. <strong>Incomplete context:</strong> &quot;my income is around 80K&quot; when the engine needs an exact figure. The chatbot must recognize the ambiguity and ask, not fabricate.</p>
-<p>The delegation boundary needs a formal contract: the rule engine exposes a decision service with a defined input schema, and the chatbot populates that schema conversationally. This is a form-filling dialogue where the form is the DMN model's input requirements.</p>
-<h2 id="fsms-with-rule-engines-process-skeleton-decision-muscle">FSMs with rule engines: process skeleton, decision muscle</h2>
-<p>The five Feillet patterns describe how to combine LLMs with rule engines. But there is an orthogonal architectural dimension that predates LLMs entirely: combining finite state machines with rule engines. This pattern — FSM as process skeleton, rule engine as decision muscle — remains one of the most underappreciated choices in enterprise systems.</p>
-<h3 id="the-pattern">The pattern</h3>
-<p>An FSM manages the process lifecycle: which stage the transaction is in, which transitions are valid, what happens on entry and exit to each state. At each state where a decision is required, the FSM delegates to a rule engine. The rule engine receives the accumulated facts and produces a structured decision that determines the next transition.</p>
-<p>Consider a mortgage origination pipeline:</p>
-<pre><code>[Application] → [Review] → [Underwriting] → [Approval] → [Closing]
-                    |            |               |
-                    v            v               v
-               Rule Engine   Rule Engine    Rule Engine
-               (completeness (credit risk,   (final conditions,
-                check)        collateral)     compliance)
+<p>An LLM drives the conversation; when a business decision is needed, the chatbot delegates to a rule engine.</p>
+<pre><code class="language-go">// Pattern 5: Chatbot handles conversation, delegates decisions
+func handleMortgageChat(session ChatSession, userMessage string) (string, error) {
+    // Step 1: LLM understands the user's intent and extracts parameters
+    intent, params, err := llm.UnderstandIntent(userMessage, MortgageIntents{
+        Intents: []string{&quot;rate_inquiry&quot;, &quot;apply&quot;, &quot;check_status&quot;, &quot;general_question&quot;},
+        Slots:   []string{&quot;loan_amount&quot;, &quot;income&quot;, &quot;credit_score&quot;, &quot;property_value&quot;},
+    })
+
+    // Step 2: If this is a decision trigger, delegate to rule engine
+    if intent == &quot;apply&quot; &amp;&amp; allRequiredFieldsPresent(params) {
+        decision, err := ruleEngine.Decide(&quot;mortgage-eligibility&quot;, params)
+        if err != nil {
+            return llm.Generate(&quot;Something went wrong. Let me connect you with a specialist.&quot;, nil)
+        }
+
+        // Step 3: LLM restitutes the deterministic decision in natural language
+        return llm.Generate(&quot;mortgage-decision-response&quot;, map[string]interface{}{
+            &quot;decision&quot;:     decision,
+            &quot;missing_info&quot;: missingFields(params),
+            &quot;next_steps&quot;:   nextStepsForDecision(decision),
+            &quot;tone&quot;:         session.UserPreferences.Tone,
+        })
+    }
+
+    // Not a decision trigger — LLM handles conversation freely
+    return llm.Chat(session.Context, userMessage)
+}
 </code></pre>
-<p>The FSM owns the pipeline. It knows the application moves from Review to Underwriting only after completeness checks pass. It knows Underwriting can transition to Approval (decision: approve), Rejection (decision: deny), or back to Review (decision: need more information). The rule engines own the decisions at each gate.</p>
-<h3 id="why-this-works">Why this works</h3>
-<p><strong>Process changes do not touch policy.</strong> Adding a new &quot;Fraud Check&quot; state between Review and Underwriting requires modifying the FSM transition graph. None of the rule sets change.</p>
-<p><strong>Policy changes do not touch process.</strong> Changing the debt-to-income threshold from 43% to 45% is a one-line rule change. The FSM never knows about it.</p>
-<p><strong>Testing is independently tractable.</strong> The FSM can be tested with mocked rule engine responses. The rule engine can be tested with canned fact sets. The combinatorial explosion of testing both together is avoided.</p>
-<p><strong>Auditability is layered.</strong> A regulator asks: &quot;Why was this loan denied?&quot; The audit trail shows process trace (Application → Review → Underwriting, valid transitions) and decision trace (rules R-17, R-23, R-41 fired; output: <code>deny, DTI exceeds threshold, insufficient collateral</code>) as separate, composable artifacts.</p>
-<h3 id="where-llms-fit-in">Where LLMs fit in</h3>
-<p>The FSM + rule engine pattern composes naturally with Feillet's five patterns. At any state in the FSM:</p>
-<ul>
-<li><strong>Pattern 1 (NLU → Rules):</strong> The FSM is in the Intake state. Unstructured text arrives. An LLM extracts structured fields. The rule engine decides on completeness. The FSM transitions.</li>
-<li><strong>Pattern 2 (Rules → NLG):</strong> The FSM reaches the Notification state. The rule engine has produced a decision. An LLM generates the customer communication. The FSM transitions to Closed.</li>
-<li><strong>Pattern 3 (Rules orchestrate LLM):</strong> The FSM is in the Investigation state. The rule engine determines additional analysis is needed, invokes an LLM for anomaly detection, incorporates the result, and drives the next transition.</li>
-<li><strong>Pattern 5 (Chatbot + Rules):</strong> The entire FSM is wrapped in a conversational interface. The chatbot tracks which FSM state the conversation is in, gathers parameters, and communicates decisions back to the user.</li>
-</ul>
-<h3 id="the-architectural-principle">The architectural principle</h3>
+<blockquote>
+<p>The delegation boundary needs a formal contract: the rule engine exposes a decision service with a defined input schema, and the chatbot populates that schema conversationally. A missing required field is not an ambiguous conversational state — it is a slot in the schema that has not been filled.</p>
+</blockquote>
+<p><strong>Two hard problems.</strong> <strong>Decision trigger detection</strong> — when has the user crossed from browsing to deciding? <strong>Incomplete context</strong> — &quot;my income is around 80K&quot; when the engine needs an exact figure. The chatbot must ask, not fabricate.</p>
+<h2 id="fsms-with-rule-engines-process-skeleton-decision-muscle">FSMs with rule engines: process skeleton, decision muscle</h2>
+<p>The five Feillet patterns describe how to combine LLMs with rule engines. But there is an orthogonal architectural dimension that predates LLMs entirely: combining finite state machines with rule engines.</p>
+<pre><code class="language-go">// The composed architecture in one structure
+type MortgagePipeline struct {
+    fsm    *StateMachine           // owns process state and transitions
+    rules  map[string]*RuleEngine  // one rule engine per decision gate
+}
+
+func (p *MortgagePipeline) Process(app LoanApplication) error {
+    for p.fsm.State != &quot;closed&quot; {
+        state := p.fsm.State
+        // Delegate to the rule engine for this state
+        decision, err := p.rules[state].Decide(app.AccumulatedFacts())
+        if err != nil {
+            return err
+        }
+        // The decision determines the next transition
+        p.fsm.Transition(decision.NextState)
+    }
+    return nil
+}
+</code></pre>
+<blockquote>
 <p>The FSM manages <em>where you are in the process</em>. The rule engine manages <em>what you know and what you should conclude</em>. The LLM manages <em>how you communicate at the boundaries</em>. Three concerns. Three tools. One system.</p>
-<p>This principle is old — it predates LLMs, predates RETE, goes back to the early days of business process management and expert systems. But it is worth restating because the current AI discourse tends to collapse everything into &quot;ask the LLM.&quot; A mortgage origination system is not one decision. It is a sequence of decisions embedded in a process. The FSM provides the sequence. The rule engines provide the decisions. The LLM provides the natural language interface at the boundaries.</p>
+</blockquote>
+<p>The FSM vs. rule engine distinction is explored in depth in Part 4. The composed architecture — with full code, testing strategies, and audit patterns — is developed in Part 5.</p>
 <h2 id="choosing-a-pattern">Choosing a pattern</h2>
-<p>The five patterns compose. A real system might use Pattern 4 to extract rules during development, Pattern 1 for intake, Pattern 2 for communications, and Pattern 5 for the conversational interface — with Pattern 3 orchestrating complex processes where LLM calls are needed selectively.</p>
 <table>
 <thead>
 <tr>
 <th>Boundary</th>
 <th>Pattern</th>
-<th>Open-source path</th>
+<th>Signal</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Unstructured → structured</td>
 <td>1: NLU → Rules</td>
-<td>RuleGo + LLM extraction node</td>
+<td>LLM extracts, rules decide</td>
 </tr>
 <tr>
 <td>Structured → unstructured</td>
 <td>2: Rules → NLG</td>
-<td>RuleGo chain → LLM NLG</td>
+<td>Rules decide, LLM communicates</td>
 </tr>
 <tr>
 <td>Complex NLP orchestration</td>
 <td>3: Rules drive LLM</td>
-<td>RuleGo DAG with LLM + MCP nodes</td>
+<td>Rules call LLM on demand</td>
 </tr>
 <tr>
 <td>Policy → code</td>
 <td>4: LLM extracts rules</td>
-<td>LLM → RuleGo chain JSON</td>
+<td>LLM at design time only</td>
 </tr>
 <tr>
 <td>Conversational decisions</td>
 <td>5: Chatbot + Rules</td>
-<td>RuleGo MCP server + LLM chatbot</td>
+<td>LLM talks, rules decide</td>
 </tr>
 </tbody>
 </table>
-<p>The next essay examines the KU Leuven research program that provides the academic foundation for these patterns — deep learning pipelines that extract DMN decision models from text, intelligent assistants that explain decisions, and frameworks that generate chatbots directly from decision models.</p>
+<blockquote>
+<p>The patterns compose. A real system might use Pattern 4 to extract rules during development, Pattern 1 for intake, Pattern 2 for communications, and Pattern 5 for the conversational interface — with Pattern 3 orchestrating complex processes where LLM calls are needed selectively.</p>
+</blockquote>
 <hr>
 <p><strong>References</strong></p>
 <ol>
@@ -937,7 +1188,7 @@
 </li>
 </ol>
 <blockquote>
-<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines: From RETE to MCP</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-automating-decision-models">On Rule Engines: Automating Decision Models</a></em></p>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-automating-decision-models">On Rule Engines — Automating Decision Models</a> · Part 5: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-powered-by-rule-engines">State Machines Powered by Rule Engines</a></em></p>
 </blockquote>
 </div>
       </article>
@@ -948,67 +1199,136 @@
           <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">enterprise</span><span class="tag">automation</span><span class="tag">composite-ai</span><span class="tag">decision-making</span><span class="tag">symbolic-ai</span><span class="tag">dmn</span><span class="tag">research</span>
           </div>
         </header>
-        <div class="post-body"><p>The first essay in this series traced the 40-year arc from Forgy's RETE algorithm to the Model Context Protocol. The second examined the five architectural patterns for blending LLMs with rule engines. This third essay turns to the academic research that validates, extends, and operationalizes those patterns.</p>
-<p>While Pierre Feillet was developing composite AI patterns from enterprise practice at IBM, a sustained research program at KU Leuven's LIRIS (Leuven Institute for Research on Information Systems), led by Professor Jan Vanthienen and driven primarily by Alexandre Goossens and Vedavyas Etikala, was systematically attacking the same problem from the academic side. Their central question: <em>can we automate the extraction of decision models from text, and if so, how?</em></p>
-<p>The six papers that span from 2021 to 2023 form a coherent research arc: survey the landscape, prove feasibility with deep learning, scale to full DMN extraction with open tools, modernize with GPT-3, add explainability, and generate conversational interfaces. Together they provide the academic backbone for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation), and they connect to every other pattern in Feillet's taxonomy.</p>
+        <div class="post-body"><p>The first essay traced the 40-year arc from Forgy's RETE algorithm to MCP. The second examined the five architectural patterns for blending LLMs with rule engines. This third essay turns to the academic research that validates, extends, and operationalizes those patterns.</p>
+<p>While Pierre Feillet was developing composite AI patterns from enterprise practice at IBM, a sustained research program at KU Leuven's LIRIS (Leuven Institute for Research on Information Systems), led by Professor Jan Vanthienen and driven primarily by Alexandre Goossens and Vedavyas Etikala, was systematically attacking the same problem from the academic side.</p>
+<blockquote>
+<p>Feillet's five patterns describe <em>what</em> to build. The KU Leuven papers describe <em>how</em> to build it.</p>
+</blockquote>
 <h2 id="mapping-the-landscape-ksem-2021">Mapping the landscape (KSEM 2021)</h2>
-<p>The research program began with a survey. Etikala and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-82153-1_17"><em>An Overview of Methods for Acquiring and Generating Decision Models</em></a> (KSEM 2021, LNCS 12817, pp. 200–208) provided a taxonomy of techniques for acquiring decision models from various knowledge sources.</p>
-<p>The paper noted that since the introduction of the <strong>Decision Model and Notation (DMN) standard</strong>, there had been a surge of research interest in automated extraction — but the field lacked a systematic map. Business decisions are of significant value to organizations, but manually modeling them is costly, tedious, and time-consuming. Their survey, with 38 references, classified approaches along three dimensions:</p>
-<ul>
-<li><strong>Source type:</strong> natural language text, legacy code, other models, event logs</li>
-<li><strong>Extraction target:</strong> decision dependencies (the structural relationships between decisions), decision logic (the actual rules and conditions), full models (both)</li>
-<li><strong>Technique family:</strong> rule-based NLP, traditional machine learning, deep learning</li>
-</ul>
-<p>At the time of writing, deep learning approaches were largely unexplored for DMN extraction specifically. The survey threw down the gauntlet: can deep learning extract decision models from text?</p>
+<p>The research program began with a survey. Etikala and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-82153-1_17"><em>An Overview of Methods for Acquiring and Generating Decision Models</em></a> (KSEM 2021) provided a taxonomy of techniques for acquiring decision models from various knowledge sources. Business decisions are of significant value — but manually modeling them is costly, tedious, and time-consuming.</p>
+<p>The survey classified approaches along three dimensions: <strong>source type</strong> (text, legacy code, models, event logs), <strong>extraction target</strong> (dependencies, logic, full models), and <strong>technique family</strong> (rule-based NLP, traditional ML, deep learning). Deep learning approaches were largely unexplored for DMN extraction. The Gauntlet had been thrown.</p>
 <h2 id="first-extraction-results-bpm-2021">First extraction results (BPM 2021)</h2>
-<p>Goossens, Claessens, Parthoens, and Vanthienen took the first step in <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-94343-1_27"><em>Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques</em></a> (BPM 2021 Workshops, LNBIP 436, pp. 349–361).</p>
-<p>This was the first systematic attempt to apply deep learning specifically to DMN extraction. The authors collected a large dataset of labeled and tagged sentences from real use cases and trained two architectures — <strong>BERT</strong> and <strong>Bi-LSTM-CRF</strong> — for two distinct tasks:</p>
-<ol>
-<li><strong>Sentence classification:</strong> identifying which sentences in a document describe decision logic or decision dependencies</li>
-<li><strong>Dependency extraction:</strong> extracting the actual structural relationships between decisions from those sentences</li>
-</ol>
-<p>The results demonstrated that deep learning could achieve sufficiently high performance to support (semi)-automatic extraction from text. This was proof of concept: the problem was tractable, the architectures worked, and the &quot;semi&quot; qualifier — human review remains essential — was established from the start.</p>
-<p>A preliminary version appeared at RuleML+RR 2021 as <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_11"><em>Deep Learning for the Identification of Decision Modelling Components from Text</em></a> (LNCS 12851, pp. 158–171).</p>
+<p>Goossens, Claessens, Parthoens, and Vanthienen took the first step in <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-94343-1_27"><em>Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques</em></a> (BPM 2021 Workshops). This was the first systematic attempt to apply deep learning specifically to DMN extraction.</p>
+<p>The approach: collect a labeled dataset of sentences from real use cases, train two architectures — <strong>BERT</strong> and <strong>Bi-LSTM-CRF</strong> — for two tasks:</p>
+<pre><code class="language-python"># Task 1: Sentence classification — does this sentence describe decision logic?
+sentences = [
+    (&quot;Applicants with credit score below 620 shall be denied.&quot;, &quot;decision_logic&quot;),
+    (&quot;The loan officer reviews the application package.&quot;, &quot;process_description&quot;),
+    (&quot;DTI ratio is calculated as total monthly debt / gross monthly income.&quot;, &quot;definition&quot;),
+]
+classifier = FineTunedBERT(sentences, labels=[&quot;decision_logic&quot;, &quot;process_description&quot;, &quot;definition&quot;])
+
+# Task 2: Dependency extraction — which decisions depend on which?
+# Input: &quot;The eligibility decision depends on the credit assessment and the income verification.&quot;
+# Output: eligibility -&gt; [credit_assessment, income_verification]
+extractor = BiLSTMCRF(dependency_sentences)
+</code></pre>
+<p>The results demonstrated sufficiently high performance to support (semi)-automatic extraction. A preliminary version appeared at RuleML+RR 2021 as <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_11"><em>Deep Learning for the Identification of Decision Modelling Components from Text</em></a>.</p>
+<blockquote>
+<p>The &quot;semi&quot; in semi-automatic was established from the start: extraction works, but human review remains essential.</p>
+</blockquote>
 <h2 id="full-dmn-extraction-expert-systems-with-applications-2023">Full DMN extraction (Expert Systems with Applications, 2023)</h2>
-<p>The definitive study came with Goossens, De Smedt, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.eswa.2022.118667"><em>Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques</em></a> (Expert Systems with Applications, Vol. 211, Article 118667, 2023).</p>
-<p>This paper represents the state of the art for deep-learning-based DMN extraction. The authors investigated and evaluated two components:</p>
-<ul>
-<li>An <strong>automatic sentence classifier</strong> — identifying which sentences describe decision logic or dependencies</li>
-<li>A <strong>decision dependency extractor</strong> — extracting the structural relationships between decisions</li>
-</ul>
-<p>Both were trained on a large, purpose-built labeled dataset collected from real use cases, using BERT and Bi-LSTM-CRF architectures.</p>
-<p>Five contributions mark this as the landmark paper in the field:</p>
+<p>The definitive study came with Goossens, De Smedt, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.eswa.2022.118667"><em>Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques</em></a> (Expert Systems with Applications, Vol. 211, 2023). Five contributions:</p>
 <ol>
 <li><strong>First investigation</strong> of deep learning specifically for extracting DMN models from text</li>
-<li>Demonstrated that deep learning can <strong>classify sentences</strong> describing logic or dependencies with high accuracy</li>
-<li>Demonstrated that deep learning can <strong>extract decision dependencies</strong> from sentences — the structural backbone of a DMN model</li>
-<li><strong>First labeled and tagged dataset</strong> made publicly available for decision model extraction research</li>
-<li><strong>First decision tool extraction from text</strong> made available as an open tool</li>
+<li>Sentence <strong>classification</strong> for logic/dependency detection with high accuracy</li>
+<li><strong>Dependency extraction</strong> from sentences — the structural backbone of a DMN model</li>
+<li><strong>First labeled dataset</strong> made publicly available for decision model extraction research</li>
+<li><strong>First extraction tool</strong> made available as open source</li>
 </ol>
-<p>The conclusion — that BERT enables (semi)-automatic extraction of decision models from text — validates Pattern 4 (LLM extracts rules) with academic rigor. It also surfaces the &quot;semi&quot; qualifier: extraction is not fully automatic, human review remains essential, and the question shifts from &quot;can we extract?&quot; to &quot;how do we build the validation tooling around the extraction pipeline?&quot;</p>
+<p>The extracted model looks like:</p>
+<pre><code class="language-yaml"># DMN model extracted from policy text by BERT-based pipeline
+decisions:
+  - id: eligibility
+    label: &quot;Determine Loan Eligibility&quot;
+    dependencies: [credit_assessment, income_verification, collateral_check]
+    logic:
+      - when: &quot;credit_score &lt; 620&quot;
+        then: &quot;deny&quot;
+      - when: &quot;620 &lt;= credit_score &lt;= 699 AND dti_ratio &lt; 43%&quot;
+        then: &quot;approve_standard&quot;
+      - when: &quot;credit_score &gt;= 700 AND dti_ratio &lt; 36%&quot;
+        then: &quot;approve_preferred&quot;
+
+  - id: pricing
+    label: &quot;Determine Interest Rate&quot;
+    dependencies: [eligibility, market_conditions]
+    logic:
+      - when: &quot;eligibility = approve_preferred AND ltv_ratio &lt; 80%&quot;
+        then: &quot;rate = base_rate - 0.5%&quot;
+      - when: &quot;eligibility = approve_standard&quot;
+        then: &quot;rate = base_rate + 0.25%&quot;
+</code></pre>
+<blockquote>
+<p>The leap from &quot;can we extract?&quot; to &quot;here is the tool and the dataset&quot; is what makes this paper the landmark in the field.</p>
+</blockquote>
 <h2 id="gpt-3-enters-the-picture-rulemlrr-2023">GPT-3 enters the picture (RuleML+RR 2023)</h2>
-<p>The next logical step: what happens when you replace fine-tuned BERT with a general-purpose large language model?</p>
-<p>Goossens, Vandevelde, Vanthienen, and Vennekens addressed this in <a target="_blank" rel="noopener noreferrer" href="https://ceur-ws.org/Vol-3485/paper3896.pdf"><em>GPT-3 for Decision Logic Modeling</em></a> (RuleML+RR 2023 Companion, CEUR Workshop Proceedings Vol. 3485, pp. 1–14). Where the earlier work used task-specific fine-tuned models, this challenge paper explored whether prompt engineering with GPT-3 could extract decision tables and rule logic directly from text — no fine-tuning dataset needed.</p>
-<p>This shift is significant for practitioners. Fine-tuning requires a labeled dataset, which is expensive to produce and domain-specific. Prompt engineering requires crafting effective prompts, which is cheaper to iterate but potentially less accurate on structured extraction tasks. The paper sits at the intersection of Pattern 4 (LLM extracts rules) and the broader question of whether general-purpose models can match or exceed task-specific models for structured knowledge extraction.</p>
-<p>A companion presentation by Vanthienen and Goossens at DecisionCamp 2023, <a target="_blank" rel="noopener noreferrer" href="https://decisioncamp2023.wordpress.com/"><em>GPT-3 for Decision Requirements Modeling and Advice</em></a>, extended this exploration to decision requirements modeling.</p>
+<p>Goossens, Vandevelde, Vanthienen, and Vennekens explored the next logical step in <a target="_blank" rel="noopener noreferrer" href="https://ceur-ws.org/Vol-3485/paper3896.pdf"><em>GPT-3 for Decision Logic Modeling</em></a> (RuleML+RR 2023 Companion). Replace fine-tuned BERT with prompt-engineered GPT-3:</p>
+<pre><code class="language-python"># Fine-tuned approach (BPM 2021, ESWA 2023):
+# Requires labeled dataset, domain-specific training, high accuracy on known formats
+model = FineTunedBERT.train(labeled_sentences, labels)
+rules = model.extract(policy_text)
+
+# Prompt-engineered approach (RuleML+RR 2023):
+# No training data needed, general model, potentially lower structured accuracy
+rules = llm.extract(policy_text, prompt=&quot;&quot;&quot;
+    Extract decision rules from the following policy text.
+    Output as a decision table in JSON format.
+    Each rule must include: when (conditions), then (conclusion).
+    Link each rule to its source paragraph.
+&quot;&quot;&quot;)
+</code></pre>
+<blockquote>
+<p>The shift trades training cost for prompt engineering cost. No fine-tuning dataset needed — but structured extraction accuracy may be lower.</p>
+</blockquote>
+<p>A companion presentation by Vanthienen and Goossens at DecisionCamp 2023, <a target="_blank" rel="noopener noreferrer" href="https://decisioncamp2023.wordpress.com/"><em>GPT-3 for Decision Requirements Modeling and Advice</em></a>, extended this to decision requirements modeling.</p>
 <h2 id="explainable-assistants-bpm-2022">Explainable assistants (BPM 2022)</h2>
-<p>Extracting a decision model is half the problem. Making it useful to humans is the other half.</p>
-<p>Goossens, Maes, Timmermans, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-031-25383-6_3"><em>Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes</em></a> (BPM 2022 Workshops, LNBIP 460, pp. 25–36) asks: once you have a DMN model — whether hand-authored or automatically extracted — how do you make it accessible to stakeholders who need to understand a decision?</p>
-<p>The authors propose a <strong>generic intelligent assistant</strong> that can reason with <em>any</em> DMN model to provide explanations of decisions. This is Pattern 2 (Rules → NLG) approached from the opposite direction: not generating customer communications from a structured decision, but generating explanations of the decision <em>process itself</em> — which rules fired, what triggered them, and why the outcome was reached.</p>
-<p>A preliminary experiment compared two explanation sources — plain text and the intelligent assistant — to evaluate the assistant's capabilities. The early findings demonstrated feasibility for equipping organizations with explainable decisions embedded in their business processes.</p>
-<p>This connects directly to Feillet's emphasis on transparency and auditability. An extracted or authored DMN model, when paired with an explanation-capable assistant, satisfies the regulatory requirement to show <em>why</em> a decision was made — not in post-hoc rationalization but in a traceable chain from facts through rules to conclusions.</p>
+<p>Extracting a model is half the problem. Goossens, Maes, Timmermans, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-031-25383-6_3"><em>Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes</em></a> (BPM 2022 Workshops) asks: once you have a DMN model, how do you make it accessible?</p>
+<p>They propose a <strong>generic intelligent assistant</strong> that can reason with <em>any</em> DMN model to provide explanations:</p>
+<pre><code class="language-python">class DecisionAssistant:
+    &quot;&quot;&quot;Generic assistant: works with any DMN model.&quot;&quot;&quot;
+    def __init__(self, dmn_model: DMNModel):
+        self.model = dmn_model
+
+    def explain(self, decision_id: str, inputs: dict) -&gt; Explanation:
+        &quot;&quot;&quot;Explain why a decision reached its conclusion.&quot;&quot;&quot;
+        trace = self.model.execute(decision_id, inputs)
+        return Explanation(
+            decision=trace.outcome,
+            fired_rules=[step.rule for step in trace.steps],
+            input_facts=trace.facts_used,
+            reasoning_chain=[
+                f&quot;Rule {step.rule.id} fired because {step.rule.condition} matched {step.matched_facts}&quot;
+                for step in trace.steps
+            ],
+        )
+</code></pre>
+<blockquote>
+<p>An extracted DMN model paired with an explanation-capable assistant satisfies the regulatory requirement to show <em>why</em> a decision was made — not in post-hoc rationalization but in a traceable chain from facts through rules to conclusions.</p>
+</blockquote>
 <h2 id="chatbots-from-decision-models-rulemlrr-2021">Chatbots from decision models (RuleML+RR 2021)</h2>
-<p>The final piece of the puzzle closes the loop between decision models and conversational interfaces.</p>
-<p>Etikala, Goossens, Van Veldhoven, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_10"><em>Automatic Generation of Intelligent Chatbots from DMN Decision Models</em></a> (RuleML+RR 2021, LNCS 12851, pp. 142–157) addresses a limitation in decision support systems: the lack of reliable, user-friendly ways to present decision-making processes to end-users.</p>
-<p>The solution: a framework for <strong>automatically generating intelligent chatbots from DMN decision models</strong>. Instead of manually building a conversational interface for each decision service (Feillet's Pattern 5), the chatbot is generated directly from the DMN model's structure:</p>
-<ul>
-<li>The model's <strong>input data requirements</strong> become the dialogue's information-gathering slots</li>
-<li>The model's <strong>decision hierarchy</strong> becomes the conversation flow</li>
-<li>The model's <strong>output structure</strong> determines what the chatbot communicates back</li>
-</ul>
-<p>This solves the two hard problems Feillet identified for Pattern 5. The DMN model's input schema provides the formal contract for the delegation handshake — a missing required field is not an ambiguous conversational state, it is a slot in the DMN input schema that has not been filled, and the chatbot knows it needs to ask for it. The model's decision hierarchy drives the conversation structure — the chatbot knows which information to gather in which order, and when it has enough to invoke the decision service.</p>
+<p>Etikala, Goossens, Van Veldhoven, and Vanthienen close the loop in <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_10"><em>Automatic Generation of Intelligent Chatbots from DMN Decision Models</em></a> (RuleML+RR 2021). Their framework generates a chatbot directly from a DMN model's structure:</p>
+<pre><code class="language-python"># A DMN model becomes a conversational interface automatically
+dmn = DMNModel.load(&quot;mortgage-eligibility.dmn&quot;)
+
+chatbot = ChatbotGenerator(dmn).generate()
+# Generated chatbot behavior:
+#   Slot 1: &quot;What is the loan amount?&quot;        → dmn.inputs.loan_amount
+#   Slot 2: &quot;What is your annual income?&quot;     → dmn.inputs.applicant_income
+#   Slot 3: &quot;What is your credit score?&quot;       → dmn.inputs.credit_score
+#   Slot 4: &quot;What is the property value?&quot;      → dmn.inputs.property_value
+#   --- all required inputs gathered ---
+#   Invoke: dmn.decide(&quot;eligibility&quot;, inputs)
+#   Response: &quot;Based on your credit score of 720 and DTI of 32%,
+#              you qualify for preferred rates at 6.0%.&quot;
+
+# The DMN schema IS the conversation contract
+</code></pre>
+<blockquote>
+<p>A missing required field is not an ambiguous conversational state. It is a slot in the DMN input schema that has not been filled, and the chatbot knows it needs to ask for it.</p>
+</blockquote>
+<p>This solves the two hard problems Feillet identified for Pattern 5: the DMN input schema provides the formal delegation contract, and missing required fields are unambiguously identifiable slots to ask about.</p>
 <h2 id="the-research-arc">The research arc</h2>
-<p>Taken together, the six papers form a coherent progression:</p>
 <table>
 <thead>
 <tr>
@@ -1019,84 +1339,78 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>Survey</strong></td>
+<td>Survey</td>
 <td>Etikala &amp; Vanthienen (KSEM 2021)</td>
-<td>Taxonomy of acquisition methods across sources, targets, and techniques</td>
+<td>Taxonomy of acquisition methods</td>
 </tr>
 <tr>
-<td><strong>Feasibility</strong></td>
+<td>Feasibility</td>
 <td>Goossens et al. (BPM 2021)</td>
-<td>First deep learning extraction of DMN components with BERT and Bi-LSTM-CRF</td>
+<td>First deep learning DMN extraction</td>
 </tr>
 <tr>
-<td><strong>Scale</strong></td>
+<td>Scale</td>
 <td>Goossens, De Smedt, Vanthienen (ESWA 2023)</td>
-<td>Full DMN extraction, open dataset, open extraction tool</td>
+<td>Full extraction, open dataset and tools</td>
 </tr>
 <tr>
-<td><strong>Modernize</strong></td>
+<td>Modernize</td>
 <td>Goossens et al. (RuleML+RR 2023)</td>
-<td>GPT-3 for decision logic modeling via prompt engineering</td>
+<td>GPT-3 for decision logic modeling</td>
 </tr>
 <tr>
-<td><strong>Explain</strong></td>
+<td>Explain</td>
 <td>Goossens et al. (BPM 2022)</td>
-<td>Generic intelligent assistant for explainable decisions from any DMN model</td>
+<td>Explainable assistant from any DMN model</td>
 </tr>
 <tr>
-<td><strong>Converse</strong></td>
+<td>Converse</td>
 <td>Etikala et al. (RuleML+RR 2021)</td>
-<td>Automatic chatbot generation from DMN decision models</td>
+<td>Chatbots from DMN models</td>
 </tr>
 </tbody>
 </table>
-<p>Feillet's five patterns describe <em>what</em> to build. The KU Leuven papers describe <em>how</em> to build key components: the extraction pipeline for Pattern 4, the explanation layer for Pattern 2, and the conversational interface for Pattern 5.</p>
 <h2 id="rulego-an-open-source-implementation-path">RuleGo: an open-source implementation path</h2>
-<p>The patterns and research are not confined to academic papers and enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> — an open-source rule engine in Go (Apache 2.0) — provides a concrete implementation path for each pattern:</p>
-<table>
-<thead>
-<tr>
-<th>Pattern</th>
-<th>RuleGo implementation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1: NLU → Rules</td>
-<td>RuleGo chain with LLM extraction node → rule chain processing</td>
-</tr>
-<tr>
-<td>2: Rules → NLG</td>
-<td>RuleGo chain → LLM NLG node for customer communications</td>
-</tr>
-<tr>
-<td>3: Rules drive LLM</td>
-<td>RuleGo DAG with conditional LLM nodes invoked on demand</td>
-</tr>
-<tr>
-<td>4: LLM extracts rules</td>
-<td>LLM generates RuleGo chain JSON from policy documents</td>
-</tr>
-<tr>
-<td>5: Chatbot + Rules</td>
-<td>RuleGo MCP server exposes decision services to LLM chatbot</td>
-</tr>
-</tbody>
-</table>
-<p>The <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a></strong> extension provides LLM integration and MCP server/client support, making RuleGo a practical bridge between the research literature and production systems. The same RuleGo instance that runs on a Raspberry Pi 2 with ~19 MB of memory can expose its rule chains as MCP tools, making them discoverable by an LLM-based reasoning model — a concrete implementation of the hybrid inference loop Feillet describes.</p>
+<p>The patterns and research are not confined to academic papers and enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> provides a concrete implementation path:</p>
+<pre><code class="language-go">// Pattern 4 implemented with RuleGo: LLM generates RuleGo chain JSON from policy
+policyText := readPolicy(&quot;underwriting-policy-2026.txt&quot;)
+chainJSON := llm.Extract(policyText, PromptConfig{
+    Format: &quot;rulego_chain&quot;,
+    Schema: rulego.ChainSchema,
+})
+
+// The generated chain runs deterministically, LLM-free at runtime
+chain := rulego.LoadChain(chainJSON)
+decision := chain.Run(loanApplication)
+
+// Generated chain structure:
+// {
+//   &quot;ruleChain&quot;: {
+//     &quot;nodes&quot;: [
+//       {&quot;id&quot;: &quot;credit-check&quot;, &quot;type&quot;: &quot;switch&quot;,
+//        &quot;cases&quot;: [
+//          {&quot;when&quot;: &quot;credit_score &lt; 620&quot;, &quot;then&quot;: &quot;deny&quot;},
+//          {&quot;when&quot;: &quot;credit_score &gt;= 620 &amp;&amp; credit_score &lt;= 699&quot;, &quot;then&quot;: &quot;dti-check&quot;},
+//          {&quot;when&quot;: &quot;credit_score &gt;= 700&quot;, &quot;then&quot;: &quot;preferred-check&quot;}
+//        ]},
+//       {&quot;id&quot;: &quot;dti-check&quot;, &quot;type&quot;: &quot;switch&quot;, ...},
+//       {&quot;id&quot;: &quot;preferred-check&quot;, &quot;type&quot;: &quot;switch&quot;, ...}
+//     ]
+//   }
+// }
+</code></pre>
 <h2 id="open-questions">Open questions</h2>
-<p>The Feillet articles, the KU Leuven research program, and tools like RuleGo together cover substantial ground. But several questions remain open.</p>
-<p><strong>The extraction quality bar.</strong> The KU Leuven papers demonstrate extraction works — but at what accuracy threshold does the economics flip? At 90% accuracy, a human must still review every rule. The savings come from turning a <em>writing</em> task into a <em>reviewing</em> task — faster, but the human is still in the loop for every rule. At what accuracy does the review model shift from &quot;review every rule&quot; to &quot;review only low-confidence extractions&quot; to &quot;review only rules that conflict with existing rules&quot; to &quot;review a statistical sample&quot;? This is the operational question that determines whether Pattern 4 pays off at scale.</p>
-<p><strong>Rule lifecycle management.</strong> When source documents change, extracted rules must change. Does the LLM re-extract from the amended text? Does it diff the old and new policy and propose targeted rule changes? Does it flag rules originally extracted from the amended section for human review? Governed policy evolution, versioned extraction, and conflict detection between old and new rules — this synchronization problem is where the next wave of research and engineering needs to go.</p>
-<p><strong>Testing composite systems.</strong> Neither the practitioner articles nor the academic papers develop a testing methodology for composite AI. How do you test a system where one component is deterministic and the other probabilistic? You need property-based testing: the system's output must satisfy certain invariants (decision traceability, mandatory disclosures, schema conformance) even though the surface text varies. This is an area where the industry needs more tooling and methodology.</p>
-<p><strong>Vendor neutrality.</strong> Feillet's patterns are general, but the implementations described assume IBM ODM, ADS, and watsonx.ai. A vendor-neutral reference architecture — specifying the abstract interfaces between the LLM and rule engine components — would make the patterns more broadly applicable. RuleGo demonstrates one open-source path, but the interfaces between the components are not yet standardized.</p>
-<p><strong>The MCP interface standard.</strong> MCP is still evolving. The interface between a reasoning model and a decision service — how does the LRM discover available decision services? What information does it pass? How does the rule engine communicate confidence, conditions, or partial results back? — needs standardization if composite AI is to move beyond bespoke integrations.</p>
+<p><strong>The extraction quality bar.</strong> At what accuracy threshold does the economics flip? At 90%, a human reviews every rule. At 95%? At 99%? The savings come from turning a <em>writing</em> task into a <em>reviewing</em> task — but the threshold where you stop reviewing every rule is where the operational gains live.</p>
+<p><strong>Rule lifecycle management.</strong> When source documents change, extracted rules must change. Governed policy evolution, versioned extraction, conflict detection between old and new rules — this synchronization problem is where the next wave of research needs to go.</p>
+<p><strong>Testing composite systems.</strong> How do you test a system where one component is deterministic and the other probabilistic? Property-based testing: invariants that must hold regardless of surface variation.</p>
+<p><strong>Vendor neutrality.</strong> The patterns are general but the implementations assume IBM products. RuleGo demonstrates one open-source path, but the interfaces between components are not yet standardized.</p>
+<p><strong>The MCP interface standard.</strong> How does an LRM discover available decision services? What information passes between them? How are partial results and confidence signals communicated?</p>
 <h2 id="the-composite-ai-thesis">The composite AI thesis</h2>
 <!-- raw HTML omitted -->
-<p>The central thesis running through this series is that the future of enterprise AI is composite. Not LLMs replacing rule engines. Not rule engines staying isolated. A deliberate blending where each technology does what it is good at.</p>
-<p>LLMs handle the <strong>perception</strong> layer — understanding unstructured text, classifying intents, extracting entities, generating fluent natural language. They are statistical engines optimized for flexibility and fluency.</p>
-<p>Rule engines, built on Forgy's insight from 1979, handle the <strong>reasoning</strong> layer — applying deterministic logic to structured data, producing auditable decisions, enforcing regulatory constraints, scaling to high transaction volumes with predictable performance. They are logical engines optimized for reliability and transparency.</p>
-<p>The five patterns are five ways to draw the boundary between these layers. The FSM is the process skeleton that sequences decisions through states. The boundary shifts depending on the use case, the risk tolerance, and the maturity of the integration. The principle is constant: let the neuronal system handle the messiness of natural language, let the symbolic system handle the precision of business logic, and let the state machine handle the process that connects them.</p>
+<p>The central thesis running through this series: the future of enterprise AI is composite. LLMs handle the <strong>perception</strong> layer — unstructured text, intents, entities, fluency. Rule engines, built on Forgy's insight from 1979, handle the <strong>reasoning</strong> layer — deterministic logic, auditable decisions, regulatory compliance. The FSM handles the <strong>process</strong> layer — sequencing decisions through states and transitions.</p>
+<blockquote>
+<p>Let the neuronal system handle the messiness of natural language. Let the symbolic system handle the precision of business logic. Let the state machine handle the process that connects them.</p>
+</blockquote>
 <p>A decision system that cannot explain itself is not enterprise-grade. A decision system that cannot handle ambiguity is not useful. The composite approach accepts both constraints and designs for them. That has been the engineering move since Forgy built the first discrimination network in 1979.</p>
 <hr>
 <p><strong>References</strong></p>
@@ -1133,7 +1447,749 @@
 </li>
 </ol>
 <blockquote>
-<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines: From RETE to MCP</a> · Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines: Five Patterns for Composite AI</a></em></p>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="on-rule-engines-state-machines-vs-rule-engines">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-15" data-utc="Jul 15, 2026 UTC" aria-label="Jul 15, 2026 UTC" tabindex="0">1784073600</time></p>
+          <h2><a href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></h2><p class="post-summary">A deep dive into the architectural distinction between finite state machines and rule engines — when to use each, anti-patterns that arise from using the wrong one, and a decision framework for choosing. With code.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">fsm</span><span class="tag">state-machines</span><span class="tag">architecture</span><span class="tag">enterprise</span><span class="tag">design</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The first essay in this series introduced the distinction between finite state machines and rule engines. This essay — the fourth in a five-part series — develops that distinction in depth. Expect code, anti-patterns, and a framework for choosing.</p>
+<blockquote>
+<p>Every system architect should be able to answer one question cold: is this a job for an FSM or a rule engine?</p>
+</blockquote>
+<h2 id="two-questions-two-tools">Two questions, two tools</h2>
+<p>A <strong>finite state machine</strong> answers <em>what happens next?</em> It is procedural. You define states. You define transitions between them. The machine is always in exactly one state. When an event arrives, the machine consults its transition table and moves — or stays put.</p>
+<p>A <strong>rule engine</strong> answers <em>what should we conclude?</em> It is declarative. You define condition-action pairs. The engine evaluates all rules against a working memory of facts. Any rule whose conditions are satisfied is eligible to fire. The engine — not the author — determines evaluation order through its conflict resolution strategy.</p>
+<pre><code class="language-go">// FSM: you define what happens next
+type ClaimFSM struct {
+    state string
+    transitions map[string]map[string]string
+}
+
+func NewClaimFSM() *ClaimFSM {
+    return &amp;ClaimFSM{
+        state: &quot;intake&quot;,
+        transitions: map[string]map[string]string{
+            &quot;intake&quot;:       {&quot;submit&quot;: &quot;review&quot;, &quot;withdraw&quot;: &quot;closed&quot;},
+            &quot;review&quot;:       {&quot;approve&quot;: &quot;payment&quot;, &quot;reject&quot;: &quot;closed&quot;, &quot;need_info&quot;: &quot;intake&quot;},
+            &quot;payment&quot;:      {&quot;complete&quot;: &quot;closed&quot;},
+        },
+    }
+}
+
+// Rule engine: you define what should be concluded
+rules := []Rule{
+    {When: &quot;claim.amount &gt; 10000 AND claim.type = 'injury'&quot;, Then: Action(&quot;flag&quot;, &quot;senior_review&quot;)},
+    {When: &quot;claimant.prior_claims &gt; 3 AND claim.type = 'property'&quot;, Then: Action(&quot;flag&quot;, &quot;fraud_check&quot;)},
+    {When: &quot;policy.active = false&quot;, Then: Action(&quot;deny&quot;, &quot;coverage_lapsed&quot;)},
+}
+</code></pre>
+<blockquote>
+<p>The FSM asks: given where I am and what just happened, where do I go? The rule engine asks: given everything I know, what should I conclude?</p>
+</blockquote>
+<h2 id="the-distinction-in-detail">The distinction, in detail</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FSM</th>
+<th>Rule Engine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core question</strong></td>
+<td>What happens next?</td>
+<td>What should we conclude?</td>
+</tr>
+<tr>
+<td><strong>Paradigm</strong></td>
+<td>Procedural</td>
+<td>Declarative</td>
+</tr>
+<tr>
+<td><strong>State</strong></td>
+<td>Explicit states + transition table</td>
+<td>Working memory of facts</td>
+</tr>
+<tr>
+<td><strong>Control flow</strong></td>
+<td>Defined by transition graph</td>
+<td>Defined by rule firing (inference + agenda)</td>
+</tr>
+<tr>
+<td><strong>Author thinks about</strong></td>
+<td>States, events, transitions</td>
+<td>Conditions, actions, conflict resolution</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Workflows, protocols, pipelines</td>
+<td>Policies, decisions, classifications</td>
+</tr>
+<tr>
+<td><strong>Complexity driver</strong></td>
+<td>States × transitions</td>
+<td>Rules × fact combinations</td>
+</tr>
+<tr>
+<td><strong>Determinism</strong></td>
+<td>Deterministic given state + event</td>
+<td>Deterministic given rule set + facts</td>
+</tr>
+<tr>
+<td><strong>Auditability</strong></td>
+<td>Trace: state sequence + transitions taken</td>
+<td>Trace: fired rules + matched facts</td>
+</tr>
+</tbody>
+</table>
+<p>The distinction is not academic. Using the wrong tool produces systems that work but are impossible to maintain.</p>
+<h2 id="anti-pattern-1-encoding-policy-as-an-fsm">Anti-pattern 1: Encoding policy as an FSM</h2>
+<p>Consider a loan eligibility policy: credit score bands, debt-to-income thresholds, collateral requirements, regulatory jurisdictions. Encode this as an FSM:</p>
+<pre><code class="language-go">// ANTI-PATTERN: Policy encoded as states
+// Each combination of conditions becomes a state. Explosion ensues.
+type LoanPolicyFSM struct {
+    creditScore int
+    dti         float64
+    state       string
+}
+
+func (f *LoanPolicyFSM) evaluate() string {
+    // What should be 3 rules becomes a combinatorial state explosion
+    switch {
+    case f.creditScore &lt; 620:
+        return &quot;deny&quot;
+    case f.creditScore &gt;= 620 &amp;&amp; f.creditScore &lt;= 699 &amp;&amp; f.dti &lt; 0.43:
+        return &quot;approve_standard&quot;
+    case f.creditScore &gt;= 700 &amp;&amp; f.dti &lt; 0.36:
+        return &quot;approve_preferred&quot;
+    // Add collateral rules? Multiply states by collateral types.
+    // Add jurisdiction rules? Multiply by 50 states × federal regs.
+    // The state space is the Cartesian product of all condition dimensions.
+    }
+    return &quot;manual_review&quot;
+}
+</code></pre>
+<blockquote>
+<p>Two conditions produce 3 outcomes. Three conditions produce 9. Five conditions with regulatory variation produce hundreds. The FSM approach scales exponentially with condition dimensions.</p>
+</blockquote>
+<p>The fix: policy belongs in a rule engine.</p>
+<pre><code class="language-go">// CORRECT: Policy as rules — each dimension adds rules, not states
+rules := []Rule{
+    {When: &quot;credit_score &lt; 620&quot;, Then: Action(&quot;deny&quot;)},
+    {When: &quot;credit_score &gt;= 620 AND credit_score &lt;= 699 AND dti &lt; 0.43&quot;, Then: Action(&quot;approve&quot;, &quot;standard&quot;)},
+    {When: &quot;credit_score &gt;= 700 AND dti &lt; 0.36&quot;, Then: Action(&quot;approve&quot;, &quot;preferred&quot;)},
+    {When: &quot;collateral.value &lt; loan.amount * 0.8 AND loan.type = 'unsecured'&quot;,
+     Then: Action(&quot;require&quot;, &quot;additional_collateral&quot;)},
+    // Adding a new condition dimension adds one rule, not a Cartesian product
+    {When: &quot;jurisdiction = 'CA' AND loan.amount &gt; 500000&quot;,
+     Then: Action(&quot;require&quot;, &quot;california_disclosure&quot;)},
+}
+engine := NewRuleEngine(rules)
+engine.Insert(loanFacts)
+decision := engine.Run()
+</code></pre>
+<blockquote>
+<p>Policy dimensions add rules linearly. States multiply transitions exponentially. That is the entire argument for using the right tool.</p>
+</blockquote>
+<h2 id="anti-pattern-2-encoding-workflow-as-flat-rules">Anti-pattern 2: Encoding workflow as flat rules</h2>
+<p>Now the inverse. Consider a claims processing pipeline: intake → review → investigation → payment → close. Encode this as flat rules:</p>
+<pre><code class="language-python"># ANTI-PATTERN: Workflow smuggled through working memory facts
+rules = [
+    Rule(&quot;step = 'intake' AND form.complete = true&quot;, actions=[
+        Action(&quot;validate&quot;, &quot;form&quot;),
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;review&quot;),       # process state as a fact!
+    ]),
+    Rule(&quot;step = 'review' AND claim.amount &lt; 1000&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;payment&quot;),       # implicit transition
+    ]),
+    Rule(&quot;step = 'review' AND claim.amount &gt;= 1000&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;investigation&quot;), # implicit transition
+    ]),
+    Rule(&quot;step = 'investigation' AND fraud_check.complete = true&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;payment&quot;),       # implicit transition
+        Action(&quot;set&quot;, &quot;fraud_flag&quot;, fraud_check.result),
+    ]),
+    Rule(&quot;step = 'payment' AND payment.processed = true&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;closed&quot;),        # implicit transition
+    ]),
+]
+</code></pre>
+<p>What is wrong with this? Everything.</p>
+<ol>
+<li><strong>The process state is smuggled.</strong> <code>step</code> is a working memory fact, not a first-class state. Nothing guarantees only one <code>step</code> fact exists. Nothing prevents contradictory transitions.</li>
+<li><strong>Transitions are implicit.</strong> The author intended intake → review → payment → closed. But the rules don't express this as a graph. You cannot look at the rule set and see the process.</li>
+<li><strong>Adding a state requires discipline.</strong> To add a &quot;fraud_check&quot; state between investigation and payment, you must update every rule that references <code>step = 'investigation'</code> and <code>step = 'payment'</code>. Miss one and you have a bug that only manifests when a specific combination of facts triggers the stale transition.</li>
+<li><strong>Testing is combinatorial.</strong> Each rule depends on <code>step</code> plus domain facts. To test the payment transition, you must set up facts that satisfy both the step condition <em>and</em> all other conditions in the rule.</li>
+</ol>
+<blockquote>
+<p>The process is there, but it is encoded indirectly through fact manipulation. You can read the rule set and not see the state machine. That is the definition of implicit.</p>
+</blockquote>
+<p>The fix: workflow belongs in an FSM.</p>
+<pre><code class="language-python"># CORRECT: Process as explicit states and transitions
+class ClaimProcess:
+    states = [&quot;intake&quot;, &quot;review&quot;, &quot;investigation&quot;, &quot;payment&quot;, &quot;closed&quot;]
+    transitions = {
+        &quot;intake&quot;:       {&quot;validated&quot;: &quot;review&quot;, &quot;incomplete&quot;: &quot;intake&quot;},
+        &quot;review&quot;:       {&quot;low_value&quot;: &quot;payment&quot;, &quot;needs_review&quot;: &quot;investigation&quot;},
+        &quot;investigation&quot;: {&quot;cleared&quot;: &quot;payment&quot;, &quot;flagged&quot;: &quot;closed&quot;},
+        &quot;payment&quot;:      {&quot;processed&quot;: &quot;closed&quot;},
+    }
+
+    def __init__(self):
+        self.state = &quot;intake&quot;
+
+    def handle(self, event):
+        if event in self.transitions[self.state]:
+            self.state = self.transitions[self.state][event]
+            return self.state
+        raise InvalidTransition(self.state, event)
+</code></pre>
+<blockquote>
+<p>If you find yourself writing <code>step = 'something'</code> in every rule condition, you are encoding a state machine in a rule engine. Stop. Use an FSM.</p>
+</blockquote>
+<h2 id="the-decision-framework">The decision framework</h2>
+<p>When choosing between an FSM and a rule engine, ask three questions:</p>
+<p><strong>1. Is the problem primarily about sequence or about conditions?</strong></p>
+<p>Sequence-driven → FSM. Condition-driven → rule engine.</p>
+<p>A claims process is about sequence: intake, then review, then investigation, then payment. A loan eligibility policy is about conditions: credit score, DTI, collateral value.</p>
+<pre><code class="language-go">// Sequence-driven: the order of states IS the business logic
+// Process: intake → review → underwriting → approval → closing
+// You cannot skip review. You cannot go back from closing.
+fsm := NewFSM() // correct choice
+
+// Condition-driven: the combination of facts IS the business logic
+// Policy: if credit &gt; 700 AND DTI &lt; 36% AND LTV &lt; 80% → preferred rate
+// The order of evaluating credit, DTI, and LTV does not matter.
+engine := NewRuleEngine() // correct choice
+</code></pre>
+<p><strong>2. Does the complexity grow with states or with conditions?</strong></p>
+<p>If adding a new business rule means adding a state → you are in the wrong tool. If adding a new process step means updating multiple rules → you are in the wrong tool.</p>
+<pre><code class="language-go">// Complexity smell: adding a condition dimension explodes states
+// Adding &quot;jurisdiction&quot; to a loan FSM: 50 states × existing states = explosion
+// Adding &quot;jurisdiction&quot; to a rule engine: one rule, maybe a decision table
+
+// Complexity smell: adding a process step touches many rules
+// Adding &quot;fraud_check&quot; to flat rules: update every rule with step guards
+// Adding &quot;fraud_check&quot; to an FSM: add one state, two transitions
+</code></pre>
+<p><strong>3. Will an auditor need to trace the process or explain the decision?</strong></p>
+<p>Process trace → FSM. Decision explanation → rule engine. Both → compose them (Part 5).</p>
+<pre><code class="language-go">// FSM audit: state sequence
+// &quot;Application reached underwriting via: intake → review → underwriting&quot;
+fsm.AuditTrail() // [intake, review, underwriting]
+
+// Rule engine audit: rule trace
+// &quot;Decision: deny. Rules fired: R-17 (credit &lt; 620), R-23 (DTI &gt; 43%)&quot;
+engine.Explanation() // [{rule: R-17, reason: &quot;credit_score=590 &lt; 620&quot;}, ...]
+</code></pre>
+<h2 id="when-the-problem-is-both">When the problem is both</h2>
+<p>Most real business problems are both procedural and decisional. A mortgage origination system has a process (application → review → underwriting → approval → closing) and decisions at each gate (eligibility rules, pricing rules, compliance rules).</p>
+<p>The mistake is picking one tool and forcing the other concern into it. The solution — developed in Part 5 — is composition: FSM as process skeleton, rule engine as decision muscle.</p>
+<pre><code>[Application] → [Review] → [Underwriting] → [Approval] → [Closing]
+                    |            |               |
+                    v            v               v
+               Rule Engine   Rule Engine    Rule Engine
+               (completeness (credit risk,   (final conditions,
+                check)        collateral)     compliance)
+</code></pre>
+<blockquote>
+<p>The FSM manages where you are. The rule engine manages what you conclude. Neither is asked to do the other's job. The composite handles both.</p>
+</blockquote>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Charles L. Forgy. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>. Artificial Intelligence, 19(1): 17–37, 1982.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 5: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-powered-by-rule-engines">On Rule Engines — State Machines Powered by Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="on-rule-engines-state-machines-powered-by-rule-engines">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-15" data-utc="Jul 15, 2026 UTC" aria-label="Jul 15, 2026 UTC" tabindex="0">1784073600</time></p>
+          <h2><a href="#on-rule-engines-state-machines-powered-by-rule-engines">On Rule Engines — State Machines Powered by Rule Engines</a></h2><p class="post-summary">The composed architecture — FSM as process skeleton, rule engine as decision muscle. A complete mortgage origination pipeline with Go code, testing strategies, layered audit trails, and LLM composition at the boundaries.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">fsm</span><span class="tag">state-machines</span><span class="tag">architecture</span><span class="tag">enterprise</span><span class="tag">golang</span><span class="tag">testing</span><span class="tag">audit</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Part 4 established the distinction: FSMs handle sequence, rule engines handle decisions. This essay — the final in a five-part series — develops the composed architecture in full. An FSM manages process state and transitions. At each state where a decision is required, the FSM delegates to a rule engine. The LLM handles natural language at the boundaries. Three concerns. Three tools. One system.</p>
+<blockquote>
+<p>The FSM knows where you are. The rule engine knows what to conclude. The LLM knows how to say it. Each does one thing. Together they do everything.</p>
+</blockquote>
+<h2 id="the-mortgage-origination-pipeline">The mortgage origination pipeline</h2>
+<p>A mortgage application moves through five states. At each state gate, a rule engine makes a decision. The decision determines the transition.</p>
+<pre><code>[Intake] ──→ [Review] ──→ [Underwriting] ──→ [Approval] ──→ [Closing]
+   │              │              │                  │              │
+   v              v              v                  v              v
+Rule Engine   Rule Engine   Rule Engine        Rule Engine    Rule Engine
+(completeness (document     (credit risk,       (final         (funding
+ check)        verification) collateral, DTI)    conditions)    verification)
+</code></pre>
+<h3 id="the-domain-types">The domain types</h3>
+<pre><code class="language-go">type LoanApplication struct {
+    ID            string
+    ApplicantID   string
+    Amount        float64
+    PropertyValue float64
+    CreditScore   int
+    AnnualIncome  float64
+    MonthlyDebt   float64
+    LoanType      string // &quot;conventional&quot;, &quot;fha&quot;, &quot;va&quot;, &quot;jumbo&quot;
+    Documents     []Document
+    State         string // mirrors FSM state for persistence
+}
+
+type Decision struct {
+    Outcome   string            // &quot;approve&quot;, &quot;deny&quot;, &quot;need_info&quot;, &quot;escalate&quot;
+    NextState string            // the FSM transition target
+    Data      map[string]any    // structured decision payload
+    Rules     []RuleTrace       // which rules fired and why
+    Timestamp time.Time
+}
+
+type RuleTrace struct {
+    RuleID      string
+    Condition   string
+    MatchedFacts map[string]any
+}
+</code></pre>
+<h3 id="the-fsm">The FSM</h3>
+<pre><code class="language-go">type MortgageFSM struct {
+    state       string
+    transitions map[string]map[string]string
+    onEnter     map[string]func(*LoanApplication) error
+    onExit      map[string]func(*LoanApplication) error
+}
+
+func NewMortgageFSM() *MortgageFSM {
+    return &amp;MortgageFSM{
+        state: &quot;intake&quot;,
+        transitions: map[string]map[string]string{
+            &quot;intake&quot;: {
+                &quot;complete&quot;:   &quot;review&quot;,
+                &quot;incomplete&quot;: &quot;intake&quot;,
+                &quot;withdraw&quot;:   &quot;closed&quot;,
+            },
+            &quot;review&quot;: {
+                &quot;verified&quot;:     &quot;underwriting&quot;,
+                &quot;missing_docs&quot;: &quot;review&quot;,
+                &quot;deny&quot;:         &quot;closed&quot;,
+            },
+            &quot;underwriting&quot;: {
+                &quot;approve&quot;:      &quot;approval&quot;,
+                &quot;deny&quot;:         &quot;closed&quot;,
+                &quot;need_info&quot;:    &quot;review&quot;,
+            },
+            &quot;approval&quot;: {
+                &quot;conditions_met&quot;: &quot;closing&quot;,
+                &quot;conditions_failed&quot;: &quot;underwriting&quot;,
+                &quot;withdraw&quot;: &quot;closed&quot;,
+            },
+        },
+        onEnter: map[string]func(*LoanApplication) error{
+            &quot;intake&quot;:       validateApplication,
+            &quot;underwriting&quot;: lockRate,
+            &quot;closing&quot;:      generateClosingDocs,
+        },
+    }
+}
+
+func (f *MortgageFSM) Transition(app *LoanApplication, event string) error {
+    target, ok := f.transitions[f.state][event]
+    if !ok {
+        return fmt.Errorf(&quot;invalid transition: %s --%s--&gt; ?&quot;, f.state, event)
+    }
+
+    if fn, ok := f.onExit[f.state]; ok {
+        if err := fn(app); err != nil {
+            return fmt.Errorf(&quot;onExit %s: %w&quot;, f.state, err)
+        }
+    }
+
+    f.state = target
+    app.State = target
+
+    if fn, ok := f.onEnter[target]; ok {
+        if err := fn(app); err != nil {
+            return fmt.Errorf(&quot;onEnter %s: %w&quot;, target, err)
+        }
+    }
+
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>The FSM is a library concern — small, testable, and independent of both rule logic and LLM integration.</p>
+</blockquote>
+<h3 id="the-rule-engines">The rule engines</h3>
+<p>Each decision gate has its own rule engine, scoped to the decision at that state:</p>
+<pre><code class="language-go">type MortgagePipeline struct {
+    fsm   *MortgageFSM
+    gates map[string]*RuleEngine // one engine per decision state
+}
+
+func NewMortgagePipeline() *MortgagePipeline {
+    return &amp;MortgagePipeline{
+        fsm: NewMortgageFSM(),
+        gates: map[string]*RuleEngine{
+            &quot;intake&quot;:       NewIntakeRules(),
+            &quot;review&quot;:       NewReviewRules(),
+            &quot;underwriting&quot;: NewUnderwritingRules(),
+            &quot;approval&quot;:     NewApprovalRules(),
+            &quot;closing&quot;:      NewClosingRules(),
+        },
+    }
+}
+
+func NewUnderwritingRules() *RuleEngine {
+    return NewRuleEngine([]Rule{
+        {
+            ID:      &quot;UW-01&quot;,
+            When:    &quot;credit_score &lt; 620&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;credit_score_minimum&quot;},
+        },
+        {
+            ID:      &quot;UW-02&quot;,
+            When:    &quot;dti_ratio &gt; 0.43 AND loan_type != 'va'&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;dti_exceeds_threshold&quot;},
+        },
+        {
+            ID:      &quot;UW-03&quot;,
+            When:    &quot;ltv_ratio &gt; 0.95 AND loan_type = 'conventional'&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;insufficient_equity&quot;},
+        },
+        {
+            ID:      &quot;UW-04&quot;,
+            When:    &quot;credit_score &gt;= 700 AND dti_ratio &lt; 0.36 AND ltv_ratio &lt; 0.80&quot;,
+            Then:    Action{Outcome: &quot;approve&quot;, NextState: &quot;approve&quot;, Rate: &quot;preferred&quot;, Adjustment: -0.25},
+        },
+        {
+            ID:      &quot;UW-05&quot;,
+            When:    &quot;credit_score &gt;= 620 AND dti_ratio &lt; 0.43 AND ltv_ratio &lt; 0.95&quot;,
+            Then:    Action{Outcome: &quot;approve&quot;, NextState: &quot;approve&quot;, Rate: &quot;standard&quot;},
+        },
+        {
+            ID:      &quot;UW-06&quot;,
+            When:    &quot;documents MISSING 'tax_returns' OR documents MISSING 'pay_stubs'&quot;,
+            Then:    Action{Outcome: &quot;need_info&quot;, NextState: &quot;need_info&quot;, MissingDocs: []string{&quot;tax_returns&quot;, &quot;pay_stubs&quot;}},
+        },
+    })
+}
+</code></pre>
+<blockquote>
+<p>Each gate's rule engine knows only its own domain. The intake engine checks completeness. The underwriting engine evaluates credit risk. The approval engine applies final conditions. Changes to one gate's rules never affect another gate.</p>
+</blockquote>
+<h3 id="the-pipeline">The pipeline</h3>
+<pre><code class="language-go">func (p *MortgagePipeline) Process(app *LoanApplication) (*Decision, []AuditEntry, error) {
+    var audit []AuditEntry
+
+    for p.fsm.State() != &quot;closed&quot; &amp;&amp; p.fsm.State() != &quot;deny&quot; {
+        state := p.fsm.State()
+        engine, ok := p.gates[state]
+        if !ok {
+            return nil, audit, fmt.Errorf(&quot;no rule engine for state: %s&quot;, state)
+        }
+
+        // Gather facts accumulated so far
+        facts := app.AccumulatedFacts()
+
+        // Delegate to the rule engine for this state gate
+        decision, err := engine.Decide(facts)
+        if err != nil {
+            return nil, audit, fmt.Errorf(&quot;decision at %s: %w&quot;, state, err)
+        }
+
+        // Record audit entry
+        audit = append(audit, AuditEntry{
+            State:      state,
+            Decision:   decision.Outcome,
+            RulesFired: decision.Rules,
+            Transition: decision.NextState,
+            Timestamp:  decision.Timestamp,
+        })
+
+        // The rule engine's decision drives the FSM transition
+        if err := p.fsm.Transition(app, decision.NextState); err != nil {
+            return nil, audit, fmt.Errorf(&quot;transition from %s: %w&quot;, state, err)
+        }
+
+        // If this was a terminal decision, return it
+        if decision.Outcome == &quot;deny&quot; || decision.Outcome == &quot;approve&quot; {
+            return &amp;decision, audit, nil
+        }
+    }
+
+    return nil, audit, fmt.Errorf(&quot;pipeline exited without terminal decision&quot;)
+}
+</code></pre>
+<blockquote>
+<p>The FSM calls the rule engine. The rule engine returns a decision with a NextState. The FSM transitions. The loop continues until a terminal state. This is the entire architecture.</p>
+</blockquote>
+<h2 id="testing-the-composite">Testing the composite</h2>
+<p>Each component tests independently. The composition tests with mocks.</p>
+<h3 id="testing-the-fsm-in-isolation">Testing the FSM in isolation</h3>
+<pre><code class="language-go">func TestMortgageFSM_Transitions(t *testing.T) {
+    fsm := NewMortgageFSM()
+
+    // Happy path: intake → review → underwriting → approval → closing
+    app := &amp;LoanApplication{ID: &quot;LOAN-001&quot;}
+
+    if err := fsm.Transition(app, &quot;complete&quot;); err != nil {
+        t.Fatal(err)
+    }
+    if fsm.State() != &quot;review&quot; {
+        t.Errorf(&quot;expected review, got %s&quot;, fsm.State())
+    }
+
+    // Invalid transition: can't jump from review to closing
+    if err := fsm.Transition(app, &quot;conditions_met&quot;); err == nil {
+        t.Error(&quot;expected error for invalid transition review → closing&quot;)
+    }
+}
+
+func TestMortgageFSM_InvalidTransitions(t *testing.T) {
+    fsm := NewMortgageFSM()
+    app := &amp;LoanApplication{ID: &quot;LOAN-002&quot;}
+
+    // Cannot approve from intake
+    if err := fsm.Transition(app, &quot;approve&quot;); err == nil {
+        t.Error(&quot;intake --approve--&gt; ? should be invalid&quot;)
+    }
+}
+</code></pre>
+<h3 id="testing-a-rule-engine-in-isolation">Testing a rule engine in isolation</h3>
+<pre><code class="language-go">func TestUnderwritingRules_CreditDenial(t *testing.T) {
+    engine := NewUnderwritingRules()
+
+    decision, err := engine.Decide(map[string]any{
+        &quot;credit_score&quot;: 590,
+        &quot;dti_ratio&quot;:    0.30,
+        &quot;ltv_ratio&quot;:    0.75,
+        &quot;loan_type&quot;:    &quot;conventional&quot;,
+    })
+
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;deny&quot; {
+        t.Errorf(&quot;expected deny for credit_score=590, got %s&quot;, decision.Outcome)
+    }
+    if decision.NextState != &quot;deny&quot; {
+        t.Errorf(&quot;expected next_state=deny, got %s&quot;, decision.NextState)
+    }
+}
+
+func TestUnderwritingRules_PreferredRate(t *testing.T) {
+    engine := NewUnderwritingRules()
+
+    decision, err := engine.Decide(map[string]any{
+        &quot;credit_score&quot;: 720,
+        &quot;dti_ratio&quot;:    0.32,
+        &quot;ltv_ratio&quot;:    0.75,
+        &quot;loan_type&quot;:    &quot;conventional&quot;,
+    })
+
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;approve&quot; {
+        t.Errorf(&quot;expected approve, got %s&quot;, decision.Outcome)
+    }
+    if decision.Rate != &quot;preferred&quot; {
+        t.Errorf(&quot;expected preferred rate for 720 credit, got %s&quot;, decision.Rate)
+    }
+}
+</code></pre>
+<h3 id="testing-the-pipeline-end-to-end">Testing the pipeline end-to-end</h3>
+<pre><code class="language-go">func TestPipeline_HappyPath(t *testing.T) {
+    pipeline := NewMortgagePipeline()
+    app := &amp;LoanApplication{
+        ID:            &quot;LOAN-003&quot;,
+        Amount:        350000,
+        PropertyValue: 450000,
+        CreditScore:   720,
+        AnnualIncome:  120000,
+        MonthlyDebt:   3200,
+        LoanType:      &quot;conventional&quot;,
+        Documents:     []Document{
+            {Type: &quot;tax_returns&quot;, Status: &quot;verified&quot;},
+            {Type: &quot;pay_stubs&quot;, Status: &quot;verified&quot;},
+        },
+    }
+
+    decision, audit, err := pipeline.Process(app)
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;approve&quot; {
+        t.Errorf(&quot;expected approve, got %s&quot;, decision.Outcome)
+    }
+
+    // Verify the process trace
+    expectedStates := []string{&quot;intake&quot;, &quot;review&quot;, &quot;underwriting&quot;, &quot;approval&quot;, &quot;closing&quot;}
+    for i, entry := range audit {
+        if entry.State != expectedStates[i] {
+            t.Errorf(&quot;step %d: expected state %s, got %s&quot;, i, expectedStates[i], entry.State)
+        }
+    }
+}
+
+func TestPipeline_LowCredit(t *testing.T) {
+    pipeline := NewMortgagePipeline()
+    app := &amp;LoanApplication{
+        CreditScore: 580,
+        // ... other fields ...
+    }
+
+    decision, audit, err := pipeline.Process(app)
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;deny&quot; {
+        t.Errorf(&quot;expected deny for credit 580, got %s&quot;, decision.Outcome)
+    }
+
+    // Verify the audit trail shows which rule fired
+    lastEntry := audit[len(audit)-1]
+    if lastEntry.State != &quot;underwriting&quot; {
+        t.Errorf(&quot;expected denial at underwriting gate, got %s&quot;, lastEntry.State)
+    }
+}
+</code></pre>
+<blockquote>
+<p>Three layers of testing. FSM in isolation: does it transition correctly? Rule engine in isolation: does it decide correctly? Pipeline end-to-end: does the composition work? Each layer can be tested independently. The combinatorial explosion of testing all state × rule combinations is avoided by testing the FSM with mocked decisions and the rule engine with canned facts.</p>
+</blockquote>
+<h2 id="the-layered-audit-trail">The layered audit trail</h2>
+<p>A regulator asks: &quot;Why was loan LOAN-004 denied?&quot; The composite system produces a layered answer.</p>
+<pre><code class="language-go">type FullAuditReport struct {
+    ApplicationID string
+    ProcessTrace  []ProcessStep    // FSM layer: where were we and when?
+    DecisionTrace []DecisionRecord // Rule engine layer: what did we conclude and why?
+    LLMTrace      []LLMRecord      // LLM layer: what did the model generate?
+}
+
+func (p *MortgagePipeline) FullAudit(app *LoanApplication) (*FullAuditReport, error) {
+    decision, audit, err := p.Process(app)
+    if err != nil {
+        return nil, err
+    }
+
+    report := &amp;FullAuditReport{ApplicationID: app.ID}
+
+    for _, entry := range audit {
+        // Process layer: FSM trace
+        report.ProcessTrace = append(report.ProcessTrace, ProcessStep{
+            State:     entry.State,
+            EnteredAt: entry.Timestamp,
+            Event:     entry.Transition,
+        })
+
+        // Decision layer: rule trace
+        for _, rule := range entry.RulesFired {
+            report.DecisionTrace = append(report.DecisionTrace, DecisionRecord{
+                State:        entry.State,
+                RuleID:       rule.RuleID,
+                Condition:    rule.Condition,
+                MatchedFacts: rule.MatchedFacts,
+            })
+        }
+    }
+
+    return report, nil
+}
+</code></pre>
+<p>The output is a traceable chain: process trace (which states, in which order), decision trace (which rules fired, against which facts), and — when LLMs are composed at the boundaries — generation trace (what was communicated, in which words).</p>
+<pre><code>LOAN-004 Audit Report
+=====================
+Process Trace:
+  intake(09:15) --complete--&gt; review
+  review(09:22) --verified--&gt; underwriting
+  underwriting(09:23) --deny--&gt; closed
+
+Decision Trace:
+  underwriting: UW-01 fired — credit_score=590 &lt; threshold=620
+  underwriting: UW-03 fired — ltv_ratio=0.97 &gt; maximum=0.95
+
+Conclusion: deny. Reasons: [credit_score_minimum, insufficient_equity]
+</code></pre>
+<blockquote>
+<p>The process says where. The rules say why. The audit combines both without conflating them.</p>
+</blockquote>
+<h2 id="composing-with-llms-at-the-boundaries">Composing with LLMs at the boundaries</h2>
+<p>The FSM + rule engine architecture composes naturally with Feillet's five patterns from Part 2. The LLM handles natural language at intake and notification. The FSM and rule engines handle the process and decisions between them.</p>
+<pre><code class="language-go">type MortgageSystem struct {
+    pipeline *MortgagePipeline
+    llm      *LLMClient
+}
+
+func (s *MortgageSystem) HandleInquiry(session ChatSession, message string) (string, error) {
+    // Pattern 1: NLU at intake — LLM extracts structured fields
+    intent, params, err := s.llm.UnderstandIntent(message, MortgageSchema)
+    if err != nil {
+        return s.llm.Generate(&quot;clarify&quot;, nil)
+    }
+
+    if intent == &quot;apply&quot; {
+        app := params.ToLoanApplication()
+
+        // FSM + Rule Engine: deterministic core
+        decision, audit, err := s.pipeline.Process(app)
+        if err != nil {
+            return s.llm.Generate(&quot;error&quot;, map[string]any{&quot;error&quot;: err})
+        }
+
+        // Pattern 2: NLG at notification — LLM communicates the decision
+        return s.llm.Generate(&quot;mortgage_decision&quot;, map[string]any{
+            &quot;decision&quot;: decision,
+            &quot;audit&quot;:    audit,
+            &quot;tone&quot;:     session.UserPreferences.Tone,
+            &quot;language&quot;: session.UserPreferences.Locale,
+        })
+    }
+
+    // Non-decision conversation: LLM handles freely
+    return s.llm.Chat(session.Context, message)
+}
+</code></pre>
+<blockquote>
+<p>The LLM handles the messiness of human language. The FSM handles the discipline of process state. The rule engine handles the precision of business logic. Each does one thing. Each is testable independently. The composition handles everything.</p>
+</blockquote>
+<h2 id="the-design-principles">The design principles</h2>
+<p><strong>1. Separate process from policy.</strong> The FSM encodes the sequence of states. The rule engine encodes the conditions for decisions. Never smuggle process state through working memory facts. Never encode branching policy logic in transition guards.</p>
+<p><strong>2. One rule engine per decision gate.</strong> Each gate's rules are scoped to that decision. Changing underwriting rules never affects intake rules. This is the single-responsibility principle applied to decision automation.</p>
+<p><strong>3. Test in layers.</strong> FSM with mocked decisions. Rule engine with canned facts. Pipeline end-to-end for integration. The combinatorial explosion of testing all state × rule combinations is avoided by layer isolation.</p>
+<p><strong>4. Audit in layers.</strong> Process trace (FSM) + decision trace (rule engine) + communication trace (LLM) = complete auditability. Each layer is independently queryable. Combined, they tell the full story.</p>
+<p><strong>5. The LLM is a boundary component.</strong> It handles natural language at intake and notification. It never makes a business decision. It never manages process state. The deterministic core — FSM + rule engines — is LLM-free at runtime.</p>
+<blockquote>
+<p>The composite architecture is not a compromise. It is the recognition that no single tool handles all three concerns well. Use the FSM for process. Use the rule engine for policy. Use the LLM for language. The system that does all three is the system that survives.</p>
+</blockquote>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Charles L. Forgy. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>. Artificial Intelligence, 19(1): 17–37, 1982.</p>
+</li>
+<li>
+<p>Pierre Feillet, Allen Chan, Luigi Pichett, Yazan Obeidi. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. Medium, August 4, 2023.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
 </blockquote>
 </div>
       </article>
@@ -8589,6 +9645,8 @@ type Logger interface {
               <a href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a>
               <a href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a>
               <a href="#on-rule-engines-automating-decision-models">On Rule Engines — Automating Decision Models</a>
+              <a href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a>
+              <a href="#on-rule-engines-state-machines-powered-by-rule-engines">On Rule Engines — State Machines Powered by Rule Engines</a>
               <a href="#i-lighter">I, Lighter</a>
               <a href="#many-vs-of-data">On the Many Vs of Data</a>
               <a href="#v-volatility">On Data Volatility: the half-life of data value</a>

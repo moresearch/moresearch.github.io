@@ -7,148 +7,222 @@ tags: llm, rules, enterprise, automation, composite-ai, decision-making, symboli
 series: on-rule-engines
 ---
 
-The first essay in this series traced the 40-year arc from Forgy's RETE algorithm to the Model Context Protocol. The second examined the five architectural patterns for blending LLMs with rule engines. This third essay turns to the academic research that validates, extends, and operationalizes those patterns.
+The first essay traced the 40-year arc from Forgy's RETE algorithm to MCP. The second examined the five architectural patterns for blending LLMs with rule engines. This third essay turns to the academic research that validates, extends, and operationalizes those patterns.
 
-While Pierre Feillet was developing composite AI patterns from enterprise practice at IBM, a sustained research program at KU Leuven's LIRIS (Leuven Institute for Research on Information Systems), led by Professor Jan Vanthienen and driven primarily by Alexandre Goossens and Vedavyas Etikala, was systematically attacking the same problem from the academic side. Their central question: *can we automate the extraction of decision models from text, and if so, how?*
+While Pierre Feillet was developing composite AI patterns from enterprise practice at IBM, a sustained research program at KU Leuven's LIRIS (Leuven Institute for Research on Information Systems), led by Professor Jan Vanthienen and driven primarily by Alexandre Goossens and Vedavyas Etikala, was systematically attacking the same problem from the academic side.
 
-The six papers that span from 2021 to 2023 form a coherent research arc: survey the landscape, prove feasibility with deep learning, scale to full DMN extraction with open tools, modernize with GPT-3, add explainability, and generate conversational interfaces. Together they provide the academic backbone for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation), and they connect to every other pattern in Feillet's taxonomy.
+> Feillet's five patterns describe *what* to build. The KU Leuven papers describe *how* to build it.
 
 ## Mapping the landscape (KSEM 2021)
 
-The research program began with a survey. Etikala and Vanthienen's [*An Overview of Methods for Acquiring and Generating Decision Models*](https://doi.org/10.1007/978-3-030-82153-1_17) (KSEM 2021, LNCS 12817, pp. 200–208) provided a taxonomy of techniques for acquiring decision models from various knowledge sources.
+The research program began with a survey. Etikala and Vanthienen's [*An Overview of Methods for Acquiring and Generating Decision Models*](https://doi.org/10.1007/978-3-030-82153-1_17) (KSEM 2021) provided a taxonomy of techniques for acquiring decision models from various knowledge sources. Business decisions are of significant value — but manually modeling them is costly, tedious, and time-consuming.
 
-The paper noted that since the introduction of the **Decision Model and Notation (DMN) standard**, there had been a surge of research interest in automated extraction — but the field lacked a systematic map. Business decisions are of significant value to organizations, but manually modeling them is costly, tedious, and time-consuming. Their survey, with 38 references, classified approaches along three dimensions:
-
-- **Source type:** natural language text, legacy code, other models, event logs
-- **Extraction target:** decision dependencies (the structural relationships between decisions), decision logic (the actual rules and conditions), full models (both)
-- **Technique family:** rule-based NLP, traditional machine learning, deep learning
-
-At the time of writing, deep learning approaches were largely unexplored for DMN extraction specifically. The survey threw down the gauntlet: can deep learning extract decision models from text?
+The survey classified approaches along three dimensions: **source type** (text, legacy code, models, event logs), **extraction target** (dependencies, logic, full models), and **technique family** (rule-based NLP, traditional ML, deep learning). Deep learning approaches were largely unexplored for DMN extraction. The Gauntlet had been thrown.
 
 ## First extraction results (BPM 2021)
 
-Goossens, Claessens, Parthoens, and Vanthienen took the first step in [*Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques*](https://doi.org/10.1007/978-3-030-94343-1_27) (BPM 2021 Workshops, LNBIP 436, pp. 349–361).
+Goossens, Claessens, Parthoens, and Vanthienen took the first step in [*Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques*](https://doi.org/10.1007/978-3-030-94343-1_27) (BPM 2021 Workshops). This was the first systematic attempt to apply deep learning specifically to DMN extraction.
 
-This was the first systematic attempt to apply deep learning specifically to DMN extraction. The authors collected a large dataset of labeled and tagged sentences from real use cases and trained two architectures — **BERT** and **Bi-LSTM-CRF** — for two distinct tasks:
+The approach: collect a labeled dataset of sentences from real use cases, train two architectures — **BERT** and **Bi-LSTM-CRF** — for two tasks:
 
-1. **Sentence classification:** identifying which sentences in a document describe decision logic or decision dependencies
-2. **Dependency extraction:** extracting the actual structural relationships between decisions from those sentences
+```python
+# Task 1: Sentence classification — does this sentence describe decision logic?
+sentences = [
+    ("Applicants with credit score below 620 shall be denied.", "decision_logic"),
+    ("The loan officer reviews the application package.", "process_description"),
+    ("DTI ratio is calculated as total monthly debt / gross monthly income.", "definition"),
+]
+classifier = FineTunedBERT(sentences, labels=["decision_logic", "process_description", "definition"])
 
-The results demonstrated that deep learning could achieve sufficiently high performance to support (semi)-automatic extraction from text. This was proof of concept: the problem was tractable, the architectures worked, and the "semi" qualifier — human review remains essential — was established from the start.
+# Task 2: Dependency extraction — which decisions depend on which?
+# Input: "The eligibility decision depends on the credit assessment and the income verification."
+# Output: eligibility -> [credit_assessment, income_verification]
+extractor = BiLSTMCRF(dependency_sentences)
+```
 
-A preliminary version appeared at RuleML+RR 2021 as [*Deep Learning for the Identification of Decision Modelling Components from Text*](https://doi.org/10.1007/978-3-030-91167-6_11) (LNCS 12851, pp. 158–171).
+The results demonstrated sufficiently high performance to support (semi)-automatic extraction. A preliminary version appeared at RuleML+RR 2021 as [*Deep Learning for the Identification of Decision Modelling Components from Text*](https://doi.org/10.1007/978-3-030-91167-6_11).
+
+> The "semi" in semi-automatic was established from the start: extraction works, but human review remains essential.
 
 ## Full DMN extraction (Expert Systems with Applications, 2023)
 
-The definitive study came with Goossens, De Smedt, and Vanthienen's [*Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques*](https://doi.org/10.1016/j.eswa.2022.118667) (Expert Systems with Applications, Vol. 211, Article 118667, 2023).
-
-This paper represents the state of the art for deep-learning-based DMN extraction. The authors investigated and evaluated two components:
-
-- An **automatic sentence classifier** — identifying which sentences describe decision logic or dependencies
-- A **decision dependency extractor** — extracting the structural relationships between decisions
-
-Both were trained on a large, purpose-built labeled dataset collected from real use cases, using BERT and Bi-LSTM-CRF architectures.
-
-Five contributions mark this as the landmark paper in the field:
+The definitive study came with Goossens, De Smedt, and Vanthienen's [*Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques*](https://doi.org/10.1016/j.eswa.2022.118667) (Expert Systems with Applications, Vol. 211, 2023). Five contributions:
 
 1. **First investigation** of deep learning specifically for extracting DMN models from text
-2. Demonstrated that deep learning can **classify sentences** describing logic or dependencies with high accuracy
-3. Demonstrated that deep learning can **extract decision dependencies** from sentences — the structural backbone of a DMN model
-4. **First labeled and tagged dataset** made publicly available for decision model extraction research
-5. **First decision tool extraction from text** made available as an open tool
+2. Sentence **classification** for logic/dependency detection with high accuracy
+3. **Dependency extraction** from sentences — the structural backbone of a DMN model
+4. **First labeled dataset** made publicly available for decision model extraction research
+5. **First extraction tool** made available as open source
 
-The conclusion — that BERT enables (semi)-automatic extraction of decision models from text — validates Pattern 4 (LLM extracts rules) with academic rigor. It also surfaces the "semi" qualifier: extraction is not fully automatic, human review remains essential, and the question shifts from "can we extract?" to "how do we build the validation tooling around the extraction pipeline?"
+The extracted model looks like:
+
+```yaml
+# DMN model extracted from policy text by BERT-based pipeline
+decisions:
+  - id: eligibility
+    label: "Determine Loan Eligibility"
+    dependencies: [credit_assessment, income_verification, collateral_check]
+    logic:
+      - when: "credit_score < 620"
+        then: "deny"
+      - when: "620 <= credit_score <= 699 AND dti_ratio < 43%"
+        then: "approve_standard"
+      - when: "credit_score >= 700 AND dti_ratio < 36%"
+        then: "approve_preferred"
+
+  - id: pricing
+    label: "Determine Interest Rate"
+    dependencies: [eligibility, market_conditions]
+    logic:
+      - when: "eligibility = approve_preferred AND ltv_ratio < 80%"
+        then: "rate = base_rate - 0.5%"
+      - when: "eligibility = approve_standard"
+        then: "rate = base_rate + 0.25%"
+```
+
+> The leap from "can we extract?" to "here is the tool and the dataset" is what makes this paper the landmark in the field.
 
 ## GPT-3 enters the picture (RuleML+RR 2023)
 
-The next logical step: what happens when you replace fine-tuned BERT with a general-purpose large language model?
+Goossens, Vandevelde, Vanthienen, and Vennekens explored the next logical step in [*GPT-3 for Decision Logic Modeling*](https://ceur-ws.org/Vol-3485/paper3896.pdf) (RuleML+RR 2023 Companion). Replace fine-tuned BERT with prompt-engineered GPT-3:
 
-Goossens, Vandevelde, Vanthienen, and Vennekens addressed this in [*GPT-3 for Decision Logic Modeling*](https://ceur-ws.org/Vol-3485/paper3896.pdf) (RuleML+RR 2023 Companion, CEUR Workshop Proceedings Vol. 3485, pp. 1–14). Where the earlier work used task-specific fine-tuned models, this challenge paper explored whether prompt engineering with GPT-3 could extract decision tables and rule logic directly from text — no fine-tuning dataset needed.
+```python
+# Fine-tuned approach (BPM 2021, ESWA 2023):
+# Requires labeled dataset, domain-specific training, high accuracy on known formats
+model = FineTunedBERT.train(labeled_sentences, labels)
+rules = model.extract(policy_text)
 
-This shift is significant for practitioners. Fine-tuning requires a labeled dataset, which is expensive to produce and domain-specific. Prompt engineering requires crafting effective prompts, which is cheaper to iterate but potentially less accurate on structured extraction tasks. The paper sits at the intersection of Pattern 4 (LLM extracts rules) and the broader question of whether general-purpose models can match or exceed task-specific models for structured knowledge extraction.
+# Prompt-engineered approach (RuleML+RR 2023):
+# No training data needed, general model, potentially lower structured accuracy
+rules = llm.extract(policy_text, prompt="""
+    Extract decision rules from the following policy text.
+    Output as a decision table in JSON format.
+    Each rule must include: when (conditions), then (conclusion).
+    Link each rule to its source paragraph.
+""")
+```
 
-A companion presentation by Vanthienen and Goossens at DecisionCamp 2023, [*GPT-3 for Decision Requirements Modeling and Advice*](https://decisioncamp2023.wordpress.com/), extended this exploration to decision requirements modeling.
+> The shift trades training cost for prompt engineering cost. No fine-tuning dataset needed — but structured extraction accuracy may be lower.
+
+A companion presentation by Vanthienen and Goossens at DecisionCamp 2023, [*GPT-3 for Decision Requirements Modeling and Advice*](https://decisioncamp2023.wordpress.com/), extended this to decision requirements modeling.
 
 ## Explainable assistants (BPM 2022)
 
-Extracting a decision model is half the problem. Making it useful to humans is the other half.
+Extracting a model is half the problem. Goossens, Maes, Timmermans, and Vanthienen's [*Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes*](https://doi.org/10.1007/978-3-031-25383-6_3) (BPM 2022 Workshops) asks: once you have a DMN model, how do you make it accessible?
 
-Goossens, Maes, Timmermans, and Vanthienen's [*Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes*](https://doi.org/10.1007/978-3-031-25383-6_3) (BPM 2022 Workshops, LNBIP 460, pp. 25–36) asks: once you have a DMN model — whether hand-authored or automatically extracted — how do you make it accessible to stakeholders who need to understand a decision?
+They propose a **generic intelligent assistant** that can reason with *any* DMN model to provide explanations:
 
-The authors propose a **generic intelligent assistant** that can reason with *any* DMN model to provide explanations of decisions. This is Pattern 2 (Rules → NLG) approached from the opposite direction: not generating customer communications from a structured decision, but generating explanations of the decision *process itself* — which rules fired, what triggered them, and why the outcome was reached.
+```python
+class DecisionAssistant:
+    """Generic assistant: works with any DMN model."""
+    def __init__(self, dmn_model: DMNModel):
+        self.model = dmn_model
 
-A preliminary experiment compared two explanation sources — plain text and the intelligent assistant — to evaluate the assistant's capabilities. The early findings demonstrated feasibility for equipping organizations with explainable decisions embedded in their business processes.
+    def explain(self, decision_id: str, inputs: dict) -> Explanation:
+        """Explain why a decision reached its conclusion."""
+        trace = self.model.execute(decision_id, inputs)
+        return Explanation(
+            decision=trace.outcome,
+            fired_rules=[step.rule for step in trace.steps],
+            input_facts=trace.facts_used,
+            reasoning_chain=[
+                f"Rule {step.rule.id} fired because {step.rule.condition} matched {step.matched_facts}"
+                for step in trace.steps
+            ],
+        )
+```
 
-This connects directly to Feillet's emphasis on transparency and auditability. An extracted or authored DMN model, when paired with an explanation-capable assistant, satisfies the regulatory requirement to show *why* a decision was made — not in post-hoc rationalization but in a traceable chain from facts through rules to conclusions.
+> An extracted DMN model paired with an explanation-capable assistant satisfies the regulatory requirement to show *why* a decision was made — not in post-hoc rationalization but in a traceable chain from facts through rules to conclusions.
 
 ## Chatbots from decision models (RuleML+RR 2021)
 
-The final piece of the puzzle closes the loop between decision models and conversational interfaces.
+Etikala, Goossens, Van Veldhoven, and Vanthienen close the loop in [*Automatic Generation of Intelligent Chatbots from DMN Decision Models*](https://doi.org/10.1007/978-3-030-91167-6_10) (RuleML+RR 2021). Their framework generates a chatbot directly from a DMN model's structure:
 
-Etikala, Goossens, Van Veldhoven, and Vanthienen's [*Automatic Generation of Intelligent Chatbots from DMN Decision Models*](https://doi.org/10.1007/978-3-030-91167-6_10) (RuleML+RR 2021, LNCS 12851, pp. 142–157) addresses a limitation in decision support systems: the lack of reliable, user-friendly ways to present decision-making processes to end-users.
+```python
+# A DMN model becomes a conversational interface automatically
+dmn = DMNModel.load("mortgage-eligibility.dmn")
 
-The solution: a framework for **automatically generating intelligent chatbots from DMN decision models**. Instead of manually building a conversational interface for each decision service (Feillet's Pattern 5), the chatbot is generated directly from the DMN model's structure:
+chatbot = ChatbotGenerator(dmn).generate()
+# Generated chatbot behavior:
+#   Slot 1: "What is the loan amount?"        → dmn.inputs.loan_amount
+#   Slot 2: "What is your annual income?"     → dmn.inputs.applicant_income
+#   Slot 3: "What is your credit score?"       → dmn.inputs.credit_score
+#   Slot 4: "What is the property value?"      → dmn.inputs.property_value
+#   --- all required inputs gathered ---
+#   Invoke: dmn.decide("eligibility", inputs)
+#   Response: "Based on your credit score of 720 and DTI of 32%,
+#              you qualify for preferred rates at 6.0%."
 
-- The model's **input data requirements** become the dialogue's information-gathering slots
-- The model's **decision hierarchy** becomes the conversation flow
-- The model's **output structure** determines what the chatbot communicates back
+# The DMN schema IS the conversation contract
+```
 
-This solves the two hard problems Feillet identified for Pattern 5. The DMN model's input schema provides the formal contract for the delegation handshake — a missing required field is not an ambiguous conversational state, it is a slot in the DMN input schema that has not been filled, and the chatbot knows it needs to ask for it. The model's decision hierarchy drives the conversation structure — the chatbot knows which information to gather in which order, and when it has enough to invoke the decision service.
+> A missing required field is not an ambiguous conversational state. It is a slot in the DMN input schema that has not been filled, and the chatbot knows it needs to ask for it.
+
+This solves the two hard problems Feillet identified for Pattern 5: the DMN input schema provides the formal delegation contract, and missing required fields are unambiguously identifiable slots to ask about.
 
 ## The research arc
 
-Taken together, the six papers form a coherent progression:
-
 | Stage | Paper | Contribution |
 |---|---|---|
-| **Survey** | Etikala & Vanthienen (KSEM 2021) | Taxonomy of acquisition methods across sources, targets, and techniques |
-| **Feasibility** | Goossens et al. (BPM 2021) | First deep learning extraction of DMN components with BERT and Bi-LSTM-CRF |
-| **Scale** | Goossens, De Smedt, Vanthienen (ESWA 2023) | Full DMN extraction, open dataset, open extraction tool |
-| **Modernize** | Goossens et al. (RuleML+RR 2023) | GPT-3 for decision logic modeling via prompt engineering |
-| **Explain** | Goossens et al. (BPM 2022) | Generic intelligent assistant for explainable decisions from any DMN model |
-| **Converse** | Etikala et al. (RuleML+RR 2021) | Automatic chatbot generation from DMN decision models |
-
-Feillet's five patterns describe *what* to build. The KU Leuven papers describe *how* to build key components: the extraction pipeline for Pattern 4, the explanation layer for Pattern 2, and the conversational interface for Pattern 5.
+| Survey | Etikala & Vanthienen (KSEM 2021) | Taxonomy of acquisition methods |
+| Feasibility | Goossens et al. (BPM 2021) | First deep learning DMN extraction |
+| Scale | Goossens, De Smedt, Vanthienen (ESWA 2023) | Full extraction, open dataset and tools |
+| Modernize | Goossens et al. (RuleML+RR 2023) | GPT-3 for decision logic modeling |
+| Explain | Goossens et al. (BPM 2022) | Explainable assistant from any DMN model |
+| Converse | Etikala et al. (RuleML+RR 2021) | Chatbots from DMN models |
 
 ## RuleGo: an open-source implementation path
 
-The patterns and research are not confined to academic papers and enterprise platforms. **[RuleGo](https://github.com/rulego/rulego)** — an open-source rule engine in Go (Apache 2.0) — provides a concrete implementation path for each pattern:
+The patterns and research are not confined to academic papers and enterprise platforms. **[RuleGo](https://github.com/rulego/rulego)** provides a concrete implementation path:
 
-| Pattern | RuleGo implementation |
-|---|---|
-| 1: NLU → Rules | RuleGo chain with LLM extraction node → rule chain processing |
-| 2: Rules → NLG | RuleGo chain → LLM NLG node for customer communications |
-| 3: Rules drive LLM | RuleGo DAG with conditional LLM nodes invoked on demand |
-| 4: LLM extracts rules | LLM generates RuleGo chain JSON from policy documents |
-| 5: Chatbot + Rules | RuleGo MCP server exposes decision services to LLM chatbot |
+```go
+// Pattern 4 implemented with RuleGo: LLM generates RuleGo chain JSON from policy
+policyText := readPolicy("underwriting-policy-2026.txt")
+chainJSON := llm.Extract(policyText, PromptConfig{
+    Format: "rulego_chain",
+    Schema: rulego.ChainSchema,
+})
 
-The **[rulego-components-ai](https://github.com/rulego/rulego-components-ai)** extension provides LLM integration and MCP server/client support, making RuleGo a practical bridge between the research literature and production systems. The same RuleGo instance that runs on a Raspberry Pi 2 with ~19 MB of memory can expose its rule chains as MCP tools, making them discoverable by an LLM-based reasoning model — a concrete implementation of the hybrid inference loop Feillet describes.
+// The generated chain runs deterministically, LLM-free at runtime
+chain := rulego.LoadChain(chainJSON)
+decision := chain.Run(loanApplication)
+
+// Generated chain structure:
+// {
+//   "ruleChain": {
+//     "nodes": [
+//       {"id": "credit-check", "type": "switch",
+//        "cases": [
+//          {"when": "credit_score < 620", "then": "deny"},
+//          {"when": "credit_score >= 620 && credit_score <= 699", "then": "dti-check"},
+//          {"when": "credit_score >= 700", "then": "preferred-check"}
+//        ]},
+//       {"id": "dti-check", "type": "switch", ...},
+//       {"id": "preferred-check", "type": "switch", ...}
+//     ]
+//   }
+// }
+```
 
 ## Open questions
 
-The Feillet articles, the KU Leuven research program, and tools like RuleGo together cover substantial ground. But several questions remain open.
+**The extraction quality bar.** At what accuracy threshold does the economics flip? At 90%, a human reviews every rule. At 95%? At 99%? The savings come from turning a *writing* task into a *reviewing* task — but the threshold where you stop reviewing every rule is where the operational gains live.
 
-**The extraction quality bar.** The KU Leuven papers demonstrate extraction works — but at what accuracy threshold does the economics flip? At 90% accuracy, a human must still review every rule. The savings come from turning a *writing* task into a *reviewing* task — faster, but the human is still in the loop for every rule. At what accuracy does the review model shift from "review every rule" to "review only low-confidence extractions" to "review only rules that conflict with existing rules" to "review a statistical sample"? This is the operational question that determines whether Pattern 4 pays off at scale.
+**Rule lifecycle management.** When source documents change, extracted rules must change. Governed policy evolution, versioned extraction, conflict detection between old and new rules — this synchronization problem is where the next wave of research needs to go.
 
-**Rule lifecycle management.** When source documents change, extracted rules must change. Does the LLM re-extract from the amended text? Does it diff the old and new policy and propose targeted rule changes? Does it flag rules originally extracted from the amended section for human review? Governed policy evolution, versioned extraction, and conflict detection between old and new rules — this synchronization problem is where the next wave of research and engineering needs to go.
+**Testing composite systems.** How do you test a system where one component is deterministic and the other probabilistic? Property-based testing: invariants that must hold regardless of surface variation.
 
-**Testing composite systems.** Neither the practitioner articles nor the academic papers develop a testing methodology for composite AI. How do you test a system where one component is deterministic and the other probabilistic? You need property-based testing: the system's output must satisfy certain invariants (decision traceability, mandatory disclosures, schema conformance) even though the surface text varies. This is an area where the industry needs more tooling and methodology.
+**Vendor neutrality.** The patterns are general but the implementations assume IBM products. RuleGo demonstrates one open-source path, but the interfaces between components are not yet standardized.
 
-**Vendor neutrality.** Feillet's patterns are general, but the implementations described assume IBM ODM, ADS, and watsonx.ai. A vendor-neutral reference architecture — specifying the abstract interfaces between the LLM and rule engine components — would make the patterns more broadly applicable. RuleGo demonstrates one open-source path, but the interfaces between the components are not yet standardized.
-
-**The MCP interface standard.** MCP is still evolving. The interface between a reasoning model and a decision service — how does the LRM discover available decision services? What information does it pass? How does the rule engine communicate confidence, conditions, or partial results back? — needs standardization if composite AI is to move beyond bespoke integrations.
+**The MCP interface standard.** How does an LRM discover available decision services? What information passes between them? How are partial results and confidence signals communicated?
 
 ## The composite AI thesis
 
 <img src="images/composite-ai-fig6-overview.svg" alt="Composite AI — Blending Neuronal and Symbolic Approaches" style="width:100%;max-width:720px;">
 
-The central thesis running through this series is that the future of enterprise AI is composite. Not LLMs replacing rule engines. Not rule engines staying isolated. A deliberate blending where each technology does what it is good at.
+The central thesis running through this series: the future of enterprise AI is composite. LLMs handle the **perception** layer — unstructured text, intents, entities, fluency. Rule engines, built on Forgy's insight from 1979, handle the **reasoning** layer — deterministic logic, auditable decisions, regulatory compliance. The FSM handles the **process** layer — sequencing decisions through states and transitions.
 
-LLMs handle the **perception** layer — understanding unstructured text, classifying intents, extracting entities, generating fluent natural language. They are statistical engines optimized for flexibility and fluency.
-
-Rule engines, built on Forgy's insight from 1979, handle the **reasoning** layer — applying deterministic logic to structured data, producing auditable decisions, enforcing regulatory constraints, scaling to high transaction volumes with predictable performance. They are logical engines optimized for reliability and transparency.
-
-The five patterns are five ways to draw the boundary between these layers. The FSM is the process skeleton that sequences decisions through states. The boundary shifts depending on the use case, the risk tolerance, and the maturity of the integration. The principle is constant: let the neuronal system handle the messiness of natural language, let the symbolic system handle the precision of business logic, and let the state machine handle the process that connects them.
+> Let the neuronal system handle the messiness of natural language. Let the symbolic system handle the precision of business logic. Let the state machine handle the process that connects them.
 
 A decision system that cannot explain itself is not enterprise-grade. A decision system that cannot handle ambiguity is not useful. The composite approach accepts both constraints and designs for them. That has been the engineering move since Forgy built the first discrimination network in 1979.
 
@@ -176,4 +250,4 @@ A decision system that cannot explain itself is not enterprise-grade. A decision
 
 10. [RuleGo](https://github.com/rulego/rulego) — Lightweight, component-based rule engine for Go. Apache 2.0. Includes [rulego-components-ai](https://github.com/rulego/rulego-components-ai) for LLM integration and MCP support.
 
-> *Part 1: [On Rule Engines: From RETE to MCP](#on-rule-engines-rete-to-mcp) · Part 2: [On Rule Engines: Five Patterns for Composite AI](#on-rule-engines-five-patterns)*
+> *Part 1: [On Rule Engines — From RETE to MCP](#on-rule-engines-rete-to-mcp) · Part 2: [On Rule Engines — Five Patterns for Composite AI](#on-rule-engines-five-patterns) · Part 4: [On Rule Engines — State Machines vs. Rule Engines](#on-rule-engines-state-machines-vs-rule-engines)*

@@ -1,13 +1,13 @@
 ---
-title: "S&R: How Search Works"
+title: "S&R: What Fifty Years of Search Technology Teaches Us About Finding Things"
 date: 2026-07-16
 slug: search-recommendation-search-techniques
-summary: Part 2 of 7. A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.
+summary: A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.
 tags: [search, information-retrieval, tf-idf, bm25, pagerank, bert, neural-ir, series]
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. Part 2 of a seven-part series. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.*
+*S&R stands for Search & Recommendation. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.*
 
 Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what "relevance" means.
 
@@ -381,7 +381,7 @@ def production_search_pipeline(query: str, k: int = 10) -> list[Document]:
 
 The comprehensive survey by Hambarde and Proença (2023) organizes this pipeline into two stages — term-based retrieval and semantic retrieval — and catalogs the models available at each level [2]. Their key insight: **modern search is never one model. It's a pipeline where each stage compensates for the limitations of the one before it.**
 
-This is the critical difference from recommendation, as we'll see in Part 3. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.
+This is the critical difference from recommendation. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.
 
 ---
 
@@ -413,4 +413,3 @@ This is the critical difference from recommendation, as we'll see in Part 3. Sea
 
 ---
 
-*Previous: [Part 1 — The Fundamental Distinction](/search-recommendation-fundamental-distinction) · Next: [Part 3 — Thirty Years of Recommendation](/search-recommendation-recommendation-techniques)*

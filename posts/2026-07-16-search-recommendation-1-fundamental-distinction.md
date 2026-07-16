@@ -1,13 +1,13 @@
 ---
-title: "S&R: Why They Are Not the Same"
+title: "S&R: Search and Recommendation Are Not the Same Problem"
 date: 2026-07-16
 slug: search-recommendation-fundamental-distinction
-summary: Part 1 of 7. Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig's 80% rule, and the library/restaurant mental models that clarify the boundary.
+summary: Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig's 80% rule, and the library/restaurant mental models that clarify the boundary.
 tags: [search, recommendation, information-retrieval, collaborative-filtering, architecture, series]
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation — the two fundamental modes of information access that this seven-part series examines. Part 1 defines the distinction and explains why conflating them is a costly engineering mistake.*
+*S&R stands for Search & Recommendation — the two fundamental modes of information access that this series examines. This post defines the distinction and explains why conflating them is a costly engineering mistake.*
 
 Search and recommendation are often described as "two sides of the same coin." Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.
 
@@ -15,7 +15,7 @@ It is also wrong — or at least, incomplete enough to be dangerous.
 
 Search and recommendation are different problems. They emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confusing them produces systems that are bad at both: search results that drift into irrelevance under the weight of personalization, and recommendation feeds that fail to respect explicit intent.
 
-This seven-part series traces the history, the mathematics, the architectures, and the convergence — arguing that the best engineering organizations don't collapse search and recommendation into one. They build systems that respect the distinction even as they blur it.
+This series traces the history, the mathematics, the architectures, and the convergence — arguing that the best engineering organizations don't collapse search and recommendation into one. They build systems that respect the distinction even as they blur it.
 
 Let's start with the definitions.
 
@@ -184,16 +184,7 @@ These surveys do not reference each other much. That is not an accident. It is e
 
 ## What's Ahead
 
-In the remaining six parts of this series:
-
-- **Part 2** traces fifty years of search techniques — Boolean, TF-IDF, BM25, PageRank, Learning to Rank, and the neural turn — with code for each
-- **Part 3** traces thirty years of recommendation — Tapestry, GroupLens, Amazon, the Netflix Prize, and the deep learning era — with code for each
-- **Part 4** deep-dives Netflix: the only company that runs world-class search and recommendation side by side at global scale
-- **Part 5** examines how Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary in production
-- **Part 6** analyzes how LLMs transform both fields — differently — and why the distinction survives
-- **Part 7** provides practical architecture guidance for building systems that get it right
-
----
+The remaining posts in this series cover: the fifty-year history of search technology, the thirty-year history of recommendation, the Netflix case study, how Spotify, DoorDash, Airbnb, and Pinterest draw the boundary, what LLMs change — and what they don't, and a practical architecture for building systems that handle both. Each stands alone; read in any order.
 
 ---
 
@@ -219,4 +210,3 @@ In the remaining six parts of this series:
 
 ---
 
-*Next: [Part 2 — Fifty Years of Search: From Boolean to BERT](/search-recommendation-search-techniques)*

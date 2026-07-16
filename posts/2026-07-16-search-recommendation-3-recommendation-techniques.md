@@ -1,13 +1,13 @@
 ---
-title: "S&R: How Recommendation Works"
+title: "S&R: Why Guessing What People Want Is Harder Than Finding What They Asked For"
 date: 2026-07-16
 slug: search-recommendation-recommendation-techniques
-summary: Part 3 of 7. A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD++), two-tower neural models, and the Netflix Prize story.
+summary: A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD++), two-tower neural models, and the Netflix Prize story.
 tags: [search, recommendation, collaborative-filtering, matrix-factorization, netflix-prize, deep-learning, series]
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. Part 3 of a seven-part series. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.*
+*S&R stands for Search & Recommendation. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.*
 
 If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.
 
@@ -347,4 +347,3 @@ By 2020, the search field had always been multi-stage. Recommendation caught up 
 
 ---
 
-*Previous: [Part 2 — Fifty Years of Search](/search-recommendation-search-techniques) · Next: [Part 4 — Netflix: Building Both at Global Scale](/search-recommendation-netflix)*

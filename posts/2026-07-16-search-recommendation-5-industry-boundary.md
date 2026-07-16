@@ -7,11 +7,11 @@ tags: [search, recommendation, spotify, doordash, airbnb, pinterest, two-tower, 
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. How Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary between search and recommendation in production — with code for each architecture.*
+*S&R stands for Search & Recommendation. Every company that does both draws the line somewhere. Spotify routes on intent. DoorDash separates the pipelines. Airbnb shares embeddings but splits the ranking features. The line is a choice, and the choice has architectural consequences. This post examines four different answers to the same question: where does search end and recommendation begin?*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**On the search side of the line,** a user articulates intent. The system retrieves. Fidelity to the query is the metric. Personalization is optional, applied sparingly, with guardrails. If a DoorDash user types "Sichuan noodle soup" and the system shows pizza because their order history says they love pizza, the system has crossed the line in the wrong direction. The query is a contract. The system's job is to honor it.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**On the recommendation side of the line,** the user articulates nothing. The system infers from behavior. Surprise is a feature, not a bug. If the system only shows what the user has already ordered, it has failed to recommend — it has only retrieved from memory. The error is subtler. A bad search result is visible: "I asked for X and got Y." A bad recommendation is invisible: the user didn't see what they would have loved, and they will never know. The line between the two is where engineering meets judgment.
 
 Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.
 

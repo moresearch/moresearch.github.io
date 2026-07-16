@@ -7,11 +7,11 @@ tags: [search, recommendation, information-retrieval, collaborative-filtering, a
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation — the two fundamental modes of information access that this series examines. This post defines the distinction and explains why conflating them is a costly engineering mistake.*
+*S&R stands for Search & Recommendation — the two fundamental modes of information access. This post defines the distinction that the rest of the series builds on, and explains why conflating them is not merely a terminology error but an engineering one with production consequences.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**Search** is what happens when someone types "history of the Byzantine Empire" into a box and hits enter. They know what they want. They told you — explicitly, in words, 500 milliseconds ago. Your job is fidelity to those words. If they typed "Byzantine" and you returned results about the Ottoman Empire because "people who search for Byzantium also search for Ottomans," you have broken the contract.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**Recommendation** is what happens when someone opens an app and waits. They didn't type anything. They may not know what they want. They may not even know there *is* something to want. Your job is to infer it from what they did yesterday, last week, and five minutes ago — and to be right often enough that they keep opening the app. If you show them what they already know about, you have broken a different contract.
 
 Search and recommendation are often described as "two sides of the same coin." Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.
 

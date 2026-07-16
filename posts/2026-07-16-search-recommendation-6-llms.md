@@ -7,11 +7,11 @@ tags: [search, recommendation, llm, rag, generative-retrieval, agentic, survey, 
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. How LLMs reshape both fields — differently — and why the fundamental distinction survives the generative era.*
+*S&R stands for Search & Recommendation. LLMs don't know which one they're doing. They see tokens in, tokens out. The distinction that traditional retrieval systems encode in architecture — inverted index vs. embedding store, NDCG vs. retention, sub-100ms keystroke latency vs. nightly batch refresh — must now be encoded somewhere else. The question is where.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**Ask an LLM "What is the capital of France?"** That is search. The model retrieves a fact that matches the explicit query. Fidelity to the question is all that counts. If the model answers "Rome" because it has learned that users who ask about capitals often enjoy Italian geography, the model is broken. The query is a contract. The answer must honor it.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**Ask an LLM "What should I watch tonight? I loved *Dark* and *Severance*."** That is recommendation. The model infers preferences from the examples and generates suggestions the user might not have thought of. Serendipity is not a bug — it is the point. If the model says "watch *Dark* again," it has failed. The same model performed both tasks. The same prompt interface hid the difference. The difference did not disappear. It moved into the prompt, the objective function, the evaluation framework, and the human expectation of what "good" means. LLMs are infrastructure. They do not eliminate the distinction between search and recommendation. They make it more important to get right.
 
 The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT [7]. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.
 

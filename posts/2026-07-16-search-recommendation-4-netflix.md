@@ -7,11 +7,11 @@ tags: [search, recommendation, netflix, elasticsearch, collaborative-filtering, 
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.*
+*S&R stands for Search & Recommendation. Netflix runs both at global scale on the same catalog, the same users, the same infrastructure — and two completely different contracts with the person on the other side of the screen.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**When a Netflix user types "time travel movies" into the search bar,** they have intent. They want results ranked by relevance to those three words. The system's job is fidelity to the query. If UniCoRn shows *The Notebook* because the user's watch history says they love romance, the system is broken — personalization has overpowered relevance. Netflix learned this the hard way and added guardrails.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**When a Netflix user opens the homepage,** they have no query. They are waiting to be told what they want. The system's job is to infer it from everything it knows — watch history, time of day, device, what similar users binged last weekend. If it shows the same ten rows every day, the system is broken — it has failed to recommend, and only retrieved. Same movies. Same user. Different broken. The contracts are not the same. UniCoRn encodes this difference as a `task_type` feature because it cannot be ignored.
 
 No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.
 

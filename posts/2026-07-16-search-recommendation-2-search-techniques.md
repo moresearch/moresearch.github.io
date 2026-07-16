@@ -7,11 +7,11 @@ tags: [search, information-retrieval, tf-idf, bm25, pagerank, bert, neural-ir, s
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.*
+*S&R stands for Search & Recommendation. This post is about search — fifty years of it, from Boolean to BERT. But you cannot understand what search is without understanding what it is not.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**Search begins with a query.** The user types words. Those words are a contract: "I am looking for this. Find me the best matches." Every technique in this post — TF-IDF, BM25, PageRank, Learning to Rank, DPR — is an attempt to narrow the gap between the words the user typed and the documents they meant. The gap is irreducible because language is ambiguous and intent is underspecified, but fifty years of work has made it narrower.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**Recommendation begins with silence.** No query. No typed words. No explicit contract. The only signal is behavior — what the user clicked, watched, lingered on, skipped, abandoned. The system infers a query the user never wrote. The gap here is not lexical. It is psychological. The user may not know what they want. The system's job is to know it anyway.
 
 Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what "relevance" means.
 

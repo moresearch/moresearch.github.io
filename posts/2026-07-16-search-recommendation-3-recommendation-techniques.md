@@ -7,11 +7,11 @@ tags: [search, recommendation, collaborative-filtering, matrix-factorization, ne
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.*
+*S&R stands for Search & Recommendation. This post is about recommendation — thirty years of trying to guess what people want before they know they want it. The title is not a rhetorical question. Guessing is genuinely harder.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**Recommendation is the harder problem** because the user never tells you what they want. You infer it from what they watched, clicked, rated, skipped, and abandoned. Every technique in this post — user-based CF, item-based CF, matrix factorization, two-tower neural models, autoregressive foundation models — is an attempt to extract intent from behavior the user may not even be conscious of. When the inference is wrong, it is always the system's fault. The user never said what they wanted. The system guessed. The guess was wrong.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**Search is the easier problem** because the user tells you. The query is explicit. The intent is stated. The system's job is fidelity. If the query is wrong — if the user typed "Byzantine Empire" when they meant "Ottoman Empire" — the results are wrong, but that is the user's problem, not the system's. The system's contract is to match the query, not to correct it. Search competes with ignorance. Recommendation competes with every other possible way to spend attention. The second competition is harder to win.
 
 If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.
 

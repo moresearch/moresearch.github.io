@@ -7,11 +7,11 @@ tags: [search, recommendation, architecture, system-design, llm, practical, seri
 series: search-recommendation
 ---
 
-*S&R stands for Search & Recommendation. Practical architecture guidance for building systems that handle both search and recommendation — correctly.*
+*S&R stands for Search & Recommendation. This post is about building systems that handle both — correctly. The distinction is not academic. It has consequences for your latency budget, your index design, your evaluation framework, and your error recovery strategy. Ignore it and you will build a system that is mediocre at both.*
 
-**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+**Search** demands sub-100ms latency per keystroke, an inverted index that can retrieve on any term, and an error model where mistakes are visible and dismissable. The user sees a wrong result, scrolls past it, and reforms their query. The system's job is to make the right result *findable*. Getting search right means the user finds what they asked for. Getting it wrong means they try another query — or another product.
 
-**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+**Recommendation** tolerates ~200ms per page load, an ANN index that finds neighbors in embedding space, and an error model where mistakes are invisible but trust-eroding. The user doesn't see what wasn't shown. They just feel, over weeks, that the system doesn't get them — and they churn. The system's job is to make the right result *unavoidable*. Getting recommendation right means the user discovers something they didn't know they wanted. Getting it wrong means they leave and never come back. Same infrastructure can serve both. The architecture must know the difference.
 
 This series has traced the fifty-year history of search, the thirty-year history of recommendation, Netflix's dual-stack architecture, how four major companies handle the boundary, and how LLMs transform both fields. This post translates that history into practical guidance.
 

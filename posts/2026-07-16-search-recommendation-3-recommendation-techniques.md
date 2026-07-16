@@ -1,5 +1,5 @@
 ---
-title: "S&R: Why Guessing What People Want Is Harder Than Finding What They Asked For"
+title: "S&R: Why Is Guessing What People Want Harder Than Finding What They Asked For?"
 date: 2026-07-16
 slug: search-recommendation-recommendation-techniques
 summary: A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD++), two-tower neural models, and the Netflix Prize story.

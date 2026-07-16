@@ -1,5 +1,5 @@
 ---
-title: "S&R: How Spotify, DoorDash, Airbnb, and Pinterest Draw the Line Between Search and Recommendation"
+title: "S&R: Where Should You Draw the Line Between Search and Recommendation?"
 date: 2026-07-16
 slug: search-recommendation-industry-boundary
 summary: How four leading engineering organizations handle the search–recommendation boundary in production: Spotify's LLM intent router, DoorDash's content-first embeddings and Consumer Memory Blocks, Airbnb's listing embeddings for real-time search personalization, and Pinterest's two-tower architectures.

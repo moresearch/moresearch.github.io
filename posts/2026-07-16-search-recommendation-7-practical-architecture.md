@@ -1,5 +1,5 @@
 ---
-title: "S&R: A Practical Architecture for Search and Recommendation Systems"
+title: "S&R: How Should You Architect a System That Handles Both Search and Recommendation?"
 date: 2026-07-16
 slug: search-recommendation-practical-architecture
 summary: Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.

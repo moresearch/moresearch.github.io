@@ -1,5 +1,5 @@
 ---
-title: "S&R: What Fifty Years of Search Technology Teaches Us About Finding Things"
+title: "S&R: What Can Fifty Years of Search Technology Teach Us About Finding Things?"
 date: 2026-07-16
 slug: search-recommendation-search-techniques
 summary: A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.

@@ -1,5 +1,5 @@
 ---
-title: "S&R: What Netflix Learned Running Search and Recommendation Side by Side"
+title: "S&R: What Happens When You Build Search and Recommendation at the Same Company?"
 date: 2026-07-16
 slug: search-recommendation-netflix
 summary: Deep dive into Netflix's search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn's unified approach to search and recs.

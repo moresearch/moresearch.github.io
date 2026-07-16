@@ -1,5 +1,5 @@
 ---
-title: "S&R: Search and Recommendation Are Not the Same Problem"
+title: "S&R: Why Do We Keep Confusing Search with Recommendation?"
 date: 2026-07-16
 slug: search-recommendation-fundamental-distinction
 summary: Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig's 80% rule, and the library/restaurant mental models that clarify the boundary.

@@ -1,5 +1,5 @@
 ---
-title: "S&R: LLMs Blur the Boundary — Here Is Why the Distinction Still Holds"
+title: "S&R: If LLMs Can Do Both, Does the Distinction Still Matter?"
 date: 2026-07-16
 slug: search-recommendation-llms
 summary: LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.

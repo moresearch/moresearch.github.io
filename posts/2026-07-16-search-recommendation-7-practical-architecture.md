@@ -1,5 +1,5 @@
 ---
-title: "S&R: Practical Architecture — Building Systems That Get It Right"
+title: "S&R: Building Systems That Get It Right"
 date: 2026-07-16
 slug: search-recommendation-practical-architecture
 summary: Part 7 of 7. Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.
@@ -23,7 +23,7 @@ Before the architecture, a mental model. The search–recommendation distinction
 
 This is why Peter Norvig's 80% rule applies to search but not recommendation. If a search engine gets 80% right, users happily ignore the other 20% — they can see what went wrong. If a recommender gets 80% right, users notice the 20% wrong more than the 80% right, because every wrong suggestion is an interruption — screen space that could have shown something they'd love.
 
-## Five Principles for Building Both
+## Five Principles for Search and Recommendation
 
 **1. Make task identity a first-class feature.**
 
@@ -219,6 +219,18 @@ The question is: **"do we know which one we're doing right now?"**
 The answer must be yes. Because search competes with ignorance. Recommendation competes with sleep. They are not the same fight.
 
 ---
+
+---
+
+## Open Questions
+
+1. **The five principles in this post are derived from what worked at Netflix, Spotify, DoorDash, Airbnb, and Pinterest.** What principles are *missing* because no company has solved certain problems yet — like fully autonomous switching between search and recommendation without explicit routing?
+
+2. **LLMs as offline enrichment, purpose-built systems for online serving — this is the consensus in 2026.** Will it hold? Or will end-to-end generative models become fast enough that the hybrid architecture becomes unnecessary overhead?
+
+3. **"Do we know which one we're doing right now?" is the organizing question of this series.** Five years from now, will that question still need a human-designed answer — or will the system infer it from context more reliably than any explicit signal?
+
+4. **Search competes with ignorance. Recommendation competes with sleep.** What does a system that does both compete with — and how do we measure whether it's winning?
 
 **References**
 

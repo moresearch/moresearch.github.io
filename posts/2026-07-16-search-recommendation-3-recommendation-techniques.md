@@ -1,5 +1,5 @@
 ---
-title: "S&R: Thirty Years of Recommendation — From GroupLens to Foundation Models"
+title: "S&R: How Recommendation Works"
 date: 2026-07-16
 slug: search-recommendation-recommendation-techniques
 summary: Part 3 of 7. A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD++), two-tower neural models, and the Netflix Prize story.
@@ -318,6 +318,18 @@ def production_recsys_pipeline(user_id: int, user_features: dict,
 By 2020, the search field had always been multi-stage. Recommendation caught up — and that convergence is one reason the two fields are so often conflated.
 
 ---
+
+---
+
+## Open Questions
+
+1. **Matrix factorization dominated recommendation for a decade after the Netflix Prize, but the Prize's metric (RMSE) didn't measure user satisfaction.** What would a recommendation competition look like today if the metric were retention, not rating prediction? Could we even run one?
+
+2. **Hastings' insight — that users' stated preferences differ from their revealed preferences — has uncomfortable implications.** Should recommenders ever *ignore* what users explicitly tell them? When is the aspirational self a feature rather than noise?
+
+3. **The deep learning era equalized recommendation and search by giving both access to heterogeneous features.** But search had decades of multi-modal infrastructure first. Did recommendation catch up, or did it just inherit search's architecture without adapting it?
+
+4. **Item-to-item CF at Amazon discovered cross-category connections no keyword match could find.** What connections are today's models missing because they optimize for engagement rather than surprise?
 
 **References**
 

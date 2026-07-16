@@ -1,17 +1,15 @@
 ---
-title: Search Is Not Recommendation — And Why the Distinction Matters More Than Ever
+title: Search Is Not Recommendation
 date: 2026-07-16
 summary: Search and recommendation are often conflated, especially now that LLMs blur the boundary. This post traces each field's history, techniques, and their convergence at Netflix, Spotify, DoorDash, and Pinterest — arguing that the distinction remains essential for building systems that work.
 tags: [search, recommendation, information-retrieval, collaborative-filtering, llm, netflix, machine-learning, survey]
 ---
 
-Search and recommendation are often described as "two sides of the same coin." Both match users with items. Both rank results. Both drive discovery. Netflix, Spotify, DoorDash, Pinterest, and Airbnb build both. The phrase appears in conference papers and engineering blog posts alike.
+Search and recommendation are often described as "two sides of the same coin." It is a comforting metaphor. It is also wrong — incomplete enough to be dangerous.
 
-It is also wrong — or at least, incomplete enough to be dangerous.
+Both match users with items. Both rank results. Both drive discovery. Netflix, Spotify, DoorDash, Pinterest, and Airbnb build both. But the similarities are surface-deep. Search and recommendation emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confuse them, and you get systems that are bad at both: search results that drift into irrelevance under the weight of personalization, recommendation feeds that ignore explicit intent.
 
-Search and recommendation are different problems. They emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confusing them leads to systems that are bad at both: search results that drift into irrelevance under the weight of personalization, and recommendation feeds that fail to respect explicit intent.
-
-The arrival of Large Language Models makes the distinction sharper, not softer. When a single transformer can be fine-tuned to retrieve documents, rank products, generate recommendations, and explain its reasoning, the temptation is to collapse everything into one model, one pipeline, one problem. Netflix's UniCoRn and Spotify's agentic search router do something close to that — but they succeed precisely because they respect the distinction, not because they ignore it.
+The arrival of Large Language Models makes the distinction sharper, not softer. When a single transformer can retrieve documents, rank products, generate recommendations, and explain its reasoning, the temptation is to collapse everything into one model, one pipeline, one problem. Netflix's UniCoRn and Spotify's agentic search router do something close — but they succeed precisely because they respect the distinction, not because they ignore it.
 
 Consider three everyday scenarios:
 
@@ -73,11 +71,9 @@ The best survey papers in both fields make this explicit. The *Recommender Syste
 
 ---
 
-## Part I: How Search Works — Fifty Years of Matching Queries to Documents
+## Part I: How Search Works
 
-The search problem is deceptively simple: given a query and a collection of documents, return the documents most relevant to the query, ranked. Every major advance in the field has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what "relevance" means.
-
-The comprehensive survey by Hambarde and Proença (2023) organizes the field's evolution into two stages: term-based retrieval (the first forty years) and semantic retrieval (the last decade). The key insight from their survey is that modern search is almost never one model — it is a pipeline where each stage compensates for the limitations of the one before it [35].
+The search problem is deceptively simple: given a query and a collection of documents, return the documents most relevant to the query, ranked. Every major advance has come from realizing the previous answer was incomplete — not wrong, just missing a dimension of what "relevance" means. Hambarde and Proença (2023) organize the evolution into term-based retrieval (the first forty years) and semantic retrieval (the last decade). The key insight: modern search is never one model — it is a pipeline where each stage compensates for the limitations of the one before it [35].
 
 ### Boolean Retrieval — Exact Matching and Its Limits (1960s–1970s)
 
@@ -154,11 +150,9 @@ The modern search stack is hybrid: BM25 (or learned sparse retrieval like SPLADE
 
 ---
 
-## Part II: How Recommendation Works — Learning Preferences Without Being Asked
+## Part II: How Recommendation Works
 
-If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of, then surface things they might not have known existed.
-
-Wu et al. (2023), in their comprehensive survey of neural recommendation models published in IEEE TKDE, organize the field into two broad families: models that use only interaction data (collaborative filtering) and models that incorporate side information (content, context, sequences). The progression from one to the other mirrors the search field's own evolution — from impoverished signals to rich, multi-modal representations. But the starting point is different. Search began with text and added behavior. Recommendation began with behavior and added text [36].
+If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — before they even *know* they want it. This is a harder information problem. In search, the user tells you what they want. In recommendation, you infer it from behavior they may not be conscious of. Wu et al. (2023) organize the field into two families: interaction-only models (collaborative filtering) and models that incorporate side information (content, context, sequences). The progression mirrors search's evolution from impoverished to rich representations — but the starting points are inverted. Search began with text and added behavior. Recommendation began with behavior and added text [36].
 
 ### Tapestry — The First Collaborative Filtering System (1992)
 
@@ -263,7 +257,7 @@ By 2020, the standard industry pipeline had crystalized into three stages: **ret
 
 ---
 
-## Part III: Netflix — What Happens When You Build Both at Global Scale
+## Part III: Netflix — Search and Recommendation at Global Scale
 
 No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and have published extensively about each.
 
@@ -338,7 +332,7 @@ This is the tension that makes the distinction matter. When you collapse search 
 
 ---
 
-## Part IV: How the Best Engineering Teams Navigate the Boundary
+## Part IV: The Boundary in Practice
 
 Netflix isn't the only company navigating this. Several engineering blogs document different approaches to the same problem.
 
@@ -390,13 +384,11 @@ The common pattern across all of these companies is not unification for its own 
 
 ---
 
-## Part V: How LLMs Reshape Both Fields — And Where They Don't
+## Part V: What LLMs Change — And What They Don't
 
-The arrival of LLMs — GPT-4, Claude, Gemini, and their open-source counterparts — is the most significant development in both information retrieval and recommendation since BERT. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.
+LLMs are the most significant development in both fields since BERT. But they affect search and recommendation differently. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, reader — each evolving from statistical to neural to generative approaches [37]. Li et al. (2024) provide the cross-cutting view, framing both as instances of generative retrieval and identifying where they converge (shared transformer backbones, autoregressive decoding) and where they diverge (different input modalities, different evaluation regimes) [29].
 
-Two recent surveys capture the scope of the transformation from opposite sides. Zhu et al. (2024), in their survey *Large Language Models for Information Retrieval*, organize LLM-IR integration into four roles: query rewriter, retriever, reranker, and reader. The paper traces how each role evolved from statistical to neural to generative approaches [37]. Li et al. (2024), in *A Survey of Generative Search and Recommendation in the Era of Large Language Models*, provide the cross-cutting view — framing both search and recommendation as instances of generative retrieval and identifying where they converge (shared transformer backbones, autoregressive decoding) and where they diverge (different input modalities, different evaluation regimes) [29].
-
-The key insight from these surveys is that LLMs don't eliminate the search–recommendation distinction — they reveal it at a higher level of abstraction. Both fields are moving toward generative paradigms, but the *thing being generated* is different. Search generates answers from documents. Recommendation generates item predictions from user histories.
+The key insight: LLMs don't eliminate the distinction. They reveal it at a higher level of abstraction. Both fields are moving toward generative paradigms, but the *thing being generated* differs. Search generates answers from documents. Recommendation generates item predictions from user histories.
 
 ### How LLMs Transform Search
 
@@ -444,6 +436,8 @@ A 2024 survey of generative search and recommendation in the LLM era puts it wel
 
 ## Part VI: The Distinction in Everyday Life
 
+The search–recommendation divide isn't an engineering abstraction — it's visible in how we make decisions every day.
+
 The search–recommendation distinction isn't just an engineering concern. It's visible in how we make decisions every day. Recognizing it clarifies what kind of system you're building — and what it should be good at.
 
 ### The Restaurant Menu (Search) vs. The Chef's Tasting Menu (Recommendation)
@@ -478,7 +472,7 @@ The better metaphor is a **restaurant**: search is the menu, recommendation is t
 
 ---
 
-## Part VII: Practical Guidance
+## Part VII: Principles for Building Search and Recommendation
 
 If you're building a system that involves both search and recommendation, here are the architectural principles that emerge from the literature:
 
@@ -505,6 +499,18 @@ The arrival of LLMs makes these distinctions *more* important, not less. When a 
 The answer must be yes. Because search competes with ignorance. Recommendation competes with sleep. They are not the same fight.
 
 ---
+
+---
+
+## Open Questions
+
+1. **If search and recommendation converge further under LLMs, will the distinction become an implementation detail — or a user-facing feature?** Users don't care about the architecture. They care whether the system understands what they want, whether they said it aloud or not.
+
+2. **The Netflix Prize measured RMSE. Production systems measure retention. Neither measures satisfaction.** What would a metric look like that captures whether a system respected the user's intent — whether that intent was explicit (search) or latent (recommendation)?
+
+3. **Every company in this post — Netflix, Spotify, DoorDash, Airbnb, Pinterest — reached the same conclusion independently: task identity matters.** Is this convergent evolution or a local optimum? Could a sufficiently different architecture make the distinction irrelevant?
+
+4. **Karen Spärck Jones said retrieval assists the human user but cannot replace them.** In the LLM era, is that still true? Or does generation cross the line from assistance to replacement in ways retrieval never could?
 
 **References**
 

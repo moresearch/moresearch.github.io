@@ -1,5 +1,5 @@
 ---
-title: "S&R: How Spotify, DoorDash, Airbnb, and Pinterest Navigate the Boundary"
+title: "S&R: The Boundary in Practice"
 date: 2026-07-16
 slug: search-recommendation-industry-boundary
 summary: Part 5 of 7. How four leading engineering organizations handle the search–recommendation boundary in production: Spotify's LLM intent router, DoorDash's content-first embeddings and Consumer Memory Blocks, Airbnb's listing embeddings for real-time search personalization, and Pinterest's two-tower architectures.
@@ -253,6 +253,18 @@ Every system that successfully spans search and recommendation does so by encodi
 The common pattern: **unification where it reduces cost, separation where it preserves correctness**.
 
 ---
+
+---
+
+## Open Questions
+
+1. **Spotify found that Semantic IDs optimized for search don't generalize to recommendation, and vice versa.** Is this a fundamental property of the two tasks, or an artifact of how we train embeddings? What would a *truly* unified embedding space look like?
+
+2. **DoorDash's finding — data quality (+31%) dominates model choice (+6%) — echoes a broader truth.** How much of the search-vs-recommendation gap is actually a *data quality* gap in disguise?
+
+3. **Every successful system in this survey encodes task identity as a first-class signal.** Is the search/recommendation distinction a permanent architectural feature, or a temporary crutch that better models will eventually absorb?
+
+4. **Airbnb's failed multi-task experiment (bookings + long views) is a warning about proxy objectives.** What other proxy objectives are we optimizing across the industry that don't actually measure what we think they measure?
 
 **References**
 

@@ -1,5 +1,5 @@
 ---
-title: "S&R: Fifty Years of Search — From Boolean to BERT"
+title: "S&R: How Search Works"
 date: 2026-07-16
 slug: search-recommendation-search-techniques
 summary: Part 2 of 7. A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.
@@ -384,6 +384,18 @@ The comprehensive survey by Hambarde and Proença (2023) organizes this pipeline
 This is the critical difference from recommendation, as we'll see in Part 3. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.
 
 ---
+
+---
+
+## Open Questions
+
+1. **BM25 has survived fifty years and still anchors production search pipelines.** What properties make a retrieval model durable across paradigm shifts? Will transformer-based retrieval have the same half-life?
+
+2. **Multi-stage pipelines (BM25 → dense → cross-encoder) are engineering compromises, not elegant solutions.** What would a single-stage retrieval architecture look like — and what would it cost?
+
+3. **Learning to Rank replaced hundreds of hand-crafted features with learned combinations.** But feature engineering is returning — this time as prompt engineering for LLM rerankers. Are we going in circles, or is this a spiral?
+
+4. **The vocabulary mismatch problem that Spärck Jones identified is fundamental to language, not a bug to fix.** If the gap can only be narrowed, never closed, what is the theoretical ceiling on retrieval quality — and how close are we?
 
 **References**
 

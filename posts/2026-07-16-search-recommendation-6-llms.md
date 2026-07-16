@@ -1,5 +1,5 @@
 ---
-title: "S&R: How LLMs Reshape Both Fields — And Where They Don't"
+title: "S&R: What LLMs Change"
 date: 2026-07-16
 slug: search-recommendation-llms
 summary: Part 6 of 7. LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.
@@ -195,6 +195,18 @@ The Gupta et al. (2025) survey on generative recommendation reinforces this: ind
 LLMs are infrastructure. They don't eliminate the distinction between search and recommendation — they make it more important to get right.
 
 ---
+
+---
+
+## Open Questions
+
+1. **LLMs are infrastructure, not a replacement for retrieval.** But the history of software is infrastructure absorbing what was once application logic. Will retrieval become just another token prediction task?
+
+2. **Generative recommendation (TIGER, HSTU, OneRec) treats item prediction as autoregressive generation.** If the model is the index, the retriever, and the ranker — where does the search/recommendation boundary go? Does it vanish, or does it move into the prompt?
+
+3. **The surveys agree: LLMs affect search and recommendation differently.** But most LLM research papers treat them as interchangeable downstream tasks. Is the research community making the same mistake the engineering community is learning to avoid?
+
+4. **Conversational recommendation collapses the boundary between search and discovery into dialogue.** If users can't tell whether they're searching or being recommended to — does the distinction still matter? For whom?
 
 **References**
 

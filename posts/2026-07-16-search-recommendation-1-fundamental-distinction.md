@@ -1,5 +1,5 @@
 ---
-title: "S&R: The Fundamental Distinction"
+title: "S&R: Why They Are Not the Same"
 date: 2026-07-16
 slug: search-recommendation-fundamental-distinction
 summary: Part 1 of 7. Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig's 80% rule, and the library/restaurant mental models that clarify the boundary.
@@ -194,6 +194,18 @@ In the remaining six parts of this series:
 - **Part 7** provides practical architecture guidance for building systems that get it right
 
 ---
+
+---
+
+## Open Questions
+
+1. **If the distinction is so clear, why do most ML curricula still teach search and recommendation as variants of the same ranking problem?** What would a curriculum look like that treated them as separate disciplines with shared infrastructure?
+
+2. **Norvig's 80% rule suggests search tolerates error better than recommendation. But as search engines become answer engines (via RAG), the error bar rises.** At what point does search become assistance — and inherit recommendation's trust problem?
+
+3. **The three traps explain why engineers *do* conflate search and recommendation.** But what incentives — organizational, metric, career — make them *want* to? Is unification sometimes a political choice rather than a technical one?
+
+4. **Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.** Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time?
 
 **References**
 

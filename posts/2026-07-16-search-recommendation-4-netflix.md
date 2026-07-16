@@ -1,5 +1,5 @@
 ---
-title: "S&R: Netflix — Building Both at Global Scale"
+title: "S&R: The Netflix Case Study"
 date: 2026-07-16
 slug: search-recommendation-netflix
 summary: Part 4 of 7. Deep dive into Netflix's search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn's unified approach to search and recs.
@@ -268,6 +268,18 @@ The critical detail: UniCoRn succeeded not by ignoring the distinction but by ma
 Netflix also documented the central tension: **personalization can overpower query relevance**. If a user searches for "documentaries about World War II" and the recommender knows the user loves romantic comedies, should it show *The Notebook*? Obviously not. UniCoRn added personalization incrementally, with guardrails [8].
 
 ---
+
+---
+
+## Open Questions
+
+1. **UniCoRn achieved +7% for search and +10% for recommendations by making task identity explicit.** What would the numbers be if they had collapsed the distinction entirely — one model, one objective, no task_type feature? Would it outperform the separate models at all?
+
+2. **Netflix confirmed that scaling laws apply to recommendation foundation models.** Is there a point where a large enough recommender, trained on enough user behavior, internalizes search as a special case — without being told?
+
+3. **Percolate queries (reverse search) solve a problem that only exists when you think of search as infrastructure, not ranking.** What other search primitives are we missing because we default to the ranked-list mental model?
+
+4. **Hastings said Netflix competes with sleep.** If recommendation is competing for attention and search is competing with ignorance, what happens when an LLM can do both? Does the system compete with everything?
 
 **References**
 

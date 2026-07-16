@@ -189,7 +189,9 @@ class NetflixFoundationModel(torch.nn.Module):
 # - Scaling laws confirmed: more data, more parameters, longer context → better
 ```
 
-Hastings revealed why behavioral data trumps stated preferences: "What happens is, when we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make." Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences fails. A search engine that second-guesses the query fails. This is the central tension.
+Hastings revealed why behavioral data trumps stated preferences: "What happens is, when we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make." Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences fails. A search engine that second-guesses the query fails. This is the central tension between the two problems.
+
+It's also why Hastings famously said Netflix "competes with sleep" — not just with other streaming services. The recommender's job is not to satisfy a stated need but to command attention in a world of infinite alternatives. Search competes with ignorance. Recommendation competes with every other possible way to spend time. Different competitions, different rules, different systems.
 
 ## The Convergence: UniCoRn (2024)
 

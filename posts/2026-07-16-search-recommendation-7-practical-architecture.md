@@ -23,6 +23,12 @@ Before the architecture, a mental model. The search–recommendation distinction
 
 This is why Peter Norvig's 80% rule applies to search but not recommendation. If a search engine gets 80% right, users happily ignore the other 20% — they can see what went wrong. If a recommender gets 80% right, users notice the 20% wrong more than the 80% right, because every wrong suggestion is an interruption — screen space that could have shown something they'd love.
 
+### Why "Two Sides of the Same Coin" Is Misleading
+
+The coin metaphor implies you can flip from one to the other by changing perspective. You can't. The data is different (queries vs. behavioral histories). The latency profiles are different (sub-100ms real-time vs. batch-refreshed). The error tolerance is different (visible and dismissable vs. invisible and trust-eroding). The user posture is different (active and goal-directed vs. passive and open).
+
+The better metaphor is a **restaurant**: search is the menu, recommendation is the tasting menu, and the LLM-powered hybrid is a waiter who listens to what you're in the mood for, knows what the kitchen does well tonight, and helps you decide — sometimes by pointing at the menu, sometimes by making a suggestion you wouldn't have thought of, and always by knowing which mode you're in right now.
+
 ## Five Principles for Search and Recommendation
 
 **1. Make task identity a first-class feature.**
@@ -216,7 +222,7 @@ The arrival of LLMs makes these distinctions *more* important, not less. When a 
 
 The question is: **"do we know which one we're doing right now?"**
 
-The answer must be yes. Because search competes with ignorance. Recommendation competes with sleep. They are not the same fight.
+The answer must be yes. Because search competes with ignorance — it helps people find what they know they need. Recommendation competes with sleep — it surfaces what people didn't know they wanted, in a world of infinite alternatives. They are not the same fight. And the systems that win both are the ones that never forget which one they're fighting right now.
 
 ---
 

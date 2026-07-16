@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Part 7 of 7. Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.">
+  <meta name="description" content="Part 4 of 7. Deep dive into Netflix&#39;s search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn&#39;s unified approach to search and recs.">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,6 +652,292 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="search-recommendation-netflix">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
+          <h2><a href="#search-recommendation-netflix">&#34;S&amp;R: The Netflix Case Study&#34;</a></h2><p class="post-summary">Part 4 of 7. Deep dive into Netflix&#39;s search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn&#39;s unified approach to search and recs.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">netflix</span><span class="tag">elasticsearch</span><span class="tag">collaborative-filtering</span><span class="tag">foundation-model</span><span class="tag">unicorn</span><span class="tag">series</span>
+          </div>
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. Part 4 of a seven-part series. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.</em></p>
+<p>No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.</p>
+<p>Reed Hastings, Netflix's co-founder, articulated the recommendation goal simply: &quot;If the Starbucks secret is a smile when you get your latte, ours is that the website adapts to the individual's taste.&quot; The emotional target — &quot;Netflix gets me&quot; — is fundamentally different from search's target of &quot;Netflix found what I asked for.&quot; Recommendation is about identity. Search is about utility.</p>
+<h2 id="netflix-search-elasticsearch-flink-and-reverse-queries">Netflix Search: Elasticsearch, Flink, and Reverse Queries</h2>
+<p>Netflix Studio Search indexes federated GraphQL data across the entire content production pipeline. The architecture is built on <strong>Elasticsearch</strong> (running Apache Lucene's BM25 under the hood) with a custom query DSL [1].</p>
+<pre><code class="language-python"># Conceptual: Netflix's Studio Search indexing pipeline
+
+# 1. Events stream into Kafka from applications and CDC
+# 2. Apache Flink processes consume events, enrich via GraphQL, sink to Elasticsearch
+# 3. A custom ANTLR-based query parser translates SQL-like DSL → Elasticsearch queries
+# 4. Search returns entity keys only; results are hydrated via federated GraphQL
+# 5. Authorization is late-binding, translated into Boolean filters AND-ed with the query
+
+# Simplified: what a search request looks like
+class NetflixSearchRequest:
+    query: str            # e.g., &quot;movies shooting in Mexico with Arnold Schwarzenegger&quot;
+    filters: dict         # e.g., {&quot;content_type&quot;: &quot;movie&quot;, &quot;status&quot;: &quot;in_production&quot;}
+    user_id: str          # for late-binding authorization
+    facets: list[str]     # e.g., [&quot;genre&quot;, &quot;release_year&quot;, &quot;language&quot;]
+
+class NetflixSearchResponse:
+    entity_keys: list[str]       # just IDs — lean index
+    facets: dict[str, list]      # aggregation results
+    total_count: int
+
+# Results are hydrated by the client via GraphQL:
+# query { nodes(ids: $entity_keys) { title, synopsis, cast { name }, ... } }
+</code></pre>
+<p>Their <strong>Asset Management Platform (AMP)</strong> indexes over 7TB of digital media metadata. The hard lesson: their original design (one index per asset type, ~900 indices, 16,200 shards) caused CPU hotspots because shard sizes ranged from thousands to millions of documents. The fix — time-bucket-based indices with uniform sizes — dropped CPU from 70% to 10% [2].</p>
+<pre><code class="language-python"># AMP's metadata model: handling 1000+ asset types with heterogeneous schemas
+# Solution: nested metadata field with typed value columns
+
+es_document = {
+    &quot;asset_id&quot;: &quot;asset_12345&quot;,
+    &quot;created_at&quot;: &quot;2026-01-15T10:30:00Z&quot;,
+    &quot;metadata&quot;: [
+        {&quot;key&quot;: &quot;resolution&quot;, &quot;string_value&quot;: &quot;4K&quot;},
+        {&quot;key&quot;: &quot;runtime_minutes&quot;, &quot;long_value&quot;: 142},
+        {&quot;key&quot;: &quot;color_space&quot;, &quot;string_value&quot;: &quot;Rec.2020&quot;},
+        {&quot;key&quot;: &quot;file_size_gb&quot;, &quot;double_value&quot;: 287.5},
+        {&quot;key&quot;: &quot;has_subtitles&quot;, &quot;boolean_value&quot;: True},
+        {&quot;key&quot;: &quot;shoot_date&quot;, &quot;date_value&quot;: &quot;2025-11-03&quot;},
+    ]
+}
+
+# Query: &quot;find all 4K assets shot after October 2025 larger than 200GB&quot;
+# This becomes nested Elasticsearch queries matching both key AND value fields
+</code></pre>
+<p>Netflix also uses <strong>Percolate Queries</strong> for reverse search — matching documents to queries instead of queries to documents [3]. When a production asset changes (e.g., &quot;movie shooting in Mexico City without a key role assigned&quot;), percolation identifies which saved searches match, enabling targeted notifications.</p>
+<pre><code class="language-python"># Conceptual: percolation for production monitoring
+class ReverseSearch:
+    &quot;&quot;&quot;Store queries as documents, match new data against them.&quot;&quot;&quot;
+
+    def index_saved_search(self, search_id: str, criteria: dict):
+        &quot;&quot;&quot;A creative executive saves: 'alert me when a thriller shoots in Thailand'.&quot;&quot;&quot;
+        es_query = translate_to_elasticsearch(criteria)
+        es.index(index=&quot;saved_searches&quot;, id=search_id,
+                 body={&quot;query&quot;: es_query, &quot;owner&quot;: &quot;exec_42&quot;})
+
+    def percolate(self, asset_data: dict) -&gt; list[str]:
+        &quot;&quot;&quot;When a new asset arrives, find all searches that match it.&quot;&quot;&quot;
+        result = es.percolate(index=&quot;saved_searches&quot;,
+                             body={&quot;doc&quot;: asset_data})
+        return [match[&quot;_id&quot;] for match in result[&quot;matches&quot;]]
+
+# This is the kind of problem that only exists when you think of search
+# as a retrieval infrastructure problem, not just ranking.
+</code></pre>
+<h2 id="netflix-recommendation-three-tiers-one-goal">Netflix Recommendation: Three Tiers, One Goal</h2>
+<p>Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]:</p>
+<pre><code class="language-python">class NetflixRecommendationPipeline:
+    &quot;&quot;&quot;
+    Three-tier architecture: offline, nearline, online.
+
+    Offline: batch model training, feature pre-computation (hours/days)
+    Nearline: event-triggered async processing (seconds/minutes)
+    Online: real-time scoring with strict latency SLAs (milliseconds)
+    &quot;&quot;&quot;
+
+    def offline_training(self):
+        &quot;&quot;&quot;Run nightly: train models, pre-compute features.&quot;&quot;&quot;
+        # Matrix factorization / foundation model training
+        # Compute item-item similarity matrices
+        # Pre-compute user embeddings for active users
+        # Generate candidate sets per user cluster
+        pass
+
+    def nearline_update(self, user_id: str, event: str):
+        &quot;&quot;&quot;Triggers on user action: update recs after a viewing session.&quot;&quot;&quot;
+        if event == &quot;finished_watching&quot;:
+            # Update user embedding based on the completed title
+            # Refresh the &quot;Because You Watched&quot; row
+            # Adjust candidate generation weights
+            pass
+
+    def online_serve(self, user_id: str, context: dict, k: int = 40) -&gt; list[str]:
+        &quot;&quot;&quot;Called on every page load. Must return in &lt;200ms.&quot;&quot;&quot;
+        # Lookup pre-computed candidates
+        # Score with real-time context (time of day, device, session)
+        # Re-rank for diversity and freshness
+        # Return the rows for the homepage
+        pass
+</code></pre>
+<p>But the models themselves evolved dramatically. Their 2021 <em>AI Magazine</em> article contains a sobering finding: <strong>when only user–item interaction data is available, properly tuned non-deep-learning baselines remain competitive</strong> [5]. The power of deep learning emerged only when heterogeneous features (metadata, context, images, text) were incorporated.</p>
+<p>This is a crucial point that connects back to the search–recommendation distinction: <strong>search has always been multi-modal</strong> — query text, document text, links, anchor text, click data, freshness. Recommendation was historically impoverished: just a ratings matrix. The deep learning era equalized this by giving recommendation systems the same heterogeneous-feature diet that search had enjoyed since the 2000s.</p>
+<h3 id="the-foundation-model-2025">The Foundation Model (2025)</h3>
+<p>In 2025, Netflix published their most ambitious recommendation paper: a <strong>Foundation Model for Personalized Recommendation</strong> that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:</p>
+<pre><code class="language-python">class NetflixFoundationModel(torch.nn.Module):
+    &quot;&quot;&quot;
+    Autoregressive model: user actions → next item prediction.
+
+    Inspired by GPT but for user behavior instead of text.
+    &quot;&quot;&quot;
+
+    def __init__(self, vocab_size: int, embed_dim: int = 1024,
+                 num_layers: int = 24, num_heads: int = 16):
+        super().__init__()
+        self.token_embedding = torch.nn.Embedding(vocab_size, embed_dim)
+        self.positional_encoding = PositionalEncoding(embed_dim)
+
+        # Sparse attention for long sequences (hundreds of interactions)
+        self.transformer_blocks = torch.nn.ModuleList([
+            SparseTransformerBlock(embed_dim, num_heads)
+            for _ in range(num_layers)
+        ])
+
+        # Multi-token prediction: predict next n items, not just one
+        self.output_heads = torch.nn.ModuleList([
+            torch.nn.Linear(embed_dim, vocab_size) for _ in range(5)
+        ])
+
+        # Auxiliary prediction heads as regularizers
+        self.genre_head = torch.nn.Linear(embed_dim, num_genres)
+        self.language_head = torch.nn.Linear(embed_dim, num_languages)
+
+    def forward(self, token_ids: torch.Tensor, mask: torch.Tensor
+                ) -&gt; tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        &quot;&quot;&quot;Predict next items, genre, and language from interaction history.&quot;&quot;&quot;
+        x = self.token_embedding(token_ids)
+        x = self.positional_encoding(x)
+
+        for block in self.transformer_blocks:
+            x = block(x, mask)
+
+        # Next-item predictions (positions 1-5 ahead)
+        item_preds = [head(x) for head in self.output_heads]
+        # Auxiliary predictions
+        genre_pred = self.genre_head(x.mean(dim=1))
+        lang_pred = self.language_head(x.mean(dim=1))
+
+        return item_preds, genre_pred, lang_pred
+
+# Key design decisions:
+# - User actions are &quot;tokenized&quot; via an analog of Byte Pair Encoding
+# - Interaction tokens include watch duration, device, locale, time, item metadata
+# - Cold-start titles: metadata+ID embedding with attention-based mixing weighted
+#   by entity &quot;age&quot; — new titles lean on metadata, established ones on ID embeddings
+# - Scaling laws confirmed: more data, more parameters, longer context → better
+</code></pre>
+<p>Hastings revealed why behavioral data trumps stated preferences: &quot;What happens is, when we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot; Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences fails. A search engine that second-guesses the query fails. This is the central tension between the two problems.</p>
+<p>It's also why Hastings famously said Netflix &quot;competes with sleep&quot; — not just with other streaming services. The recommender's job is not to satisfy a stated need but to command attention in a world of infinite alternatives. Search competes with ignorance. Recommendation competes with every other possible way to spend time. Different competitions, different rules, different systems.</p>
+<h2 id="the-convergence-unicorn-2024">The Convergence: UniCoRn (2024)</h2>
+<p>Before UniCoRn, Netflix ran three separate models for search, homepage recommendations, and &quot;More Like This.&quot; UniCoRn replaced all three [7].</p>
+<pre><code class="language-python">class UniCoRn(torch.nn.Module):
+    &quot;&quot;&quot;
+    Unified Contextual Recommender: one model, three tasks.
+
+    The insight: treat task identity as a first-class feature.
+    &quot;&quot;&quot;
+
+    def __init__(self, user_vocab_size: int, item_vocab_size: int,
+                 embed_dim: int = 512):
+        super().__init__()
+        self.user_embedding = torch.nn.Embedding(user_vocab_size, embed_dim)
+        self.item_embedding = torch.nn.Embedding(item_vocab_size, embed_dim)
+        self.query_encoder = TextEncoder(embed_dim)  # encodes search query text
+        self.task_embedding = torch.nn.Embedding(3, embed_dim)  # search/recs/similar
+
+        # Shared transformer backbone
+        self.shared_backbone = TransformerEncoder(
+            d_model=embed_dim, num_layers=6, num_heads=8
+        )
+
+        # Task-specific output heads
+        self.search_head = torch.nn.Linear(embed_dim, 1)        # P(click | query)
+        self.recs_head = torch.nn.Linear(embed_dim, 1)          # P(watch | profile)
+        self.similar_head = torch.nn.Linear(embed_dim, 1)       # P(watch | source item)
+
+    def forward(self, user_id: int, item_ids: torch.Tensor,
+                query_text: str | None, source_entity_id: int | None,
+                task_type: int) -&gt; torch.Tensor:
+        &quot;&quot;&quot;
+        task_type: 0 = search, 1 = homepage recs, 2 = More Like This
+
+        Missing context imputation:
+        - Search: source_entity_id = null (no source entity)
+        - Recs: query_text = null (no explicit query)
+        - Similar: query_text = entity title text (imputed)
+        &quot;&quot;&quot;
+        user_vec = self.user_embedding(user_id)
+        item_vecs = self.item_embedding(item_ids)
+        task_vec = self.task_embedding(task_type)
+
+        # Impute missing contexts
+        query_vec = (self.query_encoder(query_text)
+                     if query_text
+                     else torch.zeros_like(user_vec))
+        source_vec = (self.item_embedding(source_entity_id)
+                      if source_entity_id is not None
+                      else torch.zeros_like(user_vec))
+
+        # Shared representation
+        combined = torch.cat([user_vec, item_vecs, query_vec, source_vec, task_vec],
+                             dim=-1)
+        hidden = self.shared_backbone(combined)
+
+        # Task-specific scoring
+        if task_type == 0:
+            return self.search_head(hidden)
+        elif task_type == 1:
+            return self.recs_head(hidden)
+        else:
+            return self.similar_head(hidden)
+
+# Results:
+# +7% lift for search tasks
+# +10% lift for recommendations tasks
+# Fewer models to maintain, shared learnings across tasks
+</code></pre>
+<p>The critical detail: UniCoRn succeeded not by ignoring the distinction but by making the model <strong>explicitly aware of it</strong>. <code>task_type</code> tells the model which behavior to invoke. The imputation strategy respects the structural difference. The separate output heads optimize for different objectives because, at Netflix, a successful search is not the same thing as a successful recommendation.</p>
+<p>Netflix also documented the central tension: <strong>personalization can overpower query relevance</strong>. If a user searches for &quot;documentaries about World War II&quot; and the recommender knows the user loves romantic comedies, should it show <em>The Notebook</em>? Obviously not. UniCoRn added personalization incrementally, with guardrails [8].</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>UniCoRn achieved +7% for search and +10% for recommendations by making task identity explicit.</strong> What would the numbers be if they had collapsed the distinction entirely — one model, one objective, no task_type feature? Would it outperform the separate models at all?</p>
+</li>
+<li>
+<p><strong>Netflix confirmed that scaling laws apply to recommendation foundation models.</strong> Is there a point where a large enough recommender, trained on enough user behavior, internalizes search as a special case — without being told?</p>
+</li>
+<li>
+<p><strong>Percolate queries (reverse search) solve a problem that only exists when you think of search as infrastructure, not ranking.</strong> What other search primitives are we missing because we default to the ranked-list mental model?</p>
+</li>
+<li>
+<p><strong>Hastings said Netflix competes with sleep.</strong> If recommendation is competing for attention and search is competing with ignorance, what happens when an LLM can do both? Does the system compete with everything?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/studio-search-using-elasticsearch-and-apache-flink-to-index-federated-graphql-data-7d77cad7b7c8"><em>Netflix Studio Search: Using Elasticsearch and Apache Flink to Index Federated GraphQL Data</em></a>. March 2022.</p>
+</li>
+<li>
+<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/elasticsearch-indexing-strategy-in-asset-management-platform-amp-99332231e541"><em>Elasticsearch Indexing Strategy in Asset Management Platform (AMP)</em></a>. 2023.</p>
+</li>
+<li>
+<p>InfoQ. <a target="_blank" rel="noopener noreferrer" href="https://www.infoq.com/news/2024/04/netflix-percolate-queries/"><em>Netflix Uses Elasticsearch Percolate Queries to Implement Reverse Searches Efficiently</em></a>. April 2024.</p>
+</li>
+<li>
+<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/system-architectures-for-personalization-and-recommendation-e081aa94b5d8"><em>System Architectures for Personalization and Recommendation</em></a>. March 2013.</p>
+</li>
+<li>
+<p>Harald Steck et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1609/aimag.v42i3.18140"><em>Deep Learning for Recommender Systems: A Netflix Case Study</em></a>. AI Magazine, 42(3): 7–18, 2021.</p>
+</li>
+<li>
+<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/foundation-model-for-personalized-recommendation-1a0bd8e02d39"><em>Foundation Model for Personalized Recommendation</em></a>. March 2025.</p>
+</li>
+<li>
+<p>Moumita Bhattacharya et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/fullHtml/10.1145/3640457.3688034"><em>Joint Modeling of Search and Recommendations Via an Unified Contextual Recommender (UniCoRn)</em></a>. RecSys 2024.</p>
+</li>
+<li>
+<p>Sudarshan Lamkhede and Christoph Kofler. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/abs/10.1145/3460231.3474602"><em>Recommendations and Results Organization in Netflix Search</em></a>. RecSys 2021.</p>
+</li>
+</ol>
+<hr>
+<p><em>Previous: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-recommendation-techniques">Part 3 — Thirty Years of Recommendation</a> · Next: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-industry-boundary">Part 5 — How Spotify, DoorDash, Airbnb, and Pinterest Navigate the Boundary</a></em></p>
+</div>
+      </article>
       <article class="post" id="search-recommendation-practical-architecture">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
@@ -667,6 +953,9 @@
 <p><strong>The Grocery List (Search) vs. The Recipe Suggestion (Recommendation).</strong> You walk into a store with a list: milk, eggs, bread. Search. The store's app notices your cart and says: &quot;With those ingredients, you could make shakshuka. Want me to show you cumin and paprika?&quot; Recommendation. The deviation from the list is the <em>point</em> in one case. It's a <em>failure</em> in the other.</p>
 <p><strong>The Error Cost Difference.</strong> A search error is a precision failure: &quot;I asked for X and got Y.&quot; The user immediately knows something is wrong. The error is visible and attributable. A recommendation error is a relevance failure: &quot;The system showed me something I don't care about.&quot; The user doesn't know if the system is broken or if they're just having a bad experience. The error is invisible and erodes trust cumulatively.</p>
 <p>This is why Peter Norvig's 80% rule applies to search but not recommendation. If a search engine gets 80% right, users happily ignore the other 20% — they can see what went wrong. If a recommender gets 80% right, users notice the 20% wrong more than the 80% right, because every wrong suggestion is an interruption — screen space that could have shown something they'd love.</p>
+<h3 id="why-two-sides-of-the-same-coin-is-misleading">Why &quot;Two Sides of the Same Coin&quot; Is Misleading</h3>
+<p>The coin metaphor implies you can flip from one to the other by changing perspective. You can't. The data is different (queries vs. behavioral histories). The latency profiles are different (sub-100ms real-time vs. batch-refreshed). The error tolerance is different (visible and dismissable vs. invisible and trust-eroding). The user posture is different (active and goal-directed vs. passive and open).</p>
+<p>The better metaphor is a <strong>restaurant</strong>: search is the menu, recommendation is the tasting menu, and the LLM-powered hybrid is a waiter who listens to what you're in the mood for, knows what the kitchen does well tonight, and helps you decide — sometimes by pointing at the menu, sometimes by making a suggestion you wouldn't have thought of, and always by knowing which mode you're in right now.</p>
 <h2 id="five-principles-for-search-and-recommendation">Five Principles for Search and Recommendation</h2>
 <p><strong>1. Make task identity a first-class feature.</strong></p>
 <pre><code class="language-python">class TaskAwareModel(torch.nn.Module):
@@ -862,7 +1151,7 @@ separate_infrastructure = {
 <p>The mathematical machinery — vector spaces, embedding learning, transformer attention, contrastive objectives — is increasingly shared. Netflix's UniCoRn, Spotify's intent router, DoorDash's content embeddings, Pinterest's multi-task two-tower models — all exploit this commonality. As Greg Linden showed at Amazon, the algorithms that retrieve known items and the algorithms that surface unknown ones succeed for different reasons. As Reed Hastings understood, the emotional contract of &quot;Netflix gets me&quot; is not the same as &quot;Netflix found what I searched for.&quot; As Karen Spärck Jones knew in 1999, systems that assist human users cannot replace them — they can only narrow the gap. As Peter Norvig warned, the gap between &quot;here are some suggestions&quot; and &quot;here is what you need&quot; demands a higher standard of trust.</p>
 <p>The arrival of LLMs makes these distinctions <em>more</em> important, not less. When a single model can retrieve, rank, recommend, and explain — all in natural language — the question is no longer &quot;can we unify?&quot;</p>
 <p>The question is: <strong>&quot;do we know which one we're doing right now?&quot;</strong></p>
-<p>The answer must be yes. Because search competes with ignorance. Recommendation competes with sleep. They are not the same fight.</p>
+<p>The answer must be yes. Because search competes with ignorance — it helps people find what they know they need. Recommendation competes with sleep — it surfaces what people didn't know they wanted, in a world of infinite alternatives. They are not the same fight. And the systems that win both are the ones that never forget which one they're fighting right now.</p>
 <hr>
 <hr>
 <h2 id="open-questions">Open Questions</h2>
@@ -897,536 +1186,6 @@ separate_infrastructure = {
 </ol>
 <hr>
 <p><em>Previous: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-llms">Part 6 — How LLMs Reshape Both Fields</a></em> · <em>Series start: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-fundamental-distinction">Part 1 — The Fundamental Distinction</a></em></p>
-</div>
-      </article>
-      <article class="post" id="search-is-not-recommendation">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
-          <h2><a href="#search-is-not-recommendation">Search Is Not Recommendation</a></h2><p class="post-summary">Search and recommendation are often conflated, especially now that LLMs blur the boundary. This post traces each field&#39;s history, techniques, and their convergence at Netflix, Spotify, DoorDash, and Pinterest — arguing that the distinction remains essential for building systems that work.</p>
-          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">information-retrieval</span><span class="tag">collaborative-filtering</span><span class="tag">llm</span><span class="tag">netflix</span><span class="tag">machine-learning</span><span class="tag">survey</span>
-          </div>
-        </header>
-        <div class="post-body"><p>Search and recommendation are often described as &quot;two sides of the same coin.&quot; It is a comforting metaphor. It is also wrong — incomplete enough to be dangerous.</p>
-<p>Both match users with items. Both rank results. Both drive discovery. Netflix, Spotify, DoorDash, Pinterest, and Airbnb build both. But the similarities are surface-deep. Search and recommendation emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confuse them, and you get systems that are bad at both: search results that drift into irrelevance under the weight of personalization, recommendation feeds that ignore explicit intent.</p>
-<p>The arrival of Large Language Models makes the distinction sharper, not softer. When a single transformer can retrieve documents, rank products, generate recommendations, and explain its reasoning, the temptation is to collapse everything into one model, one pipeline, one problem. Netflix's UniCoRn and Spotify's agentic search router do something close — but they succeed precisely because they respect the distinction, not because they ignore it.</p>
-<p>Consider three everyday scenarios:</p>
-<ol>
-<li>
-<p>You walk into a library and ask the librarian, &quot;Where are the books on the history of the Byzantine Empire?&quot; The librarian walks you to a specific shelf. That's <strong>search</strong>.</p>
-</li>
-<li>
-<p>You walk into the same library and the librarian says, &quot;I notice you've been reading a lot about medieval trade routes. We just got a new book on the Silk Road you might enjoy.&quot; That's <strong>recommendation</strong>.</p>
-</li>
-<li>
-<p>You walk into the library, glance around, and say, &quot;I'm not sure what I want. Something historical but not too heavy, maybe with a good story?&quot; The librarian pauses, then suggests three books and asks which one sounds right. That's <strong>the boundary</strong> — where search and recommendation blur.</p>
-</li>
-</ol>
-<p>These three scenarios feel different. They engage different cognitive postures, demand different system designs, and tolerate different kinds of errors. The first failure looks like &quot;this librarian doesn't know where the books are.&quot; The second looks like &quot;this librarian doesn't understand my taste.&quot; The third looks like a conversation — and it's exactly the mode that LLMs are making possible at scale.</p>
-<p>This post traces the history, the mathematics, the architectures, and the convergence. It uses Netflix as the central case study — the company that runs perhaps the world's most sophisticated search <em>and</em> recommendation systems side by side — and draws on engineering blogs from Spotify, DoorDash, Pinterest, Airbnb, and others to show how the best teams think about the boundary.</p>
-<hr>
-<h2 id="the-fundamental-distinction">The Fundamental Distinction</h2>
-<p>Before the history, the definitions. The difference between search and recommendation can be stated in one sentence:</p>
-<blockquote>
-<p><strong>Search is query-driven retrieval. Recommendation is preference-driven filtering.</strong></p>
-</blockquote>
-<p>But that sentence unpacks into a richer set of dimensions:</p>
-<table>
-<thead>
-<tr>
-<th>Dimension</th>
-<th>Search</th>
-<th>Recommendation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>User intent</strong></td>
-<td>Active: user formulates a query</td>
-<td>Passive: system surfaces items unprompted</td>
-</tr>
-<tr>
-<td><strong>Input representation</strong></td>
-<td>Short, explicit query text</td>
-<td>Implicit user profile (history, behavior, context)</td>
-</tr>
-<tr>
-<td><strong>Core operation</strong></td>
-<td>Query–document matching</td>
-<td>User–item matching</td>
-</tr>
-<tr>
-<td><strong>Information need</strong></td>
-<td>Known: &quot;I want to find X&quot;</td>
-<td>Unknown: &quot;Show me what I might like&quot;</td>
-</tr>
-<tr>
-<td><strong>Evaluation</strong></td>
-<td>Precision, recall, NDCG, MRR</td>
-<td>RMSE, AUC, CTR, retention, discovery</td>
-</tr>
-<tr>
-<td><strong>Cold start</strong></td>
-<td>Query/document side (new terms, new docs)</td>
-<td>User/item side (new users, new items)</td>
-</tr>
-<tr>
-<td><strong>Serendipity</strong></td>
-<td>Undesirable (should return what was asked for)</td>
-<td>Desirable (should surface unexpected gems)</td>
-</tr>
-<tr>
-<td><strong>Personalization</strong></td>
-<td>Optional; applied at re-ranking</td>
-<td>Core to the entire pipeline</td>
-</tr>
-<tr>
-<td><strong>Theoretical roots</strong></td>
-<td>Information Retrieval (library science, linguistics)</td>
-<td>Collaborative Filtering (HCI, machine learning)</td>
-</tr>
-</tbody>
-</table>
-<p>The key insight is that <strong>the user's posture differs</strong>. In search, the user leans forward — they have a goal. In recommendation, the user leans back — they are open to suggestion. The system architectures that serve these two postures optimize for fundamentally different things.</p>
-<p>Peter Norvig captured the consequence of this difference with characteristic precision. When asked about the shift from retrieval to proactive assistance, he noted:</p>
-<blockquote>
-<p>&quot;With information retrieval, anything over 80% recall and precision is pretty good — not every suggestion has to be perfect, since the user can ignore the bad suggestions. With assistance, there is a much higher barrier.&quot;</p>
-</blockquote>
-<p>The bar is different because the contract is different. In search, the user is the arbiter — they scan results, skip what's irrelevant, and reformulate if necessary. The system is a tool the user <em>operates</em>. In recommendation, the system is the arbiter — it decides what the user sees. If it's wrong, the user doesn't skip a result; they lose trust in the system itself. This is why the distinction matters in production: getting search wrong loses a query. Getting recommendation wrong loses a user.</p>
-<p>Belkin and Croft put this more formally in their 1992 survey of information filtering: search systems index items (documents) and match against ad-hoc queries from anonymous users. Filtering (recommendation) systems index user profiles and match against incoming items over time, for known users whose preferences are modeled [1].</p>
-<p>The theoretical frameworks emerged from different communities — library science and computational linguistics for search, human-computer interaction and machine learning for recommendation — and those different origins shaped everything that followed.</p>
-<h3 id="why-people-confuse-them--and-why-its-a-costly-mistake">Why People Confuse Them — And Why It's a Costly Mistake</h3>
-<p>If the distinction is so clear, why do smart engineers keep conflating them? Three traps account for most of the damage.</p>
-<p><strong>Trap 1: They share the same surface shape.</strong> Both search and recommendation produce a ranked list of items. Type a query into Google, get a list. Open Netflix, get a list. The visual output is identical, so the mental model defaults to &quot;they're the same thing with different inputs.&quot; This is like assuming a taxi and a personal chauffeur are the same because both are cars. The interface is the same; the contract is not.</p>
-<p><strong>Trap 2: They use the same mathematical tools.</strong> Both problems can be formulated as learning a matching function <em>f(x, y) → relevance score</em>. Search learns <em>f(query, document)</em>. Recommendation learns <em>f(user, item)</em>. The architectures — two-tower encoders, dot-product scoring, ANN retrieval — are often identical. When the code looks the same, the problems feel the same. But the <em>x</em> in search is an explicit string the user typed 500 milliseconds ago. The <em>x</em> in recommendation is a latent representation of years of behavior, updated daily. Same function signature, completely different semantics.</p>
-<p><strong>Trap 3: LLMs make the boundary genuinely fuzzy.</strong> Ask an LLM &quot;What should I watch tonight? I loved Dark and Severance&quot; and it will produce recommendations. Ask the same LLM &quot;Find me mind-bending sci-fi shows like Dark&quot; and it will produce search results. The same model, the same prompt interface, the same output format. The temptation to conclude &quot;search and recommendation are the same now&quot; is powerful — and wrong in exactly the ways this post documents. The LLM is a substrate, not a solution. It can perform either task, but optimizing for both simultaneously without awareness of which mode is active produces the worst of both worlds.</p>
-<p>The best survey papers in both fields make this explicit. The <em>Recommender Systems Handbook</em> (Ricci, Rokach, and Shapira, 3rd edition, 2022) — the canonical 1,060-page reference — treats recommendation as a distinct discipline with its own taxonomy: collaborative filtering, content-based, context-aware, session-based, and sequential methods, each with different assumptions about what data is available and what success looks like [33]. The parallel IR survey literature — Guo et al.'s <em>A Deep Look into Neural Ranking Models for Information Retrieval</em> (2020) and Hambarde and Proença's <em>Information Retrieval: Recent Advances and Beyond</em> (2023) — organizes the field around query-document matching, retrieval stages, and ranking objectives that have no equivalent in the recommendation literature [34][35]. These surveys do not reference each other much. That is not an accident. It is evidence that the fields have different problem statements, different evaluation cultures, and different assumptions about what &quot;good&quot; means.</p>
-<hr>
-<h2 id="part-i-how-search-works">Part I: How Search Works</h2>
-<p>The search problem is deceptively simple: given a query and a collection of documents, return the documents most relevant to the query, ranked. Every major advance has come from realizing the previous answer was incomplete — not wrong, just missing a dimension of what &quot;relevance&quot; means. Hambarde and Proença (2023) organize the evolution into term-based retrieval (the first forty years) and semantic retrieval (the last decade). The key insight: modern search is never one model — it is a pipeline where each stage compensates for the limitations of the one before it [35].</p>
-<h3 id="boolean-retrieval--exact-matching-and-its-limits-1960s1970s">Boolean Retrieval — Exact Matching and Its Limits (1960s–1970s)</h3>
-<p>The earliest computerized search systems were built for libraries and intelligence agencies. They used Boolean logic: a query was a logical expression of terms, and documents either matched or did not. There was no ranking — just set intersection. This worked for trained librarians who could craft precise queries. It failed for everyone else.</p>
-<p>The fundamental problem was what we now call the <strong>vocabulary mismatch problem</strong>: users describe their information needs using different words than authors used to write. Searching for &quot;tragic love story&quot; returns nothing for Shakespeare's &quot;star-crossed lovers.&quot; Boolean retrieval is blind to semantics.</p>
-<p>Karen Spärck Jones, who invented inverse document frequency (IDF) — the weighting scheme that would become half of TF-IDF — understood this better than anyone. In a 1999 reflection on the field she helped create, she wrote: &quot;Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them.&quot; Even in 1999, she saw that the irreducible ambiguity of human language meant retrieval would always be an approximation. The vocabulary mismatch problem is not a bug to be fixed — it is the fundamental condition of language, and every generation of retrieval technology, from TF-IDF to BERT to RAG, is an attempt to narrow the gap without ever closing it.</p>
-<h3 id="the-vector-space-model--when-documents-became-points-in-space-1975">The Vector Space Model — When Documents Became Points in Space (1975)</h3>
-<p>Gerard Salton and his collaborators at Cornell changed everything. In 1975, they proposed the <strong>Vector Space Model (VSM)</strong>, representing both documents and queries as sparse vectors in a high-dimensional term space [2]. A document was no longer a set of words — it was a point in a mathematical space where similarity could be computed.</p>
-<p>The breakthrough was the weighting scheme: <strong>TF-IDF</strong>. Term Frequency (TF) measured how often a term appeared in a document — more frequent terms are more important. Inverse Document Frequency (IDF) discounted terms that appeared everywhere — common words are less discriminative. The product gave each term a weight that captured both local importance and global rarity.</p>
-<pre><code>TF-IDF(t, d, D) = tf(t, d) × log(N / df(t))
-</code></pre>
-<p>Where <code>tf(t,d)</code> is the frequency of term <code>t</code> in document <code>d</code>, <code>N</code> is the total number of documents, and <code>df(t)</code> is the number of documents containing <code>t</code>.</p>
-<p>Similarity between query and document was computed via cosine similarity — the angle between their TF-IDF vectors. This worked remarkably well, was computationally efficient with inverted indices, and remains a strong baseline fifty years later.</p>
-<p>The VSM didn't solve the vocabulary mismatch problem, but it gave us a mathematical framework for thinking about it.</p>
-<h3 id="bm25--the-probabilistic-framework-that-still-powers-production-search-1970s1990s">BM25 — The Probabilistic Framework That Still Powers Production Search (1970s–1990s)</h3>
-<p>Parallel to Salton's vector space work, a different tradition emerged: probabilistic relevance models. Stephen Robertson, Karen Spärck Jones, and collaborators at City, University of London asked a different question: given a document and a query, what is the probability that the document is relevant?</p>
-<p>The answer was the <strong>Binary Independence Model</strong> and, eventually, the <strong>Okapi BM25</strong> ranking function. Published in 1994, BM25 became the dominant text retrieval function for the next two decades [3]. Its formula:</p>
-<pre><code>BM25(D, Q) = Σ IDF(qᵢ) × [f(qᵢ, D) × (k₁ + 1)] / [f(qᵢ, D) + k₁ × (1 − b + b × |D| / avgdl)]
-</code></pre>
-<p>The critical innovations over TF-IDF were:</p>
-<ol>
-<li><strong>Diminishing returns for term frequency</strong>: a term appearing 10 times is not 10× as important as appearing once. The saturation curve (controlled by <code>k₁</code>, typically 1.2–2.0) captures this.</li>
-<li><strong>Document length normalization</strong>: longer documents aren't inherently more relevant. The <code>b</code> parameter (typically 0.75) controls how much length is normalized away.</li>
-</ol>
-<p>BM25 is derived from a probabilistic relevance framework, not heuristics. It remains the default scoring function in Elasticsearch and Lucene — which means it powers the search infrastructure at Netflix, Spotify, DoorDash, and most of the web.</p>
-<h3 id="pagerank--when-the-link-graph-became-a-relevance-signal-1998">PageRank — When the Link Graph Became a Relevance Signal (1998)</h3>
-<p>When the web arrived, content-based retrieval hit a wall. Any document can link to any other. Brin and Page's insight at Stanford was that the link graph itself carried relevance information [4]. PageRank treated links as votes: a page linked to by many important pages is itself important. The score propagates through the graph via a random-surfer model:</p>
-<pre><code>PR(p) = (1 − d) / N + d × Σ PR(pᵢ) / L(pᵢ)
-</code></pre>
-<p>Where <code>d</code> is the damping factor (typically 0.85), <code>L(pᵢ)</code> is the number of outbound links, and the sum runs over all pages linking to <code>p</code>.</p>
-<p>PageRank didn't replace content-based retrieval — it augmented it. A modern search engine computes hundreds of features (BM25, PageRank, proximity, freshness, click-through rate, spam score) and feeds them into a learned ranking function.</p>
-<h3 id="learning-to-rank--treating-ranking-as-a-supervised-ml-problem-2000s2010s">Learning to Rank — Treating Ranking as a Supervised ML Problem (2000s–2010s)</h3>
-<p>The next leap was treating ranking as a supervised machine learning problem. Given a query, a set of candidate documents with relevance labels, and hundreds of hand-crafted features, learn a function that orders them optimally.</p>
-<p>The dominant approaches were:</p>
-<ul>
-<li><strong>Pointwise</strong>: predict relevance score for each query–document pair independently (regression, classification)</li>
-<li><strong>Pairwise</strong>: learn to order pairs of documents correctly (RankNet, RankSVM)</li>
-<li><strong>Listwise</strong>: optimize the entire ranked list directly (LambdaRank, LambdaMART)</li>
-</ul>
-<p><strong>LambdaMART</strong> — a gradient-boosted decision tree trained with a listwise LambdaRank objective — became the industry standard. By 2010, every major search engine used some variant of this approach. Microsoft, Yahoo, and Google published extensively on it [5].</p>
-<h3 id="the-neural-turn--from-word2vec-to-bert-to-dense-retrieval-20132020">The Neural Turn — From Word2Vec to BERT to Dense Retrieval (2013–2020)</h3>
-<p>Three papers changed search again:</p>
-<ol>
-<li><strong>Word2Vec</strong> (Mikolov et al., 2013): showed that dense, low-dimensional word vectors could capture semantic relationships. &quot;king − man + woman ≈ queen&quot; entered the lexicon.</li>
-<li><strong>BERT</strong> (Devlin et al., 2018): introduced deeply contextualized bidirectional embeddings. A word's representation now depends on the words around it. This was transformative for query–document matching — &quot;bank&quot; in &quot;river bank&quot; versus &quot;investment bank&quot; finally had different vectors.</li>
-<li><strong>Dense Passage Retrieval (DPR)</strong> (Karpukhin et al., 2020): used a BERT-based bi-encoder architecture — one encoder for queries, one for passages — trained with contrastive learning. Dense retrieval combined with FAISS-based approximate nearest neighbor search significantly outperformed BM25 on top-k accuracy.</li>
-</ol>
-<p>The modern search stack is hybrid: BM25 (or learned sparse retrieval like SPLADE) for first-stage candidate generation, followed by a neural cross-encoder for re-ranking. BM25 is not obsolete — it is repurposed as the fast, cheap first stage of a multi-stage pipeline.</p>
-<hr>
-<h2 id="part-ii-how-recommendation-works">Part II: How Recommendation Works</h2>
-<p>If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — before they even <em>know</em> they want it. This is a harder information problem. In search, the user tells you what they want. In recommendation, you infer it from behavior they may not be conscious of. Wu et al. (2023) organize the field into two families: interaction-only models (collaborative filtering) and models that incorporate side information (content, context, sequences). The progression mirrors search's evolution from impoverished to rich representations — but the starting points are inverted. Search began with text and added behavior. Recommendation began with behavior and added text [36].</p>
-<h3 id="tapestry--the-first-collaborative-filtering-system-1992">Tapestry — The First Collaborative Filtering System (1992)</h3>
-<p>While search emerged from library science, recommendation emerged from office work. In 1992, researchers at Xerox PARC built <strong>Tapestry</strong>, an email filtering system that let users annotate messages and write queries referencing others' annotations — &quot;show me emails that Bob found interesting&quot; [6].</p>
-<p>They coined a term: <strong>collaborative filtering</strong>. The insight was that relevance is social. If people with similar tastes found something useful, you probably will too. Tapestry required users to write explicit queries, which limited its reach. But the idea was planted.</p>
-<h3 id="grouplens--automating-collaborative-filtering-at-scale-1994">GroupLens — Automating Collaborative Filtering at Scale (1994)</h3>
-<p>The automation came from the <strong>GroupLens</strong> project at the University of Minnesota. Paul Resnick, John Riedl, Joseph Konstan, and colleagues built a system that automatically predicted how much a user would like a Usenet article based on ratings from similar users [7].</p>
-<p>The architecture was elegant:</p>
-<pre><code class="language-python"># User-based collaborative filtering (simplified)
-def predict_rating(user, item, ratings_matrix):
-    # Find users similar to the target user (Pearson correlation)
-    neighbors = find_k_nearest_neighbors(user, k=50)
-    # Weighted average of neighbors' ratings for this item
-    numerator = sum(sim(user, n) * ratings_matrix[n][item] for n in neighbors)
-    denominator = sum(abs(sim(user, n)) for n in neighbors)
-    return numerator / denominator
-</code></pre>
-<p>GroupLens didn't just build a research prototype — they spawned <strong>Net Perceptions</strong>, a company that served Amazon, CDnow, and others. In 2010, the team received the <strong>ACM Software System Award</strong> for showing how &quot;a distributed set of users could receive personalized recommendations by sharing ratings.&quot;</p>
-<h3 id="amazon-item-to-item-cf--scaling-recommendations-to-millions-of-products-2003">Amazon Item-to-Item CF — Scaling Recommendations to Millions of Products (2003)</h3>
-<p>The GroupLens approach — user-based collaborative filtering — had a scaling problem. Computing user-user similarity is O(N²) in the number of users, and it must be recomputed as users rate more items.</p>
-<p>Amazon's Greg Linden, Brent Smith, and Jeremy York published a different approach in 2003: <strong>item-to-item collaborative filtering</strong> [8]. Instead of finding similar users, find similar items:</p>
-<pre><code class="language-python"># Item-based collaborative filtering
-def build_similarity_matrix(ratings_matrix):
-    # Pre-compute item-item similarities offline
-    for item_i in items:
-        for item_j in items:
-            # Only consider users who rated both
-            common_users = users_who_rated(item_i) ∩ users_who_rated(item_j)
-            sim(item_i, item_j) = cosine_similarity(
-                [ratings[u][item_i] for u in common_users],
-                [ratings[u][item_j] for u in common_users]
-            )
-
-def recommend(user):
-    # Online: look up items similar to what the user liked
-    liked_items = get_items_rated_highly(user)
-    candidates = []
-    for item in liked_items:
-        candidates.extend(similar_items[item])
-    return rank_and_filter(candidates)
-</code></pre>
-<p>The key advantage: the O(N²) item-to-item similarity matrix is computed offline. At serving time, recommendations are a simple lookup.</p>
-<p>Linden later explained why this approach beat search-based methods in practice: &quot;Rather than matching the user to similar customers, item-to-item collaborative filtering matches each of the user's purchased and rated items to similar items, then combines those similar items into a recommendation list.&quot; Search-based approaches — constructing queries from a user's purchase history to find items with similar keywords or categories — produced recommendations that were either too general (bestsellers) or too narrow (more books by the same author). Collaborative filtering discovered cross-category connections: people who bought <em>Into Thin Air</em> also bought <em>The Perfect Storm</em>. No keyword match connects a mountaineering disaster to a fishing boat tragedy. Only behavior does.</p>
-<p>Amazon reported that recommendations drove a measurable fraction of revenue — a finding that validated the commercial importance of the search/recommendation distinction. Search helps users find what they know they want. Recommendation helps them discover what they didn't know existed. Both drive revenue, but through completely different mechanisms.</p>
-<h3 id="the-netflix-prize--when-matrix-factorization-took-over-the-field-20062009">The Netflix Prize — When Matrix Factorization Took Over the Field (2006–2009)</h3>
-<p>If Amazon's paper showed that recommendation had commercial value, the Netflix Prize showed that it was a serious mathematical discipline.</p>
-<p>In October 2006, Netflix published a dataset — 100 million ratings from 480,000 users on 17,770 movies — and offered $1 million to any team that could improve their Cinematch algorithm's RMSE by 10%. Three years of frantic innovation followed.</p>
-<p>The winning approach — and the one that reshaped the field — was <strong>matrix factorization</strong>. Instead of computing user-user or item-item similarities directly, learn low-dimensional vector representations (embeddings) for every user and item:</p>
-<pre><code class="language-python"># Matrix factorization via SGD (simplified)
-def train_matrix_factorization(ratings, k=50, epochs=100, lr=0.01, lambda_reg=0.02):
-    # Initialize user and item latent factor matrices
-    P = np.random.normal(0, 0.1, (num_users, k))  # user factors
-    Q = np.random.normal(0, 0.1, (num_items, k))  # item factors
-
-    for epoch in range(epochs):
-        for u, i, r in ratings:
-            error = r - np.dot(P[u], Q[i])
-            P[u] += lr * (error * Q[i] - lambda_reg * P[u])
-            Q[i] += lr * (error * P[u] - lambda_reg * Q[i])
-
-    return P, Q
-
-def predict(u, i):
-    return np.dot(P[u], Q[i])
-</code></pre>
-<p>Yehuda Koren's <strong>SVD++</strong> fused explicit ratings with implicit feedback (what you browsed, not just what you rated) and bias terms (some users rate everything high; some movies are universally beloved). The winning ensemble — BellKor's Pragmatic Chaos — achieved RMSE 0.8556, a 10.07% improvement over Cinematch [9].</p>
-<p>The Netflix Prize established matrix factorization as the dominant paradigm for nearly a decade. It also revealed the field's key tension: the metric that drove the competition (RMSE on withheld ratings) doesn't actually measure whether users are satisfied. More on that later.</p>
-<h3 id="the-deep-learning-era--youtube-wide--deep-and-the-multi-stage-pipeline-20162020">The Deep Learning Era — YouTube, Wide &amp; Deep, and the Multi-Stage Pipeline (2016–2020)</h3>
-<p>YouTube's 2016 paper <em>&quot;Deep Neural Networks for YouTube Recommendations&quot;</em> marked the moment deep learning entered production recommendation at scale [10]. The architecture was two-stage:</p>
-<ol>
-<li><strong>Candidate generation</strong>: a deep neural network narrowed millions of videos to hundreds, using watch history, search history, demographics, and video embeddings as features.</li>
-<li><strong>Ranking</strong>: a separate DNN scored candidates using hundreds of features, optimizing for expected watch time rather than clicks — a critical insight that aligned the objective with what YouTube actually cared about.</li>
-</ol>
-<p>The feature engineering that followed — Wide &amp; Deep, DeepFM, Deep Interest Network (DIN) — pushed recommendation from collaborative filtering into a regime where hundreds of heterogeneous signals (user demographics, item metadata, time, device, context, cross-features) were ingested by deep networks optimized for specific business objectives.</p>
-<p>By 2020, the standard industry pipeline had crystalized into three stages: <strong>retrieval</strong> (fast, cheap, high recall), <strong>ranking</strong> (expensive ML, high precision), and <strong>re-ranking</strong> (diversity, freshness, business rules).</p>
-<hr>
-<h2 id="part-iii-netflix--search-and-recommendation-at-global-scale">Part III: Netflix — Search and Recommendation at Global Scale</h2>
-<p>No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and have published extensively about each.</p>
-<h3 id="netflix-search-query-driven-retrieval-at-scale">Netflix Search: Query-Driven Retrieval at Scale</h3>
-<p>Netflix Studio Search indexes federated GraphQL data across the entire content production pipeline. Their architecture, described in a 2022 Netflix Tech Blog post and subsequent InfoQ coverage, is built on <strong>Elasticsearch</strong> (which runs Apache Lucene's BM25 under the hood) with a custom SQL-like query DSL [11][12].</p>
-<p>The pipeline works as follows:</p>
-<ul>
-<li>Application events and Change Data Capture (CDC) events stream into <strong>Kafka</strong> topics</li>
-<li><strong>Apache Flink</strong> processes consume these events, enrich data via federated GraphQL queries, and sink documents into Elasticsearch</li>
-<li>A custom ANTLR-based query parser translates a SQL-like DSL into proper Elasticsearch queries, handling nested JSON documents transparently</li>
-<li>Search returns matching entity keys only; results are hydrated via federated GraphQL queries for any needed data</li>
-<li>Authorization is late-binding: at query time, a centralized policy server evaluates constraints, translated into additional Boolean filters AND-ed with the user's query</li>
-</ul>
-<p>Separately, Netflix's <strong>Asset Management Platform (AMP)</strong> indexes over 7TB of digital media metadata. They learned hard lessons about Elasticsearch shard sizing: their original design (one index per asset type, ~900 indices, 16,200 shards) caused CPU hotspots because shard sizes ranged from thousands to millions of documents. Switching to time-bucket-based indices with uniform sizes dropped CPU utilization from 70% to 10% [13].</p>
-<p>Netflix also uses <strong>Elasticsearch Percolate Queries</strong> for reverse search — instead of matching documents to queries, match queries to documents. When a production asset changes (e.g., &quot;movie shooting in Mexico City without a key role assigned&quot;), percolation identifies which saved searches match, enabling targeted notifications. This is the kind of problem that only exists when you think of search as a retrieval infrastructure problem, not just ranking [14].</p>
-<h3 id="netflix-recommendation-from-collaborative-filtering-to-foundation-models">Netflix Recommendation: From Collaborative Filtering to Foundation Models</h3>
-<p>Netflix's recommendation story is better known, but worth retracing for the contrast it provides with search. Reed Hastings, Netflix's co-founder, articulated the goal with a simple analogy: &quot;If the Starbucks secret is a smile when you get your latte, ours is that the website adapts to the individual's taste.&quot; The emotional target — &quot;Netflix 'gets me'&quot; — is fundamentally different from search's target of &quot;Netflix found what I asked for.&quot; Recommendation is about identity. Search is about utility.</p>
-<p>Hastings revealed an even deeper insight at the 2018 TED conference, explaining why Netflix shifted from relying on what users <em>say</em> they like (star ratings) to tracking what they <em>actually watch</em>:</p>
-<blockquote>
-<p>&quot;What happens is, when we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot;</p>
-</blockquote>
-<p>This is a problem that search doesn't have. In search, the user explicitly states their intent — the query is the ground truth. In recommendation, the ground truth is hidden. Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences over revealed preferences fails. A search engine that second-guesses the query fails.</p>
-<p>This is also why Hastings famously said &quot;We compete with sleep&quot; — not just with other streaming services. The recommender's job is not to satisfy a stated need but to command attention in a world of infinite alternatives. Search competes with ignorance. Recommendation competes with every other possible way to spend time.</p>
-<p>The <strong>three-tier serving architecture</strong> (offline, nearline, online) described in Netflix's 2013 tech blog post remains the backbone [15]:</p>
-<ul>
-<li><strong>Offline</strong>: batch model training, feature pre-computation</li>
-<li><strong>Nearline</strong>: asynchronous event-triggered processing (e.g., update recommendations immediately after a viewing session)</li>
-<li><strong>Online</strong>: real-time scoring with strict latency SLAs</li>
-</ul>
-<p>But the models themselves evolved dramatically. Netflix's 2021 <em>AI Magazine</em> article <em>&quot;Deep Learning for Recommender Systems: A Netflix Case Study&quot;</em> contains a sobering finding: when only user–item interaction data is available — the classic collaborative filtering setting — properly tuned non-deep-learning baselines remained competitive with deep networks [16]. The power of deep learning emerged only when heterogeneous features (metadata, context, images, text) were incorporated.</p>
-<p>This is a crucial point that connects back to the search–recommendation distinction: <strong>search has always been multi-modal</strong> (query text, document text, links, anchor text, click data, freshness). Recommendation was historically impoverished — just a ratings matrix. The deep learning era equalized this by giving recommendation systems the same multi-modal, heterogeneous-feature diet that search had enjoyed since the 2000s.</p>
-<p>In 2025, Netflix published what may be their most ambitious recommendation paper yet: a <strong>Foundation Model for Personalized Recommendation</strong> [17]. The architecture treats user interaction histories as sequences — analogous to how GPT treats text — and uses autoregressive next-token prediction to model user behavior:</p>
-<ul>
-<li>User actions (plays, ratings, searches, browsing) are &quot;tokenized&quot; via an analog of Byte Pair Encoding</li>
-<li>A transformer model predicts the next item the user will engage with</li>
-<li>Auxiliary prediction heads predict genres, languages, and metadata — acting as regularizers</li>
-<li>Sparse attention mechanisms extend the context window to hundreds of interactions</li>
-<li>Cold-start new titles use a metadata+ID embedding combination with an attention-based mixing layer weighted by entity &quot;age&quot;</li>
-</ul>
-<p>Crucially, Netflix confirmed that <strong>scaling laws apply</strong> to recommendation foundation models — larger datasets, more parameters, and longer context windows yield consistent improvements.</p>
-<h3 id="the-convergence-unicorn-2024">The Convergence: UniCoRn (2024)</h3>
-<p>The most important paper for understanding the search–recommendation boundary at Netflix is <strong>UniCoRn</strong> (Unified Contextual Recommender), presented at RecSys 2024 [18]. Before UniCoRn, Netflix ran three separate models for:</p>
-<ol>
-<li>Search (query → video)</li>
-<li>Homepage recommendations (user profile → video)</li>
-<li>&quot;More Like This&quot; (video → video)</li>
-</ol>
-<p>UniCoRn replaces all three with a single transformer-based deep learning model. The insight is in <em>how</em> they unified them: by treating <strong>task type as a context feature</strong>. The input representation becomes:</p>
-<pre><code>[user_id, query (or null), country, source_entity_id (or null), task_type]
-</code></pre>
-<p>For search tasks where there is no source entity, null imputation is used. For video-video recommendations where there is no query, the title text of the source entity is imputed. The shared base model learns cross-task patterns, while task-specific output heads predict the right objective for each surface (click probability for search, watch probability for recommendations).</p>
-<p>The results: <strong>+7% lift for search, +10% lift for recommendations</strong> compared to separate models.</p>
-<p>But here is the critical detail: UniCoRn succeeded not by <em>ignoring</em> the distinction between search and recommendation, but by making the model <strong>explicitly aware of it</strong>. The <code>task_type</code> feature tells the model which behavior to invoke. The imputation strategy respects the structural difference (search has queries, recommendation has source entities). The separate output heads optimize for different objectives because, at Netflix, a successful search is not the same thing as a successful recommendation.</p>
-<p>Netflix also documented the central tension: <strong>personalization can overpower query relevance</strong>. If a user searches for &quot;documentaries about World War II&quot; and the recommender knows the user loves romantic comedies, should it show <em>The Notebook</em>? Obviously not. UniCoRn took an incremental approach — semi-personalized first (user clustering as a feature), then fully personalized with fine-tuned user/item representations. The process required careful guardrails to ensure search results remain <em>relevant to the query</em> even as they benefit from personalization [19].</p>
-<p>This is the tension that makes the distinction matter. When you collapse search into recommendation, you risk showing users what they usually like instead of what they explicitly asked for.</p>
-<hr>
-<h2 id="part-iv-the-boundary-in-practice">Part IV: The Boundary in Practice</h2>
-<p>Netflix isn't the only company navigating this. Several engineering blogs document different approaches to the same problem.</p>
-<h3 id="spotify-intent-based-routing-with-llms">Spotify: Intent-Based Routing with LLMs</h3>
-<p>Spotify's 2025 paper <em>&quot;You Say Search, I Say Recs&quot;</em> describes an agentic approach to query understanding [20]. An LLM-based router classifies user intent:</p>
-<ul>
-<li><strong>Navigational queries</strong> (&quot;find song X&quot;) → traditional search (Elasticsearch + BM25 + Voyager ANN)</li>
-<li><strong>Exploratory queries</strong> (&quot;new indie rock releases,&quot; &quot;Italian 80s disco nostalgia&quot;) → recommendation APIs leveraging collaborative filtering</li>
-<li><strong>Mixed intent</strong> → both paths fire in parallel, results fused into a structured SERP</li>
-</ul>
-<p>The router is a small, fine-tuned LLM (distilled from a larger teacher) achieving 60% latency reduction and 99% cost reduction. Critically, only the query goes to the router — not user features — maximizing cache hit rates. User features are injected downstream in the retrieval/ranking tools, which is where personalization belongs.</p>
-<p>Results versus regular search: +115% for finding similar artists, +91% for new music discovery, +25% for broad music searches.</p>
-<p>Spotify also explored a unified generative approach using <strong>Semantic IDs</strong> — discrete tokens derived from item embeddings that serve as autoregressive prediction targets [21]. Their finding: task-specific Semantic IDs optimized for search don't generalize to recommendation, and vice versa. A multi-task bi-encoder achieves a Pareto-optimal trade-off, but the boundary persists — you can't optimize one embedding space for both tasks simultaneously without compromise.</p>
-<h3 id="doordash-content-first-embeddings-task-aware-retrieval">DoorDash: Content-First Embeddings, Task-Aware Retrieval</h3>
-<p>DoorDash published a series of blog posts in 2024–2025 describing their modernization of search and recommendation across restaurants, grocery, and retail verticals [22][23]. Their environment makes the search–recommendation distinction unusually sharp. Consider two DoorDash users:</p>
-<ul>
-<li>
-<p><strong>Alice</strong> searches for &quot;spicy Sichuan noodles near me.&quot; She has a specific craving. The system's job is retrieval: match her query to relevant restaurants, rank by distance and quality, and don't substitute her specific intent with what she usually orders.</p>
-</li>
-<li>
-<p><strong>Bob</strong> opens the app with no particular craving. He's ordered Thai, pizza, and sushi in the past month. The system's job is recommendation: infer what he might want tonight, balance familiarity with discovery, and surface options he wouldn't have searched for.</p>
-</li>
-</ul>
-<p>If DoorDash treats Alice's search like Bob's browse — injecting personalization that overpowers her query — she gets Thai food when she wanted Sichuan noodles. If they treat Bob's browse like Alice's search — requiring an explicit query — he gets a blank screen when he wanted inspiration. Both users churn. For different reasons.</p>
-<p>DoorDash's approach is instructive because clicks alone don't distinguish these cases. A click on a Sichuan noodle soup doesn't tell you whether the user wanted spicy food specifically or noodles specifically — or whether they were just hungry and clicked the first thing they saw.</p>
-<p>Their solution is <strong>content-first embeddings</strong>: LLMs generate rich, standardized profiles for every merchant and item on the platform, covering ingredients, preparation, cuisine, dietary attributes, and context. These profiles are then embedded using off-the-shelf encoders (they selected <code>gemini-embedding-001</code> with 256-dimensional Matryoshka embedding). The key finding: upgrading profile quality yielded +31% improvement versus only +6% from a better encoder on raw metadata. Data quality dominates model choice.</p>
-<p>For recommendation, DoorDash developed <strong>Consumer Memory Blocks</strong> — typed, composable, evidenced representations of user state (long-running preferences, behavioral patterns, household context, brand affinities) serialized as JSON prompts for batch LLM calls. The generated carousel titles and search intents are embedded offline and retrieved online via Milvus ANN. No LLM runs in the online serving path — cost is amortized across the refresh interval. Results: +2.4% order rate [24].</p>
-<h3 id="airbnb-embeddings-that-bridge-search-and-discovery">Airbnb: Embeddings That Bridge Search and Discovery</h3>
-<p>Airbnb's KDD 2018 paper on real-time personalization for search ranking is a classic of the genre [25]. They trained listing embeddings on over 800 million search click sessions using a skip-gram model adapted from word2vec. The innovations were domain-specific: negative sampling within the same market (users mostly search within a single city, so negatives drawn globally are trivially easy to reject), and the booked listing is always treated as the context being predicted regardless of its position in the click sequence.</p>
-<p>The embeddings are used as real-time features in the ranking model: similarity of a candidate listing to listings the user recently clicked (<code>EmbClickSim</code>), skipped (<code>EmbSkipSim</code>), or spent time viewing (<code>EmbLastLongClickSim</code>). Five embedding features ranked among the top 20 among all 104 model features. The result: +2.27% offline NDCG lift and statistically significant booking gains.</p>
-<p>Airbnb's 2019 follow-up on applying deep learning to search documented instructive failures [26]. Listing ID embeddings overfit because listings have limited bookings. Multi-task learning (booking + long views) increased long views but bookings stayed flat — long views correlated with but were orthogonal to bookings (expensive or unusual listings get looked at but not booked). These are the kinds of lessons that only emerge when you treat search ranking as its own problem with its own objective landscape.</p>
-<h3 id="pinterest-two-tower-architectures-and-multi-task-embeddings">Pinterest: Two-Tower Architectures and Multi-Task Embeddings</h3>
-<p>Pinterest's engineering blog and publications describe an evolving two-tower architecture deployed across homefeed recommendation and search [27]. The user tower encodes long-term history, context, and real-time sequences via transformers. The item tower encodes category, description, and image features. At serving time, the dot product between user and item embeddings produces a relevance score, and ANN search via their in-house Manas system (HNSW-based) retrieves candidates.</p>
-<p>For <strong>search</strong> specifically, Pinterest's OmniSearchSage (WWW 2024) extended the two-tower approach into a multi-task, multi-entity framework where a single unified query embedding retrieves across pins, products, and related queries simultaneously [28]. A teacher-student distillation approach followed: an 8B-parameter Llama cross-encoder (teacher) achieved +12–20% improvement over BERT baselines, then a bi-encoder student was trained on 100× more data from daily search logs for production serving. Pin embeddings are pre-computed offline; query embeddings benefit from 85% cache hit rates.</p>
-<p>The common pattern across all of these companies is not unification for its own sake — it is <strong>awareness of task identity</strong>. Every system that successfully spans search and recommendation does so by encoding <em>which task it's doing</em> as a first-class signal.</p>
-<hr>
-<h2 id="part-v-what-llms-change--and-what-they-dont">Part V: What LLMs Change — And What They Don't</h2>
-<p>LLMs are the most significant development in both fields since BERT. But they affect search and recommendation differently. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, reader — each evolving from statistical to neural to generative approaches [37]. Li et al. (2024) provide the cross-cutting view, framing both as instances of generative retrieval and identifying where they converge (shared transformer backbones, autoregressive decoding) and where they diverge (different input modalities, different evaluation regimes) [29].</p>
-<p>The key insight: LLMs don't eliminate the distinction. They reveal it at a higher level of abstraction. Both fields are moving toward generative paradigms, but the <em>thing being generated</em> differs. Search generates answers from documents. Recommendation generates item predictions from user histories.</p>
-<h3 id="how-llms-transform-search">How LLMs Transform Search</h3>
-<p>For search, LLMs operate at four levels:</p>
-<ol>
-<li>
-<p><strong>Query understanding</strong>: LLMs disambiguate, expand, and reformulate queries. &quot;Show me movies like Inception but funnier&quot; becomes a structured search intent with entity extraction and constraint parsing.</p>
-</li>
-<li>
-<p><strong>Document understanding</strong>: LLMs generate richer document representations — summaries, key phrases, entity tags, embeddings — that transcend the vocabulary mismatch problem by operating in semantic space.</p>
-</li>
-<li>
-<p><strong>Retrieval-Augmented Generation (RAG)</strong>: Instead of returning a ranked list, the system retrieves relevant documents and generates a synthesized answer grounded in them. This is the dominant LLM-search paradigm in 2025.</p>
-</li>
-<li>
-<p><strong>Generative retrieval</strong>: The most radical approach — the LLM directly generates document identifiers without an explicit retrieval index. The model's parameters <em>are</em> the index. This is still experimental but advancing rapidly [29].</p>
-</li>
-</ol>
-<p>The core search user need — &quot;I have a question, find me the answer&quot; — aligns naturally with LLM capabilities. The LLM doesn't replace retrieval; it augments it at every stage of the pipeline.</p>
-<h3 id="how-llms-transform-recommendation">How LLMs Transform Recommendation</h3>
-<p>For recommendation, the transformation is more structural:</p>
-<ol>
-<li>
-<p><strong>Feature engineering automation</strong>: LLMs generate rich item descriptions and user profiles from sparse structured data. DoorDash's content embeddings and Consumer Memory Blocks are the paradigmatic example — the LLM produces the fuel, but the retrieval and ranking engines are still purpose-built.</p>
-</li>
-<li>
-<p><strong>Generative recommendation</strong>: Instead of scoring a pre-defined candidate set, the LLM autoregressively generates item tokens. Meta's HSTU, Kuaishou's OneRec, and Google's TIGER treat recommendation as a sequence-to-sequence problem. The model is the index, the retriever, and the ranker — all in one [30].</p>
-</li>
-<li>
-<p><strong>Conversational recommendation</strong>: Multi-turn dialogue where the LLM elicits preferences, proposes items, and adapts based on feedback. This collapses the boundary between search and recommendation: the user might start with a search-like query (&quot;I want a sci-fi movie&quot;) and, through conversation, the system shifts into recommendation mode (&quot;based on what you said about liking cerebral plots, you might enjoy...&quot;).</p>
-</li>
-<li>
-<p><strong>Agentic recommendation</strong>: LLM-powered agents that plan, use tools, maintain memory, and reason across multiple steps. Spotify's intent router, DoorDash's carousel generation pipeline, and the ARAG framework (SIGIR 2025) all embody this pattern [31].</p>
-</li>
-</ol>
-<h3 id="why-the-distinction-survives">Why the Distinction Survives</h3>
-<p>Despite this convergence, the distinction remains essential for four reasons:</p>
-<p><strong>1. Objective alignment.</strong> A search system optimizing for engagement will show users addictive content instead of answering their query. A recommendation system optimizing for precision will produce an echo chamber. The objective functions <em>must</em> be different, and that difference propagates through the entire architecture — what data you collect, what loss you optimize, what you measure online.</p>
-<p><strong>2. Evaluation.</strong> Search quality is measured against explicit relevance judgments: NDCG, MRR, precision@K. Recommendation quality is measured against user behavior: retention, discovery, session length, long-term satisfaction. These metrics are correlated but not identical. A system that is jointly optimized without awareness of task will drift toward whichever signal is strongest — usually engagement.</p>
-<p><strong>3. The serendipity gradient.</strong> In search, serendipity is a bug. If a user types &quot;The Godfather&quot; and you show them &quot;Goodfellas,&quot; you've failed — no matter how good Goodfellas is. In recommendation, serendipity is a feature. The entire point is surfacing things the user wouldn't have known to search for. Collapsing both into one model without task conditioning loses this distinction.</p>
-<pre><code>Imagine wanting to rewatch *The Godfather*. You type it into the search bar. The system returns *Goodfellas* first because &quot;people who watch The Godfather also love Goodfellas.&quot; That's a broken search experience. Now imagine browsing your Netflix homepage on a Friday night. The system shows you *The Godfather* — which you've already seen four times. That's a broken recommendation experience. Both failures happen when teams optimize for the wrong thing. The first team optimized for engagement (clicks on &quot;also loved&quot;) instead of relevance (did we return the exact match?). The second team optimized for precision (only showing items similar to known likes) instead of discovery (showing items the user might love but hasn't seen).
-</code></pre>
-<p><strong>4. Infrastructure.</strong> Search requires inverted indices, real-time query parsing, and sub-100ms latency at high QPS. Recommendation requires user profile stores, embedding indices, and offline batch pipelines amortized across daily refresh cycles. The infrastructure shapes the architecture, and the architecture shapes what the model can do.</p>
-<p>A 2024 survey of generative search and recommendation in the LLM era puts it well: the fields share a common mathematical framework — matching entities across representation spaces — but differ in the <em>nature of the mismatch</em>. Search deals with query–document mismatch (different words for the same concept). Recommendation deals with user–item mismatch (users and items live in completely different semantic spaces). The first is a lexical/semantic gap. The second is a modality gap. Solving them requires different tools, even when those tools share a common transformer backbone [32].</p>
-<hr>
-<h2 id="part-vi-the-distinction-in-everyday-life">Part VI: The Distinction in Everyday Life</h2>
-<p>The search–recommendation divide isn't an engineering abstraction — it's visible in how we make decisions every day.</p>
-<p>The search–recommendation distinction isn't just an engineering concern. It's visible in how we make decisions every day. Recognizing it clarifies what kind of system you're building — and what it should be good at.</p>
-<h3 id="the-restaurant-menu-search-vs-the-chefs-tasting-menu-recommendation">The Restaurant Menu (Search) vs. The Chef's Tasting Menu (Recommendation)</h3>
-<p>When you sit down at a restaurant and scan the menu, you're doing <strong>search</strong>. You have an intent — &quot;I feel like pasta&quot; — and you're scanning a structured catalog for matches. The menu is an inverted index: organized by category (appetizers, mains, desserts), each dish has attributes (ingredients, price, dietary tags). Your satisfaction depends on whether the menu accurately represents what the kitchen can deliver.</p>
-<p>When the chef sends out a tasting menu — &quot;trust me, you'll love this&quot; — you're receiving a <strong>recommendation</strong>. The chef has built a model of what you might enjoy (based on dietary restrictions you mentioned, the season, what's freshest today) and is making predictions. Your satisfaction depends on whether the chef's model of you is accurate — and whether they can surprise you in a good way.</p>
-<p>A mistake in the first scenario: &quot;I ordered the carbonara and got the bolognese.&quot; A mistake in the second: &quot;The chef brought me a dish centered on mushrooms, which I hate.&quot; The first is a retrieval error — the kitchen had the wrong item mapped to your query. The second is a modeling error — the chef's understanding of you was wrong. Different failures, different fixes.</p>
-<h3 id="the-grocery-list-search-vs-the-recipe-suggestion-recommendation">The Grocery List (Search) vs. The Recipe Suggestion (Recommendation)</h3>
-<p>You walk into a grocery store with a list: milk, eggs, bread, tomatoes. That's <strong>search</strong> — you know what you need, you need to find it efficiently. The store's job is to make items findable: clear signage (an index), logical layout (a taxonomy), and fast checkout (low latency). Any deviation from the list is a failure — &quot;I wanted tomatoes and came back with bell peppers&quot; is a bad outcome, even if you like bell peppers.</p>
-<p>Now imagine the store's app notices what's in your cart and says: &quot;With those ingredients, you could make a great shakshuka. You'd need cumin, paprika, and feta — want me to show you where they are?&quot; That's <strong>recommendation</strong>. It takes what it knows about you (your cart, your purchase history) and suggests something you didn't know you wanted. The deviation from the list is the <em>point</em>.</p>
-<h3 id="the-difference-in-error-cost">The Difference in Error Cost</h3>
-<p>These analogies reveal something crucial: search errors and recommendation errors have different <em>shapes</em>.</p>
-<p>A <strong>search error</strong> is a precision failure: &quot;I asked for X and got Y.&quot; The user immediately knows something is wrong, because they had a specific expectation. The error is visible and attributable.</p>
-<p>A <strong>recommendation error</strong> is a relevance failure: &quot;The system showed me something I don't care about.&quot; The user doesn't know if the system is broken or if they're just having a bad experience. The error is invisible and erodes trust cumulatively.</p>
-<p>This is why Peter Norvig's 80% bar applies to search but not recommendation. If a search engine gets 80% of results right, users happily ignore the other 20% — they can see what went wrong and scroll past it. If a recommender gets 80% right, users notice the 20% wrong more than the 80% right, because every wrong suggestion is an interruption — an item that took up screen space that could have shown something they'd love.</p>
-<h3 id="why-two-sides-of-the-same-coin-is-misleading">Why &quot;Two Sides of the Same Coin&quot; Is Misleading</h3>
-<p>The coin metaphor implies you can flip from one to the other by changing perspective. You can't. The data is different (queries vs. behavioral histories). The latency profiles are different (sub-100ms real-time vs. batch-refreshed). The error tolerance is different (visible and dismissable vs. invisible and trust-eroding). The user posture is different (active and goal-directed vs. passive and open).</p>
-<p>The better metaphor is a <strong>restaurant</strong>: search is the menu, recommendation is the tasting menu, and the LLM-powered hybrid is a waiter who listens to what you're in the mood for, knows what the kitchen does well tonight, and helps you decide — sometimes by pointing at the menu (search), sometimes by making a suggestion you wouldn't have thought of (recommendation), and always by knowing which mode you're in right now.</p>
-<hr>
-<h2 id="part-vii-principles-for-building-search-and-recommendation">Part VII: Principles for Building Search and Recommendation</h2>
-<p>If you're building a system that involves both search and recommendation, here are the architectural principles that emerge from the literature:</p>
-<p><strong>1. Make task identity a first-class feature.</strong> Whether you use Netflix's approach (separate output heads on a shared backbone), Spotify's approach (LLM router dispatching to separate systems), or DoorDash's approach (separate retrieval pipelines with shared embeddings), the model must know whether it's doing search or recommendation.</p>
-<p><strong>2. Don't let personalization overpower query relevance.</strong> The Netflix experience is instructive. They added personalization to search incrementally, with explicit guardrails. The fully personalized UniCoRn improved both search and recommendations, but it required careful tuning to ensure search results remain relevant to the query.</p>
-<p><strong>3. Treat the user's posture as a design constraint.</strong> Search users lean forward; recommendation users lean back. This affects not just ranking but UI, latency budgets, and the acceptable cost of being wrong. A search error (&quot;I searched for X and got Y&quot;) is more salient to users than a recommendation error (&quot;this row isn't for me&quot;).</p>
-<p><strong>4. Use shared infrastructure where it makes sense — separate where it doesn't.</strong> Embedding stores, feature stores, and model training pipelines can be shared. Retrieval indices, ranking objectives, and evaluation frameworks should be task-specific.</p>
-<p><strong>5. LLMs are infrastructure, not a replacement for retrieval.</strong> The most successful deployments — DoorDash, Spotify, Pinterest — use LLMs for content understanding, query intent classification, and feature generation <em>offline</em>, while keeping online retrieval and ranking in purpose-built, low-latency systems. The LLM enriches; it doesn't replace.</p>
-<hr>
-<h2 id="conclusion">Conclusion</h2>
-<p>In 1992, Belkin and Croft asked whether information retrieval and information filtering were two sides of the same coin. Thirty-four years later, the question has a sharper answer: they share a mint. The mathematical machinery — vector spaces, embedding learning, transformer attention, contrastive objectives — is increasingly shared. Netflix's UniCoRn, Spotify's intent router, DoorDash's content embeddings, Pinterest's multi-task two-tower models — all exploit this commonality to reduce technical debt and improve both tasks simultaneously.</p>
-<p>But sharing machinery is not sharing purpose. As Greg Linden showed at Amazon, the algorithms that retrieve known items and the algorithms that surface unknown ones succeed for different reasons. As Reed Hastings understood, the emotional contract of &quot;Netflix gets me&quot; is not the same as &quot;Netflix found what I searched for.&quot; As Karen Spärck Jones knew in 1999, systems that assist human users cannot replace them — they can only narrow the gap between what the user says and what the user means. And as Peter Norvig warned, the gap between &quot;here are some suggestions&quot; and &quot;here is what you need&quot; demands a higher standard of trust.</p>
-<p>The arrival of LLMs makes these distinctions <em>more</em> important, not less. When a single model can retrieve, rank, recommend, and explain — all in natural language — the question is no longer &quot;can we unify?&quot; The question is &quot;do we know which one we're doing right now?&quot;</p>
-<p>The answer must be yes. Because search competes with ignorance. Recommendation competes with sleep. They are not the same fight.</p>
-<hr>
-<hr>
-<h2 id="open-questions">Open Questions</h2>
-<ol>
-<li>
-<p><strong>If search and recommendation converge further under LLMs, will the distinction become an implementation detail — or a user-facing feature?</strong> Users don't care about the architecture. They care whether the system understands what they want, whether they said it aloud or not.</p>
-</li>
-<li>
-<p><strong>The Netflix Prize measured RMSE. Production systems measure retention. Neither measures satisfaction.</strong> What would a metric look like that captures whether a system respected the user's intent — whether that intent was explicit (search) or latent (recommendation)?</p>
-</li>
-<li>
-<p><strong>Every company in this post — Netflix, Spotify, DoorDash, Airbnb, Pinterest — reached the same conclusion independently: task identity matters.</strong> Is this convergent evolution or a local optimum? Could a sufficiently different architecture make the distinction irrelevant?</p>
-</li>
-<li>
-<p><strong>Karen Spärck Jones said retrieval assists the human user but cannot replace them.</strong> In the LLM era, is that still true? Or does generation cross the line from assistance to replacement in ways retrieval never could?</p>
-</li>
-</ol>
-<p><strong>References</strong></p>
-<ol>
-<li>
-<p>Nicholas J. Belkin and W. Bruce Croft. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138861"><em>Information Filtering and Information Retrieval: Two Sides of the Same Coin?</em></a>. Communications of the ACM, 35(12): 29–38, 1992.</p>
-</li>
-<li>
-<p>Gerard Salton, Anita Wong, and Chung-Shu Yang. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/361219.361220"><em>A Vector Space Model for Automatic Indexing</em></a>. Communications of the ACM, 18(11): 613–620, 1975.</p>
-</li>
-<li>
-<p>Stephen E. Robertson, Steve Walker, Susan Jones, Micheline Hancock-Beaulieu, and Mike Gatford. <a target="_blank" rel="noopener noreferrer" href="https://trec.nist.gov/pubs/trec3/papers/city.ps.gz"><em>Okapi at TREC-3</em></a>. Proceedings of the Third Text REtrieval Conference (TREC-3), 1994.</p>
-</li>
-<li>
-<p>Sergey Brin and Lawrence Page. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/S0169-7552(98)00110-X"><em>The Anatomy of a Large-Scale Hypertextual Web Search Engine</em></a>. Computer Networks and ISDN Systems, 30(1–7): 107–117, 1998.</p>
-</li>
-<li>
-<p>Christopher J.C. Burges. <a target="_blank" rel="noopener noreferrer" href="https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/"><em>From RankNet to LambdaRank to LambdaMART: An Overview</em></a>. Microsoft Research Technical Report MSR-TR-2010-82, 2010.</p>
-</li>
-<li>
-<p>David Goldberg, David Nichols, Brian M. Oki, and Douglas Terry. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138867"><em>Using Collaborative Filtering to Weave an Information Tapestry</em></a>. Communications of the ACM, 35(12): 61–70, 1992.</p>
-</li>
-<li>
-<p>Paul Resnick, Neophytos Iacovou, Mitesh Suchak, Peter Bergstrom, and John Riedl. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/192844.192905"><em>GroupLens: An Open Architecture for Collaborative Filtering of Netnews</em></a>. Proceedings of CSCW 1994, pp. 175–186.</p>
-</li>
-<li>
-<p>Greg Linden, Brent Smith, and Jeremy York. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MIC.2003.1167344"><em>Amazon.com Recommendations: Item-to-Item Collaborative Filtering</em></a>. IEEE Internet Computing, 7(1): 76–80, 2003.</p>
-</li>
-<li>
-<p>Yehuda Koren, Robert Bell, and Chris Volinsky. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MC.2009.263"><em>Matrix Factorization Techniques for Recommender Systems</em></a>. IEEE Computer, 42(8): 30–37, 2009.</p>
-</li>
-<li>
-<p>Paul Covington, Jay Adams, and Emre Sargin. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/2959100.2959190"><em>Deep Neural Networks for YouTube Recommendations</em></a>. Proceedings of RecSys 2016, pp. 191–198.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/studio-search-using-elasticsearch-and-apache-flink-to-index-federated-graphql-data-7d77cad7b7c8"><em>Netflix Studio Search: Using Elasticsearch and Apache Flink to Index Federated GraphQL Data</em></a>. March 2022.</p>
-</li>
-<li>
-<p>InfoQ. <a target="_blank" rel="noopener noreferrer" href="https://www.infoq.com/news/2022/04/netflix-studio-search/"><em>Netflix Studio Search: Using Elasticsearch and Apache Flink to Index Federated GraphQL Data — News Coverage</em></a>. April 2022.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/elasticsearch-indexing-strategy-in-asset-management-platform-amp-99332231e541"><em>Elasticsearch Indexing Strategy in Asset Management Platform (AMP)</em></a>. 2023.</p>
-</li>
-<li>
-<p>InfoQ. <a target="_blank" rel="noopener noreferrer" href="https://www.infoq.com/news/2024/04/netflix-percolate-queries/"><em>Netflix Uses Elasticsearch Percolate Queries to Implement Reverse Searches Efficiently</em></a>. April 2024.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/system-architectures-for-personalization-and-recommendation-e081aa94b5d8"><em>System Architectures for Personalization and Recommendation</em></a>. March 2013.</p>
-</li>
-<li>
-<p>Harald Steck, Linas Baltrunas, Ehtsham Elahi, Dawen Liang, Yves Raimond, and Justin Basilico. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1609/aimag.v42i3.18140"><em>Deep Learning for Recommender Systems: A Netflix Case Study</em></a>. AI Magazine, 42(3): 7–18, 2021.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/foundation-model-for-personalized-recommendation-1a0bd8e02d39"><em>Foundation Model for Personalized Recommendation</em></a>. March 2025.</p>
-</li>
-<li>
-<p>Moumita Bhattacharya et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/fullHtml/10.1145/3640457.3688034"><em>Joint Modeling of Search and Recommendations Via an Unified Contextual Recommender (UniCoRn)</em></a>. Proceedings of RecSys 2024.</p>
-</li>
-<li>
-<p>Sudarshan Lamkhede and Christoph Kofler. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/abs/10.1145/3460231.3474602"><em>Recommendations and Results Organization in Netflix Search</em></a>. Proceedings of RecSys 2021, pp. 577–579.</p>
-</li>
-<li>
-<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://research.atspotify.com/2025/9/you-say-search-i-say-recs-a-scalable-agentic-approach-to-query-understanding"><em>You Say Search, I Say Recs: A Scalable Agentic Approach to Query Understanding and Exploratory Search at Spotify</em></a>. September 2025.</p>
-</li>
-<li>
-<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://www.research.atspotify.com/2025/9/semantic-ids-for-generative-search-and-recommendation"><em>Semantic IDs for Generative Search and Recommendation</em></a>. September 2025.</p>
-</li>
-<li>
-<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-llms-to-build-content-embeddings-for-search-and-recommendations/"><em>Using LLMs to Build Content Embeddings for Search and Recommendations</em></a>. 2025.</p>
-</li>
-<li>
-<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordashs-next-generation-homepage-genai/"><em>When GenAI Meets Personalization: Powering DoorDash's Next-Generation Homepage Experience</em></a>. 2025.</p>
-</li>
-<li>
-<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/"><em>Offline LLMs, Online Personalization: Generating Carousels at DoorDash</em></a>. 2025.</p>
-</li>
-<li>
-<p>Mihajlo Grbovic and Haibin Cheng. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/3219819.3219885"><em>Real-time Personalization using Embeddings for Search Ranking at Airbnb</em></a>. Proceedings of KDD 2018, pp. 311–320.</p>
-</li>
-<li>
-<p>Malay Haldar, Mustafa Abdool, et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1810.09591"><em>Applying Deep Learning to Airbnb Search</em></a>. Proceedings of KDD 2019.</p>
-</li>
-<li>
-<p>Pinterest Engineering. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/pinterest-engineering/advancements-in-embedding-based-retrieval-at-pinterest-homefeed-176a3c03df64"><em>Advancements in Embedding-Based Retrieval at Pinterest Homefeed</em></a>. 2024.</p>
-</li>
-<li>
-<p>Pinterest Engineering. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/pinterest-engineering/llm-enhanced-search-relevance-at-pinterest-2025"><em>LLM-Enhanced Search Relevance at Pinterest</em></a>. 2025.</p>
-</li>
-<li>
-<p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
-</li>
-<li>
-<p>Shashank Gupta et al. <a target="_blank" rel="noopener noreferrer" href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.176523089.94266134/v2"><em>Generative Recommendation: A Survey of Models, Systems, and Industrial Advances</em></a>. TechRxiv, 2025.</p>
-</li>
-<li>
-<p>Chi Zhang et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.21931"><em>ARAG: Agentic Retrieval Augmented Generation for Personalized Recommendation</em></a>. Proceedings of SIGIR 2025.</p>
-</li>
-<li>
-<p>Zhuang Liu et al. <a target="_blank" rel="noopener noreferrer" href="https://ieeexplore.ieee.org/abstract/document/11129085"><em>A Comprehensive Survey on LLM-Powered Recommender Systems: From Discriminative, Generative to Multi-Modal Paradigms</em></a>. IEEE Access, 2024.</p>
-</li>
-<li>
-<p>Francesco Ricci, Lior Rokach, and Bracha Shapira (editors). <a target="_blank" rel="noopener noreferrer" href="https://link.springer.com/book/10.1007/978-1-0716-2197-4"><em>Recommender Systems Handbook</em>, 3rd Edition</a>. Springer, 2022. 1,060 pages. The canonical reference covering collaborative filtering, content-based, context-aware, session-based, deep learning, fairness, and domain-specific recommendation techniques.</p>
-</li>
-<li>
-<p>Jiafeng Guo, Yixing Fan, Liang Pang, Liu Yang, Qingyao Ai, Hamed Zamani, W. Bruce Croft, et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.ipm.2019.102067"><em>A Deep Look into Neural Ranking Models for Information Retrieval</em></a>. Information Processing &amp; Management, 57(6), 2020. A comprehensive survey of neural ranking models examining design principles, learning strategies, and empirical comparisons across benchmark tasks.</p>
-</li>
-<li>
-<p>Kailash Hambarde and Hugo Proença. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2301.08801"><em>Information Retrieval: Recent Advances and Beyond</em></a>. arXiv:2301.08801, 2023. A detailed overview of models used in both first-stage retrieval and second-stage ranking, covering conventional term-based, semantic, sparse neural, and dense neural methods.</p>
-</li>
-<li>
-<p>Le Wu, Xiangnan He, Xiang Wang, Kun Zhang, and Meng Wang. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2022.3145690"><em>A Survey on Accuracy-Oriented Neural Recommendation: From Collaborative Filtering to Information-Rich Recommendation</em></a>. IEEE Transactions on Knowledge and Data Engineering, 35(5): 4425–4445, 2023. Organizes neural recommendation into collaborative filtering (interaction-only) and information-rich (content, context, sequence) families.</p>
-</li>
-<li>
-<p>Yutao Zhu, Huaying Yuan, Shuting Wang, et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.07107"><em>Large Language Models for Information Retrieval: A Survey</em></a>. arXiv:2308.07107, 2024. Published in ACM Transactions on Information Systems. Systematically reviews LLM-IR integration across four roles: query rewriter, retriever, reranker, and reader.</p>
-</li>
-</ol>
-<hr>
-<p><em>See also: <a target="_blank" rel="noopener noreferrer" href="/on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> — for another exploration of how symbolic and neural approaches converge without collapsing into identity.</em></p>
 </div>
       </article>
       <article class="post" id="search-recommendation-industry-boundary">
@@ -2606,291 +2365,6 @@ def build_item_similarity_matrix(ratings: dict[int, dict[int, float]]
 </ol>
 <hr>
 <p><em>Previous: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-search-techniques">Part 2 — Fifty Years of Search</a> · Next: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-netflix">Part 4 — Netflix: Building Both at Global Scale</a></em></p>
-</div>
-      </article>
-      <article class="post" id="search-recommendation-netflix">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
-          <h2><a href="#search-recommendation-netflix">&#34;S&amp;R: The Netflix Case Study&#34;</a></h2><p class="post-summary">Part 4 of 7. Deep dive into Netflix&#39;s search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn&#39;s unified approach to search and recs.</p>
-          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">netflix</span><span class="tag">elasticsearch</span><span class="tag">collaborative-filtering</span><span class="tag">foundation-model</span><span class="tag">unicorn</span><span class="tag">series</span>
-          </div>
-        </header>
-        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. Part 4 of a seven-part series. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.</em></p>
-<p>No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.</p>
-<p>Reed Hastings, Netflix's co-founder, articulated the recommendation goal simply: &quot;If the Starbucks secret is a smile when you get your latte, ours is that the website adapts to the individual's taste.&quot; The emotional target — &quot;Netflix gets me&quot; — is fundamentally different from search's target of &quot;Netflix found what I asked for.&quot; Recommendation is about identity. Search is about utility.</p>
-<h2 id="netflix-search-elasticsearch-flink-and-reverse-queries">Netflix Search: Elasticsearch, Flink, and Reverse Queries</h2>
-<p>Netflix Studio Search indexes federated GraphQL data across the entire content production pipeline. The architecture is built on <strong>Elasticsearch</strong> (running Apache Lucene's BM25 under the hood) with a custom query DSL [1].</p>
-<pre><code class="language-python"># Conceptual: Netflix's Studio Search indexing pipeline
-
-# 1. Events stream into Kafka from applications and CDC
-# 2. Apache Flink processes consume events, enrich via GraphQL, sink to Elasticsearch
-# 3. A custom ANTLR-based query parser translates SQL-like DSL → Elasticsearch queries
-# 4. Search returns entity keys only; results are hydrated via federated GraphQL
-# 5. Authorization is late-binding, translated into Boolean filters AND-ed with the query
-
-# Simplified: what a search request looks like
-class NetflixSearchRequest:
-    query: str            # e.g., &quot;movies shooting in Mexico with Arnold Schwarzenegger&quot;
-    filters: dict         # e.g., {&quot;content_type&quot;: &quot;movie&quot;, &quot;status&quot;: &quot;in_production&quot;}
-    user_id: str          # for late-binding authorization
-    facets: list[str]     # e.g., [&quot;genre&quot;, &quot;release_year&quot;, &quot;language&quot;]
-
-class NetflixSearchResponse:
-    entity_keys: list[str]       # just IDs — lean index
-    facets: dict[str, list]      # aggregation results
-    total_count: int
-
-# Results are hydrated by the client via GraphQL:
-# query { nodes(ids: $entity_keys) { title, synopsis, cast { name }, ... } }
-</code></pre>
-<p>Their <strong>Asset Management Platform (AMP)</strong> indexes over 7TB of digital media metadata. The hard lesson: their original design (one index per asset type, ~900 indices, 16,200 shards) caused CPU hotspots because shard sizes ranged from thousands to millions of documents. The fix — time-bucket-based indices with uniform sizes — dropped CPU from 70% to 10% [2].</p>
-<pre><code class="language-python"># AMP's metadata model: handling 1000+ asset types with heterogeneous schemas
-# Solution: nested metadata field with typed value columns
-
-es_document = {
-    &quot;asset_id&quot;: &quot;asset_12345&quot;,
-    &quot;created_at&quot;: &quot;2026-01-15T10:30:00Z&quot;,
-    &quot;metadata&quot;: [
-        {&quot;key&quot;: &quot;resolution&quot;, &quot;string_value&quot;: &quot;4K&quot;},
-        {&quot;key&quot;: &quot;runtime_minutes&quot;, &quot;long_value&quot;: 142},
-        {&quot;key&quot;: &quot;color_space&quot;, &quot;string_value&quot;: &quot;Rec.2020&quot;},
-        {&quot;key&quot;: &quot;file_size_gb&quot;, &quot;double_value&quot;: 287.5},
-        {&quot;key&quot;: &quot;has_subtitles&quot;, &quot;boolean_value&quot;: True},
-        {&quot;key&quot;: &quot;shoot_date&quot;, &quot;date_value&quot;: &quot;2025-11-03&quot;},
-    ]
-}
-
-# Query: &quot;find all 4K assets shot after October 2025 larger than 200GB&quot;
-# This becomes nested Elasticsearch queries matching both key AND value fields
-</code></pre>
-<p>Netflix also uses <strong>Percolate Queries</strong> for reverse search — matching documents to queries instead of queries to documents [3]. When a production asset changes (e.g., &quot;movie shooting in Mexico City without a key role assigned&quot;), percolation identifies which saved searches match, enabling targeted notifications.</p>
-<pre><code class="language-python"># Conceptual: percolation for production monitoring
-class ReverseSearch:
-    &quot;&quot;&quot;Store queries as documents, match new data against them.&quot;&quot;&quot;
-
-    def index_saved_search(self, search_id: str, criteria: dict):
-        &quot;&quot;&quot;A creative executive saves: 'alert me when a thriller shoots in Thailand'.&quot;&quot;&quot;
-        es_query = translate_to_elasticsearch(criteria)
-        es.index(index=&quot;saved_searches&quot;, id=search_id,
-                 body={&quot;query&quot;: es_query, &quot;owner&quot;: &quot;exec_42&quot;})
-
-    def percolate(self, asset_data: dict) -&gt; list[str]:
-        &quot;&quot;&quot;When a new asset arrives, find all searches that match it.&quot;&quot;&quot;
-        result = es.percolate(index=&quot;saved_searches&quot;,
-                             body={&quot;doc&quot;: asset_data})
-        return [match[&quot;_id&quot;] for match in result[&quot;matches&quot;]]
-
-# This is the kind of problem that only exists when you think of search
-# as a retrieval infrastructure problem, not just ranking.
-</code></pre>
-<h2 id="netflix-recommendation-three-tiers-one-goal">Netflix Recommendation: Three Tiers, One Goal</h2>
-<p>Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]:</p>
-<pre><code class="language-python">class NetflixRecommendationPipeline:
-    &quot;&quot;&quot;
-    Three-tier architecture: offline, nearline, online.
-
-    Offline: batch model training, feature pre-computation (hours/days)
-    Nearline: event-triggered async processing (seconds/minutes)
-    Online: real-time scoring with strict latency SLAs (milliseconds)
-    &quot;&quot;&quot;
-
-    def offline_training(self):
-        &quot;&quot;&quot;Run nightly: train models, pre-compute features.&quot;&quot;&quot;
-        # Matrix factorization / foundation model training
-        # Compute item-item similarity matrices
-        # Pre-compute user embeddings for active users
-        # Generate candidate sets per user cluster
-        pass
-
-    def nearline_update(self, user_id: str, event: str):
-        &quot;&quot;&quot;Triggers on user action: update recs after a viewing session.&quot;&quot;&quot;
-        if event == &quot;finished_watching&quot;:
-            # Update user embedding based on the completed title
-            # Refresh the &quot;Because You Watched&quot; row
-            # Adjust candidate generation weights
-            pass
-
-    def online_serve(self, user_id: str, context: dict, k: int = 40) -&gt; list[str]:
-        &quot;&quot;&quot;Called on every page load. Must return in &lt;200ms.&quot;&quot;&quot;
-        # Lookup pre-computed candidates
-        # Score with real-time context (time of day, device, session)
-        # Re-rank for diversity and freshness
-        # Return the rows for the homepage
-        pass
-</code></pre>
-<p>But the models themselves evolved dramatically. Their 2021 <em>AI Magazine</em> article contains a sobering finding: <strong>when only user–item interaction data is available, properly tuned non-deep-learning baselines remain competitive</strong> [5]. The power of deep learning emerged only when heterogeneous features (metadata, context, images, text) were incorporated.</p>
-<p>This is a crucial point that connects back to the search–recommendation distinction: <strong>search has always been multi-modal</strong> — query text, document text, links, anchor text, click data, freshness. Recommendation was historically impoverished: just a ratings matrix. The deep learning era equalized this by giving recommendation systems the same heterogeneous-feature diet that search had enjoyed since the 2000s.</p>
-<h3 id="the-foundation-model-2025">The Foundation Model (2025)</h3>
-<p>In 2025, Netflix published their most ambitious recommendation paper: a <strong>Foundation Model for Personalized Recommendation</strong> that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:</p>
-<pre><code class="language-python">class NetflixFoundationModel(torch.nn.Module):
-    &quot;&quot;&quot;
-    Autoregressive model: user actions → next item prediction.
-
-    Inspired by GPT but for user behavior instead of text.
-    &quot;&quot;&quot;
-
-    def __init__(self, vocab_size: int, embed_dim: int = 1024,
-                 num_layers: int = 24, num_heads: int = 16):
-        super().__init__()
-        self.token_embedding = torch.nn.Embedding(vocab_size, embed_dim)
-        self.positional_encoding = PositionalEncoding(embed_dim)
-
-        # Sparse attention for long sequences (hundreds of interactions)
-        self.transformer_blocks = torch.nn.ModuleList([
-            SparseTransformerBlock(embed_dim, num_heads)
-            for _ in range(num_layers)
-        ])
-
-        # Multi-token prediction: predict next n items, not just one
-        self.output_heads = torch.nn.ModuleList([
-            torch.nn.Linear(embed_dim, vocab_size) for _ in range(5)
-        ])
-
-        # Auxiliary prediction heads as regularizers
-        self.genre_head = torch.nn.Linear(embed_dim, num_genres)
-        self.language_head = torch.nn.Linear(embed_dim, num_languages)
-
-    def forward(self, token_ids: torch.Tensor, mask: torch.Tensor
-                ) -&gt; tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        &quot;&quot;&quot;Predict next items, genre, and language from interaction history.&quot;&quot;&quot;
-        x = self.token_embedding(token_ids)
-        x = self.positional_encoding(x)
-
-        for block in self.transformer_blocks:
-            x = block(x, mask)
-
-        # Next-item predictions (positions 1-5 ahead)
-        item_preds = [head(x) for head in self.output_heads]
-        # Auxiliary predictions
-        genre_pred = self.genre_head(x.mean(dim=1))
-        lang_pred = self.language_head(x.mean(dim=1))
-
-        return item_preds, genre_pred, lang_pred
-
-# Key design decisions:
-# - User actions are &quot;tokenized&quot; via an analog of Byte Pair Encoding
-# - Interaction tokens include watch duration, device, locale, time, item metadata
-# - Cold-start titles: metadata+ID embedding with attention-based mixing weighted
-#   by entity &quot;age&quot; — new titles lean on metadata, established ones on ID embeddings
-# - Scaling laws confirmed: more data, more parameters, longer context → better
-</code></pre>
-<p>Hastings revealed why behavioral data trumps stated preferences: &quot;What happens is, when we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot; Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences fails. A search engine that second-guesses the query fails. This is the central tension.</p>
-<h2 id="the-convergence-unicorn-2024">The Convergence: UniCoRn (2024)</h2>
-<p>Before UniCoRn, Netflix ran three separate models for search, homepage recommendations, and &quot;More Like This.&quot; UniCoRn replaced all three [7].</p>
-<pre><code class="language-python">class UniCoRn(torch.nn.Module):
-    &quot;&quot;&quot;
-    Unified Contextual Recommender: one model, three tasks.
-
-    The insight: treat task identity as a first-class feature.
-    &quot;&quot;&quot;
-
-    def __init__(self, user_vocab_size: int, item_vocab_size: int,
-                 embed_dim: int = 512):
-        super().__init__()
-        self.user_embedding = torch.nn.Embedding(user_vocab_size, embed_dim)
-        self.item_embedding = torch.nn.Embedding(item_vocab_size, embed_dim)
-        self.query_encoder = TextEncoder(embed_dim)  # encodes search query text
-        self.task_embedding = torch.nn.Embedding(3, embed_dim)  # search/recs/similar
-
-        # Shared transformer backbone
-        self.shared_backbone = TransformerEncoder(
-            d_model=embed_dim, num_layers=6, num_heads=8
-        )
-
-        # Task-specific output heads
-        self.search_head = torch.nn.Linear(embed_dim, 1)        # P(click | query)
-        self.recs_head = torch.nn.Linear(embed_dim, 1)          # P(watch | profile)
-        self.similar_head = torch.nn.Linear(embed_dim, 1)       # P(watch | source item)
-
-    def forward(self, user_id: int, item_ids: torch.Tensor,
-                query_text: str | None, source_entity_id: int | None,
-                task_type: int) -&gt; torch.Tensor:
-        &quot;&quot;&quot;
-        task_type: 0 = search, 1 = homepage recs, 2 = More Like This
-
-        Missing context imputation:
-        - Search: source_entity_id = null (no source entity)
-        - Recs: query_text = null (no explicit query)
-        - Similar: query_text = entity title text (imputed)
-        &quot;&quot;&quot;
-        user_vec = self.user_embedding(user_id)
-        item_vecs = self.item_embedding(item_ids)
-        task_vec = self.task_embedding(task_type)
-
-        # Impute missing contexts
-        query_vec = (self.query_encoder(query_text)
-                     if query_text
-                     else torch.zeros_like(user_vec))
-        source_vec = (self.item_embedding(source_entity_id)
-                      if source_entity_id is not None
-                      else torch.zeros_like(user_vec))
-
-        # Shared representation
-        combined = torch.cat([user_vec, item_vecs, query_vec, source_vec, task_vec],
-                             dim=-1)
-        hidden = self.shared_backbone(combined)
-
-        # Task-specific scoring
-        if task_type == 0:
-            return self.search_head(hidden)
-        elif task_type == 1:
-            return self.recs_head(hidden)
-        else:
-            return self.similar_head(hidden)
-
-# Results:
-# +7% lift for search tasks
-# +10% lift for recommendations tasks
-# Fewer models to maintain, shared learnings across tasks
-</code></pre>
-<p>The critical detail: UniCoRn succeeded not by ignoring the distinction but by making the model <strong>explicitly aware of it</strong>. <code>task_type</code> tells the model which behavior to invoke. The imputation strategy respects the structural difference. The separate output heads optimize for different objectives because, at Netflix, a successful search is not the same thing as a successful recommendation.</p>
-<p>Netflix also documented the central tension: <strong>personalization can overpower query relevance</strong>. If a user searches for &quot;documentaries about World War II&quot; and the recommender knows the user loves romantic comedies, should it show <em>The Notebook</em>? Obviously not. UniCoRn added personalization incrementally, with guardrails [8].</p>
-<hr>
-<hr>
-<h2 id="open-questions">Open Questions</h2>
-<ol>
-<li>
-<p><strong>UniCoRn achieved +7% for search and +10% for recommendations by making task identity explicit.</strong> What would the numbers be if they had collapsed the distinction entirely — one model, one objective, no task_type feature? Would it outperform the separate models at all?</p>
-</li>
-<li>
-<p><strong>Netflix confirmed that scaling laws apply to recommendation foundation models.</strong> Is there a point where a large enough recommender, trained on enough user behavior, internalizes search as a special case — without being told?</p>
-</li>
-<li>
-<p><strong>Percolate queries (reverse search) solve a problem that only exists when you think of search as infrastructure, not ranking.</strong> What other search primitives are we missing because we default to the ranked-list mental model?</p>
-</li>
-<li>
-<p><strong>Hastings said Netflix competes with sleep.</strong> If recommendation is competing for attention and search is competing with ignorance, what happens when an LLM can do both? Does the system compete with everything?</p>
-</li>
-</ol>
-<p><strong>References</strong></p>
-<ol>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/studio-search-using-elasticsearch-and-apache-flink-to-index-federated-graphql-data-7d77cad7b7c8"><em>Netflix Studio Search: Using Elasticsearch and Apache Flink to Index Federated GraphQL Data</em></a>. March 2022.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/elasticsearch-indexing-strategy-in-asset-management-platform-amp-99332231e541"><em>Elasticsearch Indexing Strategy in Asset Management Platform (AMP)</em></a>. 2023.</p>
-</li>
-<li>
-<p>InfoQ. <a target="_blank" rel="noopener noreferrer" href="https://www.infoq.com/news/2024/04/netflix-percolate-queries/"><em>Netflix Uses Elasticsearch Percolate Queries to Implement Reverse Searches Efficiently</em></a>. April 2024.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/system-architectures-for-personalization-and-recommendation-e081aa94b5d8"><em>System Architectures for Personalization and Recommendation</em></a>. March 2013.</p>
-</li>
-<li>
-<p>Harald Steck et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1609/aimag.v42i3.18140"><em>Deep Learning for Recommender Systems: A Netflix Case Study</em></a>. AI Magazine, 42(3): 7–18, 2021.</p>
-</li>
-<li>
-<p>Netflix Technology Blog. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/foundation-model-for-personalized-recommendation-1a0bd8e02d39"><em>Foundation Model for Personalized Recommendation</em></a>. March 2025.</p>
-</li>
-<li>
-<p>Moumita Bhattacharya et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/fullHtml/10.1145/3640457.3688034"><em>Joint Modeling of Search and Recommendations Via an Unified Contextual Recommender (UniCoRn)</em></a>. RecSys 2024.</p>
-</li>
-<li>
-<p>Sudarshan Lamkhede and Christoph Kofler. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/abs/10.1145/3460231.3474602"><em>Recommendations and Results Organization in Netflix Search</em></a>. RecSys 2021.</p>
-</li>
-</ol>
-<hr>
-<p><em>Previous: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-recommendation-techniques">Part 3 — Thirty Years of Recommendation</a> · Next: <a target="_blank" rel="noopener noreferrer" href="/search-recommendation-industry-boundary">Part 5 — How Spotify, DoorDash, Airbnb, and Pinterest Navigate the Boundary</a></em></p>
 </div>
       </article>
       <article class="post" id="search-recommendation-fundamental-distinction">
@@ -12121,13 +11595,12 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#search-recommendation-netflix">&#34;S&amp;R: The Netflix Case Study&#34;</a>
               <a href="#search-recommendation-practical-architecture">&#34;S&amp;R: Building Systems That Get It Right&#34;</a>
-              <a href="#search-is-not-recommendation">Search Is Not Recommendation</a>
               <a href="#search-recommendation-industry-boundary">&#34;S&amp;R: The Boundary in Practice&#34;</a>
               <a href="#search-recommendation-llms">&#34;S&amp;R: What LLMs Change&#34;</a>
               <a href="#search-recommendation-search-techniques">&#34;S&amp;R: How Search Works&#34;</a>
               <a href="#search-recommendation-recommendation-techniques">&#34;S&amp;R: How Recommendation Works&#34;</a>
-              <a href="#search-recommendation-netflix">&#34;S&amp;R: The Netflix Case Study&#34;</a>
               <a href="#search-recommendation-fundamental-distinction">&#34;S&amp;R: Why They Are Not the Same&#34;</a>
               <a href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a>
               <a href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a>

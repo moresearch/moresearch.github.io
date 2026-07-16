@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: Netflix — Building Both at Global Scale"
+title: "S&R: Netflix — Building Both at Global Scale"
 date: 2026-07-16
 slug: search-recommendation-netflix
 summary: Part 4 of 7. Deep dive into Netflix's search and recommendation systems — Elasticsearch/Flink indexing pipelines, three-tier serving architecture, the Foundation Model for personalized recommendation, and UniCoRn's unified approach to search and recs.
 tags: [search, recommendation, netflix, elasticsearch, collaborative-filtering, foundation-model, unicorn, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation. Part 4 of a seven-part series. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.*
 
 No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.
 

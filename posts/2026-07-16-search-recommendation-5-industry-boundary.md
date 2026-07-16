@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: How Spotify, DoorDash, Airbnb, and Pinterest Navigate the Boundary"
+title: "S&R: How Spotify, DoorDash, Airbnb, and Pinterest Navigate the Boundary"
 date: 2026-07-16
 slug: search-recommendation-industry-boundary
 summary: Part 5 of 7. How four leading engineering organizations handle the search–recommendation boundary in production: Spotify's LLM intent router, DoorDash's content-first embeddings and Consumer Memory Blocks, Airbnb's listing embeddings for real-time search personalization, and Pinterest's two-tower architectures.
 tags: [search, recommendation, spotify, doordash, airbnb, pinterest, two-tower, embeddings, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation. Part 5 of a seven-part series. How Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary between search and recommendation in production — with code for each architecture.*
 
 Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.
 

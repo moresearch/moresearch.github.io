@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: Practical Architecture — Building Systems That Get It Right"
+title: "S&R: Practical Architecture — Building Systems That Get It Right"
 date: 2026-07-16
 slug: search-recommendation-practical-architecture
 summary: Part 7 of 7. Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.
 tags: [search, recommendation, architecture, system-design, llm, practical, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation. Part 7 of a seven-part series. Practical architecture guidance for building systems that handle both search and recommendation — correctly.*
 
 Over six parts, we've traced the fifty-year history of search, the thirty-year history of recommendation, Netflix's dual-stack architecture, how four major companies handle the boundary, and how LLMs transform both fields. This final part translates that history into practical guidance.
 

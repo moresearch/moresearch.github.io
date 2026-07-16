@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: How LLMs Reshape Both Fields — And Where They Don't"
+title: "S&R: How LLMs Reshape Both Fields — And Where They Don't"
 date: 2026-07-16
 slug: search-recommendation-llms
 summary: Part 6 of 7. LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.
 tags: [search, recommendation, llm, rag, generative-retrieval, agentic, survey, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation. Part 6 of a seven-part series. How LLMs reshape both fields — differently — and why the fundamental distinction survives the generative era.*
 
 The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.
 

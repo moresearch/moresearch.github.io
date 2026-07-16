@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: Fifty Years of Search — From Boolean to BERT"
+title: "S&R: Fifty Years of Search — From Boolean to BERT"
 date: 2026-07-16
 slug: search-recommendation-search-techniques
 summary: Part 2 of 7. A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.
 tags: [search, information-retrieval, tf-idf, bm25, pagerank, bert, neural-ir, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation. Part 2 of a seven-part series. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.*
 
 Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what "relevance" means.
 

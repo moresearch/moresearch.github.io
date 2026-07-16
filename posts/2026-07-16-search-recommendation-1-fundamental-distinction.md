@@ -1,11 +1,13 @@
 ---
-title: "search/recommendation: The Fundamental Distinction"
+title: "S&R: The Fundamental Distinction"
 date: 2026-07-16
 slug: search-recommendation-fundamental-distinction
 summary: Part 1 of 7. Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig's 80% rule, and the library/restaurant mental models that clarify the boundary.
 tags: [search, recommendation, information-retrieval, collaborative-filtering, architecture, series]
 series: search-recommendation
 ---
+
+*S&R stands for Search & Recommendation — the two fundamental modes of information access that this seven-part series examines. Part 1 defines the distinction and explains why conflating them is a costly engineering mistake.*
 
 Search and recommendation are often described as "two sides of the same coin." Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.
 

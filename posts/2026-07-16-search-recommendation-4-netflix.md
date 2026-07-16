@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.
 
 Reed Hastings, Netflix's co-founder, articulated the recommendation goal simply: "If the Starbucks secret is a smile when you get your latte, ours is that the website adapts to the individual's taste." The emotional target — "Netflix gets me" — is fundamentally different from search's target of "Netflix found what I asked for." Recommendation is about identity. Search is about utility.
@@ -90,7 +94,7 @@ class ReverseSearch:
 
 ## Netflix Recommendation: Three Tiers, One Goal
 
-Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]:
+Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]; Gomez-Uribe and Hunt later published the definitive description of the full recommendation system in 2015 [9]:
 
 ```python
 class NetflixRecommendationPipeline:
@@ -133,7 +137,7 @@ This is a crucial point that connects back to the search–recommendation distin
 
 ### The Foundation Model (2025)
 
-In 2025, Netflix published their most ambitious recommendation paper: a **Foundation Model for Personalized Recommendation** that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:
+Building on a decade of personalization trends documented by Basilico and Raimond [11], in 2025 Netflix published their most ambitious recommendation paper: a **Foundation Model for Personalized Recommendation** that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:
 
 ```python
 class NetflixFoundationModel(torch.nn.Module):
@@ -300,6 +304,12 @@ Netflix also documented the central tension: **personalization can overpower que
 7. Moumita Bhattacharya et al. [*Joint Modeling of Search and Recommendations Via an Unified Contextual Recommender (UniCoRn)*](https://dl.acm.org/doi/fullHtml/10.1145/3640457.3688034). RecSys 2024.
 
 8. Sudarshan Lamkhede and Christoph Kofler. [*Recommendations and Results Organization in Netflix Search*](https://dl.acm.org/doi/abs/10.1145/3460231.3474602). RecSys 2021.
+
+9. Carlos A. Gomez-Uribe and Neil Hunt. [*The Netflix Recommender System: Algorithms, Business Value, and Innovation*](https://doi.org/10.1145/2843948). ACM TMIS, 6(4), 2015.
+
+10. Xavier Amatriain and Justin Basilico. [*Netflix Recommendations: Beyond the 5 Stars*](https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429). Netflix Technology Blog, 2012.
+
+11. Justin Basilico and Yves Raimond. [*Recent Trends in Personalization at Netflix*](https://netflixtechblog.com/recent-trends-in-personalization-at-netflix-5bd3903347fe). Netflix Technology Blog, 2020.
 
 ---
 

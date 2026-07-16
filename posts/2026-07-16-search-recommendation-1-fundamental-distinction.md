@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation — the two fundamental modes of information access that this series examines. This post defines the distinction and explains why conflating them is a costly engineering mistake.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 Search and recommendation are often described as "two sides of the same coin." Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.
 
 It is also wrong — or at least, incomplete enough to be dangerous.
@@ -84,6 +88,8 @@ The critical property: **the system initiates**. The user leans back. They are o
 | **Theoretical roots** | Information Retrieval (library science, linguistics) | Collaborative Filtering (HCI, ML) |
 | **User posture** | Lean forward — goal-directed | Lean back — open to suggestion |
 
+Manning, Raghavan, and Schütze's canonical IR textbook formalizes this distinction in its opening chapter: information retrieval is query-driven; information filtering is profile-driven [5].
+
 ## Why People Confuse Them — The Three Traps
 
 If the distinction is so clear, why do smart engineers keep conflating them? Three traps account for most of the damage.
@@ -152,6 +158,8 @@ def measure_recommendation_satisfaction(ndcg_at_10: float) -> str:
 
 Getting search wrong loses a query. Getting recommendation wrong loses a user.
 
+Herlocker et al. established the standard evaluation framework for collaborative filtering, noting that recommendation metrics must capture user satisfaction in ways that precision and recall alone cannot [6].
+
 ## The Library Analogy
 
 Three scenarios make the distinction concrete:
@@ -196,7 +204,7 @@ The remaining posts in this series cover: the fifty-year history of search techn
 
 3. **The three traps explain why engineers *do* conflate search and recommendation.** But what incentives — organizational, metric, career — make them *want* to? Is unification sometimes a political choice rather than a technical one?
 
-4. **Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.** Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time?
+4. **Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.** Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time? Jannach et al.'s introductory textbook on recommender systems reinforces the distinction structurally: it treats the search/recommendation boundary as a design choice, not a convergence point — search is about satisfying a stated need, while recommendation is about anticipating an unstated one [8].
 
 **References**
 
@@ -207,6 +215,18 @@ The remaining posts in this series cover: the fifty-year history of search techn
 3. Kailash Hambarde and Hugo Proença. [*Information Retrieval: Recent Advances and Beyond*](https://arxiv.org/abs/2301.08801). arXiv:2301.08801, 2023.
 
 4. Nicholas J. Belkin and W. Bruce Croft. [*Information Filtering and Information Retrieval: Two Sides of the Same Coin?*](https://dl.acm.org/doi/10.1145/138859.138861). Communications of the ACM, 35(12): 29–38, 1992.
+
+5. Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. [*Introduction to Information Retrieval*](https://nlp.stanford.edu/IR-book/). Cambridge University Press, 2008. The canonical IR textbook covering Boolean retrieval, vector space models, probabilistic retrieval, and evaluation.
+
+6. Jonathan L. Herlocker, Joseph A. Konstan, Loren G. Terveen, and John T. Riedl. [*Evaluating Collaborative Filtering Recommender Systems*](https://doi.org/10.1145/963770.963772). ACM Transactions on Information Systems, 22(1): 5–53, 2004. The definitive paper on recommendation evaluation metrics.
+
+7. Carlos A. Gomez-Uribe and Neil Hunt. [*The Netflix Recommender System: Algorithms, Business Value, and Innovation*](https://doi.org/10.1145/2843948). ACM Transactions on Management Information Systems, 6(4): 1–19, 2015. Netflix's own description of their recommendation architecture and business impact.
+
+8. Dietmar Jannach, Markus Zanker, Alexander Felfernig, and Gerhard Friedrich. [*Recommender Systems: An Introduction*](https://www.cambridge.org/core/books/recommender-systems/). Cambridge University Press, 2010. A comprehensive introductory textbook.
+
+9. W. Bruce Croft, Donald Metzler, and Trevor Strohman. [*Search Engines: Information Retrieval in Practice*](https://www.search-engines-book.com/). Pearson, 2010. A practical textbook covering search engine architecture, indexing, and ranking.
+
+10. Tefko Saracevic. [*Relevance: A Review of the Literature and a Framework for Thinking on the Notion in Information Science, Part II*](https://doi.org/10.1002/asi.20482). Journal of the American Society for Information Science and Technology, 58(13): 1915–1933, 2007. A comprehensive review of relevance — the central concept in information retrieval.
 
 ---
 

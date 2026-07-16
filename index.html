@@ -660,6 +660,8 @@
           </div>
         </header>
         <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. Practical architecture guidance for building systems that handle both search and recommendation — correctly.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
 <p>This series has traced the fifty-year history of search, the thirty-year history of recommendation, Netflix's dual-stack architecture, how four major companies handle the boundary, and how LLMs transform both fields. This post translates that history into practical guidance.</p>
 <h2 id="the-distinction-in-everyday-life">The Distinction in Everyday Life</h2>
 <p>Before the architecture, a mental model. The search–recommendation distinction isn't an engineering abstraction — it's visible in how we make decisions every day.</p>
@@ -700,7 +702,7 @@
 # &quot;optimize for long-term engagement.&quot; These are different instructions.
 </code></pre>
 <p><strong>2. Don't let personalization overpower query relevance.</strong></p>
-<p>Netflix learned this the hard way with UniCoRn. They added personalization to search incrementally, with explicit guardrails. The fully personalized model improved both tasks — but only after careful tuning to ensure search results remain <em>relevant to the query</em> even as they benefit from personalization signals.</p>
+<p>Netflix learned this the hard way with UniCoRn. They added personalization to search incrementally, with explicit guardrails. The fully personalized model improved both tasks — but only after careful tuning to ensure search results remain <em>relevant to the query</em> even as they benefit from personalization signals. This is a specific instance of a broader principle: model complexity in ML systems incurs a technical debt that compounds silently [5].</p>
 <pre><code class="language-python">def safe_personalized_search(query: str, user_profile: dict,
                              base_ranker, personalization_model,
                              relevance_threshold: float = 0.7) -&gt; list[Item]:
@@ -778,6 +780,7 @@ separate_infrastructure = {
     &quot;recs_eval&quot;: &quot;A/B test on member retention&quot;,    # behavioral
 }
 </code></pre>
+<p>These infrastructure choices — what to share, what to separate — are foundational decisions in data-intensive system design [7].</p>
 <p><strong>5. LLMs are infrastructure, not a replacement for retrieval.</strong></p>
 <p>The most successful production deployments use LLMs for content understanding, query intent classification, and feature generation <em>offline</em>, while keeping online retrieval in purpose-built low-latency systems:</p>
 <pre><code class="language-python">class HybridLLMRetrievalPipeline:
@@ -803,7 +806,7 @@ separate_infrastructure = {
         return self.recs_pipeline.recommend(user_id, k)
 </code></pre>
 <h2 id="a-reference-architecture">A Reference Architecture</h2>
-<p>Bringing everything together, here's what a system that handles both search and recommendation looks like in 2026:</p>
+<p>Bringing everything together — inspired by real-world architectures from Netflix and others [6] — here's what a system that handles both search and recommendation looks like in 2026:</p>
 <pre><code class="language-python">class SearchAndRecommendationSystem:
     &quot;&quot;&quot;
     Reference architecture for a system that does both.
@@ -897,6 +900,869 @@ separate_infrastructure = {
 <li>
 <p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
 </li>
+<li>
+<p>D. Sculley, Gary Holt, Daniel Golovin, Eugene Davydov, Todd Phillips, Dietmar Ebner, Vinay Chaudhary, Michael Young, Jean-Francois Crespo, and Dan Dennison. <a target="_blank" rel="noopener noreferrer" href="https://research.google/pubs/pub43146/"><em>Machine Learning: The High Interest Credit Card of Technical Debt</em></a>. SE4ML, NeurIPS 2014.</p>
+</li>
+<li>
+<p>Xavier Amatriain and Justin Basilico. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2645710.2645775"><em>Recommender Systems in Industry: A Netflix Case Study</em></a>. RecSys 2014 Tutorial.</p>
+</li>
+<li>
+<p>Martin Kleppmann. <a target="_blank" rel="noopener noreferrer" href="https://dataintensive.net/"><em>Designing Data-Intensive Applications</em></a>. O'Reilly, 2017. The canonical reference on system design for data-intensive applications.</p>
+</li>
+<li>
+<p>Gregor Hohpe and Bobby Woolf. <a target="_blank" rel="noopener noreferrer" href="https://www.enterpriseintegrationpatterns.com/"><em>Enterprise Integration Patterns</em></a>. Addison-Wesley, 2003.</p>
+</li>
+<li>
+<p>Eugene Yan et al. <a target="_blank" rel="noopener noreferrer" href="https://eugeneyan.com/writing/applying-ml/"><em>Applying ML to Search and Recommendation</em></a>. Blog, 2024.</p>
+</li>
+<li>
+<p>Chip Huyen. <a target="_blank" rel="noopener noreferrer" href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/"><em>Designing Machine Learning Systems</em></a>. O'Reilly, 2022.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+      <article class="post" id="search-recommendation-llms">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
+          <h2><a href="#search-recommendation-llms">&#34;S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?&#34;</a></h2><p class="post-summary">LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">llm</span><span class="tag">rag</span><span class="tag">generative-retrieval</span><span class="tag">agentic</span><span class="tag">survey</span><span class="tag">series</span>
+          </div>
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. How LLMs reshape both fields — differently — and why the fundamental distinction survives the generative era.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
+<p>The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT [7]. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.</p>
+<p>Two recent surveys capture the scope. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, and reader [1]. Li et al. (2024) provide the cross-cutting view — framing both search and recommendation as instances of generative retrieval and identifying where they converge and where they diverge [2].</p>
+<p>The key insight: <strong>LLMs don't eliminate the distinction. They reveal it at a higher level of abstraction.</strong> Both fields are moving toward generative paradigms, but the <em>thing being generated</em> is different. Search generates answers from documents. Recommendation generates item predictions from user histories.</p>
+<h2 id="how-llms-transform-search">How LLMs Transform Search</h2>
+<p>LLMs operate at four levels in the search pipeline:</p>
+<pre><code class="language-python"># Level 1: Query Understanding — LLMs disambiguate and expand queries
+def llm_query_understanding(raw_query: str, llm) -&gt; dict:
+    &quot;&quot;&quot;Transform natural language into structured search intent.&quot;&quot;&quot;
+    prompt = f&quot;&quot;&quot;
+    Parse this search query into structured intent:
+    Query: &quot;{raw_query}&quot;
+
+    Return JSON with: intent_type, entities, constraints, expansions.
+    &quot;&quot;&quot;
+    response = llm.generate(prompt)
+    return json.loads(response)
+
+# &quot;Show me movies like Inception but funnier&quot;
+# → {intent_type: &quot;similar_items_with_constraint&quot;,
+#    entities: [&quot;Inception&quot;],
+#    constraints: [&quot;genre: comedy&quot;, &quot;tone: lighter&quot;],
+#    expansions: [&quot;mind-bending heist films&quot;, &quot;comedic thrillers&quot;]}
+
+# Level 2: Document Understanding — LLMs generate richer representations
+def llm_enrich_document(doc: str, llm) -&gt; dict:
+    &quot;&quot;&quot;Generate structured metadata that transcends keyword matching.&quot;&quot;&quot;
+    prompt = f&quot;&quot;&quot;
+    For this document, generate:
+    1. A 2-sentence summary
+    2. 5-10 key phrases
+    3. Entity tags (people, places, concepts)
+    4. A semantic embedding-friendly description
+
+    Document: {doc[:4000]}
+    &quot;&quot;&quot;
+    return llm.generate_structured(prompt)
+
+# Level 3: RAG — Retrieve then generate a synthesized answer
+def rag_search(query: str, retriever, llm, k: int = 5) -&gt; str:
+    &quot;&quot;&quot;The dominant LLM-search paradigm in 2025.&quot;&quot;&quot;
+    # Retrieve relevant documents
+    docs = retriever.retrieve(query, k=k)
+
+    # Generate answer grounded in retrieved documents
+    context = &quot;\n\n&quot;.join(f&quot;[{i+1}] {doc.text}&quot; for i, doc in enumerate(docs))
+    prompt = f&quot;&quot;&quot;
+    Answer the query using ONLY the provided documents.
+    Cite sources by number.
+
+    Query: {query}
+
+    Documents:
+    {context}
+    &quot;&quot;&quot;
+    return llm.generate(prompt)
+
+# Level 4: Generative Retrieval — the model IS the index
+# The most radical approach: the LLM directly generates document IDs
+# without an explicit retrieval index. Still experimental.
+</code></pre>
+<p>The core search user need — &quot;I have a question, find me the answer&quot; — aligns naturally with LLM capabilities. The LLM augments retrieval at every stage without replacing it [6]. This paradigm extends the text-to-text framework [10] that first showed how retrieval tasks could be unified under a generative umbrella.</p>
+<h2 id="how-llms-transform-recommendation">How LLMs Transform Recommendation</h2>
+<p>For recommendation, the transformation is more structural:</p>
+<pre><code class="language-python"># Level 1: Feature Engineering Automation
+# LLMs generate rich profiles from sparse structured data.
+# DoorDash's content embeddings and Consumer Memory Blocks are paradigmatic:
+# the LLM produces the fuel, retrieval and ranking remain purpose-built.
+
+def llm_generate_item_profile(item: dict, llm) -&gt; str:
+    &quot;&quot;&quot;Produce a rich narrative that a standard encoder can embed.&quot;&quot;&quot;
+    return llm.generate(f&quot;Describe this item for a recommendation system: {item}&quot;)
+
+# Level 2: Generative Recommendation
+# Instead of scoring candidates, the LLM autoregressively generates item tokens.
+# Meta's HSTU, Kuaishou's OneRec, Google's TIGER are examples.
+
+class GenerativeRecommender:
+    &quot;&quot;&quot;Recommendation as sequence-to-sequence: predict next-item tokens.&quot;&quot;&quot;
+    def recommend(self, user_history: list[int], llm, k: int = 10) -&gt; list[int]:
+        prompt = f&quot;User interaction history (item IDs): {user_history}\nPredict next items:&quot;
+        # LLM autoregressively generates item IDs
+        return llm.generate_tokens(prompt, max_tokens=k)
+
+# Level 3: Conversational Recommendation
+# Multi-turn dialogue where the system elicits preferences and adapts.
+
+def conversational_recommendation_loop(user_id: str, llm, catalog):
+    &quot;&quot;&quot;Search and recommendation blur into conversation.&quot;&quot;&quot;
+    context = {&quot;history&quot;: get_user_history(user_id)}
+    for turn in range(5):
+        user_input = get_user_response()
+        if is_search_like(user_input):    # &quot;I want a sci-fi movie&quot;
+            results = catalog.search(user_input)
+            context[&quot;mode&quot;] = &quot;search&quot;
+        else:                              # &quot;something cerebral, not too long&quot;
+            results = catalog.recommend(context)
+            context[&quot;mode&quot;] = &quot;recommendation&quot;
+        llm_response = llm.generate_response(results, context)
+        show_to_user(llm_response)
+
+# Level 4: Agentic Recommendation
+# LLM-powered agents that plan, use tools, maintain memory, reason.
+# ARAG (SIGIR 2025): 4 specialized agents — User Understanding, NLI,
+# Context Summary, Item Ranker — achieve +42.1% NDCG@5 over vanilla RAG.
+</code></pre>
+<h2 id="why-the-distinction-survives">Why the Distinction Survives</h2>
+<p>Despite this convergence, the distinction remains essential for four reasons:</p>
+<p><strong>1. Objective alignment.</strong> A search system optimizing for engagement shows addictive content instead of answering the query. A recommendation system optimizing for precision produces an echo chamber.</p>
+<pre><code class="language-python"># Wrong: one objective for both
+def bad_unified_objective(model_output, labels):
+    return cross_entropy(model_output, labels)  # what are we even optimizing?
+
+# Right: task-aware objectives
+def search_objective(predictions, relevance_labels):
+    return ndcg_loss(predictions, relevance_labels)  # did we retrieve the right thing?
+
+def recommendation_objective(predictions, engagement_labels):
+    return binary_cross_entropy(predictions, engagement_labels)  # will user engage?
+    # Plus: diversity bonus, freshness decay, exploration budget, long-term retention proxy
+</code></pre>
+<p><strong>2. Evaluation.</strong> Search: NDCG, MRR, precision@K against relevance judgments. Recommendation: retention, discovery, session length, long-term satisfaction. These are correlated but not identical.</p>
+<p><strong>3. The serendipity gradient.</strong> In search, serendipity is a bug. In recommendation, it's a feature.</p>
+<pre><code class="language-python">def demonstrate_serendipity_gradient():
+    &quot;&quot;&quot;The same behavior is a bug in one context and a feature in the other.&quot;&quot;&quot;
+
+    # SEARCH: User types &quot;The Godfather&quot;
+    # System returns &quot;Goodfellas&quot; because &quot;people who watch The Godfather
+    # also love Goodfellas&quot;
+    # → BROKEN. The user wanted The Godfather. Return The Godfather.
+
+    # RECOMMENDATION: User browses homepage on Friday night
+    # System shows &quot;The Godfather&quot; — which the user has already seen 4 times
+    # → BROKEN. The user wants something new. Show Goodfellas.
+
+    # Both failures happen when teams optimize for the wrong thing.
+    # The first optimized for engagement instead of relevance.
+    # The second optimized for precision instead of discovery.
+</code></pre>
+<p><strong>4. Infrastructure.</strong> Search: inverted indices, real-time query parsing, sub-100ms latency at high QPS. Recommendation: user profile stores, embedding indices, offline batch pipelines amortized across daily refresh cycles.</p>
+<pre><code class="language-python"># Search infrastructure
+class SearchServing:
+    latency_sla: float = 0.100  # seconds — user is waiting
+    qps: int = 10_000           # every keystroke is a query
+    freshness: str = &quot;real-time&quot;  # new documents must be searchable immediately
+    index_type: str = &quot;inverted&quot;  # keyword → posting list
+
+# Recommendation infrastructure
+class RecServing:
+    latency_sla: float = 0.200  # seconds — page load, more forgiving
+    qps: int = 1_000            # one request per page view
+    freshness: str = &quot;daily&quot;      # embeddings recomputed nightly
+    index_type: str = &quot;ANN&quot;      # vector → nearest neighbors
+</code></pre>
+<h2 id="the-survey-papers-agree">The Survey Papers Agree</h2>
+<p>The Li et al. (2024) survey on generative search and recommendation puts it well: the fields share a common mathematical framework — matching entities across representation spaces — but differ in the <em>nature of the mismatch</em> [2]. Search deals with query–document mismatch: different words for the same concept. Recommendation deals with user–item mismatch: users and items live in completely different semantic spaces. The first is a lexical/semantic gap. The second is a modality gap. Solving them requires different tools, even when those tools share a common transformer backbone.</p>
+<p>The Gupta et al. (2025) survey on generative recommendation reinforces this: industrial systems like TIGER, LIGER, OneRec, and HSTU all treat recommendation as its own generative problem with its own tokenization, its own evaluation, and its own cold-start challenges [3]. None of them use the same architecture unmodified for search.</p>
+<p>LLMs are infrastructure. They don't eliminate the distinction between search and recommendation — they make it more important to get right.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>LLMs are infrastructure, not a replacement for retrieval.</strong> But the history of software is infrastructure absorbing what was once application logic. Will retrieval become just another token prediction task?</p>
+</li>
+<li>
+<p><strong>Generative recommendation (TIGER, HSTU, OneRec) treats item prediction as autoregressive generation.</strong> If the model is the index, the retriever, and the ranker — where does the search/recommendation boundary go? Does it vanish, or does it move into the prompt?</p>
+</li>
+<li>
+<p><strong>The surveys agree: LLMs affect search and recommendation differently.</strong> But most LLM research papers treat them as interchangeable downstream tasks. Is the research community making the same mistake the engineering community is learning to avoid?</p>
+</li>
+<li>
+<p><strong>Conversational recommendation collapses the boundary between search and discovery into dialogue.</strong> If users can't tell whether they're searching or being recommended to — does the distinction still matter? For whom?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Yutao Zhu, Huaying Yuan, Shuting Wang, et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.07107"><em>Large Language Models for Information Retrieval: A Survey</em></a>. ACM Transactions on Information Systems, 2024.</p>
+</li>
+<li>
+<p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
+</li>
+<li>
+<p>Shashank Gupta et al. <a target="_blank" rel="noopener noreferrer" href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.176523089.94266134/v2"><em>Generative Recommendation: A Survey of Models, Systems, and Industrial Advances</em></a>. TechRxiv, 2025.</p>
+</li>
+<li>
+<p>Chi Zhang et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.21931"><em>ARAG: Agentic Retrieval Augmented Generation for Personalized Recommendation</em></a>. SIGIR 2025.</p>
+</li>
+<li>
+<p>Zhuang Liu et al. <a target="_blank" rel="noopener noreferrer" href="https://ieeexplore.ieee.org/abstract/document/11129085"><em>A Comprehensive Survey on LLM-Powered Recommender Systems</em></a>. IEEE Access, 2024.</p>
+</li>
+<li>
+<p>Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, Sebastian Riedel, and Douwe Kiela. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2005.11401"><em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em></a>. NeurIPS 2020.</p>
+</li>
+<li>
+<p>Tom Brown et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2005.14165"><em>Language Models are Few-Shot Learners</em></a>. NeurIPS 2020. The GPT-3 paper.</p>
+</li>
+<li>
+<p>Sébastien Bubeck et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2303.12712"><em>Sparks of Artificial General Intelligence: Early Experiments with GPT-4</em></a>. arXiv, 2023.</p>
+</li>
+<li>
+<p>Hugo Touvron et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.13971"><em>LLaMA: Open and Efficient Foundation Language Models</em></a>. arXiv, 2023.</p>
+</li>
+<li>
+<p>Colin Raffel et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1910.10683"><em>Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer</em></a>. JMLR, 2020.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+      <article class="post" id="search-recommendation-industry-boundary">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
+          <h2><a href="#search-recommendation-industry-boundary">&#34;S&amp;R: Where Should You Draw the Line Between Search and Recommendation?&#34;</a></h2><p class="post-summary">How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">spotify</span><span class="tag">doordash</span><span class="tag">airbnb</span><span class="tag">pinterest</span><span class="tag">two-tower</span><span class="tag">embeddings</span><span class="tag">series</span>
+          </div>
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. How Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary between search and recommendation in production — with code for each architecture.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
+<p>Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.</p>
+<h2 id="spotify-intent-based-routing-with-llms">Spotify: Intent-Based Routing with LLMs</h2>
+<p>Spotify's 2025 paper <em>&quot;You Say Search, I Say Recs&quot;</em> describes an LLM-based router that classifies user intent and dispatches accordingly [1]:</p>
+<pre><code class="language-python">from enum import Enum
+
+class QueryIntent(Enum):
+    NAVIGATIONAL = &quot;navigational&quot;    # &quot;find song X&quot; → search
+    EXPLORATORY = &quot;exploratory&quot;      # &quot;Italian 80s disco nostalgia&quot; → recs
+    MIXED = &quot;mixed&quot;                  # both paths, parallel → fused results
+
+class SpotifyIntentRouter:
+    &quot;&quot;&quot;
+    LLM-based router: classify intent, route to search or recommendation.
+
+    Key design decisions:
+    - Only the query goes to the router (NOT user features) → max cache hits
+    - User features go to downstream tools → personalization where it belongs
+    - Small distilled LLM: 60% latency reduction, 99% cost reduction vs teacher
+    &quot;&quot;&quot;
+
+    def __init__(self, llm_model):
+        self.llm = llm_model  # small fine-tuned model, p75 latency ~450ms
+
+    def classify(self, query: str) -&gt; QueryIntent:
+        &quot;&quot;&quot;Classify query intent. Cached aggressively — no user features.&quot;&quot;&quot;
+        if cached := self.cache.get(query):
+            return cached
+        intent = self.llm.classify(query)  # &quot;navigational&quot;, &quot;exploratory&quot;, &quot;mixed&quot;
+        self.cache.set(query, intent)
+        return intent
+
+    def route(self, query: str, user_features: dict) -&gt; SearchResult:
+        intent = self.classify(query)
+
+        if intent == QueryIntent.NAVIGATIONAL:
+            return self.search_backend.search(query, user_features)
+            # Elasticsearch + BM25 + Voyager ANN
+
+        elif intent == QueryIntent.EXPLORATORY:
+            return self.recs_backend.recommend(query, user_features)
+            # Collaborative filtering + content-based + Voyager ANN
+
+        else:  # MIXED — both paths in parallel, fuse results
+            search_result = self.search_backend.search_async(query, user_features)
+            recs_result = self.recs_backend.recommend_async(query, user_features)
+            return self.fuse(search_result, recs_result)
+
+# Results vs. regular search:
+# +115% for finding similar artists
+# +91% for new music discovery
+# +25% for broad music searches
+
+# Spotify's Unified Embedding Infrastructure (Voyager) [8]:
+# HNSW-based, 10x faster than Annoy at same recall.
+# Powers both search AND recommendation — shared infrastructure,
+# task-specific usage patterns.
+</code></pre>
+<p>Spotify's key finding: <strong>Semantic IDs optimized for search don't generalize to recommendation</strong>, and vice versa. A multi-task bi-encoder achieves a Pareto-optimal trade-off, but you can't optimize one embedding space for both tasks without compromise [2].</p>
+<h2 id="doordash-content-first-embeddings-task-aware-retrieval">DoorDash: Content-First Embeddings, Task-Aware Retrieval</h2>
+<p>DoorDash's environment is intent-driven and transactional. A click tells you less than you think:</p>
+<pre><code class="language-python"># DoorDash's core insight: clicks are poor proxies for semantics.
+# A click on a Sichuan noodle soup doesn't distinguish spicy preference
+# from noodle preference — or from just being hungry.
+
+# Their solution: LLMs generate rich content profiles, embeddings follow.
+
+class DoorDashContentPipeline:
+    &quot;&quot;&quot;Content-first: LLM profiles → off-the-shelf encoder → ANN retrieval.&quot;&quot;&quot;
+
+    def generate_item_profile(self, item: dict) -&gt; str:
+        &quot;&quot;&quot;LLM produces a standardized narrative for every item.&quot;&quot;&quot;
+        prompt = f&quot;&quot;&quot;
+        Describe this menu item for a food recommendation system:
+        Name: {item['name']}
+        Category: {item['category']}
+        Ingredients: {item['ingredients']}
+        Preparation: {item['preparation']}
+        Cuisine type: {item['cuisine']}
+
+        Cover: ingredients, preparation method, cuisine attributes,
+        dietary properties (spicy, vegetarian, etc.), eating context,
+        flavor profile.
+        &quot;&quot;&quot;
+        return self.llm.generate(prompt)
+
+    def embed(self, profile: str) -&gt; np.ndarray:
+        &quot;&quot;&quot;Encode the profile with an off-the-shelf encoder.&quot;&quot;&quot;
+        return self.encoder.encode(profile)  # gemini-embedding-001, 256-dim MRL
+
+    def retrieve(self, query_embedding: np.ndarray, k: int = 100) -&gt; list[int]:
+        &quot;&quot;&quot;ANN search over pre-computed item embeddings.&quot;&quot;&quot;
+        return self.milvus_index.search(query_embedding, k)
+
+    # Key finding: upgrading profile quality → +31% improvement.
+    # Upgrading the encoder on raw metadata → only +6%.
+    # Data quality dominates model choice.
+
+# Results:
+# -3.65% null search rate, +0.66% CVR, +0.072% 7D active customers
+</code></pre>
+<p>For recommendations, DoorDash developed <strong>Consumer Memory Blocks</strong> — typed, composable representations of everything known about a user:</p>
+<pre><code class="language-python">class ConsumerMemoryBlock:
+    &quot;&quot;&quot;
+    Structured, namespaced user state serialized as JSON for LLM prompt input.
+
+    Properties:
+    - Composable: different use cases request different sub-blocks
+    - Evidenced, not inferred: derived from observed behavior with provenance
+    - Extensible: new sub-blocks without downstream disruption
+    &quot;&quot;&quot;
+
+    def build(self, user_id: str, sub_blocks: list[str]) -&gt; dict:
+        blocks = {}
+        if &quot;long_term_preferences&quot; in sub_blocks:
+            blocks[&quot;long_term&quot;] = {
+                &quot;cuisines&quot;: [&quot;Thai&quot;, &quot;Sichuan&quot;, &quot;Italian&quot;],
+                &quot;dietary&quot;: [&quot;prefers spicy&quot;, &quot;avoids dairy&quot;],
+                &quot;price_range&quot;: &quot;$$-$$$&quot;,
+                &quot;avg_order_value&quot;: 42.50,
+            }
+        if &quot;behavioral_patterns&quot; in sub_blocks:
+            blocks[&quot;patterns&quot;] = {
+                &quot;order_days&quot;: [&quot;Fri&quot;, &quot;Sat&quot;],
+                &quot;peak_time&quot;: &quot;19:00-21:00&quot;,
+                &quot;group_orders&quot;: True,
+                &quot;repeat_rate&quot;: 0.35,
+            }
+        return blocks
+
+    def to_prompt(self, blocks: dict) -&gt; str:
+        &quot;&quot;&quot;Serialize blocks as compact JSON for the LLM carousel generator.&quot;&quot;&quot;
+        return json.dumps(blocks)
+
+# Generated carousels are embedded OFFLINE, retrieved via Milvus ONLINE.
+# No LLM in the request path — cost amortized across the refresh interval.
+# Results: +2.4% order rate.
+</code></pre>
+<h2 id="airbnb-embeddings-that-bridge-search-and-discovery">Airbnb: Embeddings That Bridge Search and Discovery</h2>
+<p>Airbnb's KDD 2018 paper trained listing embeddings on 800 million search click sessions using skip-gram adapted from word2vec [3]:</p>
+<pre><code class="language-python">class AirbnbListingEmbeddings:
+    &quot;&quot;&quot;Domain-specific embedding training for travel search.&quot;&quot;&quot;
+
+    def generate_training_pairs(self, sessions: list[list[int]]) -&gt; list[tuple[int, int]]:
+        &quot;&quot;&quot;
+        Key innovations over standard word2vec:
+
+        1. In-market negative sampling: users search within a single city.
+           Negatives drawn globally are trivially easy to reject.
+           Draw negatives from the SAME MARKET for harder discrimination.
+
+        2. Booked listing as global context: the booked listing is ALWAYS
+           treated as the context being predicted, regardless of position in
+           the click sequence. The booking is the signal. Everything else is noise.
+        &quot;&quot;&quot;
+        pairs = []
+        for session in sessions:
+            booked_id = session[-1]  # last item is the booking
+            for clicked_id in session[:-1]:
+                pairs.append((clicked_id, booked_id))
+        return pairs
+
+    def compute_serving_features(self, user_id: int, candidates: list[int],
+                                 embeddings: dict[int, np.ndarray]) -&gt; dict[str, np.ndarray]:
+        &quot;&quot;&quot;
+        Embedding-based features for real-time ranking.
+
+        Five embedding features ranked among the TOP 20 of 104 total features.
+        &quot;&quot;&quot;
+        user_recent = self.get_recent_interactions(user_id)
+        return {
+            # Similarity to listings the user recently clicked
+            &quot;EmbClickSim&quot;: self.mean_sim(user_recent['clicked'], candidates, embeddings),
+            # Similarity to listings the user skipped
+            &quot;EmbSkipSim&quot;: self.mean_sim(user_recent['skipped'], candidates, embeddings),
+            # Similarity to the last listing the user spent significant time on
+            &quot;EmbLastLongClickSim&quot;: self.mean_sim([user_recent['last_long_click']],
+                                                  candidates, embeddings),
+        }
+
+# Results: +2.27% offline NDCG, statistically significant booking gain online.
+# Similar listing recommendations: +20% CTR over prior algorithm.
+</code></pre>
+<p>Airbnb's 2019 follow-up on deep learning documented instructive failures: listing ID embeddings overfit (too few bookings per listing), and multi-task learning for bookings + long views increased views but not bookings — because expensive listings get looked at but not booked [4].</p>
+<h2 id="pinterest-two-tower-architectures-for-homefeed-and-search">Pinterest: Two-Tower Architectures for Homefeed and Search</h2>
+<p>Pinterest's two-tower model, influenced by the Wide &amp; Deep architecture [9], powers both homefeed and search:</p>
+<pre><code class="language-python">class PinterestTwoTower(torch.nn.Module):
+    &quot;&quot;&quot;Two-tower: user tower and item tower, dot-product scoring.&quot;&quot;&quot;
+
+    def __init__(self, user_input_dim: int, item_input_dim: int, hidden: int = 256):
+        super().__init__()
+        # User tower: long-term history, context, real-time sequences
+        self.user_tower = torch.nn.Sequential(
+            torch.nn.Linear(user_input_dim, hidden * 4),
+            torch.nn.ReLU(),
+            MaskNet(hidden * 4, num_blocks=3),   # bitwise feature crossing
+            torch.nn.Linear(hidden * 4, hidden),
+        )
+        # Item tower: category, description, image features
+        self.item_tower = torch.nn.Sequential(
+            torch.nn.Linear(item_input_dim, hidden * 4),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden * 4, hidden),
+        )
+
+    def forward(self, user_features, item_features):
+        user_emb = F.normalize(self.user_tower(user_features), dim=1)
+        item_emb = F.normalize(self.item_tower(item_features), dim=1)
+        return (user_emb * item_emb).sum(dim=1)  # dot product
+
+# Item embeddings pre-computed offline, indexed in Manas (HNSW-based ANN).
+# User tower runs once per request at serving time.
+# This decoupling is the key to ~3ms median latency at 300K QPS.
+</code></pre>
+<p>For search, Pinterest extended this into <strong>OmniSearchSage</strong> — a multi-task, multi-entity framework where a single unified query embedding retrieves pins, products, and related queries simultaneously [5]. A teacher-student distillation approach followed: an 8B Llama cross-encoder (teacher, +12–20% improvement) → bi-encoder student trained on 100× more data from daily search logs (85% query cache hit rate).</p>
+<h2 id="the-pattern-across-all-four-companies">The Pattern Across All Four Companies</h2>
+<p>Every system that successfully spans search and recommendation does so by encoding <strong>which task it's doing</strong> as a first-class signal. Spotify uses an explicit router. DoorDash uses separate retrieval pipelines with shared embeddings. Airbnb uses the same embeddings but different ranking features for search vs. discovery. Pinterest uses the same two-tower but different objectives for homefeed vs. search.</p>
+<p>The common pattern: <strong>unification where it reduces cost, separation where it preserves correctness</strong>.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>Spotify found that Semantic IDs optimized for search don't generalize to recommendation, and vice versa.</strong> Is this a fundamental property of the two tasks, or an artifact of how we train embeddings? What would a <em>truly</em> unified embedding space look like?</p>
+</li>
+<li>
+<p><strong>DoorDash's finding — data quality (+31%) dominates model choice (+6%) — echoes a broader truth.</strong> How much of the search-vs-recommendation gap is actually a <em>data quality</em> gap in disguise?</p>
+</li>
+<li>
+<p><strong>Every successful system in this survey encodes task identity as a first-class signal.</strong> Is the search/recommendation distinction a permanent architectural feature, or a temporary crutch that better models will eventually absorb?</p>
+</li>
+<li>
+<p><strong>Airbnb's failed multi-task experiment (bookings + long views) is a warning about proxy objectives.</strong> What other proxy objectives are we optimizing across the industry that don't actually measure what we think they measure?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://research.atspotify.com/2025/9/you-say-search-i-say-recs-a-scalable-agentic-approach-to-query-understanding"><em>You Say Search, I Say Recs: A Scalable Agentic Approach to Query Understanding and Exploratory Search</em></a>. September 2025.</p>
+</li>
+<li>
+<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://www.research.atspotify.com/2025/9/semantic-ids-for-generative-search-and-recommendation"><em>Semantic IDs for Generative Search and Recommendation</em></a>. September 2025.</p>
+</li>
+<li>
+<p>Mihajlo Grbovic and Haibin Cheng. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/3219819.3219885"><em>Real-time Personalization using Embeddings for Search Ranking at Airbnb</em></a>. KDD 2018.</p>
+</li>
+<li>
+<p>Malay Haldar et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1810.09591"><em>Applying Deep Learning to Airbnb Search</em></a>. KDD 2019.</p>
+</li>
+<li>
+<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-llms-to-build-content-embeddings-for-search-and-recommendations/"><em>Using LLMs to Build Content Embeddings for Search and Recommendations</em></a>. 2025.</p>
+</li>
+<li>
+<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/"><em>Offline LLMs, Online Personalization: Generating Carousels at DoorDash</em></a>. 2025.</p>
+</li>
+<li>
+<p>Pinterest Engineering. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/pinterest-engineering/advancements-in-embedding-based-retrieval-at-pinterest-homefeed-176a3c03df64"><em>Advancements in Embedding-Based Retrieval at Pinterest Homefeed</em></a>. 2024.</p>
+</li>
+<li>
+<p>Spotify Engineering. <a target="_blank" rel="noopener noreferrer" href="https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library"><em>Introducing Voyager: Spotify's New Nearest-Neighbor Search Library</em></a>. October 2023.</p>
+</li>
+<li>
+<p>Heng-Tze Cheng et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2988450.2988454"><em>Wide &amp; Deep Learning for Recommender Systems</em></a>. RecSys 2016.</p>
+</li>
+<li>
+<p>Mihajlo Grbovic et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2783258.2788627"><em>E-commerce in Your Inbox: Product Recommendations at Scale</em></a>. KDD 2015.</p>
+</li>
+<li>
+<p>Steffen Rendle, Christoph Freudenthaler, Zeno Gantner, and Lars Schmidt-Thieme. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.5555/1795114.1795167"><em>BPR: Bayesian Personalized Ranking from Implicit Feedback</em></a>. UAI 2009.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+      <article class="post" id="search-recommendation-recommendation-techniques">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
+          <h2><a href="#search-recommendation-recommendation-techniques">&#34;S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?&#34;</a></h2><p class="post-summary">A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">collaborative-filtering</span><span class="tag">matrix-factorization</span><span class="tag">netflix-prize</span><span class="tag">deep-learning</span><span class="tag">series</span>
+          </div>
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
+<p>If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.</p>
+<p>Wu et al. (2023), in their comprehensive survey of neural recommendation models published in IEEE TKDE, organize the field into two broad families: models that use only interaction data (collaborative filtering) and models that incorporate side information (content, context, sequences) [1]. The progression from one to the other mirrors the search field's own evolution — from impoverished signals to rich, multi-modal representations. But the starting point is different. Search began with text and added behavior. Recommendation began with behavior and added text.</p>
+<p>This part traces that evolution with working Python.</p>
+<h2 id="tapestry--the-first-collaborative-filtering-system-1992">Tapestry — The First Collaborative Filtering System (1992)</h2>
+<p>In 1992, researchers at Xerox PARC built Tapestry, an email filtering system that let users annotate messages and write queries referencing others' annotations. They coined the term <strong>collaborative filtering</strong>. The insight was that relevance is social: if people with similar tastes found something useful, you probably will too.</p>
+<pre><code class="language-python"># Tapestry's conceptual model: manual, query-based CF
+# &quot;Show me emails that Bob found interesting&quot;
+
+class TapestryFilter:
+    def __init__(self):
+        self.annotations: dict[str, dict[int, str]] = {}  # user -&gt; {msg_id -&gt; annotation}
+
+    def annotate(self, user: str, msg_id: int, label: str):
+        &quot;&quot;&quot;Bob annotates a message as 'interesting' or 'boring'.&quot;&quot;&quot;
+        self.annotations.setdefault(user, {})[msg_id] = label
+
+    def query(self, annotator: str, label: str) -&gt; list[int]:
+        &quot;&quot;&quot;'Show me all messages Bob found interesting'.&quot;&quot;&quot;
+        return [msg_id for msg_id, ann in self.annotations.get(annotator, {}).items()
+                if ann == label]
+
+# Tapestry required users to write explicit queries. Powerful for power users,
+# unusable for everyone else. The automation was coming.
+</code></pre>
+<h2 id="grouplens--automating-collaborative-filtering-at-scale-1994">GroupLens — Automating Collaborative Filtering at Scale (1994)</h2>
+<p>The GroupLens project at the University of Minnesota automated the process. Users rated Usenet articles (1–5 stars), and the system automatically predicted ratings for unread articles based on similar users' ratings.</p>
+<pre><code class="language-python">import numpy as np
+from collections import defaultdict
+
+def user_based_cf(ratings: dict[int, dict[int, float]],
+                  user_id: int, item_id: int, k: int = 50) -&gt; float:
+    &quot;&quot;&quot;
+    User-based collaborative filtering: predict a user's rating for an item
+    based on how similar users rated it.
+
+    ratings: {user_id: {item_id: rating}}
+    &quot;&quot;&quot;
+    if user_id not in ratings:
+        return 3.0  # global mean for cold start
+
+    # Step 1: Find users who rated this item
+    co_raters = [(other, ratings[other][item_id])
+                 for other in ratings
+                 if item_id in ratings[other] and other != user_id]
+
+    if not co_raters:
+        return np.mean(list(ratings[user_id].values()))  # user's mean rating
+
+    # Step 2: Compute similarity between target user and each co-rater
+    similarities = []
+    for other, _ in co_raters:
+        sim = pearson_similarity(ratings[user_id], ratings[other])
+        similarities.append((other, sim))
+
+    similarities.sort(key=lambda x: x[1], reverse=True)
+    neighbors = similarities[:k]
+
+    # Step 3: Weighted average of neighbors' ratings
+    weighted_sum = sum(sim * ratings[neighbor][item_id] for neighbor, sim in neighbors
+                       if sim &gt; 0)
+    norm = sum(abs(sim) for _, sim in neighbors if sim &gt; 0)
+
+    return weighted_sum / norm if norm &gt; 0 else np.mean(list(ratings[user_id].values()))
+
+
+def pearson_similarity(user_a: dict[int, float], user_b: dict[int, float]) -&gt; float:
+    &quot;&quot;&quot;Pearson correlation between two users' rating vectors.&quot;&quot;&quot;
+    common_items = set(user_a) &amp; set(user_b)
+    if len(common_items) &lt; 3:
+        return 0.0  # not enough overlap
+
+    mean_a = np.mean([user_a[i] for i in common_items])
+    mean_b = np.mean([user_b[i] for i in common_items])
+
+    num = sum((user_a[i] - mean_a) * (user_b[i] - mean_b) for i in common_items)
+    den_a = np.sqrt(sum((user_a[i] - mean_a) ** 2 for i in common_items))
+    den_b = np.sqrt(sum((user_b[i] - mean_b) ** 2 for i in common_items))
+
+    return num / (den_a * den_b) if den_a and den_b else 0.0
+</code></pre>
+<p>GroupLens spawned Net Perceptions, a company that served Amazon, CDnow, and others. In 2010, the team won the ACM Software System Award. But user-based CF had a scaling problem: computing user-user similarity is O(N²) in the number of users.</p>
+<h2 id="amazon-item-to-item-cf--scaling-to-millions-2003">Amazon Item-to-Item CF — Scaling to Millions (2003)</h2>
+<p>Amazon's Greg Linden, Brent Smith, and Jeremy York flipped the problem. Instead of finding similar <em>users</em>, find similar <em>items</em>:</p>
+<pre><code class="language-python">def item_based_cf(ratings: dict[int, dict[int, float]],
+                  user_id: int, k: int = 10) -&gt; list[tuple[int, float]]:
+    &quot;&quot;&quot;
+    Item-based collaborative filtering: recommend items similar to what
+    the user already liked.
+
+    The expensive part — computing the item-item similarity matrix —
+    runs offline, not at serving time.
+    &quot;&quot;&quot;
+    # Build item-item similarity matrix (OFFLINE — runs daily)
+    item_sim = build_item_similarity_matrix(ratings)
+
+    # Online: look up items similar to what the user liked (MILLISECONDS)
+    user_ratings = ratings.get(user_id, {})
+    liked = [(item, r) for item, r in user_ratings.items() if r &gt; 3.5]
+
+    candidates: dict[int, float] = defaultdict(float)
+    total_weight: dict[int, float] = defaultdict(float)
+
+    for item, rating in liked:
+        for similar_item, sim in item_sim.get(item, {}).items():
+            if similar_item not in user_ratings:  # don't recommend what they've rated
+                candidates[similar_item] += sim * rating
+                total_weight[similar_item] += abs(sim)
+
+    # Normalize
+    scored = [(item, candidates[item] / total_weight[item])
+              for item in candidates if total_weight[item] &gt; 0]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:k]
+
+
+def build_item_similarity_matrix(ratings: dict[int, dict[int, float]]
+                                 ) -&gt; dict[int, dict[int, float]]:
+    &quot;&quot;&quot;O(N_items² × N_users) — run offline, results cached.&quot;&quot;&quot;
+    # Transpose: item -&gt; {user: rating}
+    item_users: dict[int, dict[int, float]] = defaultdict(dict)
+    for user_id, user_ratings in ratings.items():
+        for item_id, rating in user_ratings.items():
+            item_users[item_id][user_id] = rating
+
+    items = list(item_users.keys())
+    sim_matrix: dict[int, dict[int, float]] = defaultdict(dict)
+
+    for i, item_a in enumerate(items):
+        for item_b in items[i + 1:]:
+            common = set(item_users[item_a]) &amp; set(item_users[item_b])
+            if len(common) &lt; 5:
+                continue
+            sim = cosine_similarity(
+                {u: item_users[item_a][u] for u in common},
+                {u: item_users[item_b][u] for u in common}
+            )
+            if sim &gt; 0:
+                sim_matrix[item_a][item_b] = sim
+                sim_matrix[item_b][item_a] = sim
+
+    return sim_matrix
+</code></pre>
+<p>Greg Linden later explained why this beat search-based approaches: &quot;Rather than matching the user to similar customers, item-to-item collaborative filtering matches each of the user's purchased and rated items to similar items.&quot; Search-based methods — constructing queries from purchase history to find items with similar keywords — produced recommendations that were either too general (bestsellers) or too narrow (more books by the same author). Collaborative filtering discovered cross-category connections: people who bought <em>Into Thin Air</em> also bought <em>The Perfect Storm</em>. No keyword match connects a mountaineering disaster to a fishing boat tragedy. Only behavior does.</p>
+<h2 id="the-netflix-prize--matrix-factorization-takes-over-20062009">The Netflix Prize — Matrix Factorization Takes Over (2006–2009)</h2>
+<p>In 2006, Netflix offered $1M to any team that could improve their recommendation algorithm by 10%. The winning approach reshaped the field: <strong>matrix factorization</strong>.</p>
+<pre><code class="language-python">class MatrixFactorization:
+    &quot;&quot;&quot;Learn user and item latent factors via stochastic gradient descent.&quot;&quot;&quot;
+
+    def __init__(self, num_users: int, num_items: int, k: int = 50,
+                 lr: float = 0.01, lambda_reg: float = 0.02):
+        # Initialize latent factor matrices randomly
+        self.P = np.random.normal(0, 0.1, (num_users, k))  # user factors
+        self.Q = np.random.normal(0, 0.1, (num_items, k))  # item factors
+        self.bu = np.zeros(num_users)  # user biases
+        self.bi = np.zeros(num_items)  # item biases
+        self.mu = 0.0                  # global mean
+        self.lr = lr
+        self.lambda_reg = lambda_reg
+
+    def fit(self, ratings: list[tuple[int, int, float]], epochs: int = 100):
+        &quot;&quot;&quot;Train via SGD.&quot;&quot;&quot;
+        self.mu = np.mean([r for _, _, r in ratings])
+
+        for epoch in range(epochs):
+            np.random.shuffle(ratings)
+            total_loss = 0.0
+
+            for u, i, r in ratings:
+                # Prediction: global mean + user bias + item bias + latent interaction
+                pred = self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
+                error = r - pred
+                total_loss += error ** 2
+
+                # SGD updates with L2 regularization
+                self.bu[u] += self.lr * (error - self.lambda_reg * self.bu[u])
+                self.bi[i] += self.lr * (error - self.lambda_reg * self.bi[i])
+
+                # Update latent factors
+                pu_old = self.P[u].copy()
+                self.P[u] += self.lr * (error * self.Q[i] - self.lambda_reg * self.P[u])
+                self.Q[i] += self.lr * (error * pu_old - self.lambda_reg * self.Q[i])
+
+            if epoch % 20 == 0:
+                rmse = np.sqrt(total_loss / len(ratings))
+                print(f&quot;Epoch {epoch}: RMSE = {rmse:.4f}&quot;)
+
+    def predict(self, u: int, i: int) -&gt; float:
+        return self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
+
+    def recommend(self, u: int, rated_items: set[int], k: int = 10) -&gt; list[int]:
+        &quot;&quot;&quot;Generate top-k recommendations for user u.&quot;&quot;&quot;
+        scores = [(i, self.predict(u, i))
+                  for i in range(len(self.Q))
+                  if i not in rated_items]
+        scores.sort(key=lambda x: x[1], reverse=True)
+        return [item for item, _ in scores[:k]]
+
+# Usage with MovieLens-100K style data
+# ratings = [(user, item, rating), ...]
+# mf = MatrixFactorization(num_users=943, num_items=1682, k=50)
+# mf.fit(ratings, epochs=100)
+# recommendations = mf.recommend(user_id=42, rated_items={item for _, item, _ in ratings if _ == 42})
+</code></pre>
+<p>Yehuda Koren's <strong>SVD++</strong> extended this by incorporating implicit feedback — what you browsed, not just what you rated — and achieved the winning RMSE of 0.8556. The Netflix Prize established matrix factorization as the dominant paradigm for nearly a decade.</p>
+<p>Rendle's <strong>Factorization Machines</strong> generalized the matrix factorization idea to arbitrary feature vectors, modeling all pairwise interactions through a factorized parametrization — the same mechanism that powers MF but applicable to any set of sparse categorical features [8].</p>
+<p>It also revealed the field's central tension: <strong>the metric that drove the competition (RMSE on withheld ratings) doesn't actually measure whether users are satisfied</strong>. Reed Hastings articulated this later: &quot;When we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot; Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences over revealed preferences fails.</p>
+<h2 id="the-deep-learning-era--youtube-and-the-multi-stage-pipeline-20162020">The Deep Learning Era — YouTube and the Multi-Stage Pipeline (2016–2020)</h2>
+<p>YouTube's 2016 paper marked deep learning's entry into production recommendation. The architecture was two-stage:</p>
+<p>He et al.'s <strong>Neural Collaborative Filtering</strong> (NCF) showed that replacing the inner product in matrix factorization with a learned multi-layer perceptron could capture non-linear user–item interactions, unifying collaborative filtering with deep learning [7].</p>
+<pre><code class="language-python">class YouTubeCandidateGenerator(torch.nn.Module):
+    &quot;&quot;&quot;YouTube-style candidate generation: narrow millions → hundreds.&quot;&quot;&quot;
+
+    def __init__(self, vocab_sizes: dict[str, int], embedding_dim: int = 256):
+        super().__init__()
+        # Embedding layers for categorical features
+        self.embeddings = torch.nn.ModuleDict({
+            name: torch.nn.Embedding(size, embedding_dim)
+            for name, size in vocab_sizes.items()
+        })
+        # Concatenated embeddings → hidden layers
+        input_dim = len(vocab_sizes) * embedding_dim
+        self.layers = torch.nn.Sequential(
+            torch.nn.Linear(input_dim, 1024),
+            torch.nn.ReLU(),
+            torch.nn.Linear(1024, 512),
+            torch.nn.ReLU(),
+            torch.nn.Linear(512, 256),
+        )
+        # Output: softmax over all video IDs (treated as classes)
+        self.output = torch.nn.Linear(256, vocab_sizes['video_id'])
+
+    def forward(self, features: dict[str, torch.Tensor]) -&gt; torch.Tensor:
+        &quot;&quot;&quot;Predict the next video a user will watch.&quot;&quot;&quot;
+        embedded = [self.embeddings[name](features[name])
+                    for name in self.embeddings]
+        concat = torch.cat(embedded, dim=1)
+        hidden = self.layers(concat)
+        return self.output(hidden)
+
+# Key innovation: the model was trained on ALL YouTube watches, including those
+# on embedded players. The training objective was next-video prediction —
+# treating recommendation as an extreme multi-class classification problem.
+
+# But the real insight was about WHAT to optimize. YouTube didn't optimize for
+# clicks — they optimized for expected watch time. Clicks are easy to game
+# (clickbait thumbnails). Watch time is harder to fake and better aligned
+# with user satisfaction.
+</code></pre>
+<p>The three-stage pipeline that emerged became industry standard:</p>
+<pre><code class="language-python">def production_recsys_pipeline(user_id: int, user_features: dict,
+                               all_items: list[int], k: int = 10) -&gt; list[int]:
+    &quot;&quot;&quot;Standard three-stage recommendation pipeline.&quot;&quot;&quot;
+
+    # Stage 1: Candidate Generation — millions → thousands
+    # Multiple parallel generators: collaborative filtering, trending,
+    # new releases, content-based. High recall, low cost per item.
+    candidates_cf = cf_retriever.retrieve(user_id, k=500)
+    candidates_trending = trending_retriever.retrieve(k=200)
+    candidates_similar = similar_items_retriever.retrieve(
+        user_features['last_watched'], k=200)
+    candidates = list(set(candidates_cf + candidates_trending + candidates_similar))
+
+    # Stage 2: Ranking — thousands → hundreds
+    # Deep neural network scores each candidate using hundreds of features.
+    # High precision, moderate cost per item.
+    ranked = ranker.score(user_id, candidates, user_features)
+    ranked.sort(key=lambda x: x.score, reverse=True)
+    top = ranked[:200]
+
+    # Stage 3: Re-Ranking — hundreds → tens
+    # Apply diversity, freshness boost, business rules, exploration.
+    # Low cost per item (post-processing), high impact on user experience.
+    final = re_ranker.apply(top, user_features,
+                            diversity_factor=0.3,
+                            freshness_boost=1.2,
+                            max_same_genre=3)
+    return [item.id for item in final[:k]]
+</code></pre>
+<p>By 2020, the search field had always been multi-stage. Recommendation caught up — and that convergence is one reason the two fields are so often conflated.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>Matrix factorization dominated recommendation for a decade after the Netflix Prize, but the Prize's metric (RMSE) didn't measure user satisfaction.</strong> What would a recommendation competition look like today if the metric were retention, not rating prediction? Could we even run one?</p>
+</li>
+<li>
+<p><strong>Hastings' insight — that users' stated preferences differ from their revealed preferences — has uncomfortable implications.</strong> Should recommenders ever <em>ignore</em> what users explicitly tell them? When is the aspirational self a feature rather than noise?</p>
+</li>
+<li>
+<p><strong>The deep learning era equalized recommendation and search by giving both access to heterogeneous features.</strong> But search had decades of multi-modal infrastructure first. Did recommendation catch up, or did it just inherit search's architecture without adapting it?</p>
+</li>
+<li>
+<p><strong>Item-to-item CF at Amazon discovered cross-category connections no keyword match could find.</strong> What connections are today's models missing because they optimize for engagement rather than surprise?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Le Wu, Xiangnan He, Xiang Wang, Kun Zhang, and Meng Wang. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2022.3145690"><em>A Survey on Accuracy-Oriented Neural Recommendation: From Collaborative Filtering to Information-Rich Recommendation</em></a>. IEEE TKDE, 35(5): 4425–4445, 2023.</p>
+</li>
+<li>
+<p>David Goldberg, David Nichols, Brian M. Oki, and Douglas Terry. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138867"><em>Using Collaborative Filtering to Weave an Information Tapestry</em></a>. Communications of the ACM, 35(12): 61–70, 1992.</p>
+</li>
+<li>
+<p>Paul Resnick et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/192844.192905"><em>GroupLens: An Open Architecture for Collaborative Filtering of Netnews</em></a>. CSCW 1994.</p>
+</li>
+<li>
+<p>Greg Linden, Brent Smith, and Jeremy York. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MIC.2003.1167344"><em>Amazon.com Recommendations: Item-to-Item Collaborative Filtering</em></a>. IEEE Internet Computing, 7(1): 76–80, 2003.</p>
+</li>
+<li>
+<p>Yehuda Koren, Robert Bell, and Chris Volinsky. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MC.2009.263"><em>Matrix Factorization Techniques for Recommender Systems</em></a>. IEEE Computer, 42(8): 30–37, 2009.</p>
+</li>
+<li>
+<p>Paul Covington, Jay Adams, and Emre Sargin. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/2959100.2959190"><em>Deep Neural Networks for YouTube Recommendations</em></a>. RecSys 2016.</p>
+</li>
+<li>
+<p>Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu, and Tat-Seng Chua. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/3038912.3052569"><em>Neural Collaborative Filtering</em></a>. WWW 2017.</p>
+</li>
+<li>
+<p>Steffen Rendle. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/ICDM.2010.127"><em>Factorization Machines</em></a>. ICDM 2010.</p>
+</li>
+<li>
+<p>James Bennett and Stan Lanning. <a target="_blank" rel="noopener noreferrer" href="https://www.cs.uic.edu/~liub/KDD-cup-2007/NetflixPrize-description.pdf"><em>The Netflix Prize</em></a>. KDD Cup Workshop, 2007.</p>
+</li>
+<li>
+<p>Gediminas Adomavicius and Alexander Tuzhilin. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2005.99"><em>Toward the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions</em></a>. IEEE TKDE, 17(6): 734–749, 2005.</p>
+</li>
 </ol>
 <hr>
 </div>
@@ -909,6 +1775,8 @@ separate_infrastructure = {
           </div>
         </header>
         <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. A deep dive into how Netflix builds and maintains both search and recommendation systems at global scale — and what happened when they tried to unify them.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
 <p>No company illustrates the search–recommendation distinction better than Netflix. They run both systems at global scale, on the same catalog, for the same users — and they've published extensively about each. This part examines both stacks, then looks at UniCoRn, their 2024 attempt to unify them.</p>
 <p>Reed Hastings, Netflix's co-founder, articulated the recommendation goal simply: &quot;If the Starbucks secret is a smile when you get your latte, ours is that the website adapts to the individual's taste.&quot; The emotional target — &quot;Netflix gets me&quot; — is fundamentally different from search's target of &quot;Netflix found what I asked for.&quot; Recommendation is about identity. Search is about utility.</p>
 <h2 id="netflix-search-elasticsearch-flink-and-reverse-queries">Netflix Search: Elasticsearch, Flink, and Reverse Queries</h2>
@@ -977,7 +1845,7 @@ class ReverseSearch:
 # as a retrieval infrastructure problem, not just ranking.
 </code></pre>
 <h2 id="netflix-recommendation-three-tiers-one-goal">Netflix Recommendation: Three Tiers, One Goal</h2>
-<p>Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]:</p>
+<p>Netflix's 2013 tech blog post describing the three-tier serving architecture remains the conceptual backbone [4]; Gomez-Uribe and Hunt later published the definitive description of the full recommendation system in 2015 [9]:</p>
 <pre><code class="language-python">class NetflixRecommendationPipeline:
     &quot;&quot;&quot;
     Three-tier architecture: offline, nearline, online.
@@ -1014,7 +1882,7 @@ class ReverseSearch:
 <p>But the models themselves evolved dramatically. Their 2021 <em>AI Magazine</em> article contains a sobering finding: <strong>when only user–item interaction data is available, properly tuned non-deep-learning baselines remain competitive</strong> [5]. The power of deep learning emerged only when heterogeneous features (metadata, context, images, text) were incorporated.</p>
 <p>This is a crucial point that connects back to the search–recommendation distinction: <strong>search has always been multi-modal</strong> — query text, document text, links, anchor text, click data, freshness. Recommendation was historically impoverished: just a ratings matrix. The deep learning era equalized this by giving recommendation systems the same heterogeneous-feature diet that search had enjoyed since the 2000s.</p>
 <h3 id="the-foundation-model-2025">The Foundation Model (2025)</h3>
-<p>In 2025, Netflix published their most ambitious recommendation paper: a <strong>Foundation Model for Personalized Recommendation</strong> that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:</p>
+<p>Building on a decade of personalization trends documented by Basilico and Raimond [11], in 2025 Netflix published their most ambitious recommendation paper: a <strong>Foundation Model for Personalized Recommendation</strong> that treats user interaction histories as sequences and uses autoregressive next-token prediction [6]:</p>
 <pre><code class="language-python">class NetflixFoundationModel(torch.nn.Module):
     &quot;&quot;&quot;
     Autoregressive model: user actions → next item prediction.
@@ -1182,477 +2050,14 @@ class ReverseSearch:
 <li>
 <p>Sudarshan Lamkhede and Christoph Kofler. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/abs/10.1145/3460231.3474602"><em>Recommendations and Results Organization in Netflix Search</em></a>. RecSys 2021.</p>
 </li>
-</ol>
-<hr>
-</div>
-      </article>
-      <article class="post" id="search-recommendation-industry-boundary">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
-          <h2><a href="#search-recommendation-industry-boundary">&#34;S&amp;R: Where Should You Draw the Line Between Search and Recommendation?&#34;</a></h2><p class="post-summary">How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.</p>
-          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">spotify</span><span class="tag">doordash</span><span class="tag">airbnb</span><span class="tag">pinterest</span><span class="tag">two-tower</span><span class="tag">embeddings</span><span class="tag">series</span>
-          </div>
-        </header>
-        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. How Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary between search and recommendation in production — with code for each architecture.</em></p>
-<p>Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.</p>
-<h2 id="spotify-intent-based-routing-with-llms">Spotify: Intent-Based Routing with LLMs</h2>
-<p>Spotify's 2025 paper <em>&quot;You Say Search, I Say Recs&quot;</em> describes an LLM-based router that classifies user intent and dispatches accordingly [1]:</p>
-<pre><code class="language-python">from enum import Enum
-
-class QueryIntent(Enum):
-    NAVIGATIONAL = &quot;navigational&quot;    # &quot;find song X&quot; → search
-    EXPLORATORY = &quot;exploratory&quot;      # &quot;Italian 80s disco nostalgia&quot; → recs
-    MIXED = &quot;mixed&quot;                  # both paths, parallel → fused results
-
-class SpotifyIntentRouter:
-    &quot;&quot;&quot;
-    LLM-based router: classify intent, route to search or recommendation.
-
-    Key design decisions:
-    - Only the query goes to the router (NOT user features) → max cache hits
-    - User features go to downstream tools → personalization where it belongs
-    - Small distilled LLM: 60% latency reduction, 99% cost reduction vs teacher
-    &quot;&quot;&quot;
-
-    def __init__(self, llm_model):
-        self.llm = llm_model  # small fine-tuned model, p75 latency ~450ms
-
-    def classify(self, query: str) -&gt; QueryIntent:
-        &quot;&quot;&quot;Classify query intent. Cached aggressively — no user features.&quot;&quot;&quot;
-        if cached := self.cache.get(query):
-            return cached
-        intent = self.llm.classify(query)  # &quot;navigational&quot;, &quot;exploratory&quot;, &quot;mixed&quot;
-        self.cache.set(query, intent)
-        return intent
-
-    def route(self, query: str, user_features: dict) -&gt; SearchResult:
-        intent = self.classify(query)
-
-        if intent == QueryIntent.NAVIGATIONAL:
-            return self.search_backend.search(query, user_features)
-            # Elasticsearch + BM25 + Voyager ANN
-
-        elif intent == QueryIntent.EXPLORATORY:
-            return self.recs_backend.recommend(query, user_features)
-            # Collaborative filtering + content-based + Voyager ANN
-
-        else:  # MIXED — both paths in parallel, fuse results
-            search_result = self.search_backend.search_async(query, user_features)
-            recs_result = self.recs_backend.recommend_async(query, user_features)
-            return self.fuse(search_result, recs_result)
-
-# Results vs. regular search:
-# +115% for finding similar artists
-# +91% for new music discovery
-# +25% for broad music searches
-
-# Spotify's Unified Embedding Infrastructure (Voyager):
-# HNSW-based, 10x faster than Annoy at same recall.
-# Powers both search AND recommendation — shared infrastructure,
-# task-specific usage patterns.
-</code></pre>
-<p>Spotify's key finding: <strong>Semantic IDs optimized for search don't generalize to recommendation</strong>, and vice versa. A multi-task bi-encoder achieves a Pareto-optimal trade-off, but you can't optimize one embedding space for both tasks without compromise [2].</p>
-<h2 id="doordash-content-first-embeddings-task-aware-retrieval">DoorDash: Content-First Embeddings, Task-Aware Retrieval</h2>
-<p>DoorDash's environment is intent-driven and transactional. A click tells you less than you think:</p>
-<pre><code class="language-python"># DoorDash's core insight: clicks are poor proxies for semantics.
-# A click on a Sichuan noodle soup doesn't distinguish spicy preference
-# from noodle preference — or from just being hungry.
-
-# Their solution: LLMs generate rich content profiles, embeddings follow.
-
-class DoorDashContentPipeline:
-    &quot;&quot;&quot;Content-first: LLM profiles → off-the-shelf encoder → ANN retrieval.&quot;&quot;&quot;
-
-    def generate_item_profile(self, item: dict) -&gt; str:
-        &quot;&quot;&quot;LLM produces a standardized narrative for every item.&quot;&quot;&quot;
-        prompt = f&quot;&quot;&quot;
-        Describe this menu item for a food recommendation system:
-        Name: {item['name']}
-        Category: {item['category']}
-        Ingredients: {item['ingredients']}
-        Preparation: {item['preparation']}
-        Cuisine type: {item['cuisine']}
-
-        Cover: ingredients, preparation method, cuisine attributes,
-        dietary properties (spicy, vegetarian, etc.), eating context,
-        flavor profile.
-        &quot;&quot;&quot;
-        return self.llm.generate(prompt)
-
-    def embed(self, profile: str) -&gt; np.ndarray:
-        &quot;&quot;&quot;Encode the profile with an off-the-shelf encoder.&quot;&quot;&quot;
-        return self.encoder.encode(profile)  # gemini-embedding-001, 256-dim MRL
-
-    def retrieve(self, query_embedding: np.ndarray, k: int = 100) -&gt; list[int]:
-        &quot;&quot;&quot;ANN search over pre-computed item embeddings.&quot;&quot;&quot;
-        return self.milvus_index.search(query_embedding, k)
-
-    # Key finding: upgrading profile quality → +31% improvement.
-    # Upgrading the encoder on raw metadata → only +6%.
-    # Data quality dominates model choice.
-
-# Results:
-# -3.65% null search rate, +0.66% CVR, +0.072% 7D active customers
-</code></pre>
-<p>For recommendations, DoorDash developed <strong>Consumer Memory Blocks</strong> — typed, composable representations of everything known about a user:</p>
-<pre><code class="language-python">class ConsumerMemoryBlock:
-    &quot;&quot;&quot;
-    Structured, namespaced user state serialized as JSON for LLM prompt input.
-
-    Properties:
-    - Composable: different use cases request different sub-blocks
-    - Evidenced, not inferred: derived from observed behavior with provenance
-    - Extensible: new sub-blocks without downstream disruption
-    &quot;&quot;&quot;
-
-    def build(self, user_id: str, sub_blocks: list[str]) -&gt; dict:
-        blocks = {}
-        if &quot;long_term_preferences&quot; in sub_blocks:
-            blocks[&quot;long_term&quot;] = {
-                &quot;cuisines&quot;: [&quot;Thai&quot;, &quot;Sichuan&quot;, &quot;Italian&quot;],
-                &quot;dietary&quot;: [&quot;prefers spicy&quot;, &quot;avoids dairy&quot;],
-                &quot;price_range&quot;: &quot;$$-$$$&quot;,
-                &quot;avg_order_value&quot;: 42.50,
-            }
-        if &quot;behavioral_patterns&quot; in sub_blocks:
-            blocks[&quot;patterns&quot;] = {
-                &quot;order_days&quot;: [&quot;Fri&quot;, &quot;Sat&quot;],
-                &quot;peak_time&quot;: &quot;19:00-21:00&quot;,
-                &quot;group_orders&quot;: True,
-                &quot;repeat_rate&quot;: 0.35,
-            }
-        return blocks
-
-    def to_prompt(self, blocks: dict) -&gt; str:
-        &quot;&quot;&quot;Serialize blocks as compact JSON for the LLM carousel generator.&quot;&quot;&quot;
-        return json.dumps(blocks)
-
-# Generated carousels are embedded OFFLINE, retrieved via Milvus ONLINE.
-# No LLM in the request path — cost amortized across the refresh interval.
-# Results: +2.4% order rate.
-</code></pre>
-<h2 id="airbnb-embeddings-that-bridge-search-and-discovery">Airbnb: Embeddings That Bridge Search and Discovery</h2>
-<p>Airbnb's KDD 2018 paper trained listing embeddings on 800 million search click sessions using skip-gram adapted from word2vec [3]:</p>
-<pre><code class="language-python">class AirbnbListingEmbeddings:
-    &quot;&quot;&quot;Domain-specific embedding training for travel search.&quot;&quot;&quot;
-
-    def generate_training_pairs(self, sessions: list[list[int]]) -&gt; list[tuple[int, int]]:
-        &quot;&quot;&quot;
-        Key innovations over standard word2vec:
-
-        1. In-market negative sampling: users search within a single city.
-           Negatives drawn globally are trivially easy to reject.
-           Draw negatives from the SAME MARKET for harder discrimination.
-
-        2. Booked listing as global context: the booked listing is ALWAYS
-           treated as the context being predicted, regardless of position in
-           the click sequence. The booking is the signal. Everything else is noise.
-        &quot;&quot;&quot;
-        pairs = []
-        for session in sessions:
-            booked_id = session[-1]  # last item is the booking
-            for clicked_id in session[:-1]:
-                pairs.append((clicked_id, booked_id))
-        return pairs
-
-    def compute_serving_features(self, user_id: int, candidates: list[int],
-                                 embeddings: dict[int, np.ndarray]) -&gt; dict[str, np.ndarray]:
-        &quot;&quot;&quot;
-        Embedding-based features for real-time ranking.
-
-        Five embedding features ranked among the TOP 20 of 104 total features.
-        &quot;&quot;&quot;
-        user_recent = self.get_recent_interactions(user_id)
-        return {
-            # Similarity to listings the user recently clicked
-            &quot;EmbClickSim&quot;: self.mean_sim(user_recent['clicked'], candidates, embeddings),
-            # Similarity to listings the user skipped
-            &quot;EmbSkipSim&quot;: self.mean_sim(user_recent['skipped'], candidates, embeddings),
-            # Similarity to the last listing the user spent significant time on
-            &quot;EmbLastLongClickSim&quot;: self.mean_sim([user_recent['last_long_click']],
-                                                  candidates, embeddings),
-        }
-
-# Results: +2.27% offline NDCG, statistically significant booking gain online.
-# Similar listing recommendations: +20% CTR over prior algorithm.
-</code></pre>
-<p>Airbnb's 2019 follow-up on deep learning documented instructive failures: listing ID embeddings overfit (too few bookings per listing), and multi-task learning for bookings + long views increased views but not bookings — because expensive listings get looked at but not booked [4].</p>
-<h2 id="pinterest-two-tower-architectures-for-homefeed-and-search">Pinterest: Two-Tower Architectures for Homefeed and Search</h2>
-<p>Pinterest's two-tower model powers both homefeed and search:</p>
-<pre><code class="language-python">class PinterestTwoTower(torch.nn.Module):
-    &quot;&quot;&quot;Two-tower: user tower and item tower, dot-product scoring.&quot;&quot;&quot;
-
-    def __init__(self, user_input_dim: int, item_input_dim: int, hidden: int = 256):
-        super().__init__()
-        # User tower: long-term history, context, real-time sequences
-        self.user_tower = torch.nn.Sequential(
-            torch.nn.Linear(user_input_dim, hidden * 4),
-            torch.nn.ReLU(),
-            MaskNet(hidden * 4, num_blocks=3),   # bitwise feature crossing
-            torch.nn.Linear(hidden * 4, hidden),
-        )
-        # Item tower: category, description, image features
-        self.item_tower = torch.nn.Sequential(
-            torch.nn.Linear(item_input_dim, hidden * 4),
-            torch.nn.ReLU(),
-            torch.nn.Linear(hidden * 4, hidden),
-        )
-
-    def forward(self, user_features, item_features):
-        user_emb = F.normalize(self.user_tower(user_features), dim=1)
-        item_emb = F.normalize(self.item_tower(item_features), dim=1)
-        return (user_emb * item_emb).sum(dim=1)  # dot product
-
-# Item embeddings pre-computed offline, indexed in Manas (HNSW-based ANN).
-# User tower runs once per request at serving time.
-# This decoupling is the key to ~3ms median latency at 300K QPS.
-</code></pre>
-<p>For search, Pinterest extended this into <strong>OmniSearchSage</strong> — a multi-task, multi-entity framework where a single unified query embedding retrieves pins, products, and related queries simultaneously [5]. A teacher-student distillation approach followed: an 8B Llama cross-encoder (teacher, +12–20% improvement) → bi-encoder student trained on 100× more data from daily search logs (85% query cache hit rate).</p>
-<h2 id="the-pattern-across-all-four-companies">The Pattern Across All Four Companies</h2>
-<p>Every system that successfully spans search and recommendation does so by encoding <strong>which task it's doing</strong> as a first-class signal. Spotify uses an explicit router. DoorDash uses separate retrieval pipelines with shared embeddings. Airbnb uses the same embeddings but different ranking features for search vs. discovery. Pinterest uses the same two-tower but different objectives for homefeed vs. search.</p>
-<p>The common pattern: <strong>unification where it reduces cost, separation where it preserves correctness</strong>.</p>
-<hr>
-<hr>
-<h2 id="open-questions">Open Questions</h2>
-<ol>
 <li>
-<p><strong>Spotify found that Semantic IDs optimized for search don't generalize to recommendation, and vice versa.</strong> Is this a fundamental property of the two tasks, or an artifact of how we train embeddings? What would a <em>truly</em> unified embedding space look like?</p>
+<p>Carlos A. Gomez-Uribe and Neil Hunt. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2843948"><em>The Netflix Recommender System: Algorithms, Business Value, and Innovation</em></a>. ACM TMIS, 6(4), 2015.</p>
 </li>
 <li>
-<p><strong>DoorDash's finding — data quality (+31%) dominates model choice (+6%) — echoes a broader truth.</strong> How much of the search-vs-recommendation gap is actually a <em>data quality</em> gap in disguise?</p>
+<p>Xavier Amatriain and Justin Basilico. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429"><em>Netflix Recommendations: Beyond the 5 Stars</em></a>. Netflix Technology Blog, 2012.</p>
 </li>
 <li>
-<p><strong>Every successful system in this survey encodes task identity as a first-class signal.</strong> Is the search/recommendation distinction a permanent architectural feature, or a temporary crutch that better models will eventually absorb?</p>
-</li>
-<li>
-<p><strong>Airbnb's failed multi-task experiment (bookings + long views) is a warning about proxy objectives.</strong> What other proxy objectives are we optimizing across the industry that don't actually measure what we think they measure?</p>
-</li>
-</ol>
-<p><strong>References</strong></p>
-<ol>
-<li>
-<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://research.atspotify.com/2025/9/you-say-search-i-say-recs-a-scalable-agentic-approach-to-query-understanding"><em>You Say Search, I Say Recs: A Scalable Agentic Approach to Query Understanding and Exploratory Search</em></a>. September 2025.</p>
-</li>
-<li>
-<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://www.research.atspotify.com/2025/9/semantic-ids-for-generative-search-and-recommendation"><em>Semantic IDs for Generative Search and Recommendation</em></a>. September 2025.</p>
-</li>
-<li>
-<p>Mihajlo Grbovic and Haibin Cheng. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/3219819.3219885"><em>Real-time Personalization using Embeddings for Search Ranking at Airbnb</em></a>. KDD 2018.</p>
-</li>
-<li>
-<p>Malay Haldar et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1810.09591"><em>Applying Deep Learning to Airbnb Search</em></a>. KDD 2019.</p>
-</li>
-<li>
-<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-llms-to-build-content-embeddings-for-search-and-recommendations/"><em>Using LLMs to Build Content Embeddings for Search and Recommendations</em></a>. 2025.</p>
-</li>
-<li>
-<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/"><em>Offline LLMs, Online Personalization: Generating Carousels at DoorDash</em></a>. 2025.</p>
-</li>
-<li>
-<p>Pinterest Engineering. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/pinterest-engineering/advancements-in-embedding-based-retrieval-at-pinterest-homefeed-176a3c03df64"><em>Advancements in Embedding-Based Retrieval at Pinterest Homefeed</em></a>. 2024.</p>
-</li>
-</ol>
-<hr>
-</div>
-      </article>
-      <article class="post" id="search-recommendation-llms">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
-          <h2><a href="#search-recommendation-llms">&#34;S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?&#34;</a></h2><p class="post-summary">LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.</p>
-          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">llm</span><span class="tag">rag</span><span class="tag">generative-retrieval</span><span class="tag">agentic</span><span class="tag">survey</span><span class="tag">series</span>
-          </div>
-        </header>
-        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. How LLMs reshape both fields — differently — and why the fundamental distinction survives the generative era.</em></p>
-<p>The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.</p>
-<p>Two recent surveys capture the scope. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, and reader [1]. Li et al. (2024) provide the cross-cutting view — framing both search and recommendation as instances of generative retrieval and identifying where they converge and where they diverge [2].</p>
-<p>The key insight: <strong>LLMs don't eliminate the distinction. They reveal it at a higher level of abstraction.</strong> Both fields are moving toward generative paradigms, but the <em>thing being generated</em> is different. Search generates answers from documents. Recommendation generates item predictions from user histories.</p>
-<h2 id="how-llms-transform-search">How LLMs Transform Search</h2>
-<p>LLMs operate at four levels in the search pipeline:</p>
-<pre><code class="language-python"># Level 1: Query Understanding — LLMs disambiguate and expand queries
-def llm_query_understanding(raw_query: str, llm) -&gt; dict:
-    &quot;&quot;&quot;Transform natural language into structured search intent.&quot;&quot;&quot;
-    prompt = f&quot;&quot;&quot;
-    Parse this search query into structured intent:
-    Query: &quot;{raw_query}&quot;
-
-    Return JSON with: intent_type, entities, constraints, expansions.
-    &quot;&quot;&quot;
-    response = llm.generate(prompt)
-    return json.loads(response)
-
-# &quot;Show me movies like Inception but funnier&quot;
-# → {intent_type: &quot;similar_items_with_constraint&quot;,
-#    entities: [&quot;Inception&quot;],
-#    constraints: [&quot;genre: comedy&quot;, &quot;tone: lighter&quot;],
-#    expansions: [&quot;mind-bending heist films&quot;, &quot;comedic thrillers&quot;]}
-
-# Level 2: Document Understanding — LLMs generate richer representations
-def llm_enrich_document(doc: str, llm) -&gt; dict:
-    &quot;&quot;&quot;Generate structured metadata that transcends keyword matching.&quot;&quot;&quot;
-    prompt = f&quot;&quot;&quot;
-    For this document, generate:
-    1. A 2-sentence summary
-    2. 5-10 key phrases
-    3. Entity tags (people, places, concepts)
-    4. A semantic embedding-friendly description
-
-    Document: {doc[:4000]}
-    &quot;&quot;&quot;
-    return llm.generate_structured(prompt)
-
-# Level 3: RAG — Retrieve then generate a synthesized answer
-def rag_search(query: str, retriever, llm, k: int = 5) -&gt; str:
-    &quot;&quot;&quot;The dominant LLM-search paradigm in 2025.&quot;&quot;&quot;
-    # Retrieve relevant documents
-    docs = retriever.retrieve(query, k=k)
-
-    # Generate answer grounded in retrieved documents
-    context = &quot;\n\n&quot;.join(f&quot;[{i+1}] {doc.text}&quot; for i, doc in enumerate(docs))
-    prompt = f&quot;&quot;&quot;
-    Answer the query using ONLY the provided documents.
-    Cite sources by number.
-
-    Query: {query}
-
-    Documents:
-    {context}
-    &quot;&quot;&quot;
-    return llm.generate(prompt)
-
-# Level 4: Generative Retrieval — the model IS the index
-# The most radical approach: the LLM directly generates document IDs
-# without an explicit retrieval index. Still experimental.
-</code></pre>
-<p>The core search user need — &quot;I have a question, find me the answer&quot; — aligns naturally with LLM capabilities. The LLM augments retrieval at every stage without replacing it.</p>
-<h2 id="how-llms-transform-recommendation">How LLMs Transform Recommendation</h2>
-<p>For recommendation, the transformation is more structural:</p>
-<pre><code class="language-python"># Level 1: Feature Engineering Automation
-# LLMs generate rich profiles from sparse structured data.
-# DoorDash's content embeddings and Consumer Memory Blocks are paradigmatic:
-# the LLM produces the fuel, retrieval and ranking remain purpose-built.
-
-def llm_generate_item_profile(item: dict, llm) -&gt; str:
-    &quot;&quot;&quot;Produce a rich narrative that a standard encoder can embed.&quot;&quot;&quot;
-    return llm.generate(f&quot;Describe this item for a recommendation system: {item}&quot;)
-
-# Level 2: Generative Recommendation
-# Instead of scoring candidates, the LLM autoregressively generates item tokens.
-# Meta's HSTU, Kuaishou's OneRec, Google's TIGER are examples.
-
-class GenerativeRecommender:
-    &quot;&quot;&quot;Recommendation as sequence-to-sequence: predict next-item tokens.&quot;&quot;&quot;
-    def recommend(self, user_history: list[int], llm, k: int = 10) -&gt; list[int]:
-        prompt = f&quot;User interaction history (item IDs): {user_history}\nPredict next items:&quot;
-        # LLM autoregressively generates item IDs
-        return llm.generate_tokens(prompt, max_tokens=k)
-
-# Level 3: Conversational Recommendation
-# Multi-turn dialogue where the system elicits preferences and adapts.
-
-def conversational_recommendation_loop(user_id: str, llm, catalog):
-    &quot;&quot;&quot;Search and recommendation blur into conversation.&quot;&quot;&quot;
-    context = {&quot;history&quot;: get_user_history(user_id)}
-    for turn in range(5):
-        user_input = get_user_response()
-        if is_search_like(user_input):    # &quot;I want a sci-fi movie&quot;
-            results = catalog.search(user_input)
-            context[&quot;mode&quot;] = &quot;search&quot;
-        else:                              # &quot;something cerebral, not too long&quot;
-            results = catalog.recommend(context)
-            context[&quot;mode&quot;] = &quot;recommendation&quot;
-        llm_response = llm.generate_response(results, context)
-        show_to_user(llm_response)
-
-# Level 4: Agentic Recommendation
-# LLM-powered agents that plan, use tools, maintain memory, reason.
-# ARAG (SIGIR 2025): 4 specialized agents — User Understanding, NLI,
-# Context Summary, Item Ranker — achieve +42.1% NDCG@5 over vanilla RAG.
-</code></pre>
-<h2 id="why-the-distinction-survives">Why the Distinction Survives</h2>
-<p>Despite this convergence, the distinction remains essential for four reasons:</p>
-<p><strong>1. Objective alignment.</strong> A search system optimizing for engagement shows addictive content instead of answering the query. A recommendation system optimizing for precision produces an echo chamber.</p>
-<pre><code class="language-python"># Wrong: one objective for both
-def bad_unified_objective(model_output, labels):
-    return cross_entropy(model_output, labels)  # what are we even optimizing?
-
-# Right: task-aware objectives
-def search_objective(predictions, relevance_labels):
-    return ndcg_loss(predictions, relevance_labels)  # did we retrieve the right thing?
-
-def recommendation_objective(predictions, engagement_labels):
-    return binary_cross_entropy(predictions, engagement_labels)  # will user engage?
-    # Plus: diversity bonus, freshness decay, exploration budget, long-term retention proxy
-</code></pre>
-<p><strong>2. Evaluation.</strong> Search: NDCG, MRR, precision@K against relevance judgments. Recommendation: retention, discovery, session length, long-term satisfaction. These are correlated but not identical.</p>
-<p><strong>3. The serendipity gradient.</strong> In search, serendipity is a bug. In recommendation, it's a feature.</p>
-<pre><code class="language-python">def demonstrate_serendipity_gradient():
-    &quot;&quot;&quot;The same behavior is a bug in one context and a feature in the other.&quot;&quot;&quot;
-
-    # SEARCH: User types &quot;The Godfather&quot;
-    # System returns &quot;Goodfellas&quot; because &quot;people who watch The Godfather
-    # also love Goodfellas&quot;
-    # → BROKEN. The user wanted The Godfather. Return The Godfather.
-
-    # RECOMMENDATION: User browses homepage on Friday night
-    # System shows &quot;The Godfather&quot; — which the user has already seen 4 times
-    # → BROKEN. The user wants something new. Show Goodfellas.
-
-    # Both failures happen when teams optimize for the wrong thing.
-    # The first optimized for engagement instead of relevance.
-    # The second optimized for precision instead of discovery.
-</code></pre>
-<p><strong>4. Infrastructure.</strong> Search: inverted indices, real-time query parsing, sub-100ms latency at high QPS. Recommendation: user profile stores, embedding indices, offline batch pipelines amortized across daily refresh cycles.</p>
-<pre><code class="language-python"># Search infrastructure
-class SearchServing:
-    latency_sla: float = 0.100  # seconds — user is waiting
-    qps: int = 10_000           # every keystroke is a query
-    freshness: str = &quot;real-time&quot;  # new documents must be searchable immediately
-    index_type: str = &quot;inverted&quot;  # keyword → posting list
-
-# Recommendation infrastructure
-class RecServing:
-    latency_sla: float = 0.200  # seconds — page load, more forgiving
-    qps: int = 1_000            # one request per page view
-    freshness: str = &quot;daily&quot;      # embeddings recomputed nightly
-    index_type: str = &quot;ANN&quot;      # vector → nearest neighbors
-</code></pre>
-<h2 id="the-survey-papers-agree">The Survey Papers Agree</h2>
-<p>The Li et al. (2024) survey on generative search and recommendation puts it well: the fields share a common mathematical framework — matching entities across representation spaces — but differ in the <em>nature of the mismatch</em> [2]. Search deals with query–document mismatch: different words for the same concept. Recommendation deals with user–item mismatch: users and items live in completely different semantic spaces. The first is a lexical/semantic gap. The second is a modality gap. Solving them requires different tools, even when those tools share a common transformer backbone.</p>
-<p>The Gupta et al. (2025) survey on generative recommendation reinforces this: industrial systems like TIGER, LIGER, OneRec, and HSTU all treat recommendation as its own generative problem with its own tokenization, its own evaluation, and its own cold-start challenges [3]. None of them use the same architecture unmodified for search.</p>
-<p>LLMs are infrastructure. They don't eliminate the distinction between search and recommendation — they make it more important to get right.</p>
-<hr>
-<hr>
-<h2 id="open-questions">Open Questions</h2>
-<ol>
-<li>
-<p><strong>LLMs are infrastructure, not a replacement for retrieval.</strong> But the history of software is infrastructure absorbing what was once application logic. Will retrieval become just another token prediction task?</p>
-</li>
-<li>
-<p><strong>Generative recommendation (TIGER, HSTU, OneRec) treats item prediction as autoregressive generation.</strong> If the model is the index, the retriever, and the ranker — where does the search/recommendation boundary go? Does it vanish, or does it move into the prompt?</p>
-</li>
-<li>
-<p><strong>The surveys agree: LLMs affect search and recommendation differently.</strong> But most LLM research papers treat them as interchangeable downstream tasks. Is the research community making the same mistake the engineering community is learning to avoid?</p>
-</li>
-<li>
-<p><strong>Conversational recommendation collapses the boundary between search and discovery into dialogue.</strong> If users can't tell whether they're searching or being recommended to — does the distinction still matter? For whom?</p>
-</li>
-</ol>
-<p><strong>References</strong></p>
-<ol>
-<li>
-<p>Yutao Zhu, Huaying Yuan, Shuting Wang, et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.07107"><em>Large Language Models for Information Retrieval: A Survey</em></a>. ACM Transactions on Information Systems, 2024.</p>
-</li>
-<li>
-<p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
-</li>
-<li>
-<p>Shashank Gupta et al. <a target="_blank" rel="noopener noreferrer" href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.176523089.94266134/v2"><em>Generative Recommendation: A Survey of Models, Systems, and Industrial Advances</em></a>. TechRxiv, 2025.</p>
-</li>
-<li>
-<p>Chi Zhang et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.21931"><em>ARAG: Agentic Retrieval Augmented Generation for Personalized Recommendation</em></a>. SIGIR 2025.</p>
-</li>
-<li>
-<p>Zhuang Liu et al. <a target="_blank" rel="noopener noreferrer" href="https://ieeexplore.ieee.org/abstract/document/11129085"><em>A Comprehensive Survey on LLM-Powered Recommender Systems</em></a>. IEEE Access, 2024.</p>
+<p>Justin Basilico and Yves Raimond. <a target="_blank" rel="noopener noreferrer" href="https://netflixtechblog.com/recent-trends-in-personalization-at-netflix-5bd3903347fe"><em>Recent Trends in Personalization at Netflix</em></a>. Netflix Technology Blog, 2020.</p>
 </li>
 </ol>
 <hr>
@@ -1666,6 +2071,8 @@ class RecServing:
           </div>
         </header>
         <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
 <p>Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what &quot;relevance&quot; means.</p>
 <p>This part traces fifty years of that evolution with working Python. You'll see how each generation built on the last, what each solved, and what each left unsolved.</p>
 <h2 id="boolean-retrieval--exact-matching-and-its-limits-1960s1970s">Boolean Retrieval — Exact Matching and Its Limits (1960s–1970s)</h2>
@@ -1712,7 +2119,7 @@ assert idx.search_and([&quot;star&quot;, &quot;crossed&quot;, &quot;lovers&quot;
 # Searching for &quot;tragic love story&quot; misses Shakespeare entirely.
 </code></pre>
 <p>This worked for trained librarians. It failed for everyone else. The <strong>vocabulary mismatch problem</strong> — users describe their needs with different words than authors use — is the fundamental condition of language, not a bug to be fixed. Every subsequent generation of retrieval technology is an attempt to narrow the gap.</p>
-<p>Karen Spärck Jones, who invented inverse document frequency (the weighting scheme that would become half of TF-IDF), understood this better than anyone. In a 1999 reflection, she wrote: &quot;Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them.&quot; The gap can be narrowed. It cannot be closed.</p>
+<p>Karen Spärck Jones, who invented inverse document frequency (the weighting scheme that would become half of TF-IDF) [10], understood this better than anyone. In a 1999 reflection, she wrote: &quot;Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them.&quot; The gap can be narrowed. It cannot be closed.</p>
 <h2 id="the-vector-space-model--when-documents-became-points-in-space-1975">The Vector Space Model — When Documents Became Points in Space (1975)</h2>
 <p>Gerard Salton at Cornell proposed representing documents and queries as sparse vectors in a high-dimensional term space. A document was no longer a set of words — it was a point whose coordinates were term weights.</p>
 <p>The weighting scheme was <strong>TF-IDF</strong>:</p>
@@ -1993,6 +2400,7 @@ class DPRBiEncoder(torch.nn.Module):
 # Cross-encoder handles fine-grained relevance that dot products miss.
 </code></pre>
 <p>The comprehensive survey by Hambarde and Proença (2023) organizes this pipeline into two stages — term-based retrieval and semantic retrieval — and catalogs the models available at each level [2]. Their key insight: <strong>modern search is never one model. It's a pipeline where each stage compensates for the limitations of the one before it.</strong></p>
+<p>Manning, Raghavan, and Schütze's textbook remains the canonical reference for the information retrieval fundamentals — inverted indexes, scoring functions, and evaluation methodology — that underpin every stage of this pipeline [7].</p>
 <p>This is the critical difference from recommendation. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.</p>
 <hr>
 <hr>
@@ -2031,331 +2439,17 @@ class DPRBiEncoder(torch.nn.Module):
 <li>
 <p>Christopher J.C. Burges. <a target="_blank" rel="noopener noreferrer" href="https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/"><em>From RankNet to LambdaRank to LambdaMART: An Overview</em></a>. Microsoft Research Technical Report MSR-TR-2010-82, 2010.</p>
 </li>
-</ol>
-<hr>
-</div>
-      </article>
-      <article class="post" id="search-recommendation-recommendation-techniques">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
-          <h2><a href="#search-recommendation-recommendation-techniques">&#34;S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?&#34;</a></h2><p class="post-summary">A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.</p>
-          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">collaborative-filtering</span><span class="tag">matrix-factorization</span><span class="tag">netflix-prize</span><span class="tag">deep-learning</span><span class="tag">series</span>
-          </div>
-        </header>
-        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.</em></p>
-<p>If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.</p>
-<p>Wu et al. (2023), in their comprehensive survey of neural recommendation models published in IEEE TKDE, organize the field into two broad families: models that use only interaction data (collaborative filtering) and models that incorporate side information (content, context, sequences) [1]. The progression from one to the other mirrors the search field's own evolution — from impoverished signals to rich, multi-modal representations. But the starting point is different. Search began with text and added behavior. Recommendation began with behavior and added text.</p>
-<p>This part traces that evolution with working Python.</p>
-<h2 id="tapestry--the-first-collaborative-filtering-system-1992">Tapestry — The First Collaborative Filtering System (1992)</h2>
-<p>In 1992, researchers at Xerox PARC built Tapestry, an email filtering system that let users annotate messages and write queries referencing others' annotations. They coined the term <strong>collaborative filtering</strong>. The insight was that relevance is social: if people with similar tastes found something useful, you probably will too.</p>
-<pre><code class="language-python"># Tapestry's conceptual model: manual, query-based CF
-# &quot;Show me emails that Bob found interesting&quot;
-
-class TapestryFilter:
-    def __init__(self):
-        self.annotations: dict[str, dict[int, str]] = {}  # user -&gt; {msg_id -&gt; annotation}
-
-    def annotate(self, user: str, msg_id: int, label: str):
-        &quot;&quot;&quot;Bob annotates a message as 'interesting' or 'boring'.&quot;&quot;&quot;
-        self.annotations.setdefault(user, {})[msg_id] = label
-
-    def query(self, annotator: str, label: str) -&gt; list[int]:
-        &quot;&quot;&quot;'Show me all messages Bob found interesting'.&quot;&quot;&quot;
-        return [msg_id for msg_id, ann in self.annotations.get(annotator, {}).items()
-                if ann == label]
-
-# Tapestry required users to write explicit queries. Powerful for power users,
-# unusable for everyone else. The automation was coming.
-</code></pre>
-<h2 id="grouplens--automating-collaborative-filtering-at-scale-1994">GroupLens — Automating Collaborative Filtering at Scale (1994)</h2>
-<p>The GroupLens project at the University of Minnesota automated the process. Users rated Usenet articles (1–5 stars), and the system automatically predicted ratings for unread articles based on similar users' ratings.</p>
-<pre><code class="language-python">import numpy as np
-from collections import defaultdict
-
-def user_based_cf(ratings: dict[int, dict[int, float]],
-                  user_id: int, item_id: int, k: int = 50) -&gt; float:
-    &quot;&quot;&quot;
-    User-based collaborative filtering: predict a user's rating for an item
-    based on how similar users rated it.
-
-    ratings: {user_id: {item_id: rating}}
-    &quot;&quot;&quot;
-    if user_id not in ratings:
-        return 3.0  # global mean for cold start
-
-    # Step 1: Find users who rated this item
-    co_raters = [(other, ratings[other][item_id])
-                 for other in ratings
-                 if item_id in ratings[other] and other != user_id]
-
-    if not co_raters:
-        return np.mean(list(ratings[user_id].values()))  # user's mean rating
-
-    # Step 2: Compute similarity between target user and each co-rater
-    similarities = []
-    for other, _ in co_raters:
-        sim = pearson_similarity(ratings[user_id], ratings[other])
-        similarities.append((other, sim))
-
-    similarities.sort(key=lambda x: x[1], reverse=True)
-    neighbors = similarities[:k]
-
-    # Step 3: Weighted average of neighbors' ratings
-    weighted_sum = sum(sim * ratings[neighbor][item_id] for neighbor, sim in neighbors
-                       if sim &gt; 0)
-    norm = sum(abs(sim) for _, sim in neighbors if sim &gt; 0)
-
-    return weighted_sum / norm if norm &gt; 0 else np.mean(list(ratings[user_id].values()))
-
-
-def pearson_similarity(user_a: dict[int, float], user_b: dict[int, float]) -&gt; float:
-    &quot;&quot;&quot;Pearson correlation between two users' rating vectors.&quot;&quot;&quot;
-    common_items = set(user_a) &amp; set(user_b)
-    if len(common_items) &lt; 3:
-        return 0.0  # not enough overlap
-
-    mean_a = np.mean([user_a[i] for i in common_items])
-    mean_b = np.mean([user_b[i] for i in common_items])
-
-    num = sum((user_a[i] - mean_a) * (user_b[i] - mean_b) for i in common_items)
-    den_a = np.sqrt(sum((user_a[i] - mean_a) ** 2 for i in common_items))
-    den_b = np.sqrt(sum((user_b[i] - mean_b) ** 2 for i in common_items))
-
-    return num / (den_a * den_b) if den_a and den_b else 0.0
-</code></pre>
-<p>GroupLens spawned Net Perceptions, a company that served Amazon, CDnow, and others. In 2010, the team won the ACM Software System Award. But user-based CF had a scaling problem: computing user-user similarity is O(N²) in the number of users.</p>
-<h2 id="amazon-item-to-item-cf--scaling-to-millions-2003">Amazon Item-to-Item CF — Scaling to Millions (2003)</h2>
-<p>Amazon's Greg Linden, Brent Smith, and Jeremy York flipped the problem. Instead of finding similar <em>users</em>, find similar <em>items</em>:</p>
-<pre><code class="language-python">def item_based_cf(ratings: dict[int, dict[int, float]],
-                  user_id: int, k: int = 10) -&gt; list[tuple[int, float]]:
-    &quot;&quot;&quot;
-    Item-based collaborative filtering: recommend items similar to what
-    the user already liked.
-
-    The expensive part — computing the item-item similarity matrix —
-    runs offline, not at serving time.
-    &quot;&quot;&quot;
-    # Build item-item similarity matrix (OFFLINE — runs daily)
-    item_sim = build_item_similarity_matrix(ratings)
-
-    # Online: look up items similar to what the user liked (MILLISECONDS)
-    user_ratings = ratings.get(user_id, {})
-    liked = [(item, r) for item, r in user_ratings.items() if r &gt; 3.5]
-
-    candidates: dict[int, float] = defaultdict(float)
-    total_weight: dict[int, float] = defaultdict(float)
-
-    for item, rating in liked:
-        for similar_item, sim in item_sim.get(item, {}).items():
-            if similar_item not in user_ratings:  # don't recommend what they've rated
-                candidates[similar_item] += sim * rating
-                total_weight[similar_item] += abs(sim)
-
-    # Normalize
-    scored = [(item, candidates[item] / total_weight[item])
-              for item in candidates if total_weight[item] &gt; 0]
-    scored.sort(key=lambda x: x[1], reverse=True)
-    return scored[:k]
-
-
-def build_item_similarity_matrix(ratings: dict[int, dict[int, float]]
-                                 ) -&gt; dict[int, dict[int, float]]:
-    &quot;&quot;&quot;O(N_items² × N_users) — run offline, results cached.&quot;&quot;&quot;
-    # Transpose: item -&gt; {user: rating}
-    item_users: dict[int, dict[int, float]] = defaultdict(dict)
-    for user_id, user_ratings in ratings.items():
-        for item_id, rating in user_ratings.items():
-            item_users[item_id][user_id] = rating
-
-    items = list(item_users.keys())
-    sim_matrix: dict[int, dict[int, float]] = defaultdict(dict)
-
-    for i, item_a in enumerate(items):
-        for item_b in items[i + 1:]:
-            common = set(item_users[item_a]) &amp; set(item_users[item_b])
-            if len(common) &lt; 5:
-                continue
-            sim = cosine_similarity(
-                {u: item_users[item_a][u] for u in common},
-                {u: item_users[item_b][u] for u in common}
-            )
-            if sim &gt; 0:
-                sim_matrix[item_a][item_b] = sim
-                sim_matrix[item_b][item_a] = sim
-
-    return sim_matrix
-</code></pre>
-<p>Greg Linden later explained why this beat search-based approaches: &quot;Rather than matching the user to similar customers, item-to-item collaborative filtering matches each of the user's purchased and rated items to similar items.&quot; Search-based methods — constructing queries from purchase history to find items with similar keywords — produced recommendations that were either too general (bestsellers) or too narrow (more books by the same author). Collaborative filtering discovered cross-category connections: people who bought <em>Into Thin Air</em> also bought <em>The Perfect Storm</em>. No keyword match connects a mountaineering disaster to a fishing boat tragedy. Only behavior does.</p>
-<h2 id="the-netflix-prize--matrix-factorization-takes-over-20062009">The Netflix Prize — Matrix Factorization Takes Over (2006–2009)</h2>
-<p>In 2006, Netflix offered $1M to any team that could improve their recommendation algorithm by 10%. The winning approach reshaped the field: <strong>matrix factorization</strong>.</p>
-<pre><code class="language-python">class MatrixFactorization:
-    &quot;&quot;&quot;Learn user and item latent factors via stochastic gradient descent.&quot;&quot;&quot;
-
-    def __init__(self, num_users: int, num_items: int, k: int = 50,
-                 lr: float = 0.01, lambda_reg: float = 0.02):
-        # Initialize latent factor matrices randomly
-        self.P = np.random.normal(0, 0.1, (num_users, k))  # user factors
-        self.Q = np.random.normal(0, 0.1, (num_items, k))  # item factors
-        self.bu = np.zeros(num_users)  # user biases
-        self.bi = np.zeros(num_items)  # item biases
-        self.mu = 0.0                  # global mean
-        self.lr = lr
-        self.lambda_reg = lambda_reg
-
-    def fit(self, ratings: list[tuple[int, int, float]], epochs: int = 100):
-        &quot;&quot;&quot;Train via SGD.&quot;&quot;&quot;
-        self.mu = np.mean([r for _, _, r in ratings])
-
-        for epoch in range(epochs):
-            np.random.shuffle(ratings)
-            total_loss = 0.0
-
-            for u, i, r in ratings:
-                # Prediction: global mean + user bias + item bias + latent interaction
-                pred = self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
-                error = r - pred
-                total_loss += error ** 2
-
-                # SGD updates with L2 regularization
-                self.bu[u] += self.lr * (error - self.lambda_reg * self.bu[u])
-                self.bi[i] += self.lr * (error - self.lambda_reg * self.bi[i])
-
-                # Update latent factors
-                pu_old = self.P[u].copy()
-                self.P[u] += self.lr * (error * self.Q[i] - self.lambda_reg * self.P[u])
-                self.Q[i] += self.lr * (error * pu_old - self.lambda_reg * self.Q[i])
-
-            if epoch % 20 == 0:
-                rmse = np.sqrt(total_loss / len(ratings))
-                print(f&quot;Epoch {epoch}: RMSE = {rmse:.4f}&quot;)
-
-    def predict(self, u: int, i: int) -&gt; float:
-        return self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
-
-    def recommend(self, u: int, rated_items: set[int], k: int = 10) -&gt; list[int]:
-        &quot;&quot;&quot;Generate top-k recommendations for user u.&quot;&quot;&quot;
-        scores = [(i, self.predict(u, i))
-                  for i in range(len(self.Q))
-                  if i not in rated_items]
-        scores.sort(key=lambda x: x[1], reverse=True)
-        return [item for item, _ in scores[:k]]
-
-# Usage with MovieLens-100K style data
-# ratings = [(user, item, rating), ...]
-# mf = MatrixFactorization(num_users=943, num_items=1682, k=50)
-# mf.fit(ratings, epochs=100)
-# recommendations = mf.recommend(user_id=42, rated_items={item for _, item, _ in ratings if _ == 42})
-</code></pre>
-<p>Yehuda Koren's <strong>SVD++</strong> extended this by incorporating implicit feedback — what you browsed, not just what you rated — and achieved the winning RMSE of 0.8556. The Netflix Prize established matrix factorization as the dominant paradigm for nearly a decade.</p>
-<p>It also revealed the field's central tension: <strong>the metric that drove the competition (RMSE on withheld ratings) doesn't actually measure whether users are satisfied</strong>. Reed Hastings articulated this later: &quot;When we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot; Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences over revealed preferences fails.</p>
-<h2 id="the-deep-learning-era--youtube-and-the-multi-stage-pipeline-20162020">The Deep Learning Era — YouTube and the Multi-Stage Pipeline (2016–2020)</h2>
-<p>YouTube's 2016 paper marked deep learning's entry into production recommendation. The architecture was two-stage:</p>
-<pre><code class="language-python">class YouTubeCandidateGenerator(torch.nn.Module):
-    &quot;&quot;&quot;YouTube-style candidate generation: narrow millions → hundreds.&quot;&quot;&quot;
-
-    def __init__(self, vocab_sizes: dict[str, int], embedding_dim: int = 256):
-        super().__init__()
-        # Embedding layers for categorical features
-        self.embeddings = torch.nn.ModuleDict({
-            name: torch.nn.Embedding(size, embedding_dim)
-            for name, size in vocab_sizes.items()
-        })
-        # Concatenated embeddings → hidden layers
-        input_dim = len(vocab_sizes) * embedding_dim
-        self.layers = torch.nn.Sequential(
-            torch.nn.Linear(input_dim, 1024),
-            torch.nn.ReLU(),
-            torch.nn.Linear(1024, 512),
-            torch.nn.ReLU(),
-            torch.nn.Linear(512, 256),
-        )
-        # Output: softmax over all video IDs (treated as classes)
-        self.output = torch.nn.Linear(256, vocab_sizes['video_id'])
-
-    def forward(self, features: dict[str, torch.Tensor]) -&gt; torch.Tensor:
-        &quot;&quot;&quot;Predict the next video a user will watch.&quot;&quot;&quot;
-        embedded = [self.embeddings[name](features[name])
-                    for name in self.embeddings]
-        concat = torch.cat(embedded, dim=1)
-        hidden = self.layers(concat)
-        return self.output(hidden)
-
-# Key innovation: the model was trained on ALL YouTube watches, including those
-# on embedded players. The training objective was next-video prediction —
-# treating recommendation as an extreme multi-class classification problem.
-
-# But the real insight was about WHAT to optimize. YouTube didn't optimize for
-# clicks — they optimized for expected watch time. Clicks are easy to game
-# (clickbait thumbnails). Watch time is harder to fake and better aligned
-# with user satisfaction.
-</code></pre>
-<p>The three-stage pipeline that emerged became industry standard:</p>
-<pre><code class="language-python">def production_recsys_pipeline(user_id: int, user_features: dict,
-                               all_items: list[int], k: int = 10) -&gt; list[int]:
-    &quot;&quot;&quot;Standard three-stage recommendation pipeline.&quot;&quot;&quot;
-
-    # Stage 1: Candidate Generation — millions → thousands
-    # Multiple parallel generators: collaborative filtering, trending,
-    # new releases, content-based. High recall, low cost per item.
-    candidates_cf = cf_retriever.retrieve(user_id, k=500)
-    candidates_trending = trending_retriever.retrieve(k=200)
-    candidates_similar = similar_items_retriever.retrieve(
-        user_features['last_watched'], k=200)
-    candidates = list(set(candidates_cf + candidates_trending + candidates_similar))
-
-    # Stage 2: Ranking — thousands → hundreds
-    # Deep neural network scores each candidate using hundreds of features.
-    # High precision, moderate cost per item.
-    ranked = ranker.score(user_id, candidates, user_features)
-    ranked.sort(key=lambda x: x.score, reverse=True)
-    top = ranked[:200]
-
-    # Stage 3: Re-Ranking — hundreds → tens
-    # Apply diversity, freshness boost, business rules, exploration.
-    # Low cost per item (post-processing), high impact on user experience.
-    final = re_ranker.apply(top, user_features,
-                            diversity_factor=0.3,
-                            freshness_boost=1.2,
-                            max_same_genre=3)
-    return [item.id for item in final[:k]]
-</code></pre>
-<p>By 2020, the search field had always been multi-stage. Recommendation caught up — and that convergence is one reason the two fields are so often conflated.</p>
-<hr>
-<hr>
-<h2 id="open-questions">Open Questions</h2>
-<ol>
 <li>
-<p><strong>Matrix factorization dominated recommendation for a decade after the Netflix Prize, but the Prize's metric (RMSE) didn't measure user satisfaction.</strong> What would a recommendation competition look like today if the metric were retention, not rating prediction? Could we even run one?</p>
+<p>Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. <a target="_blank" rel="noopener noreferrer" href="https://nlp.stanford.edu/IR-book/"><em>Introduction to Information Retrieval</em></a>. Cambridge University Press, 2008.</p>
 </li>
 <li>
-<p><strong>Hastings' insight — that users' stated preferences differ from their revealed preferences — has uncomfortable implications.</strong> Should recommenders ever <em>ignore</em> what users explicitly tell them? When is the aspirational self a feature rather than noise?</p>
+<p>Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.18653/v1/2020.emnlp-main.550"><em>Dense Passage Retrieval for Open-Domain Question Answering</em></a>. EMNLP 2020.</p>
 </li>
 <li>
-<p><strong>The deep learning era equalized recommendation and search by giving both access to heterogeneous features.</strong> But search had decades of multi-modal infrastructure first. Did recommendation catch up, or did it just inherit search's architecture without adapting it?</p>
+<p>Amit Singhal. <a target="_blank" rel="noopener noreferrer" href="http://singhal.info/ieee2001.pdf"><em>Modern Information Retrieval: A Brief Overview</em></a>. IEEE Data Engineering Bulletin, 24(4): 35–43, 2001.</p>
 </li>
 <li>
-<p><strong>Item-to-item CF at Amazon discovered cross-category connections no keyword match could find.</strong> What connections are today's models missing because they optimize for engagement rather than surprise?</p>
-</li>
-</ol>
-<p><strong>References</strong></p>
-<ol>
-<li>
-<p>Le Wu, Xiangnan He, Xiang Wang, Kun Zhang, and Meng Wang. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2022.3145690"><em>A Survey on Accuracy-Oriented Neural Recommendation: From Collaborative Filtering to Information-Rich Recommendation</em></a>. IEEE TKDE, 35(5): 4425–4445, 2023.</p>
-</li>
-<li>
-<p>David Goldberg, David Nichols, Brian M. Oki, and Douglas Terry. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138867"><em>Using Collaborative Filtering to Weave an Information Tapestry</em></a>. Communications of the ACM, 35(12): 61–70, 1992.</p>
-</li>
-<li>
-<p>Paul Resnick et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/192844.192905"><em>GroupLens: An Open Architecture for Collaborative Filtering of Netnews</em></a>. CSCW 1994.</p>
-</li>
-<li>
-<p>Greg Linden, Brent Smith, and Jeremy York. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MIC.2003.1167344"><em>Amazon.com Recommendations: Item-to-Item Collaborative Filtering</em></a>. IEEE Internet Computing, 7(1): 76–80, 2003.</p>
-</li>
-<li>
-<p>Yehuda Koren, Robert Bell, and Chris Volinsky. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MC.2009.263"><em>Matrix Factorization Techniques for Recommender Systems</em></a>. IEEE Computer, 42(8): 30–37, 2009.</p>
-</li>
-<li>
-<p>Paul Covington, Jay Adams, and Emre Sargin. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/2959100.2959190"><em>Deep Neural Networks for YouTube Recommendations</em></a>. RecSys 2016.</p>
+<p>Karen Spärck Jones. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1108/eb026526"><em>A Statistical Interpretation of Term Specificity and Its Application in Retrieval</em></a>. Journal of Documentation, 28(1): 11–21, 1972. The original IDF paper.</p>
 </li>
 </ol>
 <hr>
@@ -2369,6 +2463,8 @@ def build_item_similarity_matrix(ratings: dict[int, dict[int, float]]
           </div>
         </header>
         <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation — the two fundamental modes of information access that this series examines. This post defines the distinction and explains why conflating them is a costly engineering mistake.</em></p>
+<p><strong>A search problem:</strong> given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.</p>
+<p><strong>A recommendation problem:</strong> given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.</p>
 <p>Search and recommendation are often described as &quot;two sides of the same coin.&quot; Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.</p>
 <p>It is also wrong — or at least, incomplete enough to be dangerous.</p>
 <p>Search and recommendation are different problems. They emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confusing them produces systems that are bad at both: search results that drift into irrelevance under the weight of personalization, and recommendation feeds that fail to respect explicit intent.</p>
@@ -2472,6 +2568,7 @@ suggestions = recommend(&quot;user_42&quot;, item_similarity_matrix, ratings_mat
 </tr>
 </tbody>
 </table>
+<p>Manning, Raghavan, and Schütze's canonical IR textbook formalizes this distinction in its opening chapter: information retrieval is query-driven; information filtering is profile-driven [5].</p>
 <h2 id="why-people-confuse-them--the-three-traps">Why People Confuse Them — The Three Traps</h2>
 <p>If the distinction is so clear, why do smart engineers keep conflating them? Three traps account for most of the damage.</p>
 <p><strong>Trap 1: They share the same surface shape.</strong> Both produce a ranked list of items. Type a query into Google, get a list. Open Netflix, get a list. The visual output is identical, so the mental model defaults to &quot;they're the same thing with different inputs.&quot; This is like assuming a taxi and a personal chauffeur are the same because both are cars. The interface is the same; the contract is not.</p>
@@ -2527,6 +2624,7 @@ def measure_recommendation_satisfaction(ndcg_at_10: float) -&gt; str:
     return &quot;needs improvement — every wrong item erodes trust cumulatively&quot;
 </code></pre>
 <p>Getting search wrong loses a query. Getting recommendation wrong loses a user.</p>
+<p>Herlocker et al. established the standard evaluation framework for collaborative filtering, noting that recommendation metrics must capture user satisfaction in ways that precision and recall alone cannot [6].</p>
 <h2 id="the-library-analogy">The Library Analogy</h2>
 <p>Three scenarios make the distinction concrete:</p>
 <ol>
@@ -2568,7 +2666,7 @@ def measure_recommendation_satisfaction(ndcg_at_10: float) -&gt; str:
 <p><strong>The three traps explain why engineers <em>do</em> conflate search and recommendation.</strong> But what incentives — organizational, metric, career — make them <em>want</em> to? Is unification sometimes a political choice rather than a technical one?</p>
 </li>
 <li>
-<p><strong>Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.</strong> Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time?</p>
+<p><strong>Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.</strong> Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time? Jannach et al.'s introductory textbook on recommender systems reinforces the distinction structurally: it treats the search/recommendation boundary as a design choice, not a convergence point — search is about satisfying a stated need, while recommendation is about anticipating an unstated one [8].</p>
 </li>
 </ol>
 <p><strong>References</strong></p>
@@ -2584,6 +2682,24 @@ def measure_recommendation_satisfaction(ndcg_at_10: float) -&gt; str:
 </li>
 <li>
 <p>Nicholas J. Belkin and W. Bruce Croft. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138861"><em>Information Filtering and Information Retrieval: Two Sides of the Same Coin?</em></a>. Communications of the ACM, 35(12): 29–38, 1992.</p>
+</li>
+<li>
+<p>Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. <a target="_blank" rel="noopener noreferrer" href="https://nlp.stanford.edu/IR-book/"><em>Introduction to Information Retrieval</em></a>. Cambridge University Press, 2008. The canonical IR textbook covering Boolean retrieval, vector space models, probabilistic retrieval, and evaluation.</p>
+</li>
+<li>
+<p>Jonathan L. Herlocker, Joseph A. Konstan, Loren G. Terveen, and John T. Riedl. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/963770.963772"><em>Evaluating Collaborative Filtering Recommender Systems</em></a>. ACM Transactions on Information Systems, 22(1): 5–53, 2004. The definitive paper on recommendation evaluation metrics.</p>
+</li>
+<li>
+<p>Carlos A. Gomez-Uribe and Neil Hunt. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2843948"><em>The Netflix Recommender System: Algorithms, Business Value, and Innovation</em></a>. ACM Transactions on Management Information Systems, 6(4): 1–19, 2015. Netflix's own description of their recommendation architecture and business impact.</p>
+</li>
+<li>
+<p>Dietmar Jannach, Markus Zanker, Alexander Felfernig, and Gerhard Friedrich. <a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/core/books/recommender-systems/"><em>Recommender Systems: An Introduction</em></a>. Cambridge University Press, 2010. A comprehensive introductory textbook.</p>
+</li>
+<li>
+<p>W. Bruce Croft, Donald Metzler, and Trevor Strohman. <a target="_blank" rel="noopener noreferrer" href="https://www.search-engines-book.com/"><em>Search Engines: Information Retrieval in Practice</em></a>. Pearson, 2010. A practical textbook covering search engine architecture, indexing, and ranking.</p>
+</li>
+<li>
+<p>Tefko Saracevic. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1002/asi.20482"><em>Relevance: A Review of the Literature and a Framework for Thinking on the Notion in Information Science, Part II</em></a>. Journal of the American Society for Information Science and Technology, 58(13): 1915–1933, 2007. A comprehensive review of relevance — the central concept in information retrieval.</p>
 </li>
 </ol>
 <hr>
@@ -11580,11 +11696,11 @@ type Logger interface {
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
               <a href="#search-recommendation-practical-architecture">&#34;S&amp;R: How Should You Architect a System That Handles Both Search and Recommendation?&#34;</a>
-              <a href="#search-recommendation-netflix">&#34;S&amp;R: What Happens When You Build Search and Recommendation at the Same Company?&#34;</a>
-              <a href="#search-recommendation-industry-boundary">&#34;S&amp;R: Where Should You Draw the Line Between Search and Recommendation?&#34;</a>
               <a href="#search-recommendation-llms">&#34;S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?&#34;</a>
-              <a href="#search-recommendation-search-techniques">&#34;S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things?&#34;</a>
+              <a href="#search-recommendation-industry-boundary">&#34;S&amp;R: Where Should You Draw the Line Between Search and Recommendation?&#34;</a>
               <a href="#search-recommendation-recommendation-techniques">&#34;S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?&#34;</a>
+              <a href="#search-recommendation-netflix">&#34;S&amp;R: What Happens When You Build Search and Recommendation at the Same Company?&#34;</a>
+              <a href="#search-recommendation-search-techniques">&#34;S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things?&#34;</a>
               <a href="#search-recommendation-fundamental-distinction">&#34;S&amp;R: Why Do We Keep Confusing Search with Recommendation?&#34;</a>
               <a href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a>
               <a href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a>

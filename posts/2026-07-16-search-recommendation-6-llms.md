@@ -9,7 +9,11 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. How LLMs reshape both fields — differently — and why the fundamental distinction survives the generative era.*
 
-The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
+The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT [7]. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.
 
 Two recent surveys capture the scope. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, and reader [1]. Li et al. (2024) provide the cross-cutting view — framing both search and recommendation as instances of generative retrieval and identifying where they converge and where they diverge [2].
 
@@ -76,7 +80,7 @@ def rag_search(query: str, retriever, llm, k: int = 5) -> str:
 # without an explicit retrieval index. Still experimental.
 ```
 
-The core search user need — "I have a question, find me the answer" — aligns naturally with LLM capabilities. The LLM augments retrieval at every stage without replacing it.
+The core search user need — "I have a question, find me the answer" — aligns naturally with LLM capabilities. The LLM augments retrieval at every stage without replacing it [6]. This paradigm extends the text-to-text framework [10] that first showed how retrieval tasks could be unified under a generative umbrella.
 
 ## How LLMs Transform Recommendation
 
@@ -219,6 +223,16 @@ LLMs are infrastructure. They don't eliminate the distinction between search and
 4. Chi Zhang et al. [*ARAG: Agentic Retrieval Augmented Generation for Personalized Recommendation*](https://arxiv.org/abs/2506.21931). SIGIR 2025.
 
 5. Zhuang Liu et al. [*A Comprehensive Survey on LLM-Powered Recommender Systems*](https://ieeexplore.ieee.org/abstract/document/11129085). IEEE Access, 2024.
+
+6. Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, Sebastian Riedel, and Douwe Kiela. [*Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401). NeurIPS 2020.
+
+7. Tom Brown et al. [*Language Models are Few-Shot Learners*](https://arxiv.org/abs/2005.14165). NeurIPS 2020. The GPT-3 paper.
+
+8. Sébastien Bubeck et al. [*Sparks of Artificial General Intelligence: Early Experiments with GPT-4*](https://arxiv.org/abs/2303.12712). arXiv, 2023.
+
+9. Hugo Touvron et al. [*LLaMA: Open and Efficient Foundation Language Models*](https://arxiv.org/abs/2302.13971). arXiv, 2023.
+
+10. Colin Raffel et al. [*Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer*](https://arxiv.org/abs/1910.10683). JMLR, 2020.
 
 ---
 

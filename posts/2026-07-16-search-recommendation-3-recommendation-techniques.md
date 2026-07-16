@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. We trace thirty years of recommender system techniques — from GroupLens to Foundation Models — with working Python code for each paradigm.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.
 
 Wu et al. (2023), in their comprehensive survey of neural recommendation models published in IEEE TKDE, organize the field into two broad families: models that use only interaction data (collaborative filtering) and models that incorporate side information (content, context, sequences) [1]. The progression from one to the other mirrors the search field's own evolution — from impoverished signals to rich, multi-modal representations. But the starting point is different. Search began with text and added behavior. Recommendation began with behavior and added text.
@@ -235,11 +239,15 @@ class MatrixFactorization:
 
 Yehuda Koren's **SVD++** extended this by incorporating implicit feedback — what you browsed, not just what you rated — and achieved the winning RMSE of 0.8556. The Netflix Prize established matrix factorization as the dominant paradigm for nearly a decade.
 
+Rendle's **Factorization Machines** generalized the matrix factorization idea to arbitrary feature vectors, modeling all pairwise interactions through a factorized parametrization — the same mechanism that powers MF but applicable to any set of sparse categorical features [8].
+
 It also revealed the field's central tension: **the metric that drove the competition (RMSE on withheld ratings) doesn't actually measure whether users are satisfied**. Reed Hastings articulated this later: "When we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make." Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences over revealed preferences fails.
 
 ## The Deep Learning Era — YouTube and the Multi-Stage Pipeline (2016–2020)
 
 YouTube's 2016 paper marked deep learning's entry into production recommendation. The architecture was two-stage:
+
+He et al.'s **Neural Collaborative Filtering** (NCF) showed that replacing the inner product in matrix factorization with a learned multi-layer perceptron could capture non-linear user–item interactions, unifying collaborative filtering with deep learning [7].
 
 ```python
 class YouTubeCandidateGenerator(torch.nn.Module):
@@ -344,6 +352,14 @@ By 2020, the search field had always been multi-stage. Recommendation caught up 
 5. Yehuda Koren, Robert Bell, and Chris Volinsky. [*Matrix Factorization Techniques for Recommender Systems*](https://doi.org/10.1109/MC.2009.263). IEEE Computer, 42(8): 30–37, 2009.
 
 6. Paul Covington, Jay Adams, and Emre Sargin. [*Deep Neural Networks for YouTube Recommendations*](https://dl.acm.org/doi/10.1145/2959100.2959190). RecSys 2016.
+
+7. Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu, and Tat-Seng Chua. [*Neural Collaborative Filtering*](https://doi.org/10.1145/3038912.3052569). WWW 2017.
+
+8. Steffen Rendle. [*Factorization Machines*](https://doi.org/10.1109/ICDM.2010.127). ICDM 2010.
+
+9. James Bennett and Stan Lanning. [*The Netflix Prize*](https://www.cs.uic.edu/~liub/KDD-cup-2007/NetflixPrize-description.pdf). KDD Cup Workshop, 2007.
+
+10. Gediminas Adomavicius and Alexander Tuzhilin. [*Toward the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions*](https://doi.org/10.1109/TKDE.2005.99). IEEE TKDE, 17(6): 734–749, 2005.
 
 ---
 

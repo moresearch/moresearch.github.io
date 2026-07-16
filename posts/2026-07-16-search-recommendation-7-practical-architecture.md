@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. Practical architecture guidance for building systems that handle both search and recommendation — correctly.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 This series has traced the fifty-year history of search, the thirty-year history of recommendation, Netflix's dual-stack architecture, how four major companies handle the boundary, and how LLMs transform both fields. This post translates that history into practical guidance.
 
 ## The Distinction in Everyday Life
@@ -64,7 +68,7 @@ class TaskAwareModel(torch.nn.Module):
 
 **2. Don't let personalization overpower query relevance.**
 
-Netflix learned this the hard way with UniCoRn. They added personalization to search incrementally, with explicit guardrails. The fully personalized model improved both tasks — but only after careful tuning to ensure search results remain *relevant to the query* even as they benefit from personalization signals.
+Netflix learned this the hard way with UniCoRn. They added personalization to search incrementally, with explicit guardrails. The fully personalized model improved both tasks — but only after careful tuning to ensure search results remain *relevant to the query* even as they benefit from personalization signals. This is a specific instance of a broader principle: model complexity in ML systems incurs a technical debt that compounds silently [5].
 
 ```python
 def safe_personalized_search(query: str, user_profile: dict,
@@ -122,6 +126,8 @@ separate_infrastructure = {
 }
 ```
 
+These infrastructure choices — what to share, what to separate — are foundational decisions in data-intensive system design [7].
+
 **5. LLMs are infrastructure, not a replacement for retrieval.**
 
 The most successful production deployments use LLMs for content understanding, query intent classification, and feature generation *offline*, while keeping online retrieval in purpose-built low-latency systems:
@@ -152,7 +158,7 @@ class HybridLLMRetrievalPipeline:
 
 ## A Reference Architecture
 
-Bringing everything together, here's what a system that handles both search and recommendation looks like in 2026:
+Bringing everything together — inspired by real-world architectures from Netflix and others [6] — here's what a system that handles both search and recommendation looks like in 2026:
 
 ```python
 class SearchAndRecommendationSystem:
@@ -247,6 +253,18 @@ The answer must be yes. Because search competes with ignorance — it helps peop
 3. Yutao Zhu et al. [*Large Language Models for Information Retrieval: A Survey*](https://arxiv.org/abs/2308.07107). ACM TOIS, 2024.
 
 4. Yongqi Li et al. [*A Survey of Generative Search and Recommendation in the Era of Large Language Models*](https://arxiv.org/abs/2404.16924). arXiv:2404.16924, 2024.
+
+5. D. Sculley, Gary Holt, Daniel Golovin, Eugene Davydov, Todd Phillips, Dietmar Ebner, Vinay Chaudhary, Michael Young, Jean-Francois Crespo, and Dan Dennison. [*Machine Learning: The High Interest Credit Card of Technical Debt*](https://research.google/pubs/pub43146/). SE4ML, NeurIPS 2014.
+
+6. Xavier Amatriain and Justin Basilico. [*Recommender Systems in Industry: A Netflix Case Study*](https://doi.org/10.1145/2645710.2645775). RecSys 2014 Tutorial.
+
+7. Martin Kleppmann. [*Designing Data-Intensive Applications*](https://dataintensive.net/). O'Reilly, 2017. The canonical reference on system design for data-intensive applications.
+
+8. Gregor Hohpe and Bobby Woolf. [*Enterprise Integration Patterns*](https://www.enterpriseintegrationpatterns.com/). Addison-Wesley, 2003.
+
+9. Eugene Yan et al. [*Applying ML to Search and Recommendation*](https://eugeneyan.com/writing/applying-ml/). Blog, 2024.
+
+10. Chip Huyen. [*Designing Machine Learning Systems*](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/). O'Reilly, 2022.
 
 ---
 

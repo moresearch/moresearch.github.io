@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. How Spotify, DoorDash, Airbnb, and Pinterest navigate the boundary between search and recommendation in production — with code for each architecture.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.
 
 ## Spotify: Intent-Based Routing with LLMs
@@ -65,7 +69,7 @@ class SpotifyIntentRouter:
 # +91% for new music discovery
 # +25% for broad music searches
 
-# Spotify's Unified Embedding Infrastructure (Voyager):
+# Spotify's Unified Embedding Infrastructure (Voyager) [8]:
 # HNSW-based, 10x faster than Annoy at same recall.
 # Powers both search AND recommendation — shared infrastructure,
 # task-specific usage patterns.
@@ -212,7 +216,7 @@ Airbnb's 2019 follow-up on deep learning documented instructive failures: listin
 
 ## Pinterest: Two-Tower Architectures for Homefeed and Search
 
-Pinterest's two-tower model powers both homefeed and search:
+Pinterest's two-tower model, influenced by the Wide & Deep architecture [9], powers both homefeed and search:
 
 ```python
 class PinterestTwoTower(torch.nn.Module):
@@ -281,6 +285,14 @@ The common pattern: **unification where it reduces cost, separation where it pre
 6. DoorDash Engineering. [*Offline LLMs, Online Personalization: Generating Carousels at DoorDash*](https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/). 2025.
 
 7. Pinterest Engineering. [*Advancements in Embedding-Based Retrieval at Pinterest Homefeed*](https://medium.com/pinterest-engineering/advancements-in-embedding-based-retrieval-at-pinterest-homefeed-176a3c03df64). 2024.
+
+8. Spotify Engineering. [*Introducing Voyager: Spotify's New Nearest-Neighbor Search Library*](https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library). October 2023.
+
+9. Heng-Tze Cheng et al. [*Wide & Deep Learning for Recommender Systems*](https://doi.org/10.1145/2988450.2988454). RecSys 2016.
+
+10. Mihajlo Grbovic et al. [*E-commerce in Your Inbox: Product Recommendations at Scale*](https://doi.org/10.1145/2783258.2788627). KDD 2015.
+
+11. Steffen Rendle, Christoph Freudenthaler, Zeno Gantner, and Lars Schmidt-Thieme. [*BPR: Bayesian Personalized Ranking from Implicit Feedback*](https://doi.org/10.5555/1795114.1795167). UAI 2009.
 
 ---
 

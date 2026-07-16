@@ -9,6 +9,10 @@ series: search-recommendation
 
 *S&R stands for Search & Recommendation. We trace fifty years of information retrieval techniques — from Boolean to BERT — with working Python code for each paradigm.*
 
+**A search problem:** given an explicit query, retrieve and rank items by relevance to that query. The user articulates what they want. The system's job is fidelity to the query.
+
+**A recommendation problem:** given an implicit user profile built from behavior, surface items the user is likely to prefer — without a query. The user may not know what they want. The system's job is to infer it.
+
 Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what "relevance" means.
 
 This part traces fifty years of that evolution with working Python. You'll see how each generation built on the last, what each solved, and what each left unsolved.
@@ -62,7 +66,7 @@ assert idx.search_and(["star", "crossed", "lovers"]) == {1} # finds doc 1
 
 This worked for trained librarians. It failed for everyone else. The **vocabulary mismatch problem** — users describe their needs with different words than authors use — is the fundamental condition of language, not a bug to be fixed. Every subsequent generation of retrieval technology is an attempt to narrow the gap.
 
-Karen Spärck Jones, who invented inverse document frequency (the weighting scheme that would become half of TF-IDF), understood this better than anyone. In a 1999 reflection, she wrote: "Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them." The gap can be narrowed. It cannot be closed.
+Karen Spärck Jones, who invented inverse document frequency (the weighting scheme that would become half of TF-IDF) [10], understood this better than anyone. In a 1999 reflection, she wrote: "Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them." The gap can be narrowed. It cannot be closed.
 
 ## The Vector Space Model — When Documents Became Points in Space (1975)
 
@@ -381,6 +385,8 @@ def production_search_pipeline(query: str, k: int = 10) -> list[Document]:
 
 The comprehensive survey by Hambarde and Proença (2023) organizes this pipeline into two stages — term-based retrieval and semantic retrieval — and catalogs the models available at each level [2]. Their key insight: **modern search is never one model. It's a pipeline where each stage compensates for the limitations of the one before it.**
 
+Manning, Raghavan, and Schütze's textbook remains the canonical reference for the information retrieval fundamentals — inverted indexes, scoring functions, and evaluation methodology — that underpin every stage of this pipeline [7].
+
 This is the critical difference from recommendation. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.
 
 ---
@@ -410,6 +416,14 @@ This is the critical difference from recommendation. Search has always been mult
 5. Sergey Brin and Lawrence Page. [*The Anatomy of a Large-Scale Hypertextual Web Search Engine*](https://doi.org/10.1016/S0169-7552(98)00110-X). Computer Networks and ISDN Systems, 30(1–7): 107–117, 1998.
 
 6. Christopher J.C. Burges. [*From RankNet to LambdaRank to LambdaMART: An Overview*](https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/). Microsoft Research Technical Report MSR-TR-2010-82, 2010.
+
+7. Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. [*Introduction to Information Retrieval*](https://nlp.stanford.edu/IR-book/). Cambridge University Press, 2008.
+
+8. Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. [*Dense Passage Retrieval for Open-Domain Question Answering*](https://doi.org/10.18653/v1/2020.emnlp-main.550). EMNLP 2020.
+
+9. Amit Singhal. [*Modern Information Retrieval: A Brief Overview*](http://singhal.info/ieee2001.pdf). IEEE Data Engineering Bulletin, 24(4): 35–43, 2001.
+
+10. Karen Spärck Jones. [*A Statistical Interpretation of Term Specificity and Its Application in Retrieval*](https://doi.org/10.1108/eb026526). Journal of Documentation, 28(1): 11–21, 1972. The original IDF paper.
 
 ---
 

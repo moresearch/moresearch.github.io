@@ -12702,63 +12702,45 @@ type Logger interface {
 </blockquote>
 </div>
       </article>
-      <article class="post" id="edge-npus-change-the-serving-shape">
+      <article class="post" id="edge-llms-model-shape-and-serving-shape">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-01-29" data-utc="Jan 29, 2026 UTC" aria-label="Jan 29, 2026 UTC" tabindex="0">1769644800</time></p>
-          <h2><a href="#edge-npus-change-the-serving-shape">Edge NPUs Change Serving Shape</a></h2><p class="post-summary">NPU-aware LLM systems need different scheduling instincts, especially around prompt chunking, latency spikes, and device-specific execution paths.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">npu</span><span class="tag">serving</span>
+          <h2><a href="#edge-llms-model-shape-and-serving-shape">&#34;Edge LLMs: Model Shape and Serving Shape Are One Decision&#34;</a></h2><p class="post-summary">On-device inference fails in two separate meetings — the one where a cloud model gets picked for compression, and the one where &#34;the serving layer&#34; is treated as a generic runtime beneath it. Two papers, MobileLLM and Fast On-device LLM Inference with NPUs, are usually read as answers to different questions. They are two halves of the same one — the model&#39;s shape and the serving stack&#39;s shape are co-designed against the same hardware budget, and teams that decide them separately ship the compromises.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">mobile</span><span class="tag">npu</span><span class="tag">architecture</span><span class="tag">serving</span>
           </div>
         </header>
-        <div class="post-body"><p>The edge story gets more interesting once NPUs enter the picture.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> highlights ideas like prompt chunking and hardware-aware scheduling to reduce the ugly parts of latency. That matters because edge serving is rarely just &quot;run the same pipeline on smaller hardware.&quot;</p>
-<p>It is a different scheduling problem.</p>
-<p>Teams building edge stacks should expect device-specific execution strategies, uneven latency profiles, and careful fallbacks. The serving shape changes with the hardware, so the software architecture has to change with it.</p>
-<h2 id="specialized-hardware-changes-software-assumptions">Specialized hardware changes software assumptions</h2>
-<p>When teams first hear &quot;NPU,&quot; it is tempting to translate that into &quot;faster inference&quot; and move on. In practice, specialized acceleration changes the system shape more than the marketing shorthand suggests. Latency can improve, but the path to predictable latency often depends on the runtime making better decisions.</p>
-<p>That is why ideas like prompt chunking matter. They are reminders that scheduling on-device work is not only about raw throughput. It is about smoothing the unpleasant edges of real interaction patterns.</p>
-<h2 id="expect-device-specific-execution-paths">Expect device-specific execution paths</h2>
-<p>An edge stack that ignores device variation usually ends up either fragile or overly conservative. Different hardware profiles push the software toward different execution strategies, and that means the product needs explicit handling for:</p>
+        <div class="post-body"><p>The promise of on-device inference is easy to say and hard to ship. And when it fails to ship, the failure usually traces back to an org-chart artifact: model architecture was decided in one meeting and serving strategy in another, as if the phone will respect the boundary between them. It won't. On a constrained device, the shape of the model and the shape of the serving stack are a single design decision evaluated against a single budget — memory, latency, and thermals.</p>
+<p>Two papers make the halves of this argument, and they're worth reading as one.</p>
+<h2 id="small-models-are-not-shrunk-models">Small models are not shrunk models</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> focuses on the architecture details that matter at the small end: depth, width, and parameter allocation.</p>
+<p>A lot of edge planning still begins with the assumption that the main job is to squeeze an existing large model into a smaller box — quantize it, prune it, distill it, ship it. That instinct is understandable, and it leads to awkward compromises. A model that works well in the cloud carries structural assumptions — wide layers that amortize beautifully across an A100's memory bandwidth, attention patterns that assume KV-cache is cheap — that stop making sense once memory pressure, latency budgets, and thermals become the real boss. MobileLLM's finding that thin-and-deep beats wide-and-shallow at sub-billion scale is exactly the kind of result you never discover by compressing downward; you only find it by designing for the target from the start.</p>
+<p>That is why model shape matters. Depth, width, and parameter allocation are not abstract architecture debates when the target is a phone. They are part of the deployment contract. Sometimes the winning move is not to compress a cloud model at all — it is to start from a shape that was designed for the edge in the first place.</p>
+<h2 id="npus-change-the-serving-problem-not-just-the-speed">NPUs change the serving problem, not just the speed</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> supplies the other half. When teams first hear &quot;NPU,&quot; it is tempting to translate that into &quot;faster inference&quot; and move on. In practice, specialized acceleration changes the system's shape more than the marketing shorthand suggests. Latency can improve, but the path to <em>predictable</em> latency depends on the runtime making better decisions — which is why the paper's ideas like prompt chunking and hardware-aware scheduling matter. Edge serving is rarely &quot;run the same pipeline on smaller hardware.&quot; It is a different scheduling problem.</p>
+<p>An edge stack that ignores device variation ends up either fragile or overly conservative. Different hardware profiles push the software toward different execution strategies, so the product needs explicit handling for:</p>
 <ul>
-<li>uneven latency behavior,</li>
+<li>uneven latency behavior across the device fleet,</li>
 <li>fallback paths when the preferred accelerator path is unavailable,</li>
 <li>request shaping that matches the device instead of an abstract average.</li>
 </ul>
-<p>This is where a lot of &quot;works on my test phone&quot; demos break down. The demo path is often a single happy execution route. The product path needs to survive a fleet.</p>
-<p>The more NPUs matter, the less useful it is to think of serving as a generic layer beneath the model. Hardware-aware serving becomes part of the product architecture itself. That is a healthy shift. It forces teams to design for the hardware they actually have, not the hardware they wish every user owned.</p>
-<p>NPUs are a hardware constraint that changes the software architecture. When the compute substrate changes, the optimal model architecture changes with it. This is the hardware-software co-design problem: the hardware determines what software is efficient, and the software requirements determine what hardware gets built. The feedback loop is the same as any platform evolution — iOS constraints shaped mobile app design, cloud constraints shaped distributed systems design. The NPU is the new constraint. The constraint shapes the solution space. The engineer who understands the constraint makes better design decisions than the engineer who treats the hardware as an abstraction.</p>
-<blockquote>
-<p>A new compute substrate does not just make existing models faster. It changes which models are possible. The NPU is not an accelerator. It is a different kind of brain.</p>
-</blockquote>
-</div>
-      </article>
-      <article class="post" id="edge-llms-live-or-die-by-model-shape">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-01-17" data-utc="Jan 17, 2026 UTC" aria-label="Jan 17, 2026 UTC" tabindex="0">1768608000</time></p>
-          <h2><a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs: Model Shape Matters</a></h2><p class="post-summary">On-device language models are constrained less by hype and more by architecture choices that survive mobile memory, latency, and thermal limits.</p>
-          <div class="tags"><span class="tag">edge-llms</span><span class="tag">mobile</span><span class="tag">architecture</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The promise of on-device inference is easy to say and hard to ship.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> is a useful paper because it focuses on the architecture details that matter at the small end: depth, width, and parameter efficiency.</p>
-<p>The engineering takeaway is that edge deployment is not only about compressing a big cloud model. Sometimes the winning move is to start from a model shape that was designed for the edge in the first place.</p>
-<p>For product teams, that means evaluating model architecture and serving strategy together, not in separate meetings.</p>
-<h2 id="small-models-are-not-just-shrunk-models">Small models are not just shrunk models</h2>
-<p>A lot of edge planning still begins with the assumption that the main job is to squeeze an existing large model into a smaller box. That instinct is understandable, but it can lead teams toward awkward compromises. A model that works well in the cloud may carry structural assumptions that stop making sense once memory pressure, latency budgets, and thermals become the real boss.</p>
-<p>That is why model shape matters. Depth, width, and parameter allocation are not abstract architecture debates when the target is a phone or another constrained device. They are part of the deployment contract.</p>
-<h2 id="architecture-and-serving-are-one-decision">Architecture and serving are one decision</h2>
-<p>On-device systems do not get to treat architecture as an upstream research choice and serving as a downstream platform choice. The two interact immediately.</p>
-<p>A model shape that behaves well under tight resource limits can simplify the rest of the stack:</p>
+<p>This is where &quot;works on my test phone&quot; demos break down. The demo path is a single happy execution route. The product path needs to survive a fleet.</p>
+<h2 id="one-budget-one-decision">One budget, one decision</h2>
+<p>Put the two papers side by side and the shared structure is obvious. MobileLLM says: the hardware budget determines the right model shape. The NPU paper says: the hardware substrate determines the right serving shape. Both are the same claim aimed at different layers — <strong>the constraint shapes the solution space</strong>, and the constraint is the device.</p>
+<p>This is hardware-software co-design, and it runs in a loop: the hardware determines what software is efficient, and the software requirements determine what hardware gets built. Platforms have always worked this way — iOS constraints shaped mobile app design, cloud instance economics shaped distributed systems design. The NPU is just the newest constraint in the oldest loop.</p>
+<p>The practical consequence is that the two decisions cannot be made in sequence, because each is an input to the other:</p>
 <ul>
-<li>fewer ugly runtime compromises,</li>
-<li>less dependence on aggressive fallback behavior,</li>
-<li>more predictable performance across device classes.</li>
+<li>A model shape that behaves well under tight resource limits simplifies the serving layer: fewer ugly runtime compromises, less dependence on aggressive fallback behavior, more predictable performance across device classes.</li>
+<li>A serving strategy that understands the accelerator changes which model shapes are viable: a shape that quantizes cleanly onto the NPU's supported ops beats a nominally better shape that keeps falling back to CPU.</li>
 </ul>
-<p>A bad fit does the opposite. The serving layer ends up compensating for an architecture that was never comfortable on the target hardware.</p>
-<p>That is the practical lesson I keep taking from work like MobileLLM. Edge success is not about forcing a cloud story onto smaller hardware. It is about choosing a model form that respects the hardware from day one. When teams do that, the rest of the product conversation gets much cleaner.</p>
-<p>Model architecture is a constraint on deployment. The model shape — parameter count, layer structure, attention mechanism — determines what hardware can run it. This is the engineering problem of fitting a solution to a resource budget. The same problem appears in embedded systems (fitting firmware to ROM), mobile development (fitting UI to screen), and cloud infrastructure (fitting services to instance types). The constraints are different. The discipline — measure the budget, design within it, test at the boundary — is the same.</p>
-<blockquote>
-<p>Dependency injection is not about making code configurable. It is about making coupling visible. The injector does not reduce coupling. It reveals the coupling that was always there.</p>
-</blockquote>
+<p>A bad fit in either direction makes the other layer compensate. The serving stack papers over an architecture that was never comfortable on the hardware, or the model gets contorted to survive a runtime that was designed for an abstract average device. Either way, the user gets the compromise.</p>
+<p>So the test for an edge effort is not &quot;how small is the model?&quot; or &quot;does it use the NPU?&quot; It is: <strong>are model shape and serving shape being evaluated in the same meeting, against the same measured budget?</strong> Measure the budget, design within it, test at the boundary — the same discipline as fitting firmware to ROM, just with a token stream on top.</p>
+<p>Model choice and serving choice are still only two of the coordinated decisions a real deployment needs — compression, fallback policy, and field observability round out the list, which is the subject of <a target="_blank" rel="noopener noreferrer" href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>. And when the budget itself moves — as <a target="_blank" rel="noopener noreferrer" href="#one-bit-models-may-rewrite-the-edge-budget">1-bit models</a> may move it — both shapes get renegotiated together. That is the point: they were never separate.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>Zechun Liu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> (2024).</li>
+<li>Daliang Xu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> (2024).</li>
+<li>Jiajun Xu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> (2024).</li>
+</ol>
 </div>
       </article>
       <article class="post" id="one-bit-models-may-rewrite-the-edge-budget">
@@ -12950,8 +12932,7 @@ type Logger interface {
               <a href="#go-fits-the-control-plane-of-mobile-llm-products">Go for Mobile LLM Control Planes</a>
               <a href="#go-is-a-natural-control-plane-for-disaggregated-serving">Go for Disaggregated Serving</a>
               <a href="#go-can-keep-structured-llm-runtimes-boring">Go for Structured LLM Runtimes</a>
-              <a href="#edge-npus-change-the-serving-shape">Edge NPUs Change Serving Shape</a>
-              <a href="#edge-llms-live-or-die-by-model-shape">Edge LLMs: Model Shape Matters</a>
+              <a href="#edge-llms-model-shape-and-serving-shape">&#34;Edge LLMs: Model Shape and Serving Shape Are One Decision&#34;</a>
               <a href="#one-bit-models-may-rewrite-the-edge-budget">1-Bit Models: Edge Budgets</a>
             </div>
           </nav>

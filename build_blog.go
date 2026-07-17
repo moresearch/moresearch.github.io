@@ -1013,11 +1013,23 @@ func parseFrontMatter(path, raw string) (map[string]string, string, error) {
 		if !found {
 			return nil, "", fmt.Errorf("%s: invalid front matter line %q", path, line)
 		}
-		meta[strings.TrimSpace(key)] = strings.TrimSpace(value)
+		meta[strings.TrimSpace(key)] = unquote(strings.TrimSpace(value))
 	}
 
 	body := strings.TrimSpace(strings.Join(lines[closing+1:], "\n"))
 	return meta, body, nil
+}
+
+// unquote strips a matching pair of surrounding double or single quotes,
+// so YAML-style quoted values don't render with literal quote marks.
+func unquote(value string) string {
+	if len(value) >= 2 {
+		first, last := value[0], value[len(value)-1]
+		if first == last && (first == '"' || first == '\'') {
+			return value[1 : len(value)-1]
+		}
+	}
+	return value
 }
 
 func renderMarkdown(body string) (template.HTML, error) {

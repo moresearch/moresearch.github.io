@@ -98,53 +98,49 @@ Anthropology gives us cause-effect chains, not prophecies. But the chains are cl
 
 The technology is here. The chains are in motion. The question is whether we recognize what we're trading and which chains we choose to interrupt. Nowhere is this more acute than in software engineering — the discipline that is building the recombination engines while being reshaped by them.
 
-## Open questions for intelligent software engineering
+## Open questions for SWE agents
 
-Software engineering sits at the collision point. It is simultaneously the *producer* of AI recombination technology, the *heaviest user* of it, and the domain where the anthropological stakes are highest — because software, once deployed, recombinatorially shapes every other domain it touches.
+Software engineering sits at the collision point. It is the discipline that builds AI recombination engines, the heaviest user of them, and the domain where the anthropological stakes are highest — because SWE agents don't just assist. They participate. They recombine autonomously, at machine speed, inside systems whose outputs shape every other domain.
 
-Here are the questions that follow directly from the three causal chains, applied to how we build software.
+Here are the questions the anthropologist would ask, applied to the specific case of autonomous software engineering agents.
 
-### Provenance: where did that code come from?
+### The generational drift problem
 
-If AI recombines patterns from a million repositories and produces a function, the function works — but nobody knows which parts came from where. When it breaks, the debugging model is not "trace the logic back to its source" but "ask the model to fix it." This is oral tradition in code form: knowledge transmitted without a written record, drifting with each retelling.
+A SWE agent writes a module. The code works. It is merged. A second agent, months later, is assigned a task in the same codebase. It reads the first agent's code as context, recombines it with the task description, and produces a change. But the first agent's code was already a lossy interpolation — training data patterns recombined into a solution, with no provenance, no design rationale, no record of which fragments were faithfully reproduced and which were creatively synthesized. The second agent recombines that lossy output with something new. Drift compounds.
 
-> **Open question**: What does version control look like when the author is a latent space? Do we need provenance watermarks, training-set lineage in every generated artifact? Or do we accept that software becomes partially *undebuggable by humans* and invest entirely in automated verification?
+> **Open question**: When SWE agents build on each other's output across generations, what is the fidelity decay rate? Does agent-authored code become *agent-unreadable* after N generations — and if so, what breaks first: maintainability, security, or correctness? Do we need fidelity budgets for agent-produced artifacts, enforced before merge, the way we enforce test coverage?
 
-### Team cognition: who understands the system?
+### The monoculture of agents
 
-A team that discusses architecture together builds a shared mental model of the system. That model is not in the code. It's in their heads. It's what lets them make consistent decisions across months and years. When AI generates the design, the team reviews it and approves it. The code is good. But was the shared mental model built? Or did everyone read the output and nod, each with a slightly different picture of how it works?
+If most production codebases are worked on by the same few SWE agent architectures, trained on overlapping corpora, the recombination paths converge not just within a team but industry-wide. An agent encounters a problem and reaches for the same pattern every other agent reached for. The pattern works. It gets propagated into a thousand codebases. Then someone discovers a vulnerability in the pattern, and every codebase patched by the same agent architecture is vulnerable in the same way.
 
-> **Open question**: If architectural decisions are increasingly AI-recombined rather than team-negotiated, does software become unmaintainable over time — not because the code is bad, but because nobody shares a mental model of it? How do you measure *shared understanding* as a quality attribute?
+> **Open question**: How do we measure the *effective diversity* of a SWE agent population? Is the right unit of analysis the model, the prompt, the tool set, the training corpus? If two agents with different brand names share 98% of their training data, they are the same recombiner — and what looks like a diverse agent ecosystem may be a single point of cultural failure.
 
-### Monoculture: are we all building the same thing?
+### Agents that recombine across codebases
 
-If every team prompts the same few models for design ideas, code review feedback, and architectural patterns, the recombination paths converge. The same patterns propagate. The same bugs propagate with them. Software has always had fashion cycles, but those cycles were slow and noisy — ideas spread through blog posts, conference talks, and Hacker News threads over years. AI compresses that cycle to seconds, and the recommendation is always toward the mode of the training distribution.
+The most novel property of SWE agents is that they are not bound to a single project. An agent that works on an open-source library in the morning and an enterprise codebase in the afternoon is a recombination channel between two previously isolated populations of ideas. That's the optimistic story — ideas have sex across organizational boundaries they could never cross before. But it also means an agent that learned a dubious pattern from one codebase can inseminate it into another, and nobody on either team knows it happened.
 
-> **Open question**: How do we detect and resist architectural monoculture when the very tool that accelerates development also homogenizes its outputs? Do we need diversity metrics for the model — entropy sampling, adversarial prompts, deliberate weirdness injection?
+> **Open question**: When agents become inter-organizational recombination vectors, what governance prevents harmful cross-pollination while enabling beneficial cross-pollination? Does every agent need a *provenance manifest* — a log of which codebases it has interacted with and what patterns it may be carrying? Is this an information hygiene problem or a free-speech one?
 
-### The junior engineer problem: how does the ratchet turn?
+### The social bond: teams that stop arguing
 
-Junior engineers learn by reading senior code, getting reviews, and pairing. These are human-to-human recombination events — an experienced mind and a learning mind meeting over an artifact. When AI mediates most of the writing and reviewing, the junior never sees the senior's thought process. They see the output. The ratchet doesn't transmit the *process* — only the artifact. And the artifact, generated by AI, has no process to study.
+Two senior engineers arguing about a module design are not just producing a better architecture. They are calibrating trust, negotiating status, building shared vocabulary, discovering each other's strengths and blind spots. These are the social-bonding functions that Dunbar argued language evolved for. When a SWE agent produces the design overnight and the team reviews it Monday morning, none of that bonding happened. The code may be better. But the team is weaker — and the next decision, the one that requires rapid alignment under pressure, will be slower and worse because the social infrastructure wasn't maintained.
 
-> **Open question**: If the next generation of engineers learns primarily from AI-generated artifacts rather than human-generated ones with visible process, does the ratchet effect break? What does apprenticeship look like when the master is a model?
+> **Open question**: If SWE agents absorb the ambiguity-resolution work that currently functions as team-building, what replaces the bonding? Do we need explicit mechanisms — design debates that are *deliberately* human-only, not because the AI can't contribute but because the arguing is the point? How do you schedule a meeting whose primary output is not a decision but a stronger team?
 
-### Agents as recombiners: who owns the offspring?
+### The apprenticeship collapse
 
-The hardest open question is the one furthest along the causal chain. When software agents — not just coding assistants, but autonomous agents that bid for tasks, select tools, and deploy changes — become participants in the recombination process, they are no longer tools. They are recombiners. They introduce ideas that no human prompted. They mate concepts across codebases they've been given access to. And the human team may not even know the recombination happened until a pull request appears.
+Junior engineers historically learned by reading code written by seniors who were available to explain *why*. Every line was a fossil of a human decision. When SWE agents write the code, there is no why. The model cannot explain its reasoning — it can only generate a post-hoc rationalization that sounds like reasoning. The artifact is orphaned from its design logic. A junior reading agent-authored code is studying a surface, not a process.
 
-> **Open question**: When an autonomous agent recombines ideas from multiple codebases and produces a novel contribution, who owns it? Who is responsible when it breaks? How do you govern a collective brain that includes non-human recombiners operating at machine speed?
+> **Open question**: If the next generation of software engineers learns primarily from agent-authored artifacts, does the ratchet effect break? The agents can produce code — but can they produce *engineers*? What does apprenticeship look like when the artifacts have no author who remembers deciding?
 
 ### The deepest question
 
-The deepest question is not about any one of these. It's about whether the discipline that builds the recombination engines can be the discipline that thinks most clearly about what they do to us. Software engineers are the first humans to experience all three causal chains simultaneously — faster recombination, degraded fidelity, and atrophied social bonding — while being the ones who built the thing that caused them.
+The deepest question is structural. SWE agents are recombiners operating autonomously inside the systems that shape how all other ideas recombine. Code is not neutral infrastructure. The patterns baked into libraries, frameworks, and platforms determine which ideas can meet and which cannot. When the agents writing those patterns are themselves the product of a few latent spaces, the recombination architecture of civilization narrows — not because anyone decided it should, but because nobody decided anything at all.
 
-> **Open question**: Can the discipline that creates the recombination engine also be the discipline that governs it wisely? Or does the engine accelerate past our ability to understand what it's doing to the collective brain — and by the time we notice, the ratchet has already turned backwards?
+> **Open question**: Can the discipline that builds autonomous recombiners also govern them — or does governance require a different kind of mind, one that thinks in causal chains and anthropological timescales rather than latency and throughput? By the time we notice the ratchet turning backwards, the agents will have shipped a thousand commits. What does a *cultural debugger* look like, and who learns to use it?
 
-Anthropology can't answer these questions. It can only tell us the causal chains and the precedent: Tasmania, the printing press, the internet. The rest is ours to run the experiment — in the systems we build, the teams we work in, and the discipline we choose to be.
-
----
-
-*Watch: [Matt Ridley — When Ideas Have Sex](https://www.youtube.com/watch?v=OLHh9E5ilZ4) (TEDGlobal 2010). Key anthropological sources: Joseph Henrich on [demography and cultural complexity](https://doi.org/10.2307/2694246), Michael Tomasello on the [ratchet effect](https://doi.org/10.1016/B978-0-12-407187-2.00001-0), Robert Boyd & Peter Richerson on [dual inheritance theory](https://press.uchicago.edu/ucp/books/book/chicago/C/bo3624024.html), and Robin Dunbar on [language as social bonding](https://doi.org/10.1017/S0140525X00032325).*
+Anthropology can't answer these questions. It can only tell us the causal chains and the precedent: Tasmania, the printing press, the internet. The rest is ours to run the experiment — in the agents we deploy, the codebases they reshape, and the discipline we choose to be.
 
 ---
 

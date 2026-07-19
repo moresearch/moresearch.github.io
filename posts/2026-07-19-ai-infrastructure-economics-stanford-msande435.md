@@ -1,10 +1,19 @@
 ---
-title: "Building AI Factories: What a Stanford Lecture Reveals About Where the Money Goes"
+title: "Building AI Factories: What a Stanford Lecture Reveals"
 date: 2026-07-19
-slug: ai-infrastructure-economics-stanford-msande435
+slug: building-ai-factories-stanford-lecture
 summary: "Stanford MS&E 435's Class #3, featuring Crusoe CEO Chase Lochmiller, lays bare the physical economics of AI: $60M per megawatt, 2.1 GW campuses, and why the semiconductor layer captures 75% of AI revenue."
 tags: ai, infrastructure, economics, data-centers, energy, semiconductors, stanford
 ---
+
+<div style="margin: 0 0 20px;">
+  <a href="https://www.youtube.com/watch?v=sRvrXL83N-c" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.youtube.com/vi/sRvrXL83N-c/maxresdefault.jpg" alt="Stanford MS&E 435: Economics of the AI Supercycle — Class #3 with Chase Lochmiller" style="width:100%;max-width:720px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;display:block;">
+  </a>
+  <p style="margin:8px 0 0;font-size:0.56rem;color:#9ca3af;letter-spacing:0.08em;text-transform:uppercase;">
+    <a href="https://www.youtube.com/watch?v=sRvrXL83N-c" target="_blank" rel="noopener noreferrer" style="color:inherit;">▶ Watch on YouTube</a> — Stanford MS&E 435, Class #3, Spring 2026
+  </p>
+</div>
 
 Apoorv Agrawal's Stanford course MS&E 435 — *Economics of the AI Supercycle* — has been quietly accumulating tens of thousands of views on YouTube. The course's central thesis is that generative AI breaks the traditional software playbook: unlike past tech cycles where value migrated upward to applications, AI's market structure is an **inverted triangle**. Roughly 75% of the ~$350 billion in new AI ecosystem revenue has gone straight to the semiconductor layer. Application margins hover between 0% and 30%.
 

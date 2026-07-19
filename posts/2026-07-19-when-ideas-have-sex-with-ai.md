@@ -91,15 +91,60 @@ This is Tasmania at planetary scale, but inverted: the population is enormous, t
 
 Anthropology gives us cause-effect chains, not prophecies. But the chains are clear:
 
-1. If recombination rate increases while transmission fidelity holds, cultural complexity rises. (This is the optimistic path: AI as recombination catalyst, human curation as fidelity check.)
+1. If recombination rate increases while transmission fidelity holds, cultural complexity rises.
+2. If transmission fidelity degrades across successive AI-mediated generations, cultural complexity plateaus or falls — ideas drift like oral traditions, at machine speed.
+3. If recombination paths converge on a few models, the effective population of the collective brain shrinks regardless of how many humans are connected.
+4. If recombination decouples from human exchange, the social infrastructure of knowledge work atrophies independently of idea quality.
 
-2. If transmission fidelity degrades across successive AI-mediated generations — because each recombination is a lossy interpolation, and the output becomes the input for the next round — cultural complexity plateaus or falls. Ideas drift like oral traditions, but at machine speed.
+The technology is here. The chains are in motion. The question is whether we recognize what we're trading and which chains we choose to interrupt. Nowhere is this more acute than in software engineering — the discipline that is building the recombination engines while being reshaped by them.
 
-3. If recombination paths converge on a few models, the effective population of the collective brain shrinks regardless of how many humans are nominally connected. The ratchet stalls not because people stopped thinking but because the space of possible recombinations collapsed.
+## Open questions for intelligent software engineering
 
-4. If recombination decouples from human exchange, the social infrastructure of knowledge work — trust, reputation, shared understanding — atrophies independently of the quality of the ideas produced. You can have brilliant outputs and a team that can no longer work together.
+Software engineering sits at the collision point. It is simultaneously the *producer* of AI recombination technology, the *heaviest user* of it, and the domain where the anthropological stakes are highest — because software, once deployed, recombinatorially shapes every other domain it touches.
 
-The technology is here. The chains are in motion. The question is not whether generative AI will change how ideas have sex. It already has. The question is whether we recognize what we're trading — and which causal chains we choose to interrupt before they run to completion.
+Here are the questions that follow directly from the three causal chains, applied to how we build software.
+
+### Provenance: where did that code come from?
+
+If AI recombines patterns from a million repositories and produces a function, the function works — but nobody knows which parts came from where. When it breaks, the debugging model is not "trace the logic back to its source" but "ask the model to fix it." This is oral tradition in code form: knowledge transmitted without a written record, drifting with each retelling.
+
+> **Open question**: What does version control look like when the author is a latent space? Do we need provenance watermarks, training-set lineage in every generated artifact? Or do we accept that software becomes partially *undebuggable by humans* and invest entirely in automated verification?
+
+### Team cognition: who understands the system?
+
+A team that discusses architecture together builds a shared mental model of the system. That model is not in the code. It's in their heads. It's what lets them make consistent decisions across months and years. When AI generates the design, the team reviews it and approves it. The code is good. But was the shared mental model built? Or did everyone read the output and nod, each with a slightly different picture of how it works?
+
+> **Open question**: If architectural decisions are increasingly AI-recombined rather than team-negotiated, does software become unmaintainable over time — not because the code is bad, but because nobody shares a mental model of it? How do you measure *shared understanding* as a quality attribute?
+
+### Monoculture: are we all building the same thing?
+
+If every team prompts the same few models for design ideas, code review feedback, and architectural patterns, the recombination paths converge. The same patterns propagate. The same bugs propagate with them. Software has always had fashion cycles, but those cycles were slow and noisy — ideas spread through blog posts, conference talks, and Hacker News threads over years. AI compresses that cycle to seconds, and the recommendation is always toward the mode of the training distribution.
+
+> **Open question**: How do we detect and resist architectural monoculture when the very tool that accelerates development also homogenizes its outputs? Do we need diversity metrics for the model — entropy sampling, adversarial prompts, deliberate weirdness injection?
+
+### The junior engineer problem: how does the ratchet turn?
+
+Junior engineers learn by reading senior code, getting reviews, and pairing. These are human-to-human recombination events — an experienced mind and a learning mind meeting over an artifact. When AI mediates most of the writing and reviewing, the junior never sees the senior's thought process. They see the output. The ratchet doesn't transmit the *process* — only the artifact. And the artifact, generated by AI, has no process to study.
+
+> **Open question**: If the next generation of engineers learns primarily from AI-generated artifacts rather than human-generated ones with visible process, does the ratchet effect break? What does apprenticeship look like when the master is a model?
+
+### Agents as recombiners: who owns the offspring?
+
+The hardest open question is the one furthest along the causal chain. When software agents — not just coding assistants, but autonomous agents that bid for tasks, select tools, and deploy changes — become participants in the recombination process, they are no longer tools. They are recombiners. They introduce ideas that no human prompted. They mate concepts across codebases they've been given access to. And the human team may not even know the recombination happened until a pull request appears.
+
+> **Open question**: When an autonomous agent recombines ideas from multiple codebases and produces a novel contribution, who owns it? Who is responsible when it breaks? How do you govern a collective brain that includes non-human recombiners operating at machine speed?
+
+### The deepest question
+
+The deepest question is not about any one of these. It's about whether the discipline that builds the recombination engines can be the discipline that thinks most clearly about what they do to us. Software engineers are the first humans to experience all three causal chains simultaneously — faster recombination, degraded fidelity, and atrophied social bonding — while being the ones who built the thing that caused them.
+
+> **Open question**: Can the discipline that creates the recombination engine also be the discipline that governs it wisely? Or does the engine accelerate past our ability to understand what it's doing to the collective brain — and by the time we notice, the ratchet has already turned backwards?
+
+Anthropology can't answer these questions. It can only tell us the causal chains and the precedent: Tasmania, the printing press, the internet. The rest is ours to run the experiment — in the systems we build, the teams we work in, and the discipline we choose to be.
+
+---
+
+*Watch: [Matt Ridley — When Ideas Have Sex](https://www.youtube.com/watch?v=OLHh9E5ilZ4) (TEDGlobal 2010). Key anthropological sources: Joseph Henrich on [demography and cultural complexity](https://doi.org/10.2307/2694246), Michael Tomasello on the [ratchet effect](https://doi.org/10.1016/B978-0-12-407187-2.00001-0), Robert Boyd & Peter Richerson on [dual inheritance theory](https://press.uchicago.edu/ucp/books/book/chicago/C/bo3624024.html), and Robin Dunbar on [language as social bonding](https://doi.org/10.1017/S0140525X00032325).*
 
 ---
 

@@ -702,6 +702,42 @@
 <p>The deepest thing the 33-wins observation reveals is that the real world is mercifully <em>not</em> a single-elimination tournament. It is not even a tournament. It is a complex, overlapping, multi-dimensional set of partial competitions in which most people can succeed in some niche without eliminating anyone else.</p>
 <p>You don't need to beat everyone. You need to find the 0.001% of the world for whom what you do is exactly what they need. That's a matching problem, not a tournament. And matching problems scale with surface area, not elimination rounds.</p>
 <p>The 33-wins factoid is beautiful because it's terrifying: one loss and you're done, and there are 33 chances to lose. But the terror is the point. It makes you grateful that the world is not a bracket. And it makes you suspicious of any system that tries to build one.</p>
+<h2 id="open-questions-for-engineering-ai-agents">Open questions for engineering AI agents</h2>
+<p>The 33-wins observation isn't just a factoid about people. It's a structural insight about any system that selects through sequential binary filters. AI agent engineering runs on exactly these filters — benchmarks, evaluations, routing decisions, training stages. Here's what the tournament structure implies for how we build agents.</p>
+<h3 id="are-our-benchmarks-selecting-for-the-wrong-thing">Are our benchmarks selecting for the wrong thing?</h3>
+<p>Every major agent benchmark is a 33-wins structure in miniature. SWE-bench, MMLU, HumanEval — each is a set of tasks where the agent passes or fails, and the aggregate score determines the ranking. An agent that is superhuman at 90% of tasks and catastrophic on 10% loses to an agent that is above-average on all of them. The tournament selects for breadth, not depth. It selects for <em>survivability</em>, not excellence.</p>
+<blockquote>
+<p><strong>Open question</strong>: If benchmarks reward the generalist over the specialist, are we accidentally engineering agents that are mediocre at everything and excellent at nothing? How do you design an eval that rewards both breadth <em>and</em> depth — that distinguishes between the agent that is consistently above-average and the agent that is transformative in specific domains?</p>
+</blockquote>
+<h3 id="the-routing-tournament">The routing tournament</h3>
+<p>When you deploy a fleet of specialized agents behind a router — each agent trained on a different language, framework, or task type — the router is running a tournament. For each incoming task, it selects one agent. The agent that gets selected wins that round. Over thousands of tasks, the agents that survive are the ones the router keeps picking.</p>
+<p>But the router's selection is based on a learned mapping from task description to agent identity. If the router is trained on historical performance data, it develops preferences. It learns that Agent A &quot;usually&quot; handles database tasks well and routes all database tasks to Agent A, even when Agent B would have been better for this specific task. The router becomes a bracket that eliminates agents not because they're worse but because they never got the matchup.</p>
+<blockquote>
+<p><strong>Open question</strong>: How do you design a router that doesn't degenerate into a tournament bracket — that preserves the option value of the full agent fleet rather than narrowing the effective population with each routing decision? Is the answer random exploration, adversarial routing, or something else?</p>
+</blockquote>
+<h3 id="training-as-successive-elimination">Training as successive elimination</h3>
+<p>Every stage of training an AI agent is a filter. Pretraining selects for next-token prediction. Instruction tuning selects for instruction-following. RLHF selects for human preference satisfaction. Safety tuning selects for refusal boundaries. Each stage eliminates behaviors that passed the previous stage. The agent that survives all stages is not the optimal agent on any single metric — it is the agent that was <em>good enough across all filters in sequence</em>.</p>
+<p>This means the final agent's behavior is path-dependent. Change the order of the filters and you get a different agent. Add a new filter late in the pipeline and you eliminate behaviors that the earlier filters selected for. The pipeline is a tournament bracket in time: 33 rounds of filtering, and the noise in each round compounds.</p>
+<blockquote>
+<p><strong>Open question</strong>: If training is a sequential elimination process, how do we measure what was lost at each stage? Can we design training pipelines that are non-eliminative — that preserve behaviors rather than filtering them out — so that the final agent retains capabilities that were present at intermediate stages but later &quot;selected against&quot;?</p>
+</blockquote>
+<h3 id="the-ensemble-of-one-problem">The ensemble-of-one problem</h3>
+<p>For any given engineering problem, there are approximately 8 billion possible agent configurations — model × prompt × tool set × temperature × context window × few-shot examples. Nobody exhaustively searches this space. We sample. We run ablation studies. We pick the configuration that worked best on the validation set.</p>
+<p>But the validation set is a tournament. Each configuration wins or loses on each validation example. The configuration that emerges as &quot;best&quot; is the one that survived the most filter rounds. It is not necessarily the configuration that would perform best in deployment. It is the configuration that was most survivable on the specific sample of tasks we happened to test.</p>
+<blockquote>
+<p><strong>Open question</strong>: When selecting among agent configurations, how do we distinguish between a configuration that is genuinely better and a configuration that just got lucky across the validation samples? What statistical corrections turn a tournament ranking into a reliable signal?</p>
+</blockquote>
+<h3 id="the-generalist-agent-thesis">The generalist agent thesis</h3>
+<p>The deepest engineering question follows directly from the 33-wins structure. If tournament selection favors the generalist — the agent that is good enough across the widest range of tasks — then the logical endpoint is a single generalist agent that handles everything adequately. But in deployment, users don't need adequate across everything. They need excellent in their specific domain.</p>
+<blockquote>
+<p><strong>Open question</strong>: Is the generalist agent the right target, or is the tournament structure of our evaluations misleading us into building generalists when the world needs specialists? What does an agent ecosystem look like that rewards both — generalist routers and specialist executors — and how do you evaluate the system rather than any single agent within it?</p>
+</blockquote>
+<h3 id="the-real-deployment-is-not-a-bracket">The real deployment is not a bracket</h3>
+<p>The most important implication of the 33-wins observation for agent engineering is that deployment is mercifully not a tournament. An agent doesn't need to beat all other agents on all tasks. It needs to be the right agent for the right task, routed correctly, with fallbacks when it fails. That's a matching problem, not an elimination problem.</p>
+<p>But most of our evaluation infrastructure is built as a bracket. We rank. We filter. We eliminate. The structure of our tools shapes the agents we build — and the agents we build shape the structure of what we think is possible.</p>
+<blockquote>
+<p><strong>Open question</strong>: What would agent evaluation look like if it were designed as a matching problem rather than a tournament? How do you measure <em>complementarity</em> — the value an agent adds not by beating others but by covering their blind spots? What does a leaderboard look like when the goal is not to find the single best agent but to compose the best fleet?</p>
+</blockquote>
 </div>
       </article>
       <article class="post" id="when-ideas-have-sex-with-ai">

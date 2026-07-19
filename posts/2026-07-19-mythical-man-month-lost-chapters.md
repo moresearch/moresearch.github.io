@@ -98,6 +98,50 @@ Every technology cycle since 1986 has been a demonstration that Brooks was right
 
 ---
 
+## The Enterprise and Government Expansion Pack
+
+Everything Brooks observed is true in startups. In enterprise and government, it is true with a multiplier. The multiplier is *procurement*.
+
+### Brooks' Law with an RFP
+
+Adding manpower to a late government project requires a Request for Proposal. The RFP must specify the qualifications of the manpower to be added. It must be reviewed by legal. It must be posted for a minimum of 45 days. Responses are evaluated by a panel. The panel selects a vendor. The losing vendor protests the award. The protest is reviewed. The protest is denied. The vendor is onboarded. Eighteen months have passed. The project is now eighteen months later. The vendor provides manpower. The manpower consists of recent graduates who were hired by the vendor specifically for this contract and who have never seen the codebase. Each new person must be brought up to speed. There is no one available to bring them up to speed because all existing personnel have been reassigned to write the RFP for the next contract. The new people learn the codebase by reading the documentation, which was written by the previous vendor, which went out of business in 2019.
+
+> In government, Brooks' Law is not a law. It is the opening paragraph of the acquisition strategy.
+
+### The Mythical Fiscal Year
+
+In enterprise, the man-month is not merely mythical. It is budgeted. The budget was set eighteen months ago by a VP who has since moved to a different division. The man-months allocated to your project are for headcount, not for the specific people you actually need. You need a database administrator. The budget gives you three junior frontend developers. You cannot convert three junior frontend developers into one database administrator. This is called *workforce planning*. The three frontend developers arrive. There is no frontend for them to work on because the database schema hasn't been designed, because you don't have a database administrator. The frontend developers spend six months building a component library. The component library is excellent. The project is cancelled in the next fiscal year. The component library is orphaned. Three hundred Button variants survive in the repository. None of them will ever be clicked.
+
+### The Second-System Effect, Procured
+
+The government's first system was built between 1987 and 1992 by a defense contractor that has since been acquired four times. The source code exists on a tape drive in a warehouse in Herndon, Virginia. Nobody knows which warehouse. The original developers are dead, retired, or working at Palantir. The system runs on a mainframe that IBM no longer supports. It processes $3 billion in transactions annually. It cannot be turned off.
+
+The second system is being built by a different contractor. The contractor was selected through a competitive bidding process that awarded the contract to the lowest bidder. The lowest bidder's proposal was 4,000 pages long and promised to deliver the system in 36 months for $47 million. The project is currently in month 72 and has consumed $210 million. The system does not work. The contractor explains that the requirements have changed. The requirements have not changed. The requirements are the same requirements from 1987, which were reasonable then and are still reasonable now. The contractor has discovered that fulfilling them is harder than the proposal suggested. This discovery was made in month 6 and communicated to no one.
+
+The government cannot cancel the second system because canceling it would require admitting that $210 million produced nothing. This admission would require a congressional hearing. The hearing would produce a report. The report would recommend that future projects follow the lessons of *The Mythical Man-Month*, which everyone in the room has read, and which did not prevent any of this.
+
+> In enterprise, the second-system effect is a mistake. In government, it is a line item.
+
+### Communication Overhead with Clearance Levels
+
+Brooks observed that communication overhead grows as *n(n−1)/2* with team size. He did not account for security clearances.
+
+In a government project, the communication graph is not *n(n−1)/2*. It is a bipartite graph partitioned by clearance level, routed through a classification officer, with a delay proportional to the sensitivity of the information. Alice has a Secret clearance. Bob has a Top Secret clearance. Alice cannot ask Bob a question about the database schema because Bob knows things about the database schema that are classified at the Top Secret level — specifically, Bob knows that the database schema does not exist. This fact is classified because admitting it would embarrass a GS-15. The GS-15 is protected by the classification system. The project is not.
+
+The *n(n−1)/2* formula also assumes every communication path is available. In enterprise, some paths are blocked by the org chart. You cannot talk to the VP of Infrastructure directly. You must talk to your manager. Your manager talks to their director. Their director talks to the VP's chief of staff. The chief of staff schedules a 30-minute meeting for three weeks from Tuesday. At the meeting, you have 12 minutes to explain the problem because the first 18 minutes were consumed by the VP explaining their vision. The VP's vision does not address your problem. The meeting ends. You are told to follow up with an email. You send the email. The VP does not reply. The communication overhead is infinite. The database schema remains undesigned.
+
+### No Silver Bullet, but There Is an RFP
+
+The government's response to Brooks' "No Silver Bullet" is to issue a Request for Information asking industry whether any silver bullets have been developed since 1986. Industry responds with 47 white papers, each describing a silver bullet. The white papers are 80 pages long and contain the phrase "leveraging AI" an average of 34 times each. The government reads all 47 white papers. A committee is formed to evaluate the responses. The committee produces a 200-page report concluding that silver bullets may exist but further study is needed. A contract is awarded for the further study. The study costs $12 million. It concludes that there is no silver bullet. This conclusion was available in the original 1986 paper, which is in the public domain and can be read for free.
+
+### Conceptual Integrity vs. Section 508
+
+Brooks argued that conceptual integrity requires a single mind, or a small group thinking as one. In government procurement, this is illegal. The system must be built by the lowest bidder, under the supervision of a contracting officer, with requirements specified by a program office, validated by an independent verification and validation contractor, tested by a separate testing contractor, and certified by an authorizing official who has never met any of the above. The system's conceptual integrity is guaranteed by the contract. The contract is 6,000 pages long. It specifies exactly what must be built. It was written by people who have never built software. It is legally binding. It is also wrong, in ways that will be discovered in month 73. By month 73, $210 million has been spent. The contract cannot be changed without a modification, which requires approval from the same people who wrote the original wrong requirements. They approve the modification. The modification takes six months. During those six months, the contractor is legally prohibited from working on the parts of the system affected by the modification, because the modification has not been approved. The contractor instead works on other parts of the system, which will later be affected by a different modification. The system's conceptual integrity is best understood by imagining a cathedral designed by 47 architects, each of whom submitted their design via a separate RFP response, none of whom were permitted to speak to the others, and all of whom were incentivized to promise a cathedral while delivering a parking garage.
+
+> The cathedral is due in Q3. The parking garage is behind schedule. There is a congressional hearing about the parking garage. The hearing recommends more cathedrals.
+
+---
+
 ## What Brooks Actually Meant
 
 Brooks ended *The Mythical Man-Month* with hope. Large software projects are hard, but they are possible, and the craft will improve. He was right about the craft improving. He was wrong about the hope being the takeaway.

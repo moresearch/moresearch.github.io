@@ -6,7 +6,11 @@ summary: "A 350M parameter model, fine-tuned for a single epoch, crushes ChatGPT
 tags: ai, agents, distillation, small-models, tool-calling, efficiency
 ---
 
-In March 2026, a team at AWS published a result that should reset how you think about AI agents.
+"Agents aren't magic. They're distillation at scale." — **Andrej Karpathy**
+
+As [@0xMortyx put it](https://x.com/0xMortyx/status/2078468804276019504): 99.99% of your LLM's capacity is wasted on garbage data it never needed. **Small model + right tools + closed loop = terrifying capability.**
+
+In March 2026, a team at AWS proved the formula with numbers.
 
 They took `facebook/opt-350m` — a 350-million-parameter model from 2022, smaller than what you can run on a laptop — and fine-tuned it on ToolBench for a single epoch. One pass through the data. Then they ran it against the standard agentic tool-calling benchmark.
 
@@ -61,7 +65,7 @@ This is the dynamic that turns a 350M parameter curiosity into a production syst
 
 > The closed loop is the moat, not the model. Once the loop is running, switching to a different model is expensive not because the model is irreplaceable but because the loop has accumulated months of self-generated training data that the replacement model hasn't seen.
 
-## Small model + right tools = terrifying capability
+## Small model + right tools + closed loop = terrifying capability
 
 The AWS paper is not an isolated result. It's part of a pattern that has been building for two years.
 
@@ -81,4 +85,4 @@ The AWS team proved that 350 million parameters is enough. Your tool-calling tas
 
 ---
 
-*Paper: P. Jhandi, O. Kazi, S. Subramanian, N. Sendas — [Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning](https://arxiv.org/abs/2512.15943) (AAAI 2026 Workshop on Agentic AI Benchmarks and Applications for Enterprise Tasks).*
+*Paper: P. Jhandi, O. Kazi, S. Subramanian, N. Sendas — [Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning](https://arxiv.org/abs/2512.15943) (AAAI 2026 Workshop on Agentic AI Benchmarks and Applications for Enterprise Tasks). Quote via [@0xMortyx](https://x.com/0xMortyx/status/2078468804276019504), citing Andrej Karpathy.*

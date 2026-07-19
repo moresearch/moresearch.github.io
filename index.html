@@ -671,7 +671,9 @@
           <div class="tags"><span class="tag">ai</span><span class="tag">agents</span><span class="tag">distillation</span><span class="tag">small-models</span><span class="tag">tool-calling</span><span class="tag">efficiency</span>
           </div>
         </header>
-        <div class="post-body"><p>In March 2026, a team at AWS published a result that should reset how you think about AI agents.</p>
+        <div class="post-body"><p>&quot;Agents aren't magic. They're distillation at scale.&quot; — <strong>Andrej Karpathy</strong></p>
+<p>As <a target="_blank" rel="noopener noreferrer" href="https://x.com/0xMortyx/status/2078468804276019504">@0xMortyx put it</a>: 99.99% of your LLM's capacity is wasted on garbage data it never needed. <strong>Small model + right tools + closed loop = terrifying capability.</strong></p>
+<p>In March 2026, a team at AWS proved the formula with numbers.</p>
 <p>They took <code>facebook/opt-350m</code> — a 350-million-parameter model from 2022, smaller than what you can run on a laptop — and fine-tuned it on ToolBench for a single epoch. One pass through the data. Then they ran it against the standard agentic tool-calling benchmark.</p>
 <p>The results:</p>
 <table>
@@ -730,7 +732,7 @@ Round 3: human examples + even more self-generated trajectories → ?</p>
 <blockquote>
 <p>The closed loop is the moat, not the model. Once the loop is running, switching to a different model is expensive not because the model is irreplaceable but because the loop has accumulated months of self-generated training data that the replacement model hasn't seen.</p>
 </blockquote>
-<h2 id="small-model--right-tools--terrifying-capability">Small model + right tools = terrifying capability</h2>
+<h2 id="small-model--right-tools--closed-loop--terrifying-capability">Small model + right tools + closed loop = terrifying capability</h2>
 <p>The AWS paper is not an isolated result. It's part of a pattern that has been building for two years.</p>
 <p>AgentSymbiotic gets an 8B LLaMA to 48.5% on WebArena, approaching Claude-3.5's 52.1%. SCoRe uses a 7B student that matches a 72B teacher across 12 benchmarks — by having the student generate trajectories, the teacher correct only the earliest error, and RL close the gap. Every one of these results has the same shape: small model, targeted training, closed-loop refinement. The large model is the bootstrapping mechanism, not the destination.</p>
 <p>The practical implication is uncomfortable for anyone who has bet on scale. If a 350M model can handle 77% of tool-calling tasks, and a 7B model can handle 90%, and those models cost 1/1000th as much to run as a frontier model — why is the frontier model handling routine API calls? The economics don't just favor the small model. They make the large model look like a rounding error.</p>
@@ -742,7 +744,7 @@ Round 3: human examples + even more self-generated trajectories → ?</p>
 <p>Start with the smallest model that can absorb the pattern. Fine-tune it on high-quality task-specific examples. Deploy it. Log its successes and failures. Feed the successes back into the training set. Let the closed loop do the work. If you need a larger model, use it only as a judge — to evaluate the small model's outputs, to correct its failures, to generate the next round of training data. The large model is the teacher. The small model is the worker. The loop is the product.</p>
 <p>The AWS team proved that 350 million parameters is enough. Your tool-calling task is not harder than ToolBench. Your model is almost certainly too large.</p>
 <hr>
-<p><em>Paper: P. Jhandi, O. Kazi, S. Subramanian, N. Sendas — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2512.15943">Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning</a> (AAAI 2026 Workshop on Agentic AI Benchmarks and Applications for Enterprise Tasks).</em></p>
+<p><em>Paper: P. Jhandi, O. Kazi, S. Subramanian, N. Sendas — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2512.15943">Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning</a> (AAAI 2026 Workshop on Agentic AI Benchmarks and Applications for Enterprise Tasks). Quote via <a target="_blank" rel="noopener noreferrer" href="https://x.com/0xMortyx/status/2078468804276019504">@0xMortyx</a>, citing Andrej Karpathy.</em></p>
 </div>
       </article>
       <article class="post" id="learning-to-fly-while-flying">

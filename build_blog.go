@@ -21,6 +21,7 @@ const (
 	siteTitle       = "Engineering blog"
 	siteURL         = "https://blog.hackspree.com/"
 	siteDescription = "Single-page writing log built from Markdown sources."
+	pageTitle       = "Engineering blog — hackspree"
 )
 
 var (
@@ -36,8 +37,20 @@ var (
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="{{.MetaDescription}}">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{.SiteURL}}">
   <title>{{.PageTitle}}</title>
+  <meta property="og:title" content="{{.PageTitle}}">
+  <meta property="og:description" content="{{.MetaDescription}}">
+  <meta property="og:url" content="{{.SiteURL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{.SiteURL}}logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{.PageTitle}}">
+  <meta name="twitter:description" content="{{.MetaDescription}}">
+  <meta name="twitter:image" content="{{.SiteURL}}logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -1101,7 +1114,7 @@ func writePage(outputPath string, posts []post) error {
 	data := pageData{
 		MetaDescription: metaDescription,
 		SiteURL:         siteURL,
-		PageTitle:       siteTitle,
+		PageTitle:       pageTitle,
 		SiteTitle:       siteTitle,
 		SiteDescription: siteDescription,
 		LatestDate:      latestDate,

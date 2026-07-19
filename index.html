@@ -4,9 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="The March 2014 article by James Lewis and Martin Fowler is the most-cited document in the history of microservices — and one of the most selectively read. Re-read twelve years later, it is barely an architecture paper at all: six of its nine characteristics are organizational claims, and it ends with four cautions that predicted nearly every microservices failure since. This post walks the article as written — the definition, the nine characteristics as one argument, and the ending everyone skipped.">
+  <meta name="description" content="Stanford MS&amp;E 435&#39;s Class #3, featuring Crusoe CEO Chase Lochmiller, lays bare the physical economics of AI: $60M per megawatt, 2.1 GW campuses, and why the semiconductor layer captures 75% of AI revenue.">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
-  <title>Engineering blog</title>
+  <title>Engineering blog — hackspree</title>
+  <meta property="og:title" content="Engineering blog — hackspree">
+  <meta property="og:description" content="Stanford MS&amp;E 435&#39;s Class #3, featuring Crusoe CEO Chase Lochmiller, lays bare the physical economics of AI: $60M per megawatt, 2.1 GW campuses, and why the semiconductor layer captures 75% of AI revenue.">
+  <meta property="og:url" content="https://blog.hackspree.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Engineering blog — hackspree">
+  <meta name="twitter:description" content="Stanford MS&amp;E 435&#39;s Class #3, featuring Crusoe CEO Chase Lochmiller, lays bare the physical economics of AI: $60M per megawatt, 2.1 GW campuses, and why the semiconductor layer captures 75% of AI revenue.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -652,6 +664,99 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="ai-infrastructure-economics-stanford-msande435">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-19" data-utc="Jul 19, 2026 UTC" aria-label="Jul 19, 2026 UTC" tabindex="0">1784419200</time></p>
+          <h2><a href="#ai-infrastructure-economics-stanford-msande435">Building AI Factories: What a Stanford Lecture Reveals About Where the Money Goes</a></h2><p class="post-summary">Stanford MS&amp;E 435&#39;s Class #3, featuring Crusoe CEO Chase Lochmiller, lays bare the physical economics of AI: $60M per megawatt, 2.1 GW campuses, and why the semiconductor layer captures 75% of AI revenue.</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">infrastructure</span><span class="tag">economics</span><span class="tag">data-centers</span><span class="tag">energy</span><span class="tag">semiconductors</span><span class="tag">stanford</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Apoorv Agrawal's Stanford course MS&amp;E 435 — <em>Economics of the AI Supercycle</em> — has been quietly accumulating tens of thousands of views on YouTube. The course's central thesis is that generative AI breaks the traditional software playbook: unlike past tech cycles where value migrated upward to applications, AI's market structure is an <strong>inverted triangle</strong>. Roughly 75% of the ~$350 billion in new AI ecosystem revenue has gone straight to the semiconductor layer. Application margins hover between 0% and 30%.</p>
+<p>Class #3 of the course, featuring <strong>Chase Lochmiller</strong> — co-founder and CEO of Crusoe — is where the abstraction hits the concrete. Lochmiller is the lead infrastructure developer for Project Stargate's Abilene, Texas site. His lecture is a masterclass in the physical economics of AI: what it actually costs to build the factories that produce tokens, where the bottlenecks live, and why the value chain looks the way it does.</p>
+<h2 id="the-numbers-that-reset-the-conversation">The numbers that reset the conversation</h2>
+<p>Lochmiller shared the per-megawatt economics that underpin the entire AI infrastructure buildout:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Cost per MW</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data center shell + power plant (CAPEX)</td>
+<td>~$20M</td>
+</tr>
+<tr>
+<td>GPU hardware ($30M)</td>
+<td></td>
+</tr>
+<tr>
+<td>InfiniBand/ROCE networking ($4M)</td>
+<td></td>
+</tr>
+<tr>
+<td>CPU + storage ($3M)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>IT hardware subtotal</strong></td>
+<td><strong>~$40M</strong></td>
+</tr>
+<tr>
+<td><strong>Total upfront per MW</strong></td>
+<td><strong>~$60M</strong></td>
+</tr>
+</tbody>
+</table>
+<p>At gigawatt scale, that's roughly <strong>$60 billion</strong> all-in for a single campus.</p>
+<p>The revenue side splits into two tiers. Infrastructure-only leasing (powered shell, cooling, connectivity) generates about $15M per MW annually — a four-year payback. Managed compute clusters, where the operator hosts models and runs API services on top of the hardware, generate about $30M per MW annually — a two-year payback. The difference between those two numbers is the margin that accrues to whoever controls the compute stack rather than just the real estate.</p>
+<blockquote>
+<p>The economic gradient points upward: the more of the stack you operate, the faster your capital comes back. But the capital required to play at the top of the stack is orders of magnitude larger.</p>
+</blockquote>
+<h2 id="project-stargate-what-largest-buildout-in-human-history-looks-like">Project Stargate: what &quot;largest buildout in human history&quot; looks like</h2>
+<p>The Abilene campus is the lecture's concrete anchor. Lochmiller described it as &quot;probably the largest buildout of infrastructure in human history.&quot; The numbers bear that out:</p>
+<ul>
+<li><strong>1.2 to 2.1 gigawatts</strong> of power capacity — roughly equivalent to powering two cities the size of Denver</li>
+<li><strong>1,200 acres</strong>, with eight data center buildings planned</li>
+<li><strong>Up to 400,000 GPUs</strong> (NVIDIA Blackwell GB200 NVL72 racks)</li>
+<li><strong>7,000–9,000 workers on-site daily</strong>, in a city of 120,000</li>
+<li><strong>America's largest private substation</strong></li>
+</ul>
+<p>Crusoe broke ground in June 2024 on land that was, in Lochmiller's words, &quot;dirt and mesquite trees.&quot; The first two buildings started then. The next six started in February 2025. Crusoe beat competitors' fastest bids of 2.5 years by delivering in roughly 12 months.</p>
+<p>The speed matters economically. Every month a gigawatt-scale facility sits idle is tens of millions in capital costs with zero revenue. The bottleneck is not concrete — it's transformers, switchgear, skilled electrical labor, and the permitting timelines that govern grid interconnection. Lochmiller noted ~9,000 workers are needed on-site daily for builds of this scale, with acute shortages of electricians and welders.</p>
+<h2 id="the-water-myth-and-the-cooling-reality">The water myth and the cooling reality</h2>
+<p>One detail Lochmiller addressed directly: each data hall contains about 1 million gallons of cooling water. Headlines routinely convert that number into a consumption figure. But modern facilities use closed-loop systems — once filled, the annual water consumption equals roughly one average household. The water sits in the loop; it doesn't evaporate at scale.</p>
+<blockquote>
+<p>The million-gallon figure is a stock, not a flow. Confusing the two turns an engineering detail into a misleading narrative.</p>
+</blockquote>
+<p>This matters because water access is becoming a siting constraint. Communities that would welcome the tax base of a data center campus may resist on water-use grounds. Getting the facts right changes which sites are viable.</p>
+<h2 id="crusoes-origin-from-wasted-methane-to-ai-infrastructure">Crusoe's origin: from wasted methane to AI infrastructure</h2>
+<p>The most unexpected part of the lecture was Crusoe's origin story. Lochmiller was previously a quant portfolio manager using deep learning for financial trading. Crusoe began by capturing <strong>flared and waste methane from oil fields</strong> — gas that would otherwise be burned off or vented — to power modular, shipping-container data centers. The initial monetization was Bitcoin mining, but the plan was always to pivot to AI infrastructure once the compute demand materialized.</p>
+<p>This origin shaped Crusoe's strategy in two ways. First, it forced the company to think about energy <em>before</em> compute — to site facilities where energy is abundant and cheap rather than where fiber is densest. Second, it forced vertical integration. Crusoe built its own manufacturing arm, <strong>Crusoe Industries</strong>, to produce electrical equipment like power distribution centers in 20 weeks, versus the industry standard of 100 weeks. When you're competing against Eaton and Schneider on timelines, owning your supply chain is not a luxury.</p>
+<h2 id="across-the-meter-the-energy-strategy-that-enables-the-economics">&quot;Across the Meter&quot;: the energy strategy that enables the economics</h2>
+<p>Traditional data center siting follows fiber and network proximity — Northern Virginia, Santa Clara, Ashburn. Crusoe's thesis is the inverse: follow the energy. West Texas has abundant curtailed wind power — turbines that are routinely shut off because transmission lines are congested and power prices go negative.</p>
+<p>Crusoe's &quot;Across the Meter&quot; approach co-locates data centers with wind, solar, battery storage, and natural gas generation. The facility draws power directly from generation assets rather than through congested transmission. Excess power is sold back to the grid. For AI training workloads and most inference, latency is irrelevant — a data center in Abilene serves a model as well as one in Ashburn.</p>
+<p>This strategy exploits a structural inefficiency: the U.S. has abundant generation capacity in places where transmission infrastructure is decades behind. Building a data center at the generation source bypasses the transmission bottleneck entirely. The economic arbitrage is the spread between the locational marginal price of power at the generation node and the price at the load center — which can be multiples.</p>
+<h2 id="the-investment-implications-lochmiller-shared">The investment implications Lochmiller shared</h2>
+<p>Lochmiller offered a candid set of market views:</p>
+<ul>
+<li><strong>Short-term bullish, long-term bearish</strong> on legacy electrical equipment companies (Eaton, Schneider). The current buildout is a demand shock they cannot meet, but the supply response — from Crusoe's own manufacturing arm and competitors — will erode their pricing power over time.</li>
+<li><strong>Bullish on solid-state transformers</strong> and power electronics innovation. The transformer is the least-innovated component in the electrical grid. That changes when a 2.1 GW campus needs transformers that don't exist in standard catalogs.</li>
+<li><strong>Bullish on space-based data centers</strong> as a long-term play: optical interconnectivity, zero permitting, and unlimited solar power. Thermal management in vacuum remains unsolved, but Lochmiller treated it as an engineering problem rather than a science fiction premise.</li>
+</ul>
+<h2 id="why-the-inverted-triangle-persists">Why the inverted triangle persists</h2>
+<p>The lecture makes Agrawal's inverted triangle thesis concrete. Nvidia's 75% gross margins are not a temporary anomaly caused by supply shortage. They are structural: every new AI user burns GPU compute, and the GPU supplier captures the rent. The infrastructure layer — where Crusoe operates — is the next most concentrated. The application layer, where ChatGPT earns roughly $10 per user annually against Alphabet's ~$100, is where the margin compression lives.</p>
+<p>Lochmiller's numbers explain why. At $60M per MW upfront, the capital barrier to entering the infrastructure layer is enormous. Once built, a gigawatt campus has pricing power because the alternative — building another one — takes years and billions. The semiconductor layer has even higher barriers: Nvidia's CUDA moat, the multi-year lead time on advanced packaging capacity at TSMC, the trillion-dollar cumulative R&amp;D investment in the GPU architecture.</p>
+<p>The application layer has none of these defenses. Switching costs between chatbots are near zero. Model quality gaps compress with each release cycle. And the &quot;active work&quot; bottleneck Agrawal identifies — AI tools require users to formulate queries and engage actively, unlike the passive consumption of social feeds — limits organic growth in ways that don't apply to prior platform cycles.</p>
+<h2 id="what-the-lecture-leaves-open">What the lecture leaves open</h2>
+<p>Lochmiller's lecture is deliberately about the physical layer — concrete, steel, copper, silicon, and electrons. It does not answer the question of whether the application layer eventually finds a monetization model that closes the gap. Agrawal's broader course argues that advertising is the likely path: AI platforms see deep, logged-in intent signals that search and social cannot match, making AI-delivered ads potentially more valuable per impression than any existing channel.</p>
+<p>But that thesis is speculative. What is not speculative is that the physical layer is being built at a scale and speed that has no precedent in civilian infrastructure. The lecture makes clear that this is not a cloud cycle replay. The cloud cycle eventually inverted — software captured the surplus once the infrastructure was built. The AI cycle may stay inverted much longer because the inference compute cost is structural rather than temporary.</p>
+<p>For founders, the implication is that building at the application layer without a thesis about monetization — and specifically about monetization that scales with compute cost — is building on someone else's margin. For investors, the near-term bet remains silicon and the infrastructure that powers it. For everyone else, Lochmiller's lecture is a reminder that the most important numbers in AI are not parameter counts or benchmark scores. They are dollars per megawatt, weeks per transformer, and gigawatts per campus.</p>
+<hr>
+<p><strong>Source:</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=sRvrXL83N-c">Stanford MS&amp;E 435: Economics of the AI Supercycle, Class #3</a> — Chase Lochmiller (Crusoe CEO), Spring 2026, taught by Apoorv Agrawal. Course website: <a target="_blank" rel="noopener noreferrer" href="https://mse435.stanford.edu/">mse435.stanford.edu</a>. Additional context from Josipa Majic Predin's <a target="_blank" rel="noopener noreferrer" href="https://www.forbes.com/sites/josipamajic/2026/04/25/a-stanford-lecture-explains-why-ai-value-gets-trapped-in-chips/">Forbes coverage</a> of the course.</p>
+</div>
+      </article>
       <article class="post" id="fowlers-microservices-twelve-years-on">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-16" data-utc="Jul 16, 2026 UTC" aria-label="Jul 16, 2026 UTC" tabindex="0">1784160000</time></p>
@@ -12788,6 +12893,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#ai-infrastructure-economics-stanford-msande435">Building AI Factories: What a Stanford Lecture Reveals About Where the Money Goes</a>
               <a href="#fowlers-microservices-twelve-years-on">Lewis &amp; Fowler&#39;s Microservices: Everyone Copied the Boxes, Nobody Read the Cautions</a>
               <a href="#nats-vs-service-mesh-smart-endpoints-dumb-pipes">Smart Endpoints, Dumb Pipes: Why NATS Replaces the Service Mesh</a>
               <a href="#nats-multi-tenancy-security-vs-api-gateway">NATS Multi-Tenancy and Security: JWT Auth vs the API Gateway</a>

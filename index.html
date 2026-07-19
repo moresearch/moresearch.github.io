@@ -683,14 +683,86 @@
 <blockquote>
 <p>The winner of a 33-round tournament is not the best in the world. They are the person who survived 33 consecutive filters without a single unlucky break. That is a different thing entirely.</p>
 </blockquote>
-<h2 id="what-the-tournament-reveals">What the tournament reveals</h2>
-<p>The 33-wins observation is usually deployed as a factoid about exponential growth: look how few doublings it takes to consume the planet. But the more interesting thing is what it reveals about the structure of competitive processes.</p>
-<p>A single-elimination tournament is the purest form of <strong>ordinal competition</strong>: only rank matters, magnitude is irrelevant. Win by a landslide or win by a millimeter — you advance the same way. The person who would have beaten everyone except the one person they drew in Round 2 is eliminated as thoroughly as the person who never had a chance.</p>
-<p>This is not how most real-world competitions work. Markets don't require you to be #1. They require you to be good enough in a niche. Evolution doesn't produce a single optimal organism. It produces millions of locally-adapted ones. The scientist who makes a breakthrough doesn't eliminate the scientist who made a different breakthrough. Ideas don't compete in a bracket. They recombine.</p>
-<p>But some systems <em>are</em> structured like tournaments. Elections. Job searches with successive rounds. Startup funding from seed to Series D. YCombinator demo day. The partnership track at a law firm. In these systems, the 33-wins logic applies with force: the structure eliminates people, not merit. Surviving the filter is correlated with quality but not determined by it. The noise compounds with each round.</p>
+<h2 id="the-mechanism-youre-assuming">The mechanism you're assuming</h2>
+<p>The 33-wins observation is usually deployed as a factoid about exponential growth: look how few doublings it takes to consume the planet. But the more interesting thing is what it reveals about the mechanism design choices embedded in any competitive system.</p>
+<p>Every tournament is an <strong>economic mechanism</strong> — a set of rules that takes a population of competitors with latent abilities and produces a winner. The mechanism makes three design choices:</p>
+<ol>
+<li><strong>Information</strong>: how much do we learn from each match? (binary win/loss, or cardinal score?)</li>
+<li><strong>Elimination</strong>: when do competitors exit? (first loss, second loss, never?)</li>
+<li><strong>Pairing</strong>: who plays whom? (random draw, seeded, similar-record, everyone-plays-everyone?)</li>
+</ol>
+<p>The 33-wins factoid assumes a very specific mechanism: <strong>single-elimination with random pairing</strong>. One loss and you're out. Your opponent is whichever other survivor the draw assigns. Win by a landslide or win by a millimeter — you advance the same way. The person who would have beaten every other competitor in the world is eliminated in Round 2 if they drew the one person they couldn't beat.</p>
+<p>This is the purest form of <strong>ordinal competition</strong>: only rank matters, magnitude is irrelevant. It is also the mechanism that maximizes noise per match. There is no room for recovery. There is no partial credit. There are 33 binary filters between you and the top, and optimizing for any single one is worth less than being lucky enough to survive them all.</p>
 <blockquote>
-<p>In a system with 33 binary filters between you and the top, optimizing for any single filter is worth less than being lucky enough to survive all of them. The expected value of skill is bounded by the variance of the filter.</p>
+<p>The expected value of skill in a single-elimination tournament is bounded by the variance of the draw. The mechanism, not the competitor, determines the outcome distribution.</p>
 </blockquote>
+<h2 id="the-mechanism-design-space">The mechanism design space</h2>
+<p>Single-elimination is not the only way to run a competition. It's the <em>cheapest</em> way — O(N) matches, log₂(N) rounds, one champion. But every other mechanism makes different tradeoffs between efficiency, accuracy, and robustness. Here is the design space:</p>
+<table>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Matches</th>
+<th>Elimination</th>
+<th>What it selects for</th>
+<th>Noise level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single-elimination</strong></td>
+<td>N − 1</td>
+<td>First loss</td>
+<td>Survivability across diverse matchups</td>
+<td>Maximum</td>
+</tr>
+<tr>
+<td><strong>Double-elimination</strong></td>
+<td>~2N</td>
+<td>Second loss</td>
+<td>Survivability with one mistake allowed</td>
+<td>High</td>
+</tr>
+<tr>
+<td><strong>Swiss system</strong></td>
+<td>(N·log₂N)/2</td>
+<td>Never</td>
+<td>Consistent performance across similar-strength opponents</td>
+<td>Moderate</td>
+</tr>
+<tr>
+<td><strong>Round-robin</strong></td>
+<td>N(N−1)/2</td>
+<td>Never</td>
+<td>Best average performance across the full field</td>
+<td>Minimal</td>
+</tr>
+<tr>
+<td><strong>Elo / rating</strong></td>
+<td>Variable</td>
+<td>Never</td>
+<td>Convergent skill estimate over time</td>
+<td>Decays with matches</td>
+</tr>
+<tr>
+<td><strong>Market / matching</strong></td>
+<td>0</td>
+<td>Nobody</td>
+<td>Niche fit — value created, not won</td>
+<td>Irrelevant</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Single-elimination</strong> maximizes efficiency and drama. It produces a champion in the minimum possible number of matches. But it maximizes noise: the probability that the true best competitor wins is the lowest of any mechanism. The winner is the most survivable, not the most skilled.</p>
+<p><strong>Double-elimination</strong> gives every competitor a second life in a losers' bracket. The best competitor is more likely to reach the final because one unlucky draw doesn't end them. Cost: roughly twice as many matches. The mechanism says: one loss could be noise. Two losses are a signal.</p>
+<p><strong>Swiss system</strong> — used in chess, Magic: The Gathering, and increasingly in AI benchmarking — pairs competitors with similar records in each round. There is no elimination. After log₂(N) rounds, you have a ranking, not a champion. The mechanism says: we don't need to find #1. We need an ordering. Swiss trades the drama of elimination for the reliability of repeated measurement.</p>
+<p><strong>Round-robin</strong> — everyone plays everyone — produces the most accurate ranking possible. The winner is genuinely the best across the full field. But it requires O(N²) matches. For 8 billion competitors, that's thermodynamically infeasible. The mechanism says: accuracy is worth infinite cost. It never is, but it's the theoretical limit.</p>
+<p><strong>Elo and rating systems</strong> abandon the tournament format entirely. Competitors play pairwise matches continuously. A rating emerges from the match history, converging toward true skill as the number of matches grows. There is no bracket, no elimination, no champion crowned on a specific date. The mechanism says: skill is latent, matches are noisy observations, and the best we can do is a running estimate with error bars.</p>
+<p><strong>Markets and matching</strong> are not tournaments at all. Participants don't compete head-to-head. They find niches. A bakery doesn't eliminate a bakery across town. They serve different neighborhoods. Success is relative to a local optimum, not a global ranking. The mechanism says: value is created by finding the right counterparty, not by beating all counterparties.</p>
+<blockquote>
+<p>Every mechanism is a choice about what &quot;winning&quot; means. Single-elimination says winning means surviving. Round-robin says winning means averaging. Elo says winning doesn't exist — only a score that changes.</p>
+</blockquote>
+<p>The 33-wins factoid is not a truth about competition. It's a truth about one specific mechanism — the cheapest, loudest, most eliminative one — applied to the largest possible population. Before you internalize the lesson, check which mechanism you're actually in.</p>
 <h2 id="the-other-tournament">The other tournament</h2>
 <p>There's another way to read the 33-wins number, and it's the more interesting one.</p>
 <p>If the world <em>did</em> compete 1-on-1 — if ideas, products, approaches, and solutions were forced into a single global bracket — the winner would be whatever survived 33 rounds of elimination. Not the best. The most <em>survivable</em>. The thing that was good enough in every round, versatile enough to beat whatever it drew, lucky enough to avoid the one matchup that would have killed it.</p>

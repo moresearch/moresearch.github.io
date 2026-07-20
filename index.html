@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Fifty years of not learning the lessons of The Mythical Man-Month, distilled into dark comedy. Brooks was right about everything. We did it anyway.">
+  <meta name="description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="Fifty years of not learning the lessons of The Mythical Man-Month, distilled into dark comedy. Brooks was right about everything. We did it anyway.">
+  <meta property="og:description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="Fifty years of not learning the lessons of The Mythical Man-Month, distilled into dark comedy. Brooks was right about everything. We did it anyway.">
+  <meta name="twitter:description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,6 +664,173 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="empirical-se-how-to-think">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-20" data-utc="Jul 20, 2026 UTC" aria-label="Jul 20, 2026 UTC" tabindex="0">1784505600</time></p>
+          <h2><a href="#empirical-se-how-to-think">Empirical Software Engineering: How to Think Empirically</a></h2><p class="post-summary">How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.</p>
+          <div class="tags"><span class="tag">empirical-se</span><span class="tag">methodology</span><span class="tag">critical-thinking</span><span class="tag">studies</span><span class="tag">hillel-wayne</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Part 1 argued that we know almost nothing. Part 2 covered what we do know. This post is about how to think — the methods, the habits, and the reading list for building a personal practice of empirical software engineering.</p>
+<h2 id="the-three-methods">The three methods</h2>
+<p>Wayne organizes empirical SE into three research methodologies. Each answers a different kind of question. Each has different strengths and failure modes.</p>
+<p><strong>Controlled trials</strong> manipulate one variable and measure the outcome. Häregård &amp; Kruger's study on syntax highlighting: give two groups the same code with different color schemes, measure comprehension. Strongest for establishing causation. Weakest for ecological validity — lab conditions are not production conditions. A developer reading code in a study is not a developer fixing a production outage at 3am.</p>
+<p><strong>Natural experiments</strong> exploit real-world variation that approximates random assignment. Yuan et al.'s study of catastrophic failures: the researchers didn't cause the failures. They analyzed them after the fact, asking what would have prevented each one. High ecological validity — these were real failures with real consequences. Lower control — you can't randomize which services fail in production.</p>
+<p><strong>Observational studies</strong> measure what people actually do and look for correlations. Meyer et al.'s study of developer productivity perceptions: ask developers what makes them feel productive, correlate with what they actually do. Reveals practices at scale. Cannot establish causation. Developers who use TDD might produce better code, or developers who produce better code might be the kind of developers who use TDD. The study can't tell you which.</p>
+<blockquote>
+<p>The method determines the claim. A controlled trial can say &quot;X causes Y.&quot; An observational study can only say &quot;X and Y co-occur.&quot; Most industry blog posts can only say &quot;I tried X and it felt good.&quot; Know which kind of claim you're reading.</p>
+</blockquote>
+<h2 id="how-to-read-a-study">How to read a study</h2>
+<p>Wayne's talk implies a method for reading empirical research that most software engineers never learned:</p>
+<ol>
+<li>
+<p><strong>What's the methodology?</strong> Controlled trial, natural experiment, or observational? This determines what the study can claim.</p>
+</li>
+<li>
+<p><strong>What are the confounds?</strong> What else varies with the variable being studied? The Ray et al. language study: functional languages correlated with smaller projects and more experienced developers. Those are confounds. They explain the effect better than the language does.</p>
+</li>
+<li>
+<p><strong>Has it been replicated?</strong> A single study is a data point, not a conclusion. The replication is the signal. No replication, no confidence.</p>
+</li>
+<li>
+<p><strong>What's the effect size?</strong> Statistical significance is not practical significance. A language might &quot;significantly&quot; reduce defects by 0.3%. That's not worth switching languages for.</p>
+</li>
+<li>
+<p><strong>Who funded it?</strong> This isn't cynicism. It's basic epistemic hygiene. A study funded by a vendor is not necessarily wrong. But it deserves more scrutiny than an independent replication.</p>
+</li>
+</ol>
+<blockquote>
+<p>Most software engineers read zero studies. Most of the ones who read one study stop at step one. The skill is reading enough studies, across methodologies, with attention to confounds and replications, to form a tentative and revisable picture of what might be true.</p>
+</blockquote>
+<h2 id="the-self-correction-of-science">The self-correction of science</h2>
+<p>The Ray et al. → Berger et al. replication saga is the centerpiece of Wayne's talk, and he uses it to make a point about how knowledge actually advances.</p>
+<p>The original study found an effect. A replication found the effect was confounded. The original authors engaged with the replication. Knowledge advanced. This is science working as designed. In software engineering, the original study became &quot;functional languages prevent bugs&quot; and entered the permanent folklore. The replication was a paper that most people never read.</p>
+<blockquote>
+<p>The replication is the immune system. Without it, the field accumulates unquestioned findings until the body of &quot;knowledge&quot; is mostly noise. Wayne's 6,000-word writeup of the saga is titled &quot;This is How Science Happens.&quot; The subtitle is implicit: this is how science happens <em>when it's allowed to.</em></p>
+</blockquote>
+<h2 id="the-reading-list">The reading list</h2>
+<p>Wayne recommends four books and two ongoing sources:</p>
+<p><strong>Books:</strong></p>
+<ul>
+<li><em>Making Software</em> (Oram &amp; Wilson) — a curated collection of empirical SE papers with practitioner-oriented summaries. The best entry point.</li>
+<li><em>Leprechauns of Software Engineering</em> (Bossavit) — how folklore becomes fact in software, and how to spot it.</li>
+<li><em>The Programmer's Brain</em> (Hermans) — what cognitive science tells us about reading, writing, and debugging code.</li>
+<li><em>Teaching Tech Together</em> (Greg Wilson) — how people learn programming, based on educational research.</li>
+</ul>
+<p><strong>Ongoing:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://neverworkintheory.org/"><em>It Will Never Work In Theory</em></a> — a blog that summarizes empirical SE papers for practitioners. Short, readable, rigorous.</li>
+<li>ACM Digital Library and arXiv — the primary sources, if you want to read the papers themselves.</li>
+</ul>
+<blockquote>
+<p>The reading list is not long. It's not meant to be. The barrier to being more empirical than 99% of software engineers is reading four books and following one blog. The bar is on the floor.</p>
+</blockquote>
+<h2 id="the-posture">The posture</h2>
+<p>Wayne's deepest lesson is not about any specific study. It's about intellectual posture.</p>
+<p>The empirical posture is: <em>I don't know, but I can find out, and until I do I will hold my beliefs lightly.</em> It's the opposite of the posture that dominates software engineering — the tech lead who knows The Right Way, the consultant who sells The Methodology, the influencer who declares that The Old Way Is Dead.</p>
+<blockquote>
+<p>The empirical posture is less charismatic. It doesn't keynote. It doesn't trend. It says &quot;the evidence is mixed, the effect sizes are small, and it depends.&quot; That sentence will never go viral. It is also the most honest sentence available in most software engineering debates.</p>
+</blockquote>
+<p>Being empirical doesn't mean reading every paper. It means knowing that papers exist. It means being suspicious of certainty. It means asking &quot;how do we know that?&quot; when someone declares a practice mandatory or obsolete. It means holding your own preferences lightly — liking TDD because it feels good while acknowledging the evidence is weak. It means being the person in the room who says &quot;I'm not sure&quot; and means it as a strength, not a weakness.</p>
+<blockquote>
+<p>The goal is not to know everything. The goal is to know the difference between what you know and what you believe.</p>
+</blockquote>
+<hr>
+<p><em>Based on Hillel Wayne's talk <a target="_blank" rel="noopener noreferrer" href="https://www.hillelwayne.com/talks/ese/">What We Know We Don't Know</a>. Part 1: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-nothing-is-real">Nothing Is Real</a> · Part 2: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-what-studies-say">What the Studies Actually Say</a>.</em></p>
+</div>
+      </article>
+      <article class="post" id="empirical-se-what-studies-say">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-20" data-utc="Jul 20, 2026 UTC" aria-label="Jul 20, 2026 UTC" tabindex="0">1784505600</time></p>
+          <h2><a href="#empirical-se-what-studies-say">Empirical Software Engineering: What the Studies Actually Say</a></h2><p class="post-summary">Code review works. Sleep deprivation destroys performance. The language you choose probably doesn&#39;t matter. And a famous study claiming Haskell prevents bugs turned out to be wrong. What happens when you actually read the papers.</p>
+          <div class="tags"><span class="tag">empirical-se</span><span class="tag">evidence</span><span class="tag">code-review</span><span class="tag">human-factors</span><span class="tag">replication</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The first post made the case that we know almost nothing. This post is about what we actually do know — the handful of findings that have survived scrutiny, replication, and the self-correction mechanisms of science.</p>
+<h2 id="what-works-code-review">What works: code review</h2>
+<p>The strongest, most replicated finding in empirical software engineering is that <strong>code review finds bugs.</strong> It consistently catches a large portion of defects in reasonable time. This is not surprising — having a second person look at the code works for the same reason having a second person look at anything works. But the studies add texture.</p>
+<p><strong>File position matters.</strong> A 2022 study (<em>First Come First Served: The Impact of File Position on Code Review</em>) found that reviewers give more scrutiny to files appearing earlier in a changeset. Later files get less attention. If you want a file reviewed thoroughly, put it first.</p>
+<p><strong>Not all review is equal.</strong> Google's internal study of their own review practices (<em>Modern Code Review: A Case Study at Google</em>) found that review effectiveness varies enormously with reviewer expertise, changeset size, and tooling. The practice is effective, but the variance is large. &quot;Do code review&quot; is like &quot;eat healthy&quot; — the general advice is correct, the specific execution determines most of the outcome.</p>
+<p><strong>Most review catches style, not logic.</strong> The SmartBear study (<em>Best Kept Secrets of Peer Code Review</em>) found a roughly 3:1 ratio of style issues to actual bugs. Review catches formatting problems and naming issues far more reliably than it catches subtle control-flow errors. This is not an argument against review. It's an argument for understanding what review actually provides.</p>
+<blockquote>
+<p>Code review is the closest thing empirical SE has to a settled finding: it works, consistently, across contexts. Everything else is weaker.</p>
+</blockquote>
+<h2 id="what-works-basic-testing">What works: basic testing</h2>
+<p>Yuan et al.'s <em>Simple Testing Can Prevent Most Critical Failures</em> (USENIX OSDI '14) is the kind of study that makes you reconsider everything you think about sophistication.</p>
+<p>The authors examined real-world catastrophic production failures — the kind that take down services and make the front page of Hacker News — and asked: what testing would have caught this? The answer, in the majority of cases, was <strong>trivial testing.</strong> Not property-based testing. Not formal verification. Not chaos engineering. Just basic unit tests and integration tests on the code paths that failed.</p>
+<blockquote>
+<p>The finding is humbling: most catastrophic failures would have been prevented by practices we already know how to do and mostly don't do consistently. The problem is not lack of sophisticated techniques. The problem is lack of consistent application of simple ones.</p>
+</blockquote>
+<h2 id="what-works-not-being-exhausted">What works: not being exhausted</h2>
+<p>The human-factors literature is unambiguous. Sleep deprivation degrades cognitive performance measurably and dramatically. Extended overtime in construction produces <em>negative</em> total productivity after a few weeks (CURT, NIOSH). In game development, mandated crunch correlates with <em>worse</em> project outcomes (Tozour, The Game Outcomes Project). Fucci et al. demonstrated that a single night of sleep deprivation measurably degrades novice programmers' performance on coding tasks.</p>
+<blockquote>
+<p>The effect sizes on human factors dwarf the effect sizes on any technical choice. You will get more improvement from letting your team sleep than from switching languages, frameworks, or methodologies. The evidence for this is overwhelming. The adoption rate is abysmal.</p>
+</blockquote>
+<h2 id="what-doesnt-work-the-language-doesnt-care-about-you">What doesn't work: the language doesn't care about you</h2>
+<p>In 2014, Ray et al. published <em>A Large Scale Study of Programming Languages and Code Quality in GitHub.</em> It appeared to show that functional languages — Haskell, Clojure, Scala — produced fewer defects than procedural and scripting languages. The paper made the rounds. It was cited as proof that type systems prevent bugs, that functional programming is safer, that language choice is a significant lever for quality.</p>
+<p>Then Berger et al. replicated the study. They controlled for project size, developer experience, and other confounds the original had missed. <strong>The effect largely vanished.</strong> Languages that appeared safer were mostly being used by more experienced developers on smaller projects. When you controlled for that, the language effect became negligible.</p>
+<blockquote>
+<p>This is how science is supposed to work: study finds effect, replication corrects it, knowledge advances. In software engineering, the original study became folklore and the replication was ignored. The lesson is not &quot;language studies are hard.&quot; The lesson is &quot;don't believe a single study, ever.&quot;</p>
+</blockquote>
+<h2 id="what-we-dont-know-tdd-types-pair-programming">What we don't know: TDD, types, pair programming</h2>
+<p>The evidence for TDD is mixed and weak. Wayne personally likes it but acknowledges the data doesn't strongly support it. The evidence for static typing preventing bugs is, in his words, that one study &quot;found no clear evidence it helps — or hurts.&quot; Pair programming shows some benefit in some studies, but the effect is smaller and less consistent than code review.</p>
+<blockquote>
+<p>None of this means these practices are worthless. It means the evidence doesn't support being dogmatic about them. Anyone who tells you a practice is mandatory or immoral is making a claim they cannot back with data. They are selling you vibes dressed as expertise.</p>
+</blockquote>
+<h2 id="the-meta-lesson">The meta-lesson</h2>
+<p>The most important finding in empirical software engineering is not about any specific practice. It's about the structure of knowledge itself.</p>
+<p>Most things we believe about software development come from authority, anecdote, and marketing. A small fraction come from studies. Of those studies, a meaningful portion fail to replicate. The findings that survive are humbler than we want them to be: fundamentals, consistently applied, under conditions of adequate sleep and manageable stress, produce better outcomes than heroics.</p>
+<blockquote>
+<p>The evidence doesn't tell you which framework to use. It tells you to review the code, test the critical paths, and go to bed at a reasonable hour. Everything else is speculation. Some of it is good speculation. None of it is science.</p>
+</blockquote>
+<hr>
+<p><em>Based on Hillel Wayne's talk <a target="_blank" rel="noopener noreferrer" href="https://www.hillelwayne.com/talks/ese/">What We Know We Don't Know</a>. Part 1: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-nothing-is-real">Nothing Is Real</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-how-to-think">How to Think Empirically</a>.</em></p>
+</div>
+      </article>
+      <article class="post" id="empirical-se-nothing-is-real">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-20" data-utc="Jul 20, 2026 UTC" aria-label="Jul 20, 2026 UTC" tabindex="0">1784505600</time></p>
+          <h2><a href="#empirical-se-nothing-is-real">Empirical Software Engineering: Nothing Is Real</a></h2><p class="post-summary">Hillel Wayne&#39;s talk on empirical software engineering opens with a confession: we know almost nothing with scientific certainty about how to build software. The TDD wars, the language debates, the methodology fights — none of them have the evidence they claim. That&#39;s not depressing. It&#39;s liberating.</p>
+          <div class="tags"><span class="tag">empirical-se</span><span class="tag">evidence</span><span class="tag">methodology</span><span class="tag">software-engineering</span><span class="tag">hillel-wayne</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 2014, David Heinemeier Hansson declared &quot;TDD is dead.&quot; Robert C. Martin, a decade earlier, had called TDD a professional moral imperative — &quot;you are unprofessional if you do not practice TDD.&quot; Two of the most influential voices in software. Two positions that cannot both be true. Zero empirical studies cited by either of them.</p>
+<p>This is not a post about TDD. It's a post about the fact that the most important methodological debate in modern software engineering was fought entirely on the basis of authority, anecdote, and vibes.</p>
+<p>Hillel Wayne's talk <em>What We Know We Don't Know</em> is an introduction to empirical software engineering — the study of what actually works in programming, using data, controlled studies, and peer review instead of intuition. His opening thesis is uncomfortable: <strong>nobody has the secret knowledge.</strong> Not Uncle Bob. Not DHH. Not the tech lead who swears by microservices. Not the staff engineer who says monoliths are the only sane choice. Nobody actually knows.</p>
+<blockquote>
+<p>&quot;Nothing is real, we don't understand what we're doing, and the only way to write good software is to stop drinking coffee. Burn it all down.&quot; — Hillel Wayne, the actual description of his talk</p>
+</blockquote>
+<h2 id="the-problem-with-intuition">The problem with intuition</h2>
+<p>Software engineering runs on intuition. Someone tries a practice. It feels better. They tell their team. The team adopts it. A blog post is written. A conference talk is given. A book is published. Within five years, the practice is orthodoxy, and anyone who questions it is unprofessional.</p>
+<p>This is how we got TDD as a moral imperative. This is how we got &quot;microservices are the default architecture.&quot; This is how we got &quot;dynamic typing is for prototypes, static typing is for production.&quot; None of these statements are supported by evidence. All of them are supported by the confidence of the people saying them.</p>
+<blockquote>
+<p>The strongest opinions in software engineering are held by the people who have done the least systematic investigation. The people who have actually run the studies sound nothing like them.</p>
+</blockquote>
+<p>Wayne points to the TDD debate as the archetypal case. Two camps, each utterly certain, neither citing evidence. The empirical literature on TDD is, in Wayne's words, &quot;iffy.&quot; He personally likes TDD. But the data doesn't strongly support it. And the data doesn't strongly refute it either. The honest answer is that we don't know — and that answer is unacceptable to both sides of the debate.</p>
+<h2 id="the-cost-of-scale">The COST of scale</h2>
+<p>The talk opens with a paper that should humble anyone who has ever reached for a distributed system because &quot;we need to scale.&quot;</p>
+<p>McSherry et al., in <em>Scalability! But at what COST?</em> (USENIX HotOS '15), showed that single-laptop implementations often outperform large distributed systems when measured by total computational cost. The distributed system is faster in wall-clock time, sure. But the laptop required zero nodes, zero network, zero orchestration. The distributed system's advantage vanishes when you measure total work done, not time elapsed.</p>
+<blockquote>
+<p>The paper is a controlled demolition of the reflex to scale before you need to. Most systems don't need to be distributed. Most systems that are distributed don't need to be. The decision to distribute is almost never made empirically. It's made because distributed systems are cool, and cool is not a performance metric.</p>
+</blockquote>
+<h2 id="why-we-dont-know">Why we don't know</h2>
+<p>Wayne's talk isn't nihilistic. It's diagnostic. The reason we know so little is not that software is uniquely unstudyable. It's that we haven't built the empirical culture.</p>
+<p>Construction engineering has CURT — a consortium that studies the effect of overtime on project outcomes, producing reports that show (with data) that extended overtime yields <em>negative</em> productivity. Software engineering has blog posts.</p>
+<blockquote>
+<p>Every other profession that deals with complex systems under uncertainty has developed empirical traditions. Nursing studies what works. Teaching studies what works. Law studies what works. Software engineering studies what gets GitHub stars.</p>
+</blockquote>
+<p>The talk is a call to build that culture. To read papers. To run studies. To replicate findings. To be suspicious of anyone — including yourself — who is certain about what works without evidence.</p>
+<h2 id="the-liberating-truth">The liberating truth</h2>
+<p>Wayne's deepest point is that the lack of empirical certainty is not depressing. It's liberating.</p>
+<p>When someone tells you that you are unprofessional for not using TDD, you now know that they don't actually know. When someone tells you that static types prevent bugs, you now know the evidence is weak and conflicting. When someone tells you that pair programming is the answer, you now know the studies show some benefit but smaller and less reliable than code review.</p>
+<blockquote>
+<p>Nobody has the secret knowledge. The loudest voices in the room are not the most informed. They're the most confident — and confidence is negatively correlated with accuracy once you control for expertise.</p>
+</blockquote>
+<p>The honest answer to most software engineering questions is &quot;it depends&quot; followed by layers of caveats. That answer is unsatisfying. It's also true. And building a discipline that can tolerate unsatisfying truths is harder than building one that rallies around confident falsehoods. But it's the only kind of discipline worth building.</p>
+<hr>
+<p><em>Based on Hillel Wayne's talk <a target="_blank" rel="noopener noreferrer" href="https://www.hillelwayne.com/talks/ese/">What We Know We Don't Know: Empirical Software Engineering</a>. Part 2: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-what-studies-say">What the Studies Actually Say</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-how-to-think">How to Think Empirically</a>.</em></p>
+</div>
+      </article>
       <article class="post" id="mythical-man-month-lost-chapters">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-19" data-utc="Jul 19, 2026 UTC" aria-label="Jul 19, 2026 UTC" tabindex="0">1784419200</time></p>
@@ -13335,6 +13502,9 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#empirical-se-how-to-think">Empirical Software Engineering: How to Think Empirically</a>
+              <a href="#empirical-se-what-studies-say">Empirical Software Engineering: What the Studies Actually Say</a>
+              <a href="#empirical-se-nothing-is-real">Empirical Software Engineering: Nothing Is Real</a>
               <a href="#mythical-man-month-lost-chapters">The Mythical Man-Month: The Lost Chapters</a>
               <a href="#learning-to-fly-while-flying">Learning to Fly, While Flying</a>
               <a href="#agents-are-distillation-at-scale">Agents Aren&#39;t Magic. They&#39;re Distillation at Scale.</a>

@@ -6,7 +6,7 @@ summary: "Ray Myers' post on the Zig/Bun/Anthropic controversy hit 1,546 points 
 tags: friend, writing, ai, software-engineering, reference-density
 ---
 
-Ray and I meet semi-regularly to discuss everything software. The meetups are the kind where you show up without an agenda and leave three hours later with a notebook full of things to read and a slightly rearranged understanding of the field. Ray has a habit of tracking down the reference behind the reference — the paper the blog post cited, the study the paper was based on, the replication that corrected the study. Talking to him is like being handed a curated reading list in real time.
+Ray and I are part of a small group interested in verified coding agents. He has a habit of tracking down the reference behind the reference — the paper the blog post cited, the study the paper was based on, the replication that corrected the study.
 
 Last week, his blog post [*Zig Creator Calls Spade a Spade, Anthropic Blows Smoke*](https://raymyers.org/post/zig-creator-calls-spade-a-spade/) hit the top of Hacker News. 1,546 points. 784 comments. It stayed there.
 
@@ -56,7 +56,7 @@ Most blog posts do one of these. The good ones do two. Ray's does all three, wit
 
 If you work in software and haven't read [Ray's post](https://raymyers.org/post/zig-creator-calls-spade-a-spade/), you should. If you don't work in software but care about how technology companies construct narratives, you should read it too. The post is about Zig and Rust and Anthropic and Bun. But the lesson is about something bigger: how to think clearly when the loudest voices in the room have $132 billion worth of reasons to be heard.
 
-Ray and I will discuss it at our next meetup. He'll probably have tracked down five more references by then. That's how he works.
+He'll probably have tracked down five more references by the time we next meet. That's how he works.
 
 ---
 

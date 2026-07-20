@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Ray Myers&#39; post on the Zig/Bun/Anthropic controversy hit 1,546 points on HN. It&#39;s the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/rays-rant-why-ai-isnt-enough/">
+  <title>Ray&#39;s Rant: Why AI Isn&#39;t Enough — hackspree</title>
+  <meta property="og:title" content="Ray&#39;s Rant: Why AI Isn&#39;t Enough">
+  <meta property="og:description" content="Ray Myers&#39; post on the Zig/Bun/Anthropic controversy hit 1,546 points on HN. It&#39;s the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/rays-rant-why-ai-isnt-enough/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ray&#39;s Rant: Why AI Isn&#39;t Enough">
+  <meta name="twitter:description" content="Ray Myers&#39; post on the Zig/Bun/Anthropic controversy hit 1,546 points on HN. It&#39;s the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-20">2026-07-20</time></p>
+          <h1>Ray&#39;s Rant: Why AI Isn&#39;t Enough</h1><p class="post-summary">Ray Myers&#39; post on the Zig/Bun/Anthropic controversy hit 1,546 points on HN. It&#39;s the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off.</p>
+          <div class="tags"><span class="tag">friend</span><span class="tag">writing</span><span class="tag">ai</span><span class="tag">software-engineering</span><span class="tag">reference-density</span></div>
+          
+        </header>
+        <div class="post-body"><p>Ray and I meet semi-regularly to discuss everything software. The meetups are the kind where you show up without an agenda and leave three hours later with a notebook full of things to read and a slightly rearranged understanding of the field. Ray has a habit of tracking down the reference behind the reference — the paper the blog post cited, the study the paper was based on, the replication that corrected the study. Talking to him is like being handed a curated reading list in real time.</p>
+<p>Last week, his blog post <a target="_blank" rel="noopener noreferrer" href="https://raymyers.org/post/zig-creator-calls-spade-a-spade/"><em>Zig Creator Calls Spade a Spade, Anthropic Blows Smoke</em></a> hit the top of Hacker News. 1,546 points. 784 comments. It stayed there.</p>
+<h2 id="what-the-post-is-about">What the post is about</h2>
+<p>If you missed the controversy: Anthropic's Claude helped Bun rewrite itself from Zig to Rust. The rewrite was presented as a technical decision driven by memory safety concerns. Andrew Kelley, the creator of Zig, responded with characteristic directness — pointing out that the codebase was a mess due to engineering decisions, including overusing AI agents, and that Zig was being blamed for problems it didn't cause.</p>
+<p>Ray's post is the definitive analysis of what actually happened. But that undersells it.</p>
+<h2 id="ai-is-not-enough">AI is not enough</h2>
+<p>Ray's core insight — the one that organizes the entire post — is that <strong>every element of the story that Bun and Anthropic present as evidence that AI replaces engineers actually demonstrates the opposite.</strong> The million-line agentic PR? Required human review and cleanup that the AI couldn't do. The automated language migration? Left semantic gaps that only a human could close. The speed of the rewrite? Achieved by a team working 90-hour weeks, not by AI magic.</p>
+<blockquote>
+<p>The post's thesis isn't &quot;AI is bad.&quot; It's &quot;AI is not enough.&quot; Every layer of the story, examined carefully, reveals a place where human judgment, human design, and human communication were the difference between success and failure. The AI was a tool. The humans were the engineers. The story Anthropology wants to tell — that software engineering is becoming obsolete — is contradicted by the very case study they chose to prove it.</p>
+</blockquote>
+<h2 id="the-reference-density">The reference density</h2>
+<p>Here is the thing that makes Ray's writing distinctive, and the thing I want to call out specifically.</p>
+<p>Most blog posts cite a tweet and a Wikipedia article and call it a day. Ray's post cites <strong>38 references</strong>, including:</p>
+<ul>
+<li>The DARPA TRACTOR program's formal evaluation report</li>
+<li>TigerBeetle's TigerStyle documentation and simulation testing methodology</li>
+<li>A Buddhist framework for right speech, applied to engineering communication</li>
+<li>The Ghostty AI policy and RedMonk's analysis of generative AI governance in open source</li>
+<li>Ed Zitron's financial analysis of Anthropic's profitability problem</li>
+<li>Hillel Wayne's empirical software engineering talk</li>
+<li>Marianne Bellotti's <em>Kill It With Fire</em> and Dr. Cat Hicks' <em>The Psychology of Software Teams</em></li>
+</ul>
+<p>Each reference is not dropped for credibility. Each one is woven into the argument. The DARPA report isn't cited to show Ray reads government documents. It's cited because the TRACTOR program ran into the exact same semantic-gap problem that Bun's AI rewrite ran into, and the program's evaluation report documented it. The Buddhist right-speech framework isn't cited for intellectual decoration. It's cited because the question at the heart of the controversy — when is blunt truth-telling ethical? — has been analyzed for millennia, and the framework helps.</p>
+<blockquote>
+<p>The post is the output of a process that most people never see: reading widely, tracking references to their source, building a mental map of how ideas connect, and then writing only when the map is dense enough to support an argument. The post took a week to write. The reading took a career.</p>
+</blockquote>
+<h2 id="why-the-post-earned-its-spot">Why the post earned its spot</h2>
+<p>Hacker News is fickle. The front page is a random variable with a tech-industry-shaped distribution. But some posts earn their spot through sheer substance. Ray's is one of them.</p>
+<p>The post does three things simultaneously, and does all three well:</p>
+<ol>
+<li><strong>It tells the story</strong> — who said what, when, and why it matters</li>
+<li><strong>It analyzes the incentives</strong> — Anthropic needs a narrative to justify a $1 trillion valuation ambition; the Bun rewrite was marketing as much as engineering</li>
+<li><strong>It builds a counter-narrative</strong> — not &quot;AI is bad&quot; but &quot;AI is not enough,&quot; supported by references that would take a year to track down and study independently</li>
+</ol>
+<p>Most blog posts do one of these. The good ones do two. Ray's does all three, with prose that is clear without being simplistic and rigorous without being academic.</p>
+<h2 id="go-read-it">Go read it</h2>
+<p>If you work in software and haven't read <a target="_blank" rel="noopener noreferrer" href="https://raymyers.org/post/zig-creator-calls-spade-a-spade/">Ray's post</a>, you should. If you don't work in software but care about how technology companies construct narratives, you should read it too. The post is about Zig and Rust and Anthropic and Bun. But the lesson is about something bigger: how to think clearly when the loudest voices in the room have $132 billion worth of reasons to be heard.</p>
+<p>Ray and I will discuss it at our next meetup. He'll probably have tracked down five more references by then. That's how he works.</p>
+<hr>
+<p><em><a target="_blank" rel="noopener noreferrer" href="https://raymyers.org/post/zig-creator-calls-spade-a-spade/">Zig Creator Calls Spade a Spade, Anthropic Blows Smoke</a> by Ray Myers. <a target="_blank" rel="noopener noreferrer" href="https://news.ycombinator.com/item?id=48889637">Hacker News discussion</a> (1,546 points, 784 comments).</em></p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

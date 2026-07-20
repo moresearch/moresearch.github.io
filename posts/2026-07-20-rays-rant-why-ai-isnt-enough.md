@@ -1,8 +1,8 @@
 ---
-title: "My Friend Ray's Blog Post Hit the Top of Hacker News, and It Deserved To"
+title: "Ray's Rant: Why AI Isn't Enough"
 date: 2026-07-20
-slug: my-friend-rays-blogpost
-summary: "Ray Myers' post on the Zig/Bun/Anthropic controversy is the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off. 1,546 points on HN. It earned every one."
+slug: rays-rant-why-ai-isnt-enough
+summary: "Ray Myers' post on the Zig/Bun/Anthropic controversy hit 1,546 points on HN. It's the kind of writing that takes a year of reading to produce and a lifetime of clear thinking to pull off."
 tags: friend, writing, ai, software-engineering, reference-density
 ---
 

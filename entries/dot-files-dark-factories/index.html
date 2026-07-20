@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dot-files-dark-factories/">
+  <title>Why DOT files work for dark factories — hackspree</title>
+  <meta property="og:title" content="Why DOT files work for dark factories">
+  <meta property="og:description" content="Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dot-files-dark-factories/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Why DOT files work for dark factories">
+  <meta name="twitter:description" content="Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-08">2026-07-08</time></p>
+          <h1>Why DOT files work for dark factories</h1><p class="post-summary">Two independent dark factory tools — Kilroy and Mammoth — both chose Graphviz DOT as their workflow format. The reasons are practical, not theoretical: DOT is tiny, readable, visualizable, diffable, and editable by both humans and agents.</p>
+          <div class="tags"><span class="tag">dark-factory</span><span class="tag">dot</span><span class="tag">graphviz</span><span class="tag">agents</span><span class="tag">pipelines</span><span class="tag">workflow</span></div>
+          
+        </header>
+        <div class="post-body"><p>Two dark factory tools landed on the same format independently: Graphviz DOT. Kilroy uses it. Mammoth uses it. Neither project seems to have coordinated on the choice. The convergence is worth understanding.</p>
+<p>But first, what these tools actually do.</p>
+<h2 id="kilroy-the-heavy-factory">Kilroy: the heavy factory</h2>
+<p>Kilroy is the heavier of the two — opinionated, factory-scale, closer to the full dark factory vision. Its workflow starts with English requirements: you describe what you want, and Kilroy converts that prose into a Graphviz DOT pipeline. It then validates the graph structure, and runs each node with coding agents operating in isolated Git worktrees. This is not a thin wrapper around an LLM call — it is a production mechanism.</p>
+<p>The isolation matters. Each agent invocation runs in its own Git worktree, so agents cannot interfere with each other's file state. This is exactly the kind of engineering discipline the <a target="_blank" rel="noopener noreferrer" href="/posts/task-automation-economics">task automation factory</a> paper calls for: execution that is replayable, inspectable, and isolated.</p>
+<p>Kilroy records everything. Typed run events and artifacts go into CXDB — a structured event store for run history. Git branches hold the code history. The split is deliberate: Git tracks the code, CXDB tracks the run. You can resume a run from logs, from CXDB, or from a run branch. If something fails, you are not starting from scratch. You are rewinding to a known state and continuing.</p>
+<p>This is the factory model made concrete: specification (English requirements) → pipeline (DOT) → isolated execution (Git worktrees) → event recording (CXDB) → resumability (logs, CXDB, run branch). Each stage is auditable. Each stage is replayable. Each stage leaves a record.</p>
+<h2 id="mammoth-the-clean-runner">Mammoth: the clean runner</h2>
+<p>Mammoth takes a different approach — lighter, more direct, but equally committed to DOT as the workflow format. It runs DOT-based LLM agent pipelines, validates graphs, supports checkpointing, and includes an HTTP server mode. Its architecture spans DOT parsing, run persistence, a web UI, a TUI, an MCP server, and a CLI — all built around an external tracker execution library.</p>
+<p>The web UI is where Mammoth differentiates itself. It includes a spec builder, a DOT editor, and a pipeline runner — all in one interface. You can build the specification, edit the pipeline graph, and execute it without leaving the browser. This lowers the barrier to entry. Kilroy expects you to operate a factory. Mammoth gives you a control panel.</p>
+<p>The checkpointing support means Mammoth pipelines can pause, save state, and resume — not as a side effect of Git branches and event stores, but as a first-class feature of the runner. This is a different philosophy from Kilroy's &quot;logs + CXDB + run branch&quot; model, but it solves the same problem: long-running agent pipelines need to survive failure.</p>
+<h2 id="why-dot">Why DOT?</h2>
+<p>Two independent projects, same format choice. The reasons are practical, not theoretical. Here is why DOT wins for dark factory workflows:</p>
+<p><strong>DOT is tiny.</strong> The entire DOT language fits in a README. Nodes, edges, attributes, subgraphs. That is basically it. You can learn the syntax in ten minutes. For a format that both humans and agents need to read and write, this minimal surface area is a feature. Every additional syntax element is something an agent can hallucinate.</p>
+<p><strong>DOT is readable.</strong> A DOT file is a list of relationships. <code>A -&gt; B [label=&quot;depends on&quot;]</code>. You can read it without tooling. You can reason about the graph structure by looking at the text. This matters when you are debugging a pipeline at 2am and do not want to fire up a graph visualizer to understand the control flow.</p>
+<p><strong>DOT is visualizable.</strong> Run it through Graphviz and you get a rendered graph. The same file that drives execution also produces documentation. No translation step, no sync problem — the pipeline definition <em>is</em> the diagram. For teams adopting dark factories, this collapses two artifacts (workflow spec + architecture diagram) into one.</p>
+<p><strong>DOT already means graph.</strong> The semantics align with the problem. A dark factory pipeline is a directed graph of tasks with dependencies. DOT is a language for describing directed graphs with attributes. The impedance mismatch is zero. You are not forcing a workflow concept into a format designed for something else — DOT was built for exactly this kind of structure.</p>
+<p><strong>DOT works well in Git diffs.</strong> Each edge is typically one line. Adding a node, reordering dependencies, inserting a new pipeline stage — these produce clean, readable diffs. Compare this to JSON or YAML, where a single added node can cascade through indentation changes across the entire file. DOT diffs tell you what changed at a glance.</p>
+<p><strong>DOT lets humans and agents edit the same workflow.</strong> This is the killer feature for dark factories. An agent can generate a DOT pipeline from a specification. A human can review it, edit it, add an edge, remove a node — all in the same format, with the same tooling, in the same file. There is no round-trip through a GUI. There is no intermediate representation that only one side understands. The DOT file is the shared artifact.</p>
+<h2 id="the-format-is-the-interface">The format is the interface</h2>
+<p>Dark factories need a format that sits at the boundary between specification and execution. The format is what the human reviews. It is what the agent generates. It is what the runner executes. It is what goes into version control. It is what you look at when something fails.</p>
+<p>Most workflow formats are optimized for one of these audiences. YAML is optimized for machines (and debatably so). GUI-based workflow builders are optimized for humans (at the cost of diffability and agent-writability). Custom DSLs are optimized for a specific tool (at the cost of portability and learnability).</p>
+<p>DOT is unusual because it is not optimized for any particular audience — it is just small enough, old enough, and general enough that it works for all of them. That is the definition of a good interface: it gets out of the way.</p>
+<p>The convergence of Kilroy and Mammoth on DOT is not a coincidence. It is a signal. When two independent dark factory implementations both reach for the same format, the format itself is part of the design space. If you are building tooling in this area, the question is not &quot;should I use DOT?&quot; It is &quot;is there a reason <em>not</em> to?&quot;</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/kilroy/">Kilroy</a> — English-to-DOT pipeline generation, Git worktree isolation, CXDB event recording</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/mammoth/">Mammoth</a> — DOT-based pipeline runner with web UI, checkpointing, MCP server</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://graphviz.org/doc/info/lang.html">Graphviz DOT language</a></li>
+</ul>
+<p>Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.</p>
+<blockquote>
+<p>DOT is not a file format. It is a contract between humans and agents. The human reads the graph. The agent executes the graph. The DOT file is the shared artifact. The artifact is the interface.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

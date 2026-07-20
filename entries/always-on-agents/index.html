@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A new survey of 435 papers argues that making agents truly always-on requires treating state as a first-class systems concern — not just remembering, but governing, recovering, and forgetting.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/always-on-agents/">
+  <title>Always-on agents: state, memory, and the governance gap — hackspree</title>
+  <meta property="og:title" content="Always-on agents: state, memory, and the governance gap">
+  <meta property="og:description" content="A new survey of 435 papers argues that making agents truly always-on requires treating state as a first-class systems concern — not just remembering, but governing, recovering, and forgetting.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/always-on-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Always-on agents: state, memory, and the governance gap">
+  <meta name="twitter:description" content="A new survey of 435 papers argues that making agents truly always-on requires treating state as a first-class systems concern — not just remembering, but governing, recovering, and forgetting.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-07">2026-07-07</time></p>
+          <h1>Always-on agents: state, memory, and the governance gap</h1><p class="post-summary">A new survey of 435 papers argues that making agents truly always-on requires treating state as a first-class systems concern — not just remembering, but governing, recovering, and forgetting.</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">memory</span><span class="tag">state</span><span class="tag">governance</span><span class="tag">survey</span></div>
+          
+        </header>
+        <div class="post-body"><p>Most of the agent conversation focuses on what happens <em>during</em> a task: tool calls, reasoning loops, correctness. Far less attention goes to what happens <em>between</em> tasks — the accumulated state, memory, permissions, commitments, and audit trails that persist across interactions.</p>
+<p>A new survey from Ding, Nannapaneni, Liu, and Zhang (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306">Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents</a>, June 2026) argues that this gap is the critical unsolved problem for deploying agents that operate continuously. And they back the claim with a coded analysis of 435 papers.</p>
+<h2 id="what-is-an-always-on-agent">What is an always-on agent?</h2>
+<p>The paper defines always-on agents as LLM-based systems whose future behavior depends on durable, accumulated state from past interactions. This state is not just retrievable memories. It includes:</p>
+<ul>
+<li><strong>Task ledgers</strong> — what the agent has done, is doing, and has committed to do</li>
+<li><strong>Permissions and credentials</strong> — what the agent is authorized to access, and how those authorizations change over time</li>
+<li><strong>Commitments</strong> — promises made to users, other agents, or external systems</li>
+<li><strong>Provenance and audit records</strong> — how each decision was reached, for post-hoc review</li>
+<li><strong>Shared state</strong> — what multiple agents or an agent and its user both rely on</li>
+<li><strong>Trigger conditions</strong> — latent rules that fire when certain conditions are met</li>
+<li><strong>Externally committed effects</strong> — side effects the agent has already pushed into the world</li>
+</ul>
+<p>This is a much richer picture than &quot;the agent has a vector database of past conversations.&quot; An always-on agent is a persistent-state system. The persistence <em>is</em> the feature.</p>
+<h2 id="the-gap-were-good-at-memory-bad-at-governance">The gap: we're good at memory, bad at governance</h2>
+<p>The survey's central finding is blunt: the literature is heavily skewed toward accumulating and retrieving state, with far less attention to how to govern, recover, or relinquish that state.</p>
+<p>We have plenty of papers on retrieval-augmented generation, embedding-based memory, and context window management. We have far fewer on:</p>
+<ul>
+<li><strong>Forgetting.</strong> When should an agent delete a memory? How do you ensure it actually forgets — including from backups, cached contexts, and fine-tuned weights? This connects directly to machine unlearning and to legal requirements like GDPR's right to erasure.</li>
+<li><strong>Recovery.</strong> If an agent's state is corrupted — by a bad interaction, a prompt injection, a buggy tool — how do you roll back? What is the agentic equivalent of a database transaction?</li>
+<li><strong>Auditing.</strong> If an agent made a consequential decision three weeks ago, can you reconstruct exactly what state it had access to at that moment, what it retrieved, and how it weighed that information?</li>
+<li><strong>Authority and scope.</strong> Who can modify the agent's state? If an agent has learned a preference from user A, should user B's interactions be influenced by it? What happens when state from different sources conflicts?</li>
+</ul>
+<p>The paper frames this as a maturity problem. We have built the memory layer for always-on agents. We have not yet built the governance layer. And you cannot safely deploy persistent-state agents at scale without both.</p>
+<h2 id="six-diagnostic-axes">Six diagnostic axes</h2>
+<p>The authors propose six axes for analyzing any piece of agent state:</p>
+<ol>
+<li><strong>Authority</strong> — Who or what created this state item? Who can modify or delete it?</li>
+<li><strong>Scope</strong> — Is this state private to one agent, shared across a fleet, or tied to a specific user?</li>
+<li><strong>Mutability</strong> — Can this state change? Under what conditions? Is it append-only, versioned, or freely overwritable?</li>
+<li><strong>Provenance</strong> — Where did this state come from? What chain of interactions produced it?</li>
+<li><strong>Recoverability</strong> — If this state is lost or corrupted, can it be reconstructed? From what?</li>
+<li><strong>Actionability</strong> — Does this state item directly drive agent behavior, or is it purely informational?</li>
+</ol>
+<p>Most current agent frameworks score well on actionability (of course state drives behavior) and poorly on provenance and recoverability (good luck reconstructing why the agent did what it did six weeks ago). The axes give teams a checklist for auditing their own systems: for each piece of state your agent accumulates, can you answer all six?</p>
+<h2 id="the-lifecycle-state-as-a-managed-resource">The lifecycle: state as a managed resource</h2>
+<p>Beyond the diagnostic axes, the paper introduces a lifecycle model for agent state. State is not just written and retrieved — it moves through a series of stages, each of which can fail:</p>
+<ul>
+<li><strong>Write</strong> — state is created or updated</li>
+<li><strong>Validate</strong> — is the state correct, consistent, not poisoned?</li>
+<li><strong>Organize</strong> — how is state structured, indexed, deduplicated?</li>
+<li><strong>Retrieve</strong> — the well-studied part: finding relevant state at decision time</li>
+<li><strong>Act</strong> — state drives a decision or an external effect</li>
+<li><strong>Update</strong> — the decision's outcome feeds back into state</li>
+<li><strong>Forget</strong> — state is intentionally removed or decayed</li>
+<li><strong>Audit</strong> — state is examined after the fact for correctness or compliance</li>
+<li><strong>Rollback</strong> — state is restored to a prior version after a failure</li>
+</ul>
+<p>The lifecycle exposes the asymmetry in current research. Write, organize, retrieve, and act are well-covered. Validate, forget, audit, and rollback are not. This means we are building agents that accumulate state aggressively and have almost no machinery for unwinding it when something goes wrong.</p>
+<h2 id="aoep-v0-governance-as-an-evaluation-target">AOEP-v0: governance as an evaluation target</h2>
+<p>One of the paper's more interesting contributions is the <strong>Always-On Evaluation Protocol (AOEP-v0)</strong> — a pilot evaluation contract that scores systems on state mutation and recovery obligations rather than answer quality.</p>
+<p>This is a meaningful departure from standard agent benchmarks. Most evals ask: &quot;Did the agent complete the task correctly?&quot; AOEP-v0 asks questions like: &quot;If we corrupt a piece of the agent's state, does it detect the corruption? Can it recover? If we issue a forget request, is the memory actually gone from all layers?&quot; These are systems questions, not task-completion questions. They require testing the agent's governance machinery, not its reasoning quality.</p>
+<p>The protocol is explicitly a v0 — early, incomplete, aspirational. But the direction is right. As agents move from demo to deployment, the evaluation that matters is not &quot;can it answer questions&quot; but &quot;can you trust it to run for six months without accumulating dangerous state, leaking cross-user information, or becoming un-auditable.&quot;</p>
+<h2 id="why-this-matters-now">Why this matters now</h2>
+<p>The timing of this survey is good. Agent deployment is accelerating — from coding assistants to customer-facing autonomous systems. Each of these deployments accumulates state. Each one will eventually hit the governance questions the paper raises. And right now, the answers are mostly ad-hoc: prompt the agent to &quot;be careful about stale information,&quot; log everything to a table nobody queries, hope for the best.</p>
+<p>The paper connects always-on agents to mature disciplines that have already solved adjacent problems: databases (transactions, rollback, consistency), distributed systems (state reconciliation, quorum, fencing), capability security (authority, attenuation, revocation), and formal methods (invariants, verification). The claim — and I think it is correct — is that agent state governance is not a novel problem requiring novel solutions. It is a composition problem: we have the pieces, but we have not wired them together in the agent context.</p>
+<p>This is a call to action. If you are building agent infrastructure, the question is not just &quot;how does the agent remember?&quot; It is &quot;how does the agent govern its memory?&quot; The second question is harder. It is also the one that will determine whether always-on agents are safe to deploy.</p>
+<hr>
+<p><strong>Reference:</strong> Tianyu Ding, Aditya Nannapaneni, Bingfan Liu, Ling Zhang. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306">Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents</a>. arXiv:2606.30306, June 2026.</p>
+<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
+<blockquote>
+<p>An always-on agent is not a faster request-response loop. It is a different architecture. The agent that persists state across interactions is a system. The system must be governed. Governance is the hard part.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

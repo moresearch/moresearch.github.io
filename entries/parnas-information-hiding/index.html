@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="David Parnas&#39;s 1972 paper introduced information hiding: modularize around design decisions likely to change, not around processing steps. The interface reveals as little as possible.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/parnas-information-hiding/">
+  <title>Parnas&#39;s Information Hiding — hackspree</title>
+  <meta property="og:title" content="Parnas&#39;s Information Hiding">
+  <meta property="og:description" content="David Parnas&#39;s 1972 paper introduced information hiding: modularize around design decisions likely to change, not around processing steps. The interface reveals as little as possible.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/parnas-information-hiding/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Parnas&#39;s Information Hiding">
+  <meta name="twitter:description" content="David Parnas&#39;s 1972 paper introduced information hiding: modularize around design decisions likely to change, not around processing steps. The interface reveals as little as possible.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-11">2026-07-11</time></p>
+          <h1>Parnas&#39;s Information Hiding</h1><p class="post-summary">David Parnas&#39;s 1972 paper introduced information hiding: modularize around design decisions likely to change, not around processing steps. The interface reveals as little as possible.</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">parnas</span><span class="tag">information-hiding</span><span class="tag">modules</span><span class="tag">software-architecture</span></div>
+          
+        </header>
+        <div class="post-body"><p>In 1972, David Parnas published a paper that changed how programmers think about modules. The title is dry — &quot;On the Criteria to Be Used in Decomposing Systems into Modules.&quot; The content is a controlled explosion.</p>
+<blockquote>
+<p>&quot;The effectiveness of a 'modularization' is dependent upon the criteria used in dividing the system into modules.&quot;</p>
+</blockquote>
+<p>Before Parnas, modularization meant dividing the program by what it did, in the order it did it. Step one, module one. Step two, module two. The flowchart was the architecture. Parnas pointed out that this criterion — &quot;major steps in the processing&quot; — is the least stable thing about any system.</p>
+<blockquote>
+<p>&quot;Note, however, that nothing is said about the criteria to use in dividing the system into modules. Because the decision to divide a system into n modules of a given size does not determine the decomposition, this paper will discuss that issue.&quot;</p>
+</blockquote>
+<p>Having n modules is not enough. The <em>criterion</em> for drawing the boundaries is everything. The same system with the same number of modules can be flexible or brittle depending on where you put the cuts. Most programmers were putting the cuts in the wrong place. Most still are.</p>
+<h2 id="the-kwic-index">The KWIC index</h2>
+<p>Parnas illustrates with a KWIC (Key Word In Context) index — a system that takes lines of text, produces all circular shifts, sorts them, and formats output. Small enough to understand in one sitting. Complex enough to teach a fifty-year lesson.</p>
+<p>Two modularizations, same functionality:</p>
+<p><strong>Modularization 1: conventional.</strong> Five modules by processing step. Input. Circular Shift. Alphabetizer. Output. Master Control. The data flows predictably. The interfaces expose data structures: character packing, pointer conventions, core formats. Every module knows how the data is stored. This is how most programmers would build it.</p>
+<blockquote>
+<p>&quot;In the first decomposition the criterion used was make each 'major step' in the processing a module.&quot;</p>
+</blockquote>
+<p><strong>Modularization 2: information hiding.</strong> Also five modules. Line Storage hides character packing behind access functions. Input hides the input format. Circular Shifter hides the shift algorithm behind access functions identical to Line Storage. Alphabetizer hides the sort. Output hides the format. Each module's interface reveals nothing about how it works inside.</p>
+<blockquote>
+<p>&quot;The second decomposition was made using 'information hiding' as a criteria. The modules no longer correspond to steps in the processing.&quot;</p>
+</blockquote>
+<blockquote>
+<p>&quot;Every module in the second decomposition is characterized by its knowledge of a design decision which it hides from all others. Its interface or definition was chosen to reveal as little as possible about its inner workings.&quot;</p>
+</blockquote>
+<p>Interface as minimum revelation. Implementation as concealed volatility. A module is not a step in a process. It is a secret keeper. It knows something the others don't, and it tells them only what they need.</p>
+<h2 id="the-change-propagation-test">The change propagation test</h2>
+<p>Parnas applies the test that matters: what modules change when a single design decision changes?</p>
+<p>Input format changes. Modularization 1: every module touches the data. Input, Circular Shift, Alphabetizer, Output, Master Control — all break. Modularization 2: one module. The Input module's interface is stable. Nobody else knows the format changed.</p>
+<p>Sort algorithm changes. Modularization 1: Alphabetizer and Output break. Modularization 2: one module. The Alphabetizer's interface holds. The rest of the system hasn't heard of the sort algorithm it was using and doesn't need to.</p>
+<p>Storage representation changes — packed characters four to a word, or linked lists, or a tree. Modularization 1: every module breaks. Modularization 2: one module. Line Storage. Nothing else even knows how characters are stored.</p>
+<blockquote>
+<p>&quot;It is by looking at changes such as these that we can see the differences between the two modularizations.&quot;</p>
+</blockquote>
+<p>The criterion is not function. It is volatility. Ask not what the module does. Ask what it protects you from when the world changes.</p>
+<h2 id="why-this-was-radical">Why this was radical</h2>
+<p>Parnas inverted the logic of decomposition. You don't modularize by what the system does. You modularize by what you want to be able to change without telling anyone.</p>
+<blockquote>
+<p>&quot;We propose instead that one begins with a list of difficult design decisions or design decisions which are likely to change. Each module is then designed to hide such a decision from the others. Since, in most cases, design decisions transcend time of execution, modules will not correspond to steps in the processing.&quot;</p>
+</blockquote>
+<p>This is the core of the paper. Begin with the volatile. Wrap each volatile decision in a module whose interface survives the change. The execution order is secondary. The change isolation is primary.</p>
+<p>Dijkstra, Parnas's contemporary, had already argued for separation of concerns as a structuring principle. But Dijkstra was thinking about intellectual manageability — can you reason about one part without holding the whole in your head? Parnas added the operational criterion: can you change one part without touching the others? The two criteria converge. What you can change without touching is what you can reason about in isolation. What you can reason about in isolation is what you can build independently.</p>
+<blockquote>
+<p>&quot;The major progress in the area of modular programming has been the development of coding techniques and assemblers which allow one module to be written with little knowledge of the code used in another module... but its use has not resulted in the expected benefits.&quot;</p>
+</blockquote>
+<p>The tools existed. The assemblers could do separate compilation. Modules could be swapped without full rebuilds. The mechanics worked. The designs didn't. Because the criterion was wrong.</p>
+<h2 id="the-efficiency-objection">The efficiency objection</h2>
+<p>Parnas was honest about the cost. Information-hiding modularizations, implemented conventionally as subroutines, would be less efficient than the conventional decomposition. More function calls. More indirection. More boundaries to cross.</p>
+<blockquote>
+<p>&quot;The unconventional decomposition, if implemented with the conventional assumption that a module consists of one or more subroutines, will be less efficient in most cases.&quot;</p>
+</blockquote>
+<p>He sketched an alternative: a preprocessor that inlines module accesses at compile time. The modularization stays clean. The runtime code stays fast. This was 1971. He was describing what we now call zero-cost abstractions. C++ would take twenty more years to get there. Rust would take forty.</p>
+<p>Hoare, in his work on data abstraction, was developing compatible ideas from a different direction — proving modules correct through their specifications. Parnas was less interested in proof than in adaptability. Hoare wanted to know the module was right. Parnas wanted to know you could change your mind about what was right without rewriting everything. Both were necessary. Neither was sufficient alone.</p>
+<h2 id="what-information-hiding-actually-means">What &quot;information hiding&quot; actually means</h2>
+<p>The term has been so thoroughly absorbed that it now means almost nothing. Most &quot;encapsulation&quot; in production code is theater. A getter that returns the internal data structure is not hiding anything. It is exposing the decision with extra syntax.</p>
+<blockquote>
+<p>&quot;Its interface or definition was chosen to reveal as little as possible about its inner workings.&quot;</p>
+</blockquote>
+<p><em>As little as possible.</em> Not &quot;as little as convenient.&quot; Not &quot;as little as the framework supports.&quot; As little as the problem allows while still being useful. If you change the data structure and the caller's code still compiles, you did information hiding. If the caller imports the type, you didn't. If the caller casts to the internal type, you really didn't. If the caller wrote their own parser for your output format, you have lost control of your own design decision and someone else is now coupled to a choice you didn't even know you were making.</p>
+<p>Wirth, with stepwise refinement, had given programmers a method for designing top-down. Parnas gave them a reason to design bottom-up — from the volatile decisions outward. The two methods are compatible but the emphasis is different. Wirth asked: what are the steps? Parnas asked: what are the secrets? The steps change. The secrets change too, but when they do, you want them contained.</p>
+<h2 id="the-connection-to-brooks">The connection to Brooks</h2>
+<p>This is the paper referenced throughout the Brooks on Software Design series. Parnas and Brooks worked the same era and reached compatible conclusions from different premises.</p>
+<p>Brooks: &quot;The building of a design is the forcing of the will of one upon the stuff of the world.&quot; One mind controls the interfaces. Parnas: those interfaces exist to hide the volatile decisions. One mind decides <em>what to hide</em>. The rest of the system builds against stable interfaces and doesn't need to know.</p>
+<p>Brooks without Parnas: one mind, but no criterion for where to draw the modular boundaries. Parnas without Brooks: the right criterion, but no mechanism for enforcing it across a system. Together: one designer, one set of secrets, one set of stable interfaces. That is the architecture of every system that has aged well. That is also the architecture of almost no system you actually work on.</p>
+<p>The paper is from 1971. It is fifty-five years old. It was right then. It is right now. Most production code still violates its central principle — modularizing by step, not by secret, and wondering why changes ripple. This is either comforting or damning. Parnas would probably note that both reactions are consistent with his theory. He'd hidden which one he meant. That's how you know the man understood his own idea.</p>
+<hr>
+<p><strong>Reference:</strong> David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, Vol. 15, No. 12, December 1972, pp. 1053-1058. <a target="_blank" rel="noopener noreferrer" href="https://prl.khoury.northeastern.edu/img/p-tr-1971.pdf">PDF</a></p>
+<p>Infrastructure choice is engineering choice. The protocol, the format, the runtime — each is a decision that shapes everything built on top of it. DOT for pipelines, Temporal vs DBOS for durable execution, NATS for messaging. The choice determines the coupling, the scaling, the failure modes. The engineer who treats infrastructure as a commodity gets the failure modes of the default. The engineer who treats it as a design decision gets the failure modes they chose.</p>
+<blockquote>
+<p>A module is not a step in a process. It is a secret keeper. It knows something the other modules don't and reveals only what they need. The interface is the revelation. The implementation is the secret.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

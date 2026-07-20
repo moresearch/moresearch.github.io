@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-industry-boundary/">
+  <title>S&amp;R: Where Should You Draw the Line Between Search and Recommendation? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: Where Should You Draw the Line Between Search and Recommendation?">
+  <meta property="og:description" content="How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-industry-boundary/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: Where Should You Draw the Line Between Search and Recommendation?">
+  <meta name="twitter:description" content="How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: Where Should You Draw the Line Between Search and Recommendation?</h1><p class="post-summary">How four leading engineering organizations handle the search–recommendation boundary in production: Spotify&#39;s LLM intent router, DoorDash&#39;s content-first embeddings and Consumer Memory Blocks, Airbnb&#39;s listing embeddings for real-time search personalization, and Pinterest&#39;s two-tower architectures.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">spotify</span><span class="tag">doordash</span><span class="tag">airbnb</span><span class="tag">pinterest</span><span class="tag">two-tower</span><span class="tag">embeddings</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. Every company that does both draws the line somewhere. Spotify routes on intent. DoorDash separates the pipelines. Airbnb shares embeddings but splits the ranking features. The line is a choice, and the choice has architectural consequences. This post examines four different answers to the same question: where does search end and recommendation begin?</em></p>
+<p><strong>On the search side of the line,</strong> a user articulates intent. The system retrieves. Fidelity to the query is the metric. Personalization is optional, applied sparingly, with guardrails. If a DoorDash user types &quot;Sichuan noodle soup&quot; and the system shows pizza because their order history says they love pizza, the system has crossed the line in the wrong direction. The query is a contract. The system's job is to honor it.</p>
+<p><strong>On the recommendation side of the line,</strong> the user articulates nothing. The system infers from behavior. Surprise is a feature, not a bug. If the system only shows what the user has already ordered, it has failed to recommend — it has only retrieved from memory. The error is subtler. A bad search result is visible: &quot;I asked for X and got Y.&quot; A bad recommendation is invisible: the user didn't see what they would have loved, and they will never know. The line between the two is where engineering meets judgment.</p>
+<p>Netflix isn't the only company navigating the search–recommendation boundary. Spotify, DoorDash, Airbnb, and Pinterest each handle it differently — and their engineering blogs document the trade-offs. This part examines four production architectures.</p>
+<h2 id="spotify-intent-based-routing-with-llms">Spotify: Intent-Based Routing with LLMs</h2>
+<p>Spotify's 2025 paper <em>&quot;You Say Search, I Say Recs&quot;</em> describes an LLM-based router that classifies user intent and dispatches accordingly [1]:</p>
+<pre><code class="language-python">from enum import Enum
+
+class QueryIntent(Enum):
+    NAVIGATIONAL = &quot;navigational&quot;    # &quot;find song X&quot; → search
+    EXPLORATORY = &quot;exploratory&quot;      # &quot;Italian 80s disco nostalgia&quot; → recs
+    MIXED = &quot;mixed&quot;                  # both paths, parallel → fused results
+
+class SpotifyIntentRouter:
+    &quot;&quot;&quot;
+    LLM-based router: classify intent, route to search or recommendation.
+
+    Key design decisions:
+    - Only the query goes to the router (NOT user features) → max cache hits
+    - User features go to downstream tools → personalization where it belongs
+    - Small distilled LLM: 60% latency reduction, 99% cost reduction vs teacher
+    &quot;&quot;&quot;
+
+    def __init__(self, llm_model):
+        self.llm = llm_model  # small fine-tuned model, p75 latency ~450ms
+
+    def classify(self, query: str) -&gt; QueryIntent:
+        &quot;&quot;&quot;Classify query intent. Cached aggressively — no user features.&quot;&quot;&quot;
+        if cached := self.cache.get(query):
+            return cached
+        intent = self.llm.classify(query)  # &quot;navigational&quot;, &quot;exploratory&quot;, &quot;mixed&quot;
+        self.cache.set(query, intent)
+        return intent
+
+    def route(self, query: str, user_features: dict) -&gt; SearchResult:
+        intent = self.classify(query)
+
+        if intent == QueryIntent.NAVIGATIONAL:
+            return self.search_backend.search(query, user_features)
+            # Elasticsearch + BM25 + Voyager ANN
+
+        elif intent == QueryIntent.EXPLORATORY:
+            return self.recs_backend.recommend(query, user_features)
+            # Collaborative filtering + content-based + Voyager ANN
+
+        else:  # MIXED — both paths in parallel, fuse results
+            search_result = self.search_backend.search_async(query, user_features)
+            recs_result = self.recs_backend.recommend_async(query, user_features)
+            return self.fuse(search_result, recs_result)
+
+# Results vs. regular search:
+# +115% for finding similar artists
+# +91% for new music discovery
+# +25% for broad music searches
+
+# Spotify's Unified Embedding Infrastructure (Voyager) [8]:
+# HNSW-based, 10x faster than Annoy at same recall.
+# Powers both search AND recommendation — shared infrastructure,
+# task-specific usage patterns.
+</code></pre>
+<p>Spotify's key finding: <strong>Semantic IDs optimized for search don't generalize to recommendation</strong>, and vice versa. A multi-task bi-encoder achieves a Pareto-optimal trade-off, but you can't optimize one embedding space for both tasks without compromise [2].</p>
+<h2 id="doordash-content-first-embeddings-task-aware-retrieval">DoorDash: Content-First Embeddings, Task-Aware Retrieval</h2>
+<p>DoorDash's environment is intent-driven and transactional. A click tells you less than you think:</p>
+<pre><code class="language-python"># DoorDash's core insight: clicks are poor proxies for semantics.
+# A click on a Sichuan noodle soup doesn't distinguish spicy preference
+# from noodle preference — or from just being hungry.
+
+# Their solution: LLMs generate rich content profiles, embeddings follow.
+
+class DoorDashContentPipeline:
+    &quot;&quot;&quot;Content-first: LLM profiles → off-the-shelf encoder → ANN retrieval.&quot;&quot;&quot;
+
+    def generate_item_profile(self, item: dict) -&gt; str:
+        &quot;&quot;&quot;LLM produces a standardized narrative for every item.&quot;&quot;&quot;
+        prompt = f&quot;&quot;&quot;
+        Describe this menu item for a food recommendation system:
+        Name: {item['name']}
+        Category: {item['category']}
+        Ingredients: {item['ingredients']}
+        Preparation: {item['preparation']}
+        Cuisine type: {item['cuisine']}
+
+        Cover: ingredients, preparation method, cuisine attributes,
+        dietary properties (spicy, vegetarian, etc.), eating context,
+        flavor profile.
+        &quot;&quot;&quot;
+        return self.llm.generate(prompt)
+
+    def embed(self, profile: str) -&gt; np.ndarray:
+        &quot;&quot;&quot;Encode the profile with an off-the-shelf encoder.&quot;&quot;&quot;
+        return self.encoder.encode(profile)  # gemini-embedding-001, 256-dim MRL
+
+    def retrieve(self, query_embedding: np.ndarray, k: int = 100) -&gt; list[int]:
+        &quot;&quot;&quot;ANN search over pre-computed item embeddings.&quot;&quot;&quot;
+        return self.milvus_index.search(query_embedding, k)
+
+    # Key finding: upgrading profile quality → +31% improvement.
+    # Upgrading the encoder on raw metadata → only +6%.
+    # Data quality dominates model choice.
+
+# Results:
+# -3.65% null search rate, +0.66% CVR, +0.072% 7D active customers
+</code></pre>
+<p>For recommendations, DoorDash developed <strong>Consumer Memory Blocks</strong> — typed, composable representations of everything known about a user:</p>
+<pre><code class="language-python">class ConsumerMemoryBlock:
+    &quot;&quot;&quot;
+    Structured, namespaced user state serialized as JSON for LLM prompt input.
+
+    Properties:
+    - Composable: different use cases request different sub-blocks
+    - Evidenced, not inferred: derived from observed behavior with provenance
+    - Extensible: new sub-blocks without downstream disruption
+    &quot;&quot;&quot;
+
+    def build(self, user_id: str, sub_blocks: list[str]) -&gt; dict:
+        blocks = {}
+        if &quot;long_term_preferences&quot; in sub_blocks:
+            blocks[&quot;long_term&quot;] = {
+                &quot;cuisines&quot;: [&quot;Thai&quot;, &quot;Sichuan&quot;, &quot;Italian&quot;],
+                &quot;dietary&quot;: [&quot;prefers spicy&quot;, &quot;avoids dairy&quot;],
+                &quot;price_range&quot;: &quot;$$-$$$&quot;,
+                &quot;avg_order_value&quot;: 42.50,
+            }
+        if &quot;behavioral_patterns&quot; in sub_blocks:
+            blocks[&quot;patterns&quot;] = {
+                &quot;order_days&quot;: [&quot;Fri&quot;, &quot;Sat&quot;],
+                &quot;peak_time&quot;: &quot;19:00-21:00&quot;,
+                &quot;group_orders&quot;: True,
+                &quot;repeat_rate&quot;: 0.35,
+            }
+        return blocks
+
+    def to_prompt(self, blocks: dict) -&gt; str:
+        &quot;&quot;&quot;Serialize blocks as compact JSON for the LLM carousel generator.&quot;&quot;&quot;
+        return json.dumps(blocks)
+
+# Generated carousels are embedded OFFLINE, retrieved via Milvus ONLINE.
+# No LLM in the request path — cost amortized across the refresh interval.
+# Results: +2.4% order rate.
+</code></pre>
+<h2 id="airbnb-embeddings-that-bridge-search-and-discovery">Airbnb: Embeddings That Bridge Search and Discovery</h2>
+<p>Airbnb's KDD 2018 paper trained listing embeddings on 800 million search click sessions using skip-gram adapted from word2vec [3]:</p>
+<pre><code class="language-python">class AirbnbListingEmbeddings:
+    &quot;&quot;&quot;Domain-specific embedding training for travel search.&quot;&quot;&quot;
+
+    def generate_training_pairs(self, sessions: list[list[int]]) -&gt; list[tuple[int, int]]:
+        &quot;&quot;&quot;
+        Key innovations over standard word2vec:
+
+        1. In-market negative sampling: users search within a single city.
+           Negatives drawn globally are trivially easy to reject.
+           Draw negatives from the SAME MARKET for harder discrimination.
+
+        2. Booked listing as global context: the booked listing is ALWAYS
+           treated as the context being predicted, regardless of position in
+           the click sequence. The booking is the signal. Everything else is noise.
+        &quot;&quot;&quot;
+        pairs = []
+        for session in sessions:
+            booked_id = session[-1]  # last item is the booking
+            for clicked_id in session[:-1]:
+                pairs.append((clicked_id, booked_id))
+        return pairs
+
+    def compute_serving_features(self, user_id: int, candidates: list[int],
+                                 embeddings: dict[int, np.ndarray]) -&gt; dict[str, np.ndarray]:
+        &quot;&quot;&quot;
+        Embedding-based features for real-time ranking.
+
+        Five embedding features ranked among the TOP 20 of 104 total features.
+        &quot;&quot;&quot;
+        user_recent = self.get_recent_interactions(user_id)
+        return {
+            # Similarity to listings the user recently clicked
+            &quot;EmbClickSim&quot;: self.mean_sim(user_recent['clicked'], candidates, embeddings),
+            # Similarity to listings the user skipped
+            &quot;EmbSkipSim&quot;: self.mean_sim(user_recent['skipped'], candidates, embeddings),
+            # Similarity to the last listing the user spent significant time on
+            &quot;EmbLastLongClickSim&quot;: self.mean_sim([user_recent['last_long_click']],
+                                                  candidates, embeddings),
+        }
+
+# Results: +2.27% offline NDCG, statistically significant booking gain online.
+# Similar listing recommendations: +20% CTR over prior algorithm.
+</code></pre>
+<p>Airbnb's 2019 follow-up on deep learning documented instructive failures: listing ID embeddings overfit (too few bookings per listing), and multi-task learning for bookings + long views increased views but not bookings — because expensive listings get looked at but not booked [4].</p>
+<h2 id="pinterest-two-tower-architectures-for-homefeed-and-search">Pinterest: Two-Tower Architectures for Homefeed and Search</h2>
+<p>Pinterest's two-tower model, influenced by the Wide &amp; Deep architecture [9], powers both homefeed and search:</p>
+<pre><code class="language-python">class PinterestTwoTower(torch.nn.Module):
+    &quot;&quot;&quot;Two-tower: user tower and item tower, dot-product scoring.&quot;&quot;&quot;
+
+    def __init__(self, user_input_dim: int, item_input_dim: int, hidden: int = 256):
+        super().__init__()
+        # User tower: long-term history, context, real-time sequences
+        self.user_tower = torch.nn.Sequential(
+            torch.nn.Linear(user_input_dim, hidden * 4),
+            torch.nn.ReLU(),
+            MaskNet(hidden * 4, num_blocks=3),   # bitwise feature crossing
+            torch.nn.Linear(hidden * 4, hidden),
+        )
+        # Item tower: category, description, image features
+        self.item_tower = torch.nn.Sequential(
+            torch.nn.Linear(item_input_dim, hidden * 4),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden * 4, hidden),
+        )
+
+    def forward(self, user_features, item_features):
+        user_emb = F.normalize(self.user_tower(user_features), dim=1)
+        item_emb = F.normalize(self.item_tower(item_features), dim=1)
+        return (user_emb * item_emb).sum(dim=1)  # dot product
+
+# Item embeddings pre-computed offline, indexed in Manas (HNSW-based ANN).
+# User tower runs once per request at serving time.
+# This decoupling is the key to ~3ms median latency at 300K QPS.
+</code></pre>
+<p>For search, Pinterest extended this into <strong>OmniSearchSage</strong> — a multi-task, multi-entity framework where a single unified query embedding retrieves pins, products, and related queries simultaneously [5]. A teacher-student distillation approach followed: an 8B Llama cross-encoder (teacher, +12–20% improvement) → bi-encoder student trained on 100× more data from daily search logs (85% query cache hit rate).</p>
+<h2 id="the-pattern-across-all-four-companies">The Pattern Across All Four Companies</h2>
+<p>Every system that successfully spans search and recommendation does so by encoding <strong>which task it's doing</strong> as a first-class signal. Spotify uses an explicit router. DoorDash uses separate retrieval pipelines with shared embeddings. Airbnb uses the same embeddings but different ranking features for search vs. discovery. Pinterest uses the same two-tower but different objectives for homefeed vs. search.</p>
+<p>The common pattern: <strong>unification where it reduces cost, separation where it preserves correctness</strong>.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>Spotify found that Semantic IDs optimized for search don't generalize to recommendation, and vice versa.</strong> Is this a fundamental property of the two tasks, or an artifact of how we train embeddings? What would a <em>truly</em> unified embedding space look like?</p>
+</li>
+<li>
+<p><strong>DoorDash's finding — data quality (+31%) dominates model choice (+6%) — echoes a broader truth.</strong> How much of the search-vs-recommendation gap is actually a <em>data quality</em> gap in disguise?</p>
+</li>
+<li>
+<p><strong>Every successful system in this survey encodes task identity as a first-class signal.</strong> Is the search/recommendation distinction a permanent architectural feature, or a temporary crutch that better models will eventually absorb?</p>
+</li>
+<li>
+<p><strong>Airbnb's failed multi-task experiment (bookings + long views) is a warning about proxy objectives.</strong> What other proxy objectives are we optimizing across the industry that don't actually measure what we think they measure?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://research.atspotify.com/2025/9/you-say-search-i-say-recs-a-scalable-agentic-approach-to-query-understanding"><em>You Say Search, I Say Recs: A Scalable Agentic Approach to Query Understanding and Exploratory Search</em></a>. September 2025.</p>
+</li>
+<li>
+<p>Spotify Research. <a target="_blank" rel="noopener noreferrer" href="https://www.research.atspotify.com/2025/9/semantic-ids-for-generative-search-and-recommendation"><em>Semantic IDs for Generative Search and Recommendation</em></a>. September 2025.</p>
+</li>
+<li>
+<p>Mihajlo Grbovic and Haibin Cheng. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/3219819.3219885"><em>Real-time Personalization using Embeddings for Search Ranking at Airbnb</em></a>. KDD 2018.</p>
+</li>
+<li>
+<p>Malay Haldar et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1810.09591"><em>Applying Deep Learning to Airbnb Search</em></a>. KDD 2019.</p>
+</li>
+<li>
+<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-llms-to-build-content-embeddings-for-search-and-recommendations/"><em>Using LLMs to Build Content Embeddings for Search and Recommendations</em></a>. 2025.</p>
+</li>
+<li>
+<p>DoorDash Engineering. <a target="_blank" rel="noopener noreferrer" href="https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/"><em>Offline LLMs, Online Personalization: Generating Carousels at DoorDash</em></a>. 2025.</p>
+</li>
+<li>
+<p>Pinterest Engineering. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/pinterest-engineering/advancements-in-embedding-based-retrieval-at-pinterest-homefeed-176a3c03df64"><em>Advancements in Embedding-Based Retrieval at Pinterest Homefeed</em></a>. 2024.</p>
+</li>
+<li>
+<p>Spotify Engineering. <a target="_blank" rel="noopener noreferrer" href="https://engineering.atspotify.com/2023/10/introducing-voyager-spotifys-new-nearest-neighbor-search-library"><em>Introducing Voyager: Spotify's New Nearest-Neighbor Search Library</em></a>. October 2023.</p>
+</li>
+<li>
+<p>Heng-Tze Cheng et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2988450.2988454"><em>Wide &amp; Deep Learning for Recommender Systems</em></a>. RecSys 2016.</p>
+</li>
+<li>
+<p>Mihajlo Grbovic et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2783258.2788627"><em>E-commerce in Your Inbox: Product Recommendations at Scale</em></a>. KDD 2015.</p>
+</li>
+<li>
+<p>Steffen Rendle, Christoph Freudenthaler, Zeno Gantner, and Lars Schmidt-Thieme. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.5555/1795114.1795167"><em>BPR: Bayesian Personalized Ranking from Implicit Feedback</em></a>. UAI 2009.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

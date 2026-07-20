@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A governance token gives its holder the right to vote on a protocol&#39;s decisions. The functional origin is the joint-stock company — invented in 1602 by the Dutch East India Company. Shareholders owned the company. Shareholders voted. The DAO is the joint-stock company, automated. The governance token is the share. The vote is the product.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-daos-governance/">
+  <title>Governance Tokens and DAOs — hackspree</title>
+  <meta property="og:title" content="Governance Tokens and DAOs">
+  <meta property="og:description" content="A governance token gives its holder the right to vote on a protocol&#39;s decisions. The functional origin is the joint-stock company — invented in 1602 by the Dutch East India Company. Shareholders owned the company. Shareholders voted. The DAO is the joint-stock company, automated. The governance token is the share. The vote is the product.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-daos-governance/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Governance Tokens and DAOs">
+  <meta name="twitter:description" content="A governance token gives its holder the right to vote on a protocol&#39;s decisions. The functional origin is the joint-stock company — invented in 1602 by the Dutch East India Company. Shareholders owned the company. Shareholders voted. The DAO is the joint-stock company, automated. The governance token is the share. The vote is the product.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Governance Tokens and DAOs</h1><p class="post-summary">A governance token gives its holder the right to vote on a protocol&#39;s decisions. The functional origin is the joint-stock company — invented in 1602 by the Dutch East India Company. Shareholders owned the company. Shareholders voted. The DAO is the joint-stock company, automated. The governance token is the share. The vote is the product.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">dao</span><span class="tag">governance</span><span class="tag">tokens</span><span class="tag">joint-stock</span></div>
+          
+        </header>
+        <div class="post-body"><p>The governance token is the most abstract financial instrument in DeFi. It confers no claim on cash flows. It confers no ownership of assets. It confers the right to vote on protocol parameters — fee levels, collateral types, treasury allocations. The token is a share in the protocol's governance, not in its profits. The distinction is the subject of regulatory uncertainty, legal innovation, and philosophical debate about the nature of ownership in decentralized systems.</p>
+<p>The first governance token was COMP, launched by Compound in May 2020. COMP holders vote on Compound's interest rate models, collateral factors, and treasury expenditures. The token was airdropped to users of the protocol — lenders and borrowers. The airdrop was the reward for early adoption. The reward created a constituency of token holders with a stake in the protocol's success. The constituency was the governance community. The community was the innovation.</p>
+<h2 id="the-functional-origin-the-joint-stock-company">The functional origin: the joint-stock company</h2>
+<p>The joint-stock company was invented by the Dutch East India Company (VOC) in 1602. Before the VOC, business enterprises were partnerships — small groups of investors who pooled capital for a single voyage. The partnership dissolved when the voyage ended. The VOC introduced permanent capital: investors bought shares that could be held indefinitely and traded on the Amsterdam Stock Exchange. The shares conferred ownership of the company's assets and a claim on its profits — dividends. The shares also conferred voting rights — the right to elect the company's directors. The voting right was proportional to share ownership. One share, one vote.</p>
+<p>The joint-stock company was the institutional innovation that enabled European colonialism. It pooled capital from thousands of investors. It operated at a scale that no partnership could match. It outlasted individual voyages, individual governors, individual lifetimes. The company was immortal. The shares were the mechanism of immortality.</p>
+<p>The governance token is the joint-stock share, stripped of the dividend right and amplified in the voting right. The token holder votes on protocol parameters. The vote is on-chain, transparent, and binding — the winning proposal is executed automatically by the protocol's smart contracts. The automation is the innovation. The innovation eliminates the management layer. The shareholders are the managers. The code executes their decisions.</p>
+<h2 id="the-dao">The DAO</h2>
+<p>A Decentralized Autonomous Organization (DAO) is a governance token plus a treasury plus a decision-making process. The token holders propose and vote on how to spend the treasury. The treasury is funded by protocol revenue — trading fees, lending interest, liquidation penalties. The revenue flows to the treasury, not to token holders directly. The token holders decide how to allocate it: development grants, liquidity incentives, bug bounties, token buybacks.</p>
+<p>The DAO is the organizational form of DeFi protocols. Uniswap is governed by a DAO. Compound is governed by a DAO. MakerDAO is the original DAO, governing DAI since 2017. The DAO form is evolving. Early DAOs were plutocratic — one token, one vote. Wealth determined control. The concentration of token ownership produced concentration of governance power. The concentration is the subject of experimentation: quadratic voting, delegation, conviction voting, reputation-weighted voting. The experiments are attempts to solve the plutocracy problem. The problem is inherent in token-weighted voting. The solutions are partial.</p>
+<h2 id="the-regulatory-question">The regulatory question</h2>
+<p>Governance tokens exist in a regulatory gray zone. They confer voting rights without dividend rights. The SEC has indicated that tokens with governance rights may still be securities if they are sold to raise capital for a common enterprise with the expectation of profit derived from the efforts of others — the Howey test. The profit expectation is created by token buybacks, fee switches that redirect protocol revenue to token holders, and the appreciation of the token's market price driven by protocol growth. The appreciation is the profit. The profit is the security.</p>
+<p>The DAO's legal status is also uncertain. A DAO is not a corporation. It has no legal personality. It cannot sign contracts, sue, or be sued. The lack of legal personality protects token holders from personal liability but also limits the DAO's ability to interact with the traditional legal system. Several jurisdictions — Wyoming, Vermont, the Marshall Islands — have created DAO-specific legal entities. The entities provide limited liability to token holders while preserving on-chain governance. The entities are the bridge between DAO governance and legal recognition.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Adam Smith, <em>The Wealth of Nations</em> (1776). Smith's analysis of the joint-stock company identified the agency problem that DAOs attempt to solve: the separation of ownership and control. In a joint-stock company, shareholders own the company but directors control it. The directors may pursue their own interests rather than the shareholders'. The agency problem is the cost of professional management. DAOs eliminate the management layer. The shareholders are the directors. The elimination of the agency problem is the theoretical advantage of DAOs. The practical disadvantage is the plutocracy problem and the inefficiency of collective decision-making. The trade-off is the subject of DAO governance research. The research is ongoing.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>A DAO is a distributed system where the state is the treasury, the transactions are governance proposals, and the consensus mechanism is token-weighted voting. The architecture is identical to a blockchain: proposals are transactions, votes are signatures, execution is a state transition. The DAO is a blockchain with a single application — treasury management — built on top of an existing blockchain. The recursion is elegant: a governance system implemented as smart contracts on a chain that is itself governed by a similar mechanism.</p>
+<p>The DAO's core engineering problem is the same as any access control system: who can do what, under what conditions, with what checks and balances. Token-weighted voting is one access control policy — more tokens, more power. Timelocks on execution are another — proposals pass, but execution is delayed, giving stakeholders time to exit if they disagree. Multi-signature execution is a third — multiple parties must approve. These are the same patterns as role-based access control (RBAC), change management windows, and approval workflows in enterprise software. The domain is governance. The patterns are authorization.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Adam Smith, <em>The Wealth of Nations</em>, 1776.</li>
+<li>Compound, &quot;Compound Governance,&quot; 2020.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#game-mechanism-design">Mechanism Design</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

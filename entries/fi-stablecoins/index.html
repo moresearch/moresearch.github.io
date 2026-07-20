@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A stablecoin is a token that holds its value relative to a reference asset. The idea is older than crypto: David Ricardo proposed a gold-backed currency in 1816. The implementation is newer: fiat-backed (USDT), crypto-overcollateralized (DAI), and algorithmic (UST, which failed). The story of stablecoins is the story of money itself, repeatedly reinvented.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-stablecoins/">
+  <title>Stablecoins — hackspree</title>
+  <meta property="og:title" content="Stablecoins">
+  <meta property="og:description" content="A stablecoin is a token that holds its value relative to a reference asset. The idea is older than crypto: David Ricardo proposed a gold-backed currency in 1816. The implementation is newer: fiat-backed (USDT), crypto-overcollateralized (DAI), and algorithmic (UST, which failed). The story of stablecoins is the story of money itself, repeatedly reinvented.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-stablecoins/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Stablecoins">
+  <meta name="twitter:description" content="A stablecoin is a token that holds its value relative to a reference asset. The idea is older than crypto: David Ricardo proposed a gold-backed currency in 1816. The implementation is newer: fiat-backed (USDT), crypto-overcollateralized (DAI), and algorithmic (UST, which failed). The story of stablecoins is the story of money itself, repeatedly reinvented.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Stablecoins</h1><p class="post-summary">A stablecoin is a token that holds its value relative to a reference asset. The idea is older than crypto: David Ricardo proposed a gold-backed currency in 1816. The implementation is newer: fiat-backed (USDT), crypto-overcollateralized (DAI), and algorithmic (UST, which failed). The story of stablecoins is the story of money itself, repeatedly reinvented.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">stablecoins</span><span class="tag">dai</span><span class="tag">usdt</span><span class="tag">monetary-history</span></div>
+          
+        </header>
+        <div class="post-body"><p>The desire for stable value is as old as money. Every monetary innovation — coinage, paper currency, the gold standard, fiat money — was an attempt to create a medium of exchange whose value was predictable. Stablecoins are the latest iteration. They are tokens designed to maintain a peg to a reference asset, typically the U.S. dollar. They are the bridge between the volatile world of crypto assets and the stable world of everyday commerce.</p>
+<p>The three types of stablecoins — fiat-backed, crypto-overcollateralized, and algorithmic — each have a different mechanism for maintaining the peg. Each mechanism has a different failure mode. Each failure mode has been demonstrated in production. The demonstrations were expensive. The lessons are public.</p>
+<h2 id="the-functional-origin-david-ricardo-and-the-gold-standard">The functional origin: David Ricardo and the gold standard</h2>
+<p>In 1816, David Ricardo published <em>Proposals for an Economical and Secure Currency</em>. Ricardo, the greatest economist of his generation, argued that the Bank of England should stop issuing gold coins and instead issue paper notes fully backed by gold bullion. The public would hold notes, not coins. The notes would be redeemable for gold at a fixed rate. The gold would sit in the Bank's vaults. The system would be more efficient — paper is cheaper to produce and easier to transport than gold — while maintaining the stability of the gold standard.</p>
+<p>Ricardo's proposal was not adopted in his lifetime. It was adopted after his death, in the Bank Charter Act of 1844. The act centralized note issuance in the Bank of England and required new notes to be fully backed by gold. The gold standard, in this form, persisted until 1931. The principle — a paper claim on a reserve asset, redeemable at a fixed rate — is the principle of the fiat-backed stablecoin. Tether (USDT) is a Ricardo note. Circle (USDC) is a Ricardo note. The notes are issued on a blockchain instead of on paper. The reserve is held in a bank account instead of a vault. The principle is the same.</p>
+<p>The failure mode is also the same. If the reserve is not fully backing the notes — if the issuer issues more notes than it holds reserves — the peg is vulnerable to a run. The Bank of England suspended convertibility in 1797, during the Napoleonic Wars, and again in 1914, during World War I. Tether has never suspended convertibility, but it has never been fully audited. The opacity is the vulnerability. The vulnerability is the subject of ongoing regulatory attention.</p>
+<h2 id="crypto-overcollateralized-dai">Crypto-overcollateralized: DAI</h2>
+<p>DAI, launched by MakerDAO in 2017, is a stablecoin backed by crypto assets rather than fiat reserves. The mechanism: users deposit crypto collateral (ETH, WBTC, other approved assets) into a vault. They mint DAI against the collateral. The collateralization ratio must exceed a minimum — typically 150%. If the value of the collateral falls below the liquidation threshold, the vault is liquidated: the collateral is sold, the DAI is repaid, and the remaining collateral is returned to the user. The overcollateralization absorbs price volatility. The liquidation mechanism enforces the peg.</p>
+<p>DAI is the first decentralized stablecoin that achieved scale. It survived the March 2020 crash — when ETH fell 50% in a day, Maker's liquidation system failed to keep up, and DAI briefly traded above its peg — and emerged with improved mechanisms. It survived the Luna collapse in May 2022 — when UST imploded and algorithmic stablecoins were discredited — and DAI's overcollateralized model was vindicated by contrast. DAI is now the dominant decentralized stablecoin, with a market cap exceeding $5 billion.</p>
+<p>The innovation: a stablecoin backed by volatile assets, stabilized by overcollateralization and automated liquidation. The risk: a black swan event that crashes collateral faster than the liquidation system can respond. The risk is managed by collateral diversification, liquidation parameter tuning, and an emergency shutdown mechanism. The risk is not eliminated. It is priced.</p>
+<h2 id="algorithmic-ust-and-the-lesson">Algorithmic: UST and the lesson</h2>
+<p>TerraUSD (UST), launched in 2020, was an algorithmic stablecoin. It had no reserves. It maintained its peg through a seigniorage mechanism: UST could be redeemed for $1 worth of LUNA, Terra's governance token, at any time. If UST traded below $1, arbitrageurs would buy UST and redeem it for LUNA, profiting from the difference and pushing UST back to $1. If UST traded above $1, arbitrageurs would mint UST with LUNA and sell UST, pushing it back down. The mechanism relied on LUNA having value. In May 2022, confidence in LUNA collapsed. UST lost its peg. The death spiral: UST below peg → arbitrageurs redeem for LUNA → LUNA supply expands → LUNA price falls → confidence falls further → more redemptions. Within days, $40 billion in market value was destroyed.</p>
+<p>The UST collapse was the most significant event in stablecoin history. It demonstrated that algorithmic stablecoins without exogenous collateral are vulnerable to death spirals. The vulnerability is not a bug. It is a property of the mechanism. The mechanism works when confidence holds. Confidence is reflexive — it holds when people believe it will hold. When belief cracks, the mechanism accelerates the collapse. The acceleration is the death spiral. The death spiral is a feature of the design.</p>
+<p>The lesson: stablecoins require backing. The backing can be fiat (USDT, USDC), crypto overcollateralized (DAI), or a basket of assets. It cannot be pure belief. Belief is not capital. Capital is the foundation. The foundation matters when the market turns.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Friedrich Hayek, <em>The Denationalisation of Money</em> (1976). Hayek argued that the government monopoly on currency issuance should be abolished and replaced with competing private currencies. Each issuer would maintain its currency's value by promising redeemability and managing supply. The market would select the currencies that maintained stable purchasing power. Hayek's vision was dismissed as utopian. Stablecoins are the partial realization of that vision. Competing private currencies. Redeemability as the mechanism. Market selection as the arbiter. UST failed the market test. DAI passed it. The market is the selector. The selection is ongoing.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>A stablecoin is a control system. The peg is the setpoint. The collateral is the actuator. The oracle is the sensor. When the price deviates from the peg, the mechanism acts: mint, burn, liquidate. The control loop is the same as a thermostat, an autoscaler, a PID controller. The domain is monetary. The engineering is control theory.</p>
+<p>DAI and USDC are different control strategies for the same objective — stability. DAI uses crypto collateral and automated liquidation, a reactive strategy. USDC uses fiat reserves and legal redemption, a preventive strategy. The choice between reactive and preventive control is an engineering trade-off between capital efficiency and tail risk. The engineer who understands control theory can evaluate the trade-off. The investor who doesn't is evaluating a black box.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>David Ricardo, <em>Proposals for an Economical and Secure Currency</em>, 1816.</li>
+<li>Friedrich Hayek, <em>The Denationalisation of Money</em>, Institute of Economic Affairs, 1976.</li>
+<li>MakerDAO, &quot;The Maker Protocol: MakerDAO's Multi-Collateral Dai System,&quot; 2019.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Scarcity Rules Everything</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

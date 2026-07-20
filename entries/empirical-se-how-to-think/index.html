@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/empirical-se-how-to-think/">
+  <title>Empirical Software Engineering: How to Think Empirically — hackspree</title>
+  <meta property="og:title" content="Empirical Software Engineering: How to Think Empirically">
+  <meta property="og:description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/empirical-se-how-to-think/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Empirical Software Engineering: How to Think Empirically">
+  <meta name="twitter:description" content="How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-20">2026-07-20</time></p>
+          <h1>Empirical Software Engineering: How to Think Empirically</h1><p class="post-summary">How to read a study, spot a confound, and build a personal practice of empiricism. The methods, the reading list, and the intellectual posture that Wayne&#39;s talk recommends.</p>
+          <div class="tags"><span class="tag">empirical-se</span><span class="tag">methodology</span><span class="tag">critical-thinking</span><span class="tag">studies</span><span class="tag">hillel-wayne</span></div>
+          
+        </header>
+        <div class="post-body"><p>Part 1 argued that we know almost nothing. Part 2 covered what we do know. This post is about how to think — the methods, the habits, and the reading list for building a personal practice of empirical software engineering.</p>
+<h2 id="the-three-methods">The three methods</h2>
+<p>Wayne organizes empirical SE into three research methodologies. Each answers a different kind of question. Each has different strengths and failure modes.</p>
+<p><strong>Controlled trials</strong> manipulate one variable and measure the outcome. Häregård &amp; Kruger's study on syntax highlighting: give two groups the same code with different color schemes, measure comprehension. Strongest for establishing causation. Weakest for ecological validity — lab conditions are not production conditions. A developer reading code in a study is not a developer fixing a production outage at 3am.</p>
+<p><strong>Natural experiments</strong> exploit real-world variation that approximates random assignment. Yuan et al.'s study of catastrophic failures: the researchers didn't cause the failures. They analyzed them after the fact, asking what would have prevented each one. High ecological validity — these were real failures with real consequences. Lower control — you can't randomize which services fail in production.</p>
+<p><strong>Observational studies</strong> measure what people actually do and look for correlations. Meyer et al.'s study of developer productivity perceptions: ask developers what makes them feel productive, correlate with what they actually do. Reveals practices at scale. Cannot establish causation. Developers who use TDD might produce better code, or developers who produce better code might be the kind of developers who use TDD. The study can't tell you which.</p>
+<blockquote>
+<p>The method determines the claim. A controlled trial can say &quot;X causes Y.&quot; An observational study can only say &quot;X and Y co-occur.&quot; Most industry blog posts can only say &quot;I tried X and it felt good.&quot; Know which kind of claim you're reading.</p>
+</blockquote>
+<h2 id="how-to-read-a-study">How to read a study</h2>
+<p>Wayne's talk implies a method for reading empirical research that most software engineers never learned:</p>
+<ol>
+<li>
+<p><strong>What's the methodology?</strong> Controlled trial, natural experiment, or observational? This determines what the study can claim.</p>
+</li>
+<li>
+<p><strong>What are the confounds?</strong> What else varies with the variable being studied? The Ray et al. language study: functional languages correlated with smaller projects and more experienced developers. Those are confounds. They explain the effect better than the language does.</p>
+</li>
+<li>
+<p><strong>Has it been replicated?</strong> A single study is a data point, not a conclusion. The replication is the signal. No replication, no confidence.</p>
+</li>
+<li>
+<p><strong>What's the effect size?</strong> Statistical significance is not practical significance. A language might &quot;significantly&quot; reduce defects by 0.3%. That's not worth switching languages for.</p>
+</li>
+<li>
+<p><strong>Who funded it?</strong> This isn't cynicism. It's basic epistemic hygiene. A study funded by a vendor is not necessarily wrong. But it deserves more scrutiny than an independent replication.</p>
+</li>
+</ol>
+<blockquote>
+<p>Most software engineers read zero studies. Most of the ones who read one study stop at step one. The skill is reading enough studies, across methodologies, with attention to confounds and replications, to form a tentative and revisable picture of what might be true.</p>
+</blockquote>
+<h2 id="the-self-correction-of-science">The self-correction of science</h2>
+<p>The Ray et al. → Berger et al. replication saga is the centerpiece of Wayne's talk, and he uses it to make a point about how knowledge actually advances.</p>
+<p>The original study found an effect. A replication found the effect was confounded. The original authors engaged with the replication. Knowledge advanced. This is science working as designed. In software engineering, the original study became &quot;functional languages prevent bugs&quot; and entered the permanent folklore. The replication was a paper that most people never read.</p>
+<blockquote>
+<p>The replication is the immune system. Without it, the field accumulates unquestioned findings until the body of &quot;knowledge&quot; is mostly noise. Wayne's 6,000-word writeup of the saga is titled &quot;This is How Science Happens.&quot; The subtitle is implicit: this is how science happens <em>when it's allowed to.</em></p>
+</blockquote>
+<h2 id="the-reading-list">The reading list</h2>
+<p>Wayne recommends four books and two ongoing sources:</p>
+<p><strong>Books:</strong></p>
+<ul>
+<li><em>Making Software</em> (Oram &amp; Wilson) — a curated collection of empirical SE papers with practitioner-oriented summaries. The best entry point.</li>
+<li><em>Leprechauns of Software Engineering</em> (Bossavit) — how folklore becomes fact in software, and how to spot it.</li>
+<li><em>The Programmer's Brain</em> (Hermans) — what cognitive science tells us about reading, writing, and debugging code.</li>
+<li><em>Teaching Tech Together</em> (Greg Wilson) — how people learn programming, based on educational research.</li>
+</ul>
+<p><strong>Ongoing:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://neverworkintheory.org/"><em>It Will Never Work In Theory</em></a> — a blog that summarizes empirical SE papers for practitioners. Short, readable, rigorous.</li>
+<li>ACM Digital Library and arXiv — the primary sources, if you want to read the papers themselves.</li>
+</ul>
+<blockquote>
+<p>The reading list is not long. It's not meant to be. The barrier to being more empirical than 99% of software engineers is reading four books and following one blog. The bar is on the floor.</p>
+</blockquote>
+<h2 id="the-posture">The posture</h2>
+<p>Wayne's deepest lesson is not about any specific study. It's about intellectual posture.</p>
+<p>The empirical posture is: <em>I don't know, but I can find out, and until I do I will hold my beliefs lightly.</em> It's the opposite of the posture that dominates software engineering — the tech lead who knows The Right Way, the consultant who sells The Methodology, the influencer who declares that The Old Way Is Dead.</p>
+<blockquote>
+<p>The empirical posture is less charismatic. It doesn't keynote. It doesn't trend. It says &quot;the evidence is mixed, the effect sizes are small, and it depends.&quot; That sentence will never go viral. It is also the most honest sentence available in most software engineering debates.</p>
+</blockquote>
+<p>Being empirical doesn't mean reading every paper. It means knowing that papers exist. It means being suspicious of certainty. It means asking &quot;how do we know that?&quot; when someone declares a practice mandatory or obsolete. It means holding your own preferences lightly — liking TDD because it feels good while acknowledging the evidence is weak. It means being the person in the room who says &quot;I'm not sure&quot; and means it as a strength, not a weakness.</p>
+<blockquote>
+<p>The goal is not to know everything. The goal is to know the difference between what you know and what you believe.</p>
+</blockquote>
+<hr>
+<p><em>Based on Hillel Wayne's talk <a target="_blank" rel="noopener noreferrer" href="https://www.hillelwayne.com/talks/ese/">What We Know We Don't Know</a>. Part 1: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-nothing-is-real">Nothing Is Real</a> · Part 2: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-what-studies-say">What the Studies Actually Say</a>.</em></p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

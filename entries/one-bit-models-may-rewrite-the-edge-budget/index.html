@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/one-bit-models-may-rewrite-the-edge-budget/">
+  <title>1-Bit Models: Edge Budgets — hackspree</title>
+  <meta property="og:title" content="1-Bit Models: Edge Budgets">
+  <meta property="og:description" content="Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/one-bit-models-may-rewrite-the-edge-budget/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="1-Bit Models: Edge Budgets">
+  <meta name="twitter:description" content="Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-01-06">2026-01-06</time></p>
+          <h1>1-Bit Models: Edge Budgets</h1><p class="post-summary">Aggressive efficiency ideas like 1-bit transformers are interesting because they change the deployment budget, not just benchmark tables.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">efficiency</span><span class="tag">bitnet</span></div>
+          
+        </header>
+        <div class="post-body"><p>Efficiency work becomes more exciting when it changes what hardware can participate.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.11453">BitNet: Scaling 1-bit Transformers for Large Language Models</a> is interesting for that reason. The paper points toward a future where memory and energy budgets shift enough to make different deployment targets practical.</p>
+<p>That matters for edge intelligence because budget is the product constraint:</p>
+<ul>
+<li>battery,</li>
+<li>memory,</li>
+<li>thermals,</li>
+<li>cost per shipped device.</li>
+</ul>
+<p>If a model architecture changes those constraints in a real way, it can change what the product team is willing to build at all.</p>
+<h2 id="why-the-budget-matters-more-than-the-benchmark-headline">Why the budget matters more than the benchmark headline</h2>
+<p>A lot of model discourse still assumes the main question is whether a smaller system can retain enough quality to feel respectable next to a cloud model. That is part of the story, but it is not the whole story. On the edge, the first question is usually simpler: can this thing run at all inside the envelope of a real product?</p>
+<p>That is why aggressive efficiency ideas deserve attention even before they become mainstream defaults. A meaningful shift in representation can move a device from &quot;not viable&quot; to &quot;viable with tradeoffs,&quot; or from &quot;lab demo&quot; to &quot;shippable feature.&quot; Those are product-level changes, not paper-only changes.</p>
+<h2 id="what-changes-when-the-budget-moves">What changes when the budget moves</h2>
+<p>When memory and energy costs drop, design space opens up in practical ways:</p>
+<ul>
+<li>more room for local context without immediately hitting device ceilings,</li>
+<li>less pressure to offload every hard case to the network,</li>
+<li>more freedom to treat intelligence as a default capability instead of a premium tier.</li>
+</ul>
+<p>That does not mean every edge team should bet immediately on 1-bit architectures. It does mean teams should watch for ideas that alter the baseline economics of deployment. If the cost profile changes enough, the roadmap changes with it.</p>
+<p>For edge work, that is the real promise of papers like BitNet. They are not only about squeezing a prettier number out of an efficiency table. They hint at a different hardware participation curve, and that is where product strategy starts to move.</p>
+<blockquote>
+<p>Efficiency is not a benchmark score. It is a change in what can be built. The model that uses half the memory does not just cost less. It fits on hardware that was previously excluded. The exclusion was the constraint. The efficiency removes it.</p>
+</blockquote>
+<p>This is scarcity economics applied to model deployment. The scarce resource is the compute budget — memory, energy, FLOPs. BitNet changes the cost function. When the cost function changes, the set of feasible deployments changes. The deployments that were uneconomic become economic. The hardware that was too small becomes sufficient. The same logic that determines whether to use a monolith or microservices — what are the constraints, what does each option cost — determines whether a model runs locally or in the cloud. The constraints are compute, memory, latency, and battery. The economics are the same. The domain is different.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

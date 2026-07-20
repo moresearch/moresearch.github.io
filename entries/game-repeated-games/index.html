@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/game-repeated-games/">
+  <title>Repeated Games and the Folk Theorem — hackspree</title>
+  <meta property="og:title" content="Repeated Games and the Folk Theorem">
+  <meta property="og:description" content="Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/game-repeated-games/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Repeated Games and the Folk Theorem">
+  <meta name="twitter:description" content="Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Repeated Games and the Folk Theorem</h1><p class="post-summary">Robert Aumann proved that in infinitely repeated games, cooperation can be sustained as an equilibrium. The shadow of the future disciplines the present. The Folk Theorem says: any feasible, individually rational payoff can be an equilibrium if the game is repeated long enough. This is why teams that stay together build trust. The trust is mathematics.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">repeated-games</span><span class="tag">folk-theorem</span><span class="tag">aumann</span><span class="tag">cooperation</span></div>
+          
+        </header>
+        <div class="post-body"><p>A one-shot Prisoner's Dilemma produces defection. A repeated Prisoner's Dilemma can produce cooperation. The difference is the future. In a one-shot game, there is no tomorrow in which defection can be punished. In a repeated game, today's defection costs you tomorrow's cooperation. If tomorrow matters enough — if the discount rate is low enough — cooperation becomes the rational strategy.</p>
+<p>The Folk Theorem, so called because it was known informally before it was formally proved, states: in an infinitely repeated game with sufficiently patient players, any feasible and individually rational payoff vector can be sustained as a Nash equilibrium. &quot;Feasible&quot; means the payoffs can be achieved by some combination of strategies. &quot;Individually rational&quot; means each player gets at least their minimax payoff — the worst the other players can impose on them. The theorem says: if the game goes on long enough, almost any outcome is possible as an equilibrium. The future is a mechanism for sustaining norms.</p>
+<p>The mechanism is the threat of punishment. If I cooperate today, you cooperate tomorrow. If I defect today, you defect tomorrow — and the day after, and the day after. The punishment must be credible. It must be in your interest to carry it out once defection has occurred. The credibility of the punishment is the constraint on what equilibria can be sustained. The Grim Trigger — cooperate until the first defection, then defect forever — is the harshest credible punishment. Tit-for-Tat — start with cooperation, then mirror the other's last move — is gentler and more robust.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Game theory (Aumann, 1959 Nobel 2005).</strong> Aumann's contribution was the formal analysis of repeated games with incomplete information. If players have private information, the repetition allows them to learn about each other. The learning changes the equilibrium. The Folk Theorem extends to games with imperfect monitoring — players observe noisy signals of each other's actions. The extension is technical. The implication is practical: even when you can't perfectly observe what others did, repetition enables cooperation.</p>
+<p><strong>Political science (Axelrod, 1984).</strong> Robert Axelrod's tournaments showed that Tit-for-Tat is a robust strategy. It is nice (never defects first), retaliatory (punishes defection immediately), forgiving (returns to cooperation if the other does), and clear (easy to recognize). These four properties make it effective in repeated interactions. The clarity is crucial — if the other player can't figure out your strategy, they can't adapt to it. Clarity is strategic.</p>
+<p><strong>International relations (Keohane, 1984).</strong> International cooperation is a repeated game among states. Trade agreements, arms control treaties, environmental protocols — these are equilibria sustained by the shadow of the future. The mechanism: if you violate the treaty today, we withdraw cooperation tomorrow. The mechanism works when the future is valued. It fails when states discount the future heavily — when leaders face elections, when regimes are unstable, when the long-term benefits of cooperation accrue to successors rather than incumbents. The discount rate is political. The politics determine whether cooperation is sustainable.</p>
+<p><strong>Organizational behavior.</strong> Company culture is a repeated-game equilibrium. Norms of collaboration, knowledge-sharing, and mutual support are sustained by the expectation of continued interaction. When turnover is high, the shadow of the future shortens. Cooperation declines. The decline is attributed to &quot;bad culture.&quot; The culture is a symptom. The cause is the shortened horizon. Fix the horizon. The culture follows.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Team continuity.</strong> A stable team is a repeated game. Members expect to work together indefinitely. Cooperation is an equilibrium — helping a colleague today is repaid tomorrow. A team with high turnover is a sequence of short-horizon games. Cooperation is fragile — the new person hasn't built the history, the departing person won't face the consequences of defection. The Folk Theorem predicts that stable teams will have more cooperation. The prediction is correct. The mechanism is the horizon.</p>
+<p><strong>Inter-service API stability.</strong> Two services with a long history of mutual dependence are in a repeated game. Breaking the API today costs you in future coordination. The equilibrium is stability. A service consumed by many anonymous clients is in a one-shot game with each. Breaking the API harms each client individually but none enough to punish. The equilibrium is instability — the provider changes the API when convenient. The difference is the horizon. The horizon is structural.</p>
+<p><strong>Code review reciprocity.</strong> Engineers who review each other's code are in a repeated game. Reviewing thoroughly today earns thorough reviews tomorrow. Skimming today earns skimmed reviews tomorrow. The equilibrium is a norm of thoroughness — if the team is stable and the horizon is long. The norm emerges without being mandated. The mandate is unnecessary. The horizon is sufficient.</p>
+<p><strong>Cross-team collaboration.</strong> Two teams that expect to work together for years develop informal cooperation — shared understanding, mutual accommodation, the benefit of the doubt. Two teams thrown together for a single project have no shadow of the future. Cooperation must be formalized — detailed specs, explicit contracts, escalation paths. The formality is the substitute for the missing horizon. The formality is costly. The horizon was free.</p>
+<h2 id="the-design-implication">The design implication</h2>
+<p>If you want cooperation, lengthen the horizon. Stable teams. Long-term ownership. Continuity of relationships. If you can't lengthen the horizon, simulate it: automated contract testing makes defection immediately visible, creating a repeated-game payoff structure. SLAs with penalties bring the future cost of defection into the present. The mechanisms are substitutes for the missing horizon. The best mechanism is the horizon itself. The horizon is free.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Robert Aumann, &quot;Acceptance Speech,&quot; Nobel Prize, 2005.</li>
+<li>Robert Axelrod, <em>The Evolution of Cooperation</em>, Basic Books, 1984.</li>
+<li>Drew Fudenberg and Eric Maskin, &quot;The Folk Theorem in Repeated Games with Discounting or with Incomplete Information,&quot; <em>Econometrica</em>, 1986.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cooperation-is-logical">Cooperation is logical</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

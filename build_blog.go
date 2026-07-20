@@ -699,6 +699,7 @@ var (
           <div class="post-list">
       {{- range .Posts}}
       <article class="post" id="{{.Slug}}">
+        <link rel="canonical" href="{{$.SiteURL}}entries/{{.Slug}}/">
         <header class="post-header">
           <p class="post-meta"><time datetime="{{.DateISO}}" data-utc="{{.DateHoverUTC}}" aria-label="{{.DateHoverUTC}}" tabindex="0">{{.DateUnix}}</time></p>
           <h2><a href="#{{.Slug}}">{{.Title}}</a></h2>
@@ -860,6 +861,7 @@ type post struct {
 	Summary      string
 	Tags         []string
 	BodyHTML     template.HTML
+	CanonicalURL string
 	ModTime      time.Time
 }
 
@@ -889,6 +891,12 @@ func main() {
 	}
 
 	if err := writePage(*outputPath, posts); err != nil {
+		exitf("%v", err)
+	}
+	if err := writePostPages(posts); err != nil {
+		exitf("%v", err)
+	}
+	if err := writeSitemap(posts); err != nil {
 		exitf("%v", err)
 	}
 }
@@ -995,6 +1003,7 @@ func loadPost(path string) (post, error) {
 		Summary:      strings.TrimSpace(meta["summary"]),
 		Tags:         parseTags(meta["tags"]),
 		BodyHTML:     renderedBody,
+		CanonicalURL: siteURL + "entries/" + slug + "/",
 	}, nil
 }
 

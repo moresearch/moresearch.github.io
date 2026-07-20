@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="On-device inference fails in two separate meetings — the one where a cloud model gets picked for compression, and the one where &#34;the serving layer&#34; is treated as a generic runtime beneath it. Two papers, MobileLLM and Fast On-device LLM Inference with NPUs, are usually read as answers to different questions. They are two halves of the same one — the model&#39;s shape and the serving stack&#39;s shape are co-designed against the same hardware budget, and teams that decide them separately ship the compromises.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/edge-llms-model-shape-and-serving-shape/">
+  <title>Edge LLMs: Model Shape and Serving Shape Are One Decision — hackspree</title>
+  <meta property="og:title" content="Edge LLMs: Model Shape and Serving Shape Are One Decision">
+  <meta property="og:description" content="On-device inference fails in two separate meetings — the one where a cloud model gets picked for compression, and the one where &#34;the serving layer&#34; is treated as a generic runtime beneath it. Two papers, MobileLLM and Fast On-device LLM Inference with NPUs, are usually read as answers to different questions. They are two halves of the same one — the model&#39;s shape and the serving stack&#39;s shape are co-designed against the same hardware budget, and teams that decide them separately ship the compromises.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/edge-llms-model-shape-and-serving-shape/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Edge LLMs: Model Shape and Serving Shape Are One Decision">
+  <meta name="twitter:description" content="On-device inference fails in two separate meetings — the one where a cloud model gets picked for compression, and the one where &#34;the serving layer&#34; is treated as a generic runtime beneath it. Two papers, MobileLLM and Fast On-device LLM Inference with NPUs, are usually read as answers to different questions. They are two halves of the same one — the model&#39;s shape and the serving stack&#39;s shape are co-designed against the same hardware budget, and teams that decide them separately ship the compromises.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-01-29">2026-01-29</time></p>
+          <h1>Edge LLMs: Model Shape and Serving Shape Are One Decision</h1><p class="post-summary">On-device inference fails in two separate meetings — the one where a cloud model gets picked for compression, and the one where &#34;the serving layer&#34; is treated as a generic runtime beneath it. Two papers, MobileLLM and Fast On-device LLM Inference with NPUs, are usually read as answers to different questions. They are two halves of the same one — the model&#39;s shape and the serving stack&#39;s shape are co-designed against the same hardware budget, and teams that decide them separately ship the compromises.</p>
+          <div class="tags"><span class="tag">edge-llms</span><span class="tag">mobile</span><span class="tag">npu</span><span class="tag">architecture</span><span class="tag">serving</span></div>
+          
+        </header>
+        <div class="post-body"><p>The promise of on-device inference is easy to say and hard to ship. And when it fails to ship, the failure usually traces back to an org-chart artifact: model architecture was decided in one meeting and serving strategy in another, as if the phone will respect the boundary between them. It won't. On a constrained device, the shape of the model and the shape of the serving stack are a single design decision evaluated against a single budget — memory, latency, and thermals.</p>
+<p>Two papers make the halves of this argument, and they're worth reading as one.</p>
+<h2 id="small-models-are-not-shrunk-models">Small models are not shrunk models</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> focuses on the architecture details that matter at the small end: depth, width, and parameter allocation.</p>
+<p>A lot of edge planning still begins with the assumption that the main job is to squeeze an existing large model into a smaller box — quantize it, prune it, distill it, ship it. That instinct is understandable, and it leads to awkward compromises. A model that works well in the cloud carries structural assumptions — wide layers that amortize beautifully across an A100's memory bandwidth, attention patterns that assume KV-cache is cheap — that stop making sense once memory pressure, latency budgets, and thermals become the real boss. MobileLLM's finding that thin-and-deep beats wide-and-shallow at sub-billion scale is exactly the kind of result you never discover by compressing downward; you only find it by designing for the target from the start.</p>
+<p>That is why model shape matters. Depth, width, and parameter allocation are not abstract architecture debates when the target is a phone. They are part of the deployment contract. Sometimes the winning move is not to compress a cloud model at all — it is to start from a shape that was designed for the edge in the first place.</p>
+<h2 id="npus-change-the-serving-problem-not-just-the-speed">NPUs change the serving problem, not just the speed</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> supplies the other half. When teams first hear &quot;NPU,&quot; it is tempting to translate that into &quot;faster inference&quot; and move on. In practice, specialized acceleration changes the system's shape more than the marketing shorthand suggests. Latency can improve, but the path to <em>predictable</em> latency depends on the runtime making better decisions — which is why the paper's ideas like prompt chunking and hardware-aware scheduling matter. Edge serving is rarely &quot;run the same pipeline on smaller hardware.&quot; It is a different scheduling problem.</p>
+<p>An edge stack that ignores device variation ends up either fragile or overly conservative. Different hardware profiles push the software toward different execution strategies, so the product needs explicit handling for:</p>
+<ul>
+<li>uneven latency behavior across the device fleet,</li>
+<li>fallback paths when the preferred accelerator path is unavailable,</li>
+<li>request shaping that matches the device instead of an abstract average.</li>
+</ul>
+<p>This is where &quot;works on my test phone&quot; demos break down. The demo path is a single happy execution route. The product path needs to survive a fleet.</p>
+<h2 id="one-budget-one-decision">One budget, one decision</h2>
+<p>Put the two papers side by side and the shared structure is obvious. MobileLLM says: the hardware budget determines the right model shape. The NPU paper says: the hardware substrate determines the right serving shape. Both are the same claim aimed at different layers — <strong>the constraint shapes the solution space</strong>, and the constraint is the device.</p>
+<p>This is hardware-software co-design, and it runs in a loop: the hardware determines what software is efficient, and the software requirements determine what hardware gets built. Platforms have always worked this way — iOS constraints shaped mobile app design, cloud instance economics shaped distributed systems design. The NPU is just the newest constraint in the oldest loop.</p>
+<p>The practical consequence is that the two decisions cannot be made in sequence, because each is an input to the other:</p>
+<ul>
+<li>A model shape that behaves well under tight resource limits simplifies the serving layer: fewer ugly runtime compromises, less dependence on aggressive fallback behavior, more predictable performance across device classes.</li>
+<li>A serving strategy that understands the accelerator changes which model shapes are viable: a shape that quantizes cleanly onto the NPU's supported ops beats a nominally better shape that keeps falling back to CPU.</li>
+</ul>
+<p>A bad fit in either direction makes the other layer compensate. The serving stack papers over an architecture that was never comfortable on the hardware, or the model gets contorted to survive a runtime that was designed for an abstract average device. Either way, the user gets the compromise.</p>
+<p>So the test for an edge effort is not &quot;how small is the model?&quot; or &quot;does it use the NPU?&quot; It is: <strong>are model shape and serving shape being evaluated in the same meeting, against the same measured budget?</strong> Measure the budget, design within it, test at the boundary — the same discipline as fitting firmware to ROM, just with a token stream on top.</p>
+<p>Model choice and serving choice are still only two of the coordinated decisions a real deployment needs — compression, fallback policy, and field observability round out the list, which is the subject of <a target="_blank" rel="noopener noreferrer" href="#on-device-llms-are-a-systems-design-problem">On-Device LLMs: Systems Design</a>. And when the budget itself moves — as <a target="_blank" rel="noopener noreferrer" href="#one-bit-models-may-rewrite-the-edge-budget">1-bit models</a> may move it — both shapes get renegotiated together. That is the point: they were never separate.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>Zechun Liu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.14905">MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases</a> (2024).</li>
+<li>Daliang Xu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.05858">Fast On-device LLM Inference with NPUs</a> (2024).</li>
+<li>Jiajun Xu et al., <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2409.00088">On-Device Language Models: A Comprehensive Review</a> (2024).</li>
+</ol>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

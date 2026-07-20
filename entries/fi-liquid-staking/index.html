@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Liquid staking solves the capital efficiency problem of proof-of-stake: you stake ETH to secure the network, and you get a liquid token (stETH) that you can use in DeFi while your ETH is locked. The functional origin is the depository receipt — a claim on a deposited asset that trades freely. Lido now holds over 30% of all staked ETH.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-liquid-staking/">
+  <title>Liquid Staking — hackspree</title>
+  <meta property="og:title" content="Liquid Staking">
+  <meta property="og:description" content="Liquid staking solves the capital efficiency problem of proof-of-stake: you stake ETH to secure the network, and you get a liquid token (stETH) that you can use in DeFi while your ETH is locked. The functional origin is the depository receipt — a claim on a deposited asset that trades freely. Lido now holds over 30% of all staked ETH.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-liquid-staking/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Liquid Staking">
+  <meta name="twitter:description" content="Liquid staking solves the capital efficiency problem of proof-of-stake: you stake ETH to secure the network, and you get a liquid token (stETH) that you can use in DeFi while your ETH is locked. The functional origin is the depository receipt — a claim on a deposited asset that trades freely. Lido now holds over 30% of all staked ETH.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Liquid Staking</h1><p class="post-summary">Liquid staking solves the capital efficiency problem of proof-of-stake: you stake ETH to secure the network, and you get a liquid token (stETH) that you can use in DeFi while your ETH is locked. The functional origin is the depository receipt — a claim on a deposited asset that trades freely. Lido now holds over 30% of all staked ETH.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">liquid-staking</span><span class="tag">lido</span><span class="tag">steth</span><span class="tag">proof-of-stake</span></div>
+          
+        </header>
+        <div class="post-body"><p>Proof-of-stake requires validators to lock capital. On Ethereum, a validator must stake 32 ETH. The staked ETH is locked — it cannot be transferred, traded, or used as collateral. The lockup secures the network: validators who misbehave lose their stake. The lockup also creates an opportunity cost. Staked ETH cannot earn yield in DeFi. The opportunity cost is the return the staker could earn by deploying the ETH elsewhere.</p>
+<p>Liquid staking eliminates the opportunity cost. A liquid staking protocol accepts ETH deposits, stakes them with validators, and issues a liquid token — stETH for Lido, rETH for Rocket Pool, cbETH for Coinbase — representing the deposited ETH plus accrued staking rewards. The liquid token can be traded, lent, or used as collateral in DeFi. The staker earns staking rewards plus whatever DeFi yield they generate with the liquid token. The capital does double duty. The efficiency is the innovation.</p>
+<h2 id="the-functional-origin-depository-receipts">The functional origin: depository receipts</h2>
+<p>A depository receipt is a financial instrument that represents ownership of an underlying asset held in custody. The most famous example is the American Depositary Receipt (ADR), introduced by J.P. Morgan in 1927. A U.S. bank holds shares of a foreign company in custody. It issues ADRs that trade on U.S. exchanges. The ADR holder receives dividends, votes, and price exposure without directly owning the foreign shares. The ADR solves the problem of cross-border investment: the foreign shares never leave their home market, but the ADR trades freely in the U.S.</p>
+<p>The first depository receipt predates the ADR by centuries. The Dutch East India Company, founded in 1602, issued negotiable share certificates that could be transferred without altering the company's share register. The certificates were depository receipts in function if not in name. The principle — a claim on a deposited asset that trades independently — is the same.</p>
+<p>Liquid staking tokens are depository receipts for staked ETH. The ETH is deposited with validators. The stETH is issued to the depositor. The stETH accrues staking rewards through a rebasing mechanism — the balance of stETH in the holder's wallet increases daily to reflect staking rewards. The stETH trades on AMMs, is accepted as collateral on lending protocols, and can be deployed in yield farming strategies. The deposited ETH secures the network. The stETH circulates in DeFi. The separation of security provision from capital deployment is the innovation.</p>
+<h2 id="the-risk">The risk</h2>
+<p>Liquid staking concentrates stake. Lido holds over 30% of all staked ETH. The concentration is a systemic risk to Ethereum: if Lido's validators collude or are compromised, the network's security is threatened. Lido distributes stake across multiple independent node operators to mitigate this risk. The distribution is a governance mechanism. The mechanism is imperfect. The imperfection is the subject of ongoing protocol development — distributed validator technology (DVT), stake capping, and validator set rotation.</p>
+<p>The secondary risk: stETH can depeg from ETH. During market stress, stETH holders may want to exit to ETH directly rather than wait for the unstaking period. The selling pressure pushes stETH below its 1:1 peg. The discount creates an arbitrage opportunity — buy stETH at a discount, redeem for ETH after the unstaking period, profit. The arbitrage requires capital and patience. The capital must be locked during the unstaking period. The patience is tested during extended drawdowns. The discount is the market's price for immediate liquidity. The price fluctuates with market stress.</p>
+<h2 id="the-reference">The reference</h2>
+<p>J.P. Morgan, &quot;American Depositary Receipts,&quot; 1927. Morgan's innovation was financial infrastructure: the ADR created a mechanism for U.S. investors to hold foreign equities without navigating foreign custody, settlement, and currency conversion. The ADR was a bridge between national financial systems. Liquid staking tokens are a bridge between the staking layer and the DeFi layer. The bridge is the infrastructure. The infrastructure enables capital to flow between layers. The flow is the efficiency. The efficiency is the value.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>Liquid staking is a delegation pattern. The staker delegates capital to a validator. The validator does work (proposes blocks). The staker receives a receipt token (stETH) representing the delegated capital plus accrued rewards. The receipt token is a proxy object — the same pattern as a remote proxy in distributed systems, a lazy-loading proxy in ORM design, or a future/promise in async programming. The holder interacts with the proxy as if it were the underlying. The proxy handles the indirection. The pattern is universal. The domain is staking. The pattern is delegation.</p>
+<p>The depeg risk — stETH trading below ETH during market stress — is the same class of failure as any system where a proxy gets out of sync with its underlying. The proxy's price should track the underlying. When it doesn't, arbitrage should restore the peg. The arbitrage requires time and capital. The time is the unstaking period. The capital must be locked during that period. The mechanism design challenge: how to keep the proxy in sync when the sync mechanism has inherent latency. The same challenge appears in cache coherence, database replication, and distributed consensus. The solutions are different. The problem structure is identical.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lido, &quot;Lido: Ethereum Liquid Staking,&quot; Lido Documentation.</li>
+<li>Rocket Pool, &quot;Rocket Pool: Decentralised Ethereum Liquid Staking,&quot; Rocket Pool Documentation.</li>
+<li>Ethereum Foundation, &quot;Proof of Stake,&quot; Ethereum Documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-stablecoins">Stablecoins</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

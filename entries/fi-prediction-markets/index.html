@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A prediction market lets people bet on the outcome of future events. The market price is a probability estimate. The functional origin is 16th-century papal conclave betting. The modern incarnation is Polymarket, which correctly called the 2024 U.S. election while polls were uncertain. Markets aggregate dispersed knowledge. The aggregation is the product.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-prediction-markets/">
+  <title>Prediction Markets — hackspree</title>
+  <meta property="og:title" content="Prediction Markets">
+  <meta property="og:description" content="A prediction market lets people bet on the outcome of future events. The market price is a probability estimate. The functional origin is 16th-century papal conclave betting. The modern incarnation is Polymarket, which correctly called the 2024 U.S. election while polls were uncertain. Markets aggregate dispersed knowledge. The aggregation is the product.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-prediction-markets/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Prediction Markets">
+  <meta name="twitter:description" content="A prediction market lets people bet on the outcome of future events. The market price is a probability estimate. The functional origin is 16th-century papal conclave betting. The modern incarnation is Polymarket, which correctly called the 2024 U.S. election while polls were uncertain. Markets aggregate dispersed knowledge. The aggregation is the product.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Prediction Markets</h1><p class="post-summary">A prediction market lets people bet on the outcome of future events. The market price is a probability estimate. The functional origin is 16th-century papal conclave betting. The modern incarnation is Polymarket, which correctly called the 2024 U.S. election while polls were uncertain. Markets aggregate dispersed knowledge. The aggregation is the product.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">prediction-markets</span><span class="tag">polymarket</span><span class="tag">information</span><span class="tag">hayek</span></div>
+          
+        </header>
+        <div class="post-body"><p>A prediction market is a market where participants trade contracts that pay out based on the outcome of a future event. A contract that pays $1 if a candidate wins an election and $0 if they lose. If the contract trades at $0.60, the market's implied probability of the candidate winning is 60%. The price is a probability. The market is a forecasting tool.</p>
+<p>The key insight, formalized by Friedrich Hayek in &quot;The Use of Knowledge in Society&quot; (1945), is that markets aggregate dispersed information. No single individual knows the true probability of an event. Each individual holds fragments of relevant knowledge — a pollster has survey data, a journalist has sources, a trader has a model, a local observer has on-the-ground impressions. The market price aggregates these fragments into a single number. The number is more accurate than any individual's estimate. The accuracy is the market's product.</p>
+<h2 id="the-functional-origin-papal-conclave-betting">The functional origin: papal conclave betting</h2>
+<p>Betting on papal elections was common in 16th-century Rome. Cardinals gathered in conclave. The outside world speculated on the outcome. Bookmakers offered odds. The odds fluctuated as news leaked from the conclave — a cardinal was seen visiting another's cell, a delegation arrived with a message from a foreign monarch. The betting markets aggregated the leaks into a probability estimate. The estimate was often more accurate than the assessments of diplomats and ambassadors, who had access to more formal information but lacked the market's ability to weigh competing signals.</p>
+<p>The tradition continued. Betting on elections was widespread in the United States in the 19th and early 20th centuries, conducted through organized exchanges and informal bookmaking. The markets were suppressed by anti-gambling laws in the mid-20th century. They reemerged in the 1980s with the Iowa Electronic Markets, a small-scale academic prediction market for U.S. elections. The IEM demonstrated that prediction markets could forecast elections more accurately than polls. The demonstration was academic. The adoption was limited by regulatory constraints.</p>
+<h2 id="polymarket-and-the-2024-election">Polymarket and the 2024 election</h2>
+<p>Polymarket, launched in 2020, is a decentralized prediction market built on Polygon. Users deposit USDC and trade shares in event outcomes. The market resolves when an oracle — currently UMA's optimistic oracle — reports the outcome. The oracle is the source of truth. The trust in the oracle is the trust in the market.</p>
+<p>The 2024 U.S. presidential election was Polymarket's breakthrough moment. The market correctly called the election outcome while traditional polls showed a statistical tie. The market's implied probability moved sharply in the final weeks before the election, aggregating signals that polls were missing or misweighting. The market's accuracy generated mainstream attention. Trading volume exceeded $1 billion. The market became a news source in its own right — journalists cited Polymarket odds alongside polling averages.</p>
+<p>The success validated the Hayekian thesis: markets aggregate knowledge that no single institution possesses. Polls ask people what they think. Markets ask people what they'll bet on. The difference is skin in the game. Skin in the game improves accuracy. The improvement is the efficiency of markets.</p>
+<h2 id="the-mechanism">The mechanism</h2>
+<p>Prediction markets use a simple mechanism. A binary outcome market has two tokens: YES and NO. Each pays $1 if correct. The tokens trade freely. The price of YES is the market's probability estimate. A trader who believes the true probability is higher than the market price buys YES. A trader who believes it's lower buys NO. The trading moves the price toward the traders' collective estimate. At resolution, the correct token is redeemable for $1. The incorrect token is worthless.</p>
+<p>The mechanism is incentive-compatible. Traders profit from correcting the market's errors. The profit motive drives information into prices. The information is the traders' private knowledge. The private knowledge becomes public through the price. The price is the public good. The market produces the public good as a byproduct of private profit-seeking. The byproduct is the innovation.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Robin Hanson, &quot;Shall We Vote on Values, But Bet on Beliefs?&quot; (2013). Hanson is the leading academic advocate for prediction markets. His proposal: futarchy — a form of government where elected officials set goals and prediction markets determine which policies will achieve them. The proposal is radical. The underlying logic is mainstream: markets aggregate information better than committees. Polymarket is the partial implementation of Hanson's vision. The implementation is for elections, not policy. The extension to policy is the next frontier.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>Prediction markets are information aggregation mechanisms. The price is the signal. The traders are the sensors. The market is the aggregator. This is the same architecture as a distributed monitoring system: each node observes a fragment of the system state, reports its observation, and the aggregator produces a unified view. The market does this without a central aggregator. The price does the aggregation. The price is the emergent output of millions of independent observations, weighted by conviction (position size).</p>
+<p>The oracle that resolves the market is a trust-minimized data feed — the same pattern as an API contract. The oracle reports the outcome. The market settles. If the oracle is wrong, the market produces wrong outcomes. The oracle's reliability is the system's reliability. Engineering reliable oracles — UMA's optimistic oracle, Chainlink's decentralized oracle networks — is a distributed systems problem. The problem is: how do you get truthful reports from potentially adversarial reporters? The solution is mechanism design: stake, challenge periods, economic incentives for honesty. The mechanism is the same as staking in proof-of-stake. The engineering is the same. The domain is different.</p>
+<p>Prediction markets also teach a software engineering lesson about decision-making. A team estimating a project timeline is a prediction market without prices. Each person has private information. The information is aggregated through discussion, not through trading. Discussion is a worse aggregator than prices because discussion rewards confidence, not accuracy. The person who speaks most confidently shapes the estimate. The person who knows the truth but speaks quietly is ignored. A prediction market would surface the quiet person's knowledge through their willingness to bet on it. The bet is the signal. The price is the aggregation. The engineering team that replaces estimation meetings with internal prediction markets would produce better estimates. No team does this. The technology exists. The adoption is zero.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Robin Hanson, &quot;Shall We Vote on Values, But Bet on Beliefs?&quot; 2013.</li>
+<li>Friedrich Hayek, &quot;The Use of Knowledge in Society,&quot; <em>American Economic Review</em>, 1945.</li>
+<li>Polymarket, &quot;Polymarket Documentation.&quot;</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dispersed-knowledge">The knowledge is dispersed</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

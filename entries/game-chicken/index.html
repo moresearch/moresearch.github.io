@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/game-chicken/">
+  <title>Chicken — hackspree</title>
+  <meta property="og:title" content="Chicken">
+  <meta property="og:description" content="Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/game-chicken/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Chicken">
+  <meta name="twitter:description" content="Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Chicken</h1><p class="post-summary">Two drivers speed toward each other. The first to swerve loses. If neither swerves, both die. Chicken models brinkmanship — the game where the worst outcome is mutual stubbornness. In software: conflicting rewrites, deploy races, and the organizational politics of who yields.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">chicken</span><span class="tag">brinkmanship</span><span class="tag">credible-commitment</span><span class="tag">organizational-politics</span></div>
+          
+        </header>
+        <div class="post-body"><p>Two drivers speed toward each other on a narrow road. The first to swerve is the chicken — loses status, loses the game. If both swerve, both lose a little. If neither swerves, both crash. The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Swerve</th>
+<th>Straight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Swerve</strong></td>
+<td>(0, 0)</td>
+<td>(-1, +1)</td>
+</tr>
+<tr>
+<td><strong>Straight</strong></td>
+<td>(+1, -1)</td>
+<td>(-10, -10)</td>
+</tr>
+</tbody>
+</table>
+<p>There are two pure-strategy Nash equilibria: (Straight, Swerve) and (Swerve, Straight). Both are asymmetric — one player wins, one loses. The symmetric outcome (Swerve, Swerve) is not an equilibrium because each player would prefer to deviate to Straight. The symmetric outcome (Straight, Straight) is disaster.</p>
+<p>The game is about who commits first. If you can credibly commit to going straight — by throwing your steering wheel out the window, visibly, where the other driver can see — the other driver must swerve. The commitment must be credible. A verbal threat is not credible. The thrown steering wheel is. The commitment changes the game from simultaneous to sequential. The sequential game has a unique outcome: the committed player goes straight, the uncommitted player swerves.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> Chicken has two asymmetric Nash equilibria. The equilibrium selection problem is about who can credibly commit first. The commitment must be observable and irreversible. Schelling analyzed this extensively in <em>The Strategy of Conflict</em> — the ability to worsen one's own options can be strategically advantageous because it forces the opponent to concede.</p>
+<p><strong>Nuclear strategy (Schelling, RAND).</strong> Chicken was the dominant metaphor for Cold War nuclear brinkmanship. Two superpowers, each threatening mutual destruction. The one that could credibly commit to retaliation — by making retaliation automatic, by removing the human decision from the loop — gained strategic advantage. &quot;Threats that leave something to chance&quot; was Schelling's phrase. The threat of mutual destruction must be credible. If it's credible, the other side swerves.</p>
+<p><strong>Behavioral game theory.</strong> In laboratory play, Chicken produces higher rates of &quot;swerve&quot; than Nash predicts, especially among players who have played before and learned that mutual stubbornness produces disaster. Experience teaches swerving. The learning is expensive. The disaster teaches it.</p>
+<p><strong>Organizational theory.</strong> Chicken models inter-team conflict. Two teams both want to rewrite the same shared service. Both have started work. Neither wants to abandon their effort. If both continue, the organization gets two incompatible rewrites and a migration mess. Someone must swerve. Who swerves is determined by organizational hierarchy, political capital, or the urgency of each team's deliverable. The hierarchy is a mechanism for resolving Chicken. The mechanism is informal. The crashes are frequent.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Friday deploy races.</strong> Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky. Both want their feature in. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose their weekend. The equilibrium before the &quot;no Friday deploys&quot; rule was Friday deploys by the team with the most political capital. The rule resolved the game by removing the choice. Mechanism design.</p>
+<p><strong>Conflicting rewrites.</strong> Two teams independently decide to rewrite the same legacy service. Both have invested weeks. Both present their work at demo day. Neither wants to be the team that wasted effort. The resolution: one rewrite is adopted, the other is shelved. The shelved team swerved. The swerve was forced by the architect. The architect is the mechanism.</p>
+<p><strong>Competing architecture proposals.</strong> Two senior engineers propose incompatible architectures for the same system. Both have strong opinions. Both have supporters. The debate is unresolved. Someone must swerve. If neither does, the organization forks the system or deadlocks. The CTO resolves it. The CTO is the mechanism. The mechanism is hierarchical. The hierarchy exists partly to resolve Chicken games.</p>
+<p><strong>On-call escalation.</strong> An incident is ongoing. Two engineers disagree about the fix. The clock is ticking. The disagreement is Chicken in miniature — each sticking to their approach risks extended downtime. The escalation policy — &quot;after 10 minutes of disagreement, escalate to the on-call lead&quot; — is a mechanism for resolving Chicken. The policy predetermines who has the authority. The predetermination prevents the debate.</p>
+<h2 id="resolving-chicken">Resolving chicken</h2>
+<p>Chicken is resolved by mechanisms that predetermine who yields. Pre-commitment — &quot;I will not swerve&quot; — works if credible. Organizational hierarchy — &quot;the architect decides&quot; — works if respected. Pre-agreed rules — &quot;no Friday deploys&quot; — work if enforced. The mechanism changes the game from a simultaneous contest of wills to a sequential game where the first mover's commitment is binding. The binding commitment selects the equilibrium. The equilibrium prevents the crash.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>Thomas Schelling, <em>Arms and Influence</em>, Yale University Press, 1966.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

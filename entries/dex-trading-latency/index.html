@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="In crypto trading, latency is the edge. The bot with the fastest mempool access, the lowest-latency path to the sequencer, the colocated server wins the arbitrage. The difference is milliseconds. The investment in infrastructure is the rent paid for speed. The rent is extracted from slower traders.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-latency/">
+  <title>Latency and Infrastructure — hackspree</title>
+  <meta property="og:title" content="Latency and Infrastructure">
+  <meta property="og:description" content="In crypto trading, latency is the edge. The bot with the fastest mempool access, the lowest-latency path to the sequencer, the colocated server wins the arbitrage. The difference is milliseconds. The investment in infrastructure is the rent paid for speed. The rent is extracted from slower traders.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-latency/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Latency and Infrastructure">
+  <meta name="twitter:description" content="In crypto trading, latency is the edge. The bot with the fastest mempool access, the lowest-latency path to the sequencer, the colocated server wins the arbitrage. The difference is milliseconds. The investment in infrastructure is the rent paid for speed. The rent is extracted from slower traders.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Latency and Infrastructure</h1><p class="post-summary">In crypto trading, latency is the edge. The bot with the fastest mempool access, the lowest-latency path to the sequencer, the colocated server wins the arbitrage. The difference is milliseconds. The investment in infrastructure is the rent paid for speed. The rent is extracted from slower traders.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">latency</span><span class="tag">infrastructure</span><span class="tag">mempool</span><span class="tag">colocation</span></div>
+          
+        </header>
+        <div class="post-body"><p>Latency is the single most important competitive variable in algorithmic trading. Strategy matters. Risk management matters. Capital matters. But given equivalent strategy and risk management and capital, the faster participant wins. The win is measured in milliseconds. The investment to achieve that speed is measured in millions.</p>
+<p>The latency stack for crypto trading has four layers. Each layer is a source of delay. Each layer is an opportunity for optimization.</p>
+<p><strong>Network latency.</strong> The time for a packet to travel from the trader's server to the exchange's matching engine or the blockchain's sequencer. Minimized by physical proximity — colocating in the same datacenter as the exchange or sequencer — and by network topology — choosing the shortest path, avoiding congested routes, using dedicated fiber. The speed of light in fiber is approximately 200,000 km/s. Over 1,000 km, that is 5 milliseconds. Over 100 km, 0.5 milliseconds. The difference between a server in Frankfurt and a server in London trading on a Frankfurt-based exchange is 5 milliseconds. In that 5 milliseconds, the price can move. The edge is gone. The trade loses.</p>
+<p><strong>Mempool latency.</strong> On blockchains, transactions are not sent directly to the block producer. They are broadcast to a mempool — a peer-to-peer network of nodes. The time between submitting a transaction and it being visible to the block producer depends on the node's position in the network topology, the number of hops to the producer, and the propagation delay at each hop. A trader who runs their own node, connected directly to high-staked validators or sequencers, sees transactions before a trader relying on public RPC endpoints. The private node is the latency edge. The edge is purchased through infrastructure.</p>
+<p><strong>Execution latency.</strong> The time between the transaction arriving at the exchange or sequencer and being included in a block or matched. On centralized exchanges, this is the matching engine's processing time — typically microseconds. On blockchains, this is the block time — the interval between blocks. On Ethereum L1, block time is 12 seconds. On Solana, 400 milliseconds. On Arbitrum, sub-second. The block time is the minimum latency for on-chain execution. Faster chains enable faster strategies. The chain choice is a latency decision.</p>
+<p><strong>State latency.</strong> The time between a state change occurring and the trader's system being aware of it. A trade on Uniswap changes the pool's price. The change is included in a block. The block is propagated through the network. The trader's node receives the block, updates its state, and triggers the strategy. The delay between the trade occurring and the strategy reacting is state latency. Minimized by running a full node, subscribing to block production directly, and processing state updates in parallel with strategy evaluation. The full node is expensive to run. The expense is the cost of being fast.</p>
+<h2 id="the-functional-origin-the-transatlantic-cable">The functional origin: the transatlantic cable</h2>
+<p>The latency arms race in finance began in the 19th century. The first transatlantic telegraph cable, laid in 1866, reduced communication time between London and New York from weeks (by ship) to minutes (by telegraph). The cable was used for arbitrage: prices in London and New York could be compared in near-real-time. The trader who received the cable first could trade before the information was widely known. The cable was the latency edge.</p>
+<p>In the 1980s, fiber-optic cables replaced copper. In the 2000s, microwave networks replaced fiber for the most latency-sensitive routes — microwaves travel through air at the speed of light, which is faster than light through glass fiber. In the 2010s, laser networks in space were proposed for intercontinental routes. The arms race is continuous. The technology changes. The principle doesn't: faster information means faster reaction, faster reaction means profitable trades, profitable trades pay for the infrastructure. The infrastructure is the rent. The rent is extracted from slower participants.</p>
+<p>Michael Lewis's <em>Flash Boys</em> (2014) documented the modern latency arms race in U.S. equity markets. The key discovery: a new fiber route between Chicago and New York, laid as straight as physically possible through mountains and under rivers, reduced latency by 3 milliseconds. The route cost $300 million. The route was built by a trading firm. The firm's name was Spread Networks. The name was the strategy. The spread was the profit. The network was the means.</p>
+<h2 id="the-crypto-latency-stack-today">The crypto latency stack today</h2>
+<p>Crypto latency infrastructure is evolving along the same trajectory as traditional finance, compressed into a decade instead of a century. The major developments:</p>
+<p><strong>Private relays.</strong> Flashbots and similar services provide private transaction submission, bypassing the public mempool. The private relay reduces mempool latency to near-zero — the transaction goes directly to the builder. The privacy also prevents front-running of the trader's own transactions. The relay is the infrastructure. The fee is the cost.</p>
+<p><strong>Sequencer colocation.</strong> On L2 rollups, the sequencer orders transactions. Colocating with the sequencer provides minimum network latency. The colocation is offered by some L2s as a paid service. The service is the latency edge. The edge is purchased.</p>
+<p><strong>Validator connections.</strong> On proof-of-stake chains, validators propose blocks. A trader with direct connections to high-staked validators can submit transactions that are included in the next block with higher probability. The connections are built through relationships, infrastructure sharing, and direct payments. The connections are the edge. The edge is relational.</p>
+<p><strong>Chain-specific optimization.</strong> Each chain has different latency characteristics. Solana's Gulf Stream forwards transactions to validators before the current block is finalized. Arbitrum's sequencer orders transactions on a first-come, first-served basis. The optimal strategy varies by chain. The trader who understands the chain-specific latency model has an edge over the trader who treats all chains as equivalent. The understanding is the edge. The edge is informational.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Michael Lewis, <em>Flash Boys: A Wall Street Revolt</em>, W.W. Norton, 2014.</li>
+<li>Phil Daian et al., &quot;Flash Boys 2.0,&quot; 2019.</li>
+<li>&quot;First-Spammed, First-Served: MEV Extraction on Fast-Finality Blockchains,&quot; June 2025.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-mev">MEV</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

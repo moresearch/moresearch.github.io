@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/scarcity-and-software-games/">
+  <title>The Architecture Is a Game — hackspree</title>
+  <meta property="og:title" content="The Architecture Is a Game">
+  <meta property="og:description" content="Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/scarcity-and-software-games/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Architecture Is a Game">
+  <meta name="twitter:description" content="Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The Architecture Is a Game</h1><p class="post-summary">Every software situation is a game. The service boundary game, the microservices migration game, the deployment chicken game, the logging stag hunt — each has a game-theoretic structure. Recognizing it tells you what to do.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">software-architecture</span><span class="tag">microservices</span><span class="tag">coordination</span></div>
+          
+        </header>
+        <div class="post-body"><p>The most dangerous games are the ones you don't know you're playing. Nobody told you that logging format choice was a stag hunt. Nobody announced that the rewrite proposal was a signaling game. The games are invisible. Their outcomes are visible — the broken APIs, the fragmented standards, the stalled migrations. The outcomes are blamed on individuals. &quot;Team B should have communicated better.&quot; &quot;The SRE team should have enforced the standard.&quot; But the individuals were playing rationally given the game they were in. Blaming the player is easier than recognizing the game. Recognizing the game is easier than changing it. Change the game.</p>
+<p>Software engineering is a multiplayer game. The players are teams, services, organizations, companies. Each player makes choices under conditions of scarcity. Each player's outcome depends on the choices of others. Recognizing the game you're in is the first step to playing it well.</p>
+<h2 id="the-service-boundary-game">The service boundary game</h2>
+<p>Thomas Schelling observed that &quot;what makes many agreements enforceable is only the recognition of future opportunities for agreement that will be eliminated if mutual trust is not created and maintained, and whose value outweighs the momentary gain from cheating in the present instance.&quot; API contracts are agreements. Automated testing makes cheating visible. Visibility eliminates the momentary gain. The contract becomes enforceable because the future cost of breaking it exceeds the present benefit. This is mechanism design as Schelling described it before the term existed.</p>
+<p>Team A builds Service A. Team B builds Service B. Service A depends on Service B. Team B changes Service B's API without telling Team A. Service A breaks. Team A is angry. Team B is surprised.</p>
+<p>This is a coordination game with asymmetric information. Team B didn't know what Team A depended on. Team A assumed Team B wouldn't change the API without notice. The assumptions were incompatible. The failure is a Nash equilibrium — neither team can unilaterally improve their outcome given what the other is doing. Team A can't make Team B communicate better. Team B can't make Team A depend on fewer things. The equilibrium is suboptimal. The solution is mechanism design: automated contract testing that makes breaking changes immediately visible. Visibility changes the payoff. The equilibrium shifts.</p>
+<h2 id="the-microservices-migration-game">The microservices migration game</h2>
+<p>The monolith works but is increasingly expensive to change. Each team wants to extract their service. Extraction requires coordination with other teams. Coordination is costly. The cost falls on the team doing the extraction. The benefit accrues to all teams.</p>
+<p>This is a public goods game. Each team would benefit if everyone extracted. Each team would prefer someone else pay the coordination cost. Individually rational: wait. Collectively optimal: coordinate. The gap is the Prisoner's Dilemma scaled to organizational architecture. The dilemma produced the distributed monolith — services extracted without clean boundaries, communicating through a complete call graph, with all the monolith's coupling and all the network's latency. Nobody wanted this. The game produced it.</p>
+<h2 id="the-deployment-chicken-game">The deployment chicken game</h2>
+<p>Two teams both want to deploy Friday afternoon. Both know Friday deploys are risky — if something breaks, on-call spends the weekend fixing it. Both want their feature in before the weekend. If both deploy and nothing breaks, both win. If both deploy and something breaks, both lose. If one deploys and one waits, the deployer wins and the waiter deploys Monday.</p>
+<p>Both deploying is the crash outcome. The organizational rule &quot;no Friday deploys&quot; is mechanism design. It removes the choice. Before the rule: Friday deploys. After: Monday deploys. The mechanism changed the equilibrium.</p>
+<h2 id="the-staging-environment-battle-of-the-sexes">The staging environment battle of the sexes</h2>
+<p>Team A wants staging for integration testing. Team B wants staging for customer demos. Both want staging. Both prefer any coordinated solution to constant conflict. Both prefer their own preferred time.</p>
+<p>Battle of the sexes. Two Nash equilibria: Team A's schedule or Team B's schedule. The solution is a coordination mechanism — a booking calendar, a dedicated demo environment, a policy. The mechanism selects an equilibrium. Before: conflict. After: coordination. The mechanism worked because it made defection visible.</p>
+<h2 id="the-logging-library-stag-hunt">The logging library stag hunt</h2>
+<p>Twelve services. Each uses its own logging format. SRE proposes a standard library. If all adopt, logs become queryable across services. If some adopt and others don't, adopters get no benefit — their logs are standardized but they still can't query across services. If nobody adopts, nothing changes.</p>
+<p>Stag hunt. The stag is cross-service observability. The rabbit is keeping your own format. The stag hunt succeeds when early adopters reach critical mass. Once enough services adopt, the benefit to remaining services exceeds switching cost. The equilibrium tips. The tipping point is a property of network effects.</p>
+<h2 id="the-rewrite-signaling-game">The rewrite signaling game</h2>
+<p>Team A proposes rewriting a legacy service. The proposal is costly to evaluate — architecture reviews, specs, stakeholder meetings. Team A has private information: genuine belief the rewrite is necessary, or boredom with legacy work.</p>
+<p>Signaling game. A costly signal separates sincere from insincere. Requiring a working prototype before the architecture review is a costly signal. Sincere teams pay the cost. Insincere teams won't. The signal screens. Pay the price. Get the review.</p>
+<h2 id="the-regression-test-commons-game">The regression test commons game</h2>
+<p>The regression test suite is a common-pool resource. Everyone benefits from tests. Everyone benefits from fast tests. Adding tests makes the suite slower. The cost is shared. The benefit of your test is yours alone.</p>
+<p>Individually rational: add tests. Collectively optimal: add only high-value tests. The commons is overgrazed. The suite grows. Build times increase. Hardin described the tragedy in 1968. Your CI pipeline is living it. The solution: a test budget per service, periodic culling of low-value tests, a rule requiring historical failure catch rate to justify additions. The mechanism is the institutional response to a tragedy of the commons.</p>
+<h2 id="the-open-source-game">The open-source game</h2>
+<p>Everyone benefits from open-source software. Contributing costs time. Using costs nothing. Individually rational: use without contributing. Collectively optimal: everyone contributes. Public goods game. Resolved by reputation, corporate sponsorship, intrinsic motivation. The free-rider problem is managed, never solved. GitHub sponsorships, open-source foundations, corporate OSPOs — the institutions exist because the game exists. The game exists because scarcity exists.</p>
+<h2 id="the-platform-pricing-stackelberg-game">The platform pricing Stackelberg game</h2>
+<p>A platform team sets API pricing for internal services. Service teams respond by choosing how much to consume. The platform team moves first. Service teams move second.</p>
+<p>Stackelberg game. The leader (platform) chooses price anticipating the followers' (services') responses. Set price too high: services build their own. Too low: platform is underfunded. The optimal price is where marginal cost of providing the service equals the marginal value to consumers. The calculation is economic. The implementation is an internal API with metered billing. The billing is mechanism design.</p>
+<h2 id="recognize-the-game">Recognize the game</h2>
+<p>Every situation is a game. The game has a structure. The structure determines the likely outcome. If you don't like the outcome, change the game. Mechanism design is the tool for changing games. Automated contract testing changes the service boundary game. &quot;No Friday deploys&quot; changes the deployment chicken game. A booking calendar changes the staging environment game. A test budget changes the regression test commons game. Each mechanism changes the payoffs. Changed payoffs change behavior. Changed behavior is the point.</p>
+<hr>
+<p><strong>This is part 4 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Garrett Hardin, &quot;The Tragedy of the Commons,&quot; <em>Science</em>, 1968.</li>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#kevlin-henney">Henney's Microservices</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#nats-pubsub-microservices">NATS pub/sub beats REST</a></li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

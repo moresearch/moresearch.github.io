@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Hayek wrote in 1945: &#39;The knowledge of the circumstances of which we must make use never exists in concentrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&#39; This is the most important sentence in economics for software engineers.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dispersed-knowledge/">
+  <title>The knowledge is dispersed — hackspree</title>
+  <meta property="og:title" content="The knowledge is dispersed">
+  <meta property="og:description" content="Hayek wrote in 1945: &#39;The knowledge of the circumstances of which we must make use never exists in concentrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&#39; This is the most important sentence in economics for software engineers.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dispersed-knowledge/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The knowledge is dispersed">
+  <meta name="twitter:description" content="Hayek wrote in 1945: &#39;The knowledge of the circumstances of which we must make use never exists in concentrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&#39; This is the most important sentence in economics for software engineers.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The knowledge is dispersed</h1><p class="post-summary">Hayek wrote in 1945: &#39;The knowledge of the circumstances of which we must make use never exists in concentrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&#39; This is the most important sentence in economics for software engineers.</p>
+          <div class="tags"><span class="tag">hayek</span><span class="tag">knowledge</span><span class="tag">distributed-systems</span><span class="tag">teams</span><span class="tag">architecture</span></div>
+          
+        </header>
+        <div class="post-body"><p>In 1945, Friedrich Hayek published &quot;The Use of Knowledge in Society.&quot; The paper is about economics. It is also about software architecture. It is also about why your team's decisions are worse than you think, and why that's not their fault.</p>
+<blockquote>
+<p>&quot;The knowledge of the circumstances of which we must make use never exists in concentrated or integrated form, but solely as the dispersed bits of incomplete and frequently contradictory knowledge which all the separate individuals possess.&quot;</p>
+</blockquote>
+<p>The knowledge is dispersed. Not concentrated. Not integrated. Dispersed. Across individuals. Each individual holds fragments. The fragments are incomplete — no one has the whole picture. The fragments are frequently contradictory — different people know different things that can't simultaneously be true. The contradiction is not a bug. It is a property of the system.</p>
+<p>Hayek was writing about economic planning. His target was the idea that a central planner could allocate resources efficiently by gathering all relevant information and computing the optimal allocation. The information cannot be gathered because it doesn't exist in gather-able form. It exists as local knowledge — the farmer who knows which field drains poorly, the factory manager who knows which machine is about to break, the trader who knows which supplier is becoming unreliable. This knowledge cannot be transmitted to a central planner. It is tacit. It is local. It is constantly changing. The planner's model is always out of date. The market processes information through prices without requiring anyone to understand the whole. The price of copper rises. Users of copper use less copper. Nobody needs to know why the price rose. The price communicates the scarcity. The behavior adapts.</p>
+<p>Software teams are Hayekian systems. The knowledge of what the system needs, what it costs, what will break, and what users actually do is dispersed across the team, the codebase, the incident history, the support tickets, and the production metrics. No single person holds it all. The architect who designs the system in advance is the central planner. Their model is out of date. The knowledge they need doesn't exist in the form they need it. It exists as the backend engineer who knows the database migration will take six weeks, the frontend engineer who knows the design system is being rewritten, the SRE who knows the load balancer can't handle the new traffic pattern, the PM who knows the requirements are changing next quarter. None of this knowledge appears in the architecture document. The architecture document is the plan. The plan is wrong.</p>
+<h2 id="the-price-system-of-software">The price system of software</h2>
+<p>Hayek's insight is that markets solve the knowledge problem through prices. Prices are signals. They communicate scarcity without requiring anyone to understand the whole. The price of lumber rises because of a supply disruption in Canada. A furniture maker in Texas uses less lumber. The furniture maker doesn't need to know about the supply disruption. The price tells them everything they need to know: lumber is more expensive. Use less.</p>
+<p>Software systems need prices. They don't need literal money. They need signals that communicate scarcity without requiring the consumer to understand the cause. API rate limits are prices. When the rate limit triggers, the caller backs off. The caller doesn't need to know that the service is overloaded because a downstream database is slow. The 429 tells them: this service is scarce right now. Try again later. Queue depths are prices. When the queue grows, the producer slows down. The producer doesn't need to know that the consumer is processing a batch of large messages. The queue depth tells them: consumption is scarce. Circuit breaker states are prices. When the circuit opens, traffic routes elsewhere. The router doesn't need to know why the service is failing. The open circuit tells them: this service is unavailable. Route around it.</p>
+<p>These are Hayekian mechanisms. They communicate dispersed knowledge through signals. The signals are local. The response is local. The system adapts without central coordination. The adaptation is the intelligence of the system. The intelligence is not in any component. It is in the signals between components.</p>
+<h2 id="what-this-means-for-teams">What this means for teams</h2>
+<p>The knowledge dispersion has consequences for how teams should be structured. A team that makes decisions without consulting the people who hold the relevant local knowledge will make worse decisions. The knowledge exists. It is in the team. It cannot be extracted by a planning process. It must be surfaced by a decision process that involves the people who have it.</p>
+<p>Conway's Law is a Hayekian observation. The system mirrors the communication structure because the communication structure determines what knowledge flows where. If the backend team and the frontend team don't talk, the API will be designed without knowledge of how the frontend actually uses it. The API will be clean and wrong. The knowledge of what the frontend needs existed in the frontend team. It didn't flow to the API designers. The API was designed without it. The design is worse than it could have been. The knowledge was dispersed. The communication structure didn't connect it.</p>
+<p>The solution is not to eliminate the dispersion. The dispersion is irreducible. The solution is to design mechanisms that surface local knowledge at the point of decision. Code review surfaces the knowledge of the reviewer. Incident postmortems surface the knowledge of the responder. User research surfaces the knowledge of the user. Each mechanism connects dispersed knowledge to a decision that would otherwise be made without it. The mechanisms are not free. They cost time and attention — both scarce. The Hayekian engineer designs mechanisms that surface the most valuable knowledge at the lowest cost. The design is economic. The economics are Hayekian.</p>
+<h2 id="the-architect-as-market-designer">The architect as market designer</h2>
+<p>The architect who understands Hayek stops trying to design the system. They design the mechanisms by which the system designs itself. Stable interfaces are the prices. Services are the market participants. API contracts are the property rights. Automated testing is the enforcement mechanism. The architect sets the rules. The system evolves within them. The evolution produces outcomes the architect didn't anticipate. The outcomes are better than the architect could have designed because they incorporate knowledge the architect didn't have. The knowledge was dispersed. The market aggregated it.</p>
+<blockquote>
+<p>&quot;The price system is a mechanism for communicating information. The most significant fact about this system is the economy of knowledge with which it operates.&quot; — Friedrich Hayek</p>
+</blockquote>
+<p>The economy of knowledge. The system operates without anyone needing to know the whole. The knowing is local. The responding is local. The coordinating is emergent. This is the architecture of systems that survive complexity. The complexity is in the world. The knowledge of it is dispersed. The system processes the dispersion without centralizing it. The processing is the architecture.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Friedrich Hayek, &quot;The Use of Knowledge in Society,&quot; <em>American Economic Review</em>, Vol. 35, No. 4, September 1945.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy</a></li>
+</ul>
+<p>Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.</p>
+<blockquote>
+<p>The knowledge is dispersed. No single person knows how to build the system. The architect who pretends to is making decisions with incomplete information. The market aggregates the dispersed knowledge through prices. The architecture must aggregate it through interfaces.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

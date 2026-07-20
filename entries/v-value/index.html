@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Value is the only V that justifies the existence of the data platform. Data has value when it informs a decision that produces a better outcome. Most data has no value. It was collected because it could be, stored because storage is cheap, and never used. Useless data is a liability, not an asset.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/v-value/">
+  <title>On Data Value: the only V that justifies the platform — hackspree</title>
+  <meta property="og:title" content="On Data Value: the only V that justifies the platform">
+  <meta property="og:description" content="Value is the only V that justifies the existence of the data platform. Data has value when it informs a decision that produces a better outcome. Most data has no value. It was collected because it could be, stored because storage is cheap, and never used. Useless data is a liability, not an asset.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/v-value/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Data Value: the only V that justifies the platform">
+  <meta name="twitter:description" content="Value is the only V that justifies the existence of the data platform. Data has value when it informs a decision that produces a better outcome. Most data has no value. It was collected because it could be, stored because storage is cheap, and never used. Useless data is a liability, not an asset.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>On Data Value: the only V that justifies the platform</h1><p class="post-summary">Value is the only V that justifies the existence of the data platform. Data has value when it informs a decision that produces a better outcome. Most data has no value. It was collected because it could be, stored because storage is cheap, and never used. Useless data is a liability, not an asset.</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">value</span><span class="tag">economics</span><span class="tag">roi</span><span class="tag">prioritization</span></div>
+          
+        </header>
+        <div class="post-body"><blockquote>
+<p>Value is not a property of data. It is a property of the decision the data informs. Data that informs no decision has no value, regardless of how expensive it was to collect, how sophisticated the pipeline that serves it, or how impressive the dashboard that displays it.</p>
+</blockquote>
+<p>Value is the only V that justifies the data platform's existence. Data has value when it changes a decision. The value is the difference between the outcome with the data and the outcome without it. If the data doesn't change the decision, it has no value. If the decision would have been the same either way, the data added nothing. The nothing was expensive to produce.</p>
+<p>An e-commerce company collects every click, page view, add-to-cart, and purchase. The clickstream alone is 10 TB per day. The data team builds pipelines to ingest it, transform it, serve it. Six months later, nobody queries the clickstream tables. The analysts query purchases and ignore the rest. The clickstream data has zero value. The storage costs $2,400 per month. The pipeline maintenance costs one engineer at 20% time. The total cost exceeds the value. The data is a liability.</p>
+<p>Most data in most organizations is a liability. It was collected because it could be — the event was there, the tracking was easy, the storage was cheap. It was never used because nobody knew what question it answered. The question came first: &quot;we should track everything, we might need it later.&quot; The question was wrong. The right question is: &quot;what decision will this data inform, and what is the value of a better decision?&quot; If the answer is unclear, don't collect the data. The collection is not free. The cost is the pipeline, the storage, the maintenance, the cognitive load on the data team, the dilution of the data catalog with tables nobody queries. The cost is paid forever. The value is zero. The net is negative.</p>
+<p>Value forces prioritization. You cannot pipeline every data source. You must pipeline the sources that will answer the business's most important questions. Identifying those questions requires talking to the people who will use the data. The talking is the most underinvested activity in data engineering. Engineers build pipelines for data they have, not for questions the business needs answered. The pipeline exists. The question doesn't. The value is zero.</p>
+<p>Doug Laney's <em>Infonomics</em> (2017) proposes treating data as a balance-sheet asset: measure its value, depreciate it over its useful life, account for the cost of maintaining it. The proposal is radical because almost no organization does it. Data is treated as free. It is not free. The cost is real. The value is real only when the data is used. The gap between cost and value is the economic problem of data. Closing the gap is the discipline of data economics.</p>
+<p><em>See: Doug Laney, &quot;Infonomics: How to Monetize, Manage, and Measure Information as an Asset for Competitive Advantage&quot; (Routledge, 2017). Thomas C. Redman, &quot;Data's Credibility Problem&quot; (Harvard Business Review, 2013). Benn Stancil, &quot;The Data Platform Cost Model&quot; (Mode, 2020).</em></p>
+<p><em>This post is part of a series on <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#many-vs-of-data">The Many Vs of Data</a>, originating from Doug Laney's 2001 Gartner note. Each V names a dimension of why data is hard.</em></p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

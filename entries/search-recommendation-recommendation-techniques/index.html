@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-recommendation-techniques/">
+  <title>S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?">
+  <meta property="og:description" content="A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-recommendation-techniques/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?">
+  <meta name="twitter:description" content="A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: Why Is Guessing What People Want Harder Than Finding What They Asked For?</h1><p class="post-summary">A technical history of recommender systems with working Python code for each major paradigm: user-based CF, item-based CF, matrix factorization (SVD&#43;&#43;), two-tower neural models, and the Netflix Prize story.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">collaborative-filtering</span><span class="tag">matrix-factorization</span><span class="tag">netflix-prize</span><span class="tag">deep-learning</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. This post is about recommendation — thirty years of trying to guess what people want before they know they want it. The title is not a rhetorical question. Guessing is genuinely harder.</em></p>
+<p><strong>Recommendation is the harder problem</strong> because the user never tells you what they want. You infer it from what they watched, clicked, rated, skipped, and abandoned. Every technique in this post — user-based CF, item-based CF, matrix factorization, two-tower neural models, autoregressive foundation models — is an attempt to extract intent from behavior the user may not even be conscious of. When the inference is wrong, it is always the system's fault. The user never said what they wanted. The system guessed. The guess was wrong.</p>
+<p><strong>Search is the easier problem</strong> because the user tells you. The query is explicit. The intent is stated. The system's job is fidelity. If the query is wrong — if the user typed &quot;Byzantine Empire&quot; when they meant &quot;Ottoman Empire&quot; — the results are wrong, but that is the user's problem, not the system's. The system's contract is to match the query, not to correct it. Search competes with ignorance. Recommendation competes with every other possible way to spend attention. The second competition is harder to win.</p>
+<p>If search is about matching what the user says to what exists, recommendation is about guessing what the user wants before they say it — and, in the hardest cases, before they even know they want it. This is a fundamentally harder information problem. In search, the user tells you what they want and you try to find it. In recommendation, you infer what they want from behavior they may not even be conscious of.</p>
+<p>Wu et al. (2023), in their comprehensive survey of neural recommendation models published in IEEE TKDE, organize the field into two broad families: models that use only interaction data (collaborative filtering) and models that incorporate side information (content, context, sequences) [1]. The progression from one to the other mirrors the search field's own evolution — from impoverished signals to rich, multi-modal representations. But the starting point is different. Search began with text and added behavior. Recommendation began with behavior and added text.</p>
+<p>This part traces that evolution with working Python.</p>
+<h2 id="tapestry--the-first-collaborative-filtering-system-1992">Tapestry — The First Collaborative Filtering System (1992)</h2>
+<p>In 1992, researchers at Xerox PARC built Tapestry, an email filtering system that let users annotate messages and write queries referencing others' annotations. They coined the term <strong>collaborative filtering</strong>. The insight was that relevance is social: if people with similar tastes found something useful, you probably will too.</p>
+<pre><code class="language-python"># Tapestry's conceptual model: manual, query-based CF
+# &quot;Show me emails that Bob found interesting&quot;
+
+class TapestryFilter:
+    def __init__(self):
+        self.annotations: dict[str, dict[int, str]] = {}  # user -&gt; {msg_id -&gt; annotation}
+
+    def annotate(self, user: str, msg_id: int, label: str):
+        &quot;&quot;&quot;Bob annotates a message as 'interesting' or 'boring'.&quot;&quot;&quot;
+        self.annotations.setdefault(user, {})[msg_id] = label
+
+    def query(self, annotator: str, label: str) -&gt; list[int]:
+        &quot;&quot;&quot;'Show me all messages Bob found interesting'.&quot;&quot;&quot;
+        return [msg_id for msg_id, ann in self.annotations.get(annotator, {}).items()
+                if ann == label]
+
+# Tapestry required users to write explicit queries. Powerful for power users,
+# unusable for everyone else. The automation was coming.
+</code></pre>
+<h2 id="grouplens--automating-collaborative-filtering-at-scale-1994">GroupLens — Automating Collaborative Filtering at Scale (1994)</h2>
+<p>The GroupLens project at the University of Minnesota automated the process. Users rated Usenet articles (1–5 stars), and the system automatically predicted ratings for unread articles based on similar users' ratings.</p>
+<pre><code class="language-python">import numpy as np
+from collections import defaultdict
+
+def user_based_cf(ratings: dict[int, dict[int, float]],
+                  user_id: int, item_id: int, k: int = 50) -&gt; float:
+    &quot;&quot;&quot;
+    User-based collaborative filtering: predict a user's rating for an item
+    based on how similar users rated it.
+
+    ratings: {user_id: {item_id: rating}}
+    &quot;&quot;&quot;
+    if user_id not in ratings:
+        return 3.0  # global mean for cold start
+
+    # Step 1: Find users who rated this item
+    co_raters = [(other, ratings[other][item_id])
+                 for other in ratings
+                 if item_id in ratings[other] and other != user_id]
+
+    if not co_raters:
+        return np.mean(list(ratings[user_id].values()))  # user's mean rating
+
+    # Step 2: Compute similarity between target user and each co-rater
+    similarities = []
+    for other, _ in co_raters:
+        sim = pearson_similarity(ratings[user_id], ratings[other])
+        similarities.append((other, sim))
+
+    similarities.sort(key=lambda x: x[1], reverse=True)
+    neighbors = similarities[:k]
+
+    # Step 3: Weighted average of neighbors' ratings
+    weighted_sum = sum(sim * ratings[neighbor][item_id] for neighbor, sim in neighbors
+                       if sim &gt; 0)
+    norm = sum(abs(sim) for _, sim in neighbors if sim &gt; 0)
+
+    return weighted_sum / norm if norm &gt; 0 else np.mean(list(ratings[user_id].values()))
+
+
+def pearson_similarity(user_a: dict[int, float], user_b: dict[int, float]) -&gt; float:
+    &quot;&quot;&quot;Pearson correlation between two users' rating vectors.&quot;&quot;&quot;
+    common_items = set(user_a) &amp; set(user_b)
+    if len(common_items) &lt; 3:
+        return 0.0  # not enough overlap
+
+    mean_a = np.mean([user_a[i] for i in common_items])
+    mean_b = np.mean([user_b[i] for i in common_items])
+
+    num = sum((user_a[i] - mean_a) * (user_b[i] - mean_b) for i in common_items)
+    den_a = np.sqrt(sum((user_a[i] - mean_a) ** 2 for i in common_items))
+    den_b = np.sqrt(sum((user_b[i] - mean_b) ** 2 for i in common_items))
+
+    return num / (den_a * den_b) if den_a and den_b else 0.0
+</code></pre>
+<p>GroupLens spawned Net Perceptions, a company that served Amazon, CDnow, and others. In 2010, the team won the ACM Software System Award. But user-based CF had a scaling problem: computing user-user similarity is O(N²) in the number of users.</p>
+<h2 id="amazon-item-to-item-cf--scaling-to-millions-2003">Amazon Item-to-Item CF — Scaling to Millions (2003)</h2>
+<p>Amazon's Greg Linden, Brent Smith, and Jeremy York flipped the problem. Instead of finding similar <em>users</em>, find similar <em>items</em>:</p>
+<pre><code class="language-python">def item_based_cf(ratings: dict[int, dict[int, float]],
+                  user_id: int, k: int = 10) -&gt; list[tuple[int, float]]:
+    &quot;&quot;&quot;
+    Item-based collaborative filtering: recommend items similar to what
+    the user already liked.
+
+    The expensive part — computing the item-item similarity matrix —
+    runs offline, not at serving time.
+    &quot;&quot;&quot;
+    # Build item-item similarity matrix (OFFLINE — runs daily)
+    item_sim = build_item_similarity_matrix(ratings)
+
+    # Online: look up items similar to what the user liked (MILLISECONDS)
+    user_ratings = ratings.get(user_id, {})
+    liked = [(item, r) for item, r in user_ratings.items() if r &gt; 3.5]
+
+    candidates: dict[int, float] = defaultdict(float)
+    total_weight: dict[int, float] = defaultdict(float)
+
+    for item, rating in liked:
+        for similar_item, sim in item_sim.get(item, {}).items():
+            if similar_item not in user_ratings:  # don't recommend what they've rated
+                candidates[similar_item] += sim * rating
+                total_weight[similar_item] += abs(sim)
+
+    # Normalize
+    scored = [(item, candidates[item] / total_weight[item])
+              for item in candidates if total_weight[item] &gt; 0]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:k]
+
+
+def build_item_similarity_matrix(ratings: dict[int, dict[int, float]]
+                                 ) -&gt; dict[int, dict[int, float]]:
+    &quot;&quot;&quot;O(N_items² × N_users) — run offline, results cached.&quot;&quot;&quot;
+    # Transpose: item -&gt; {user: rating}
+    item_users: dict[int, dict[int, float]] = defaultdict(dict)
+    for user_id, user_ratings in ratings.items():
+        for item_id, rating in user_ratings.items():
+            item_users[item_id][user_id] = rating
+
+    items = list(item_users.keys())
+    sim_matrix: dict[int, dict[int, float]] = defaultdict(dict)
+
+    for i, item_a in enumerate(items):
+        for item_b in items[i + 1:]:
+            common = set(item_users[item_a]) &amp; set(item_users[item_b])
+            if len(common) &lt; 5:
+                continue
+            sim = cosine_similarity(
+                {u: item_users[item_a][u] for u in common},
+                {u: item_users[item_b][u] for u in common}
+            )
+            if sim &gt; 0:
+                sim_matrix[item_a][item_b] = sim
+                sim_matrix[item_b][item_a] = sim
+
+    return sim_matrix
+</code></pre>
+<p>Greg Linden later explained why this beat search-based approaches: &quot;Rather than matching the user to similar customers, item-to-item collaborative filtering matches each of the user's purchased and rated items to similar items.&quot; Search-based methods — constructing queries from purchase history to find items with similar keywords — produced recommendations that were either too general (bestsellers) or too narrow (more books by the same author). Collaborative filtering discovered cross-category connections: people who bought <em>Into Thin Air</em> also bought <em>The Perfect Storm</em>. No keyword match connects a mountaineering disaster to a fishing boat tragedy. Only behavior does.</p>
+<h2 id="the-netflix-prize--matrix-factorization-takes-over-20062009">The Netflix Prize — Matrix Factorization Takes Over (2006–2009)</h2>
+<p>In 2006, Netflix offered $1M to any team that could improve their recommendation algorithm by 10%. The winning approach reshaped the field: <strong>matrix factorization</strong>.</p>
+<pre><code class="language-python">class MatrixFactorization:
+    &quot;&quot;&quot;Learn user and item latent factors via stochastic gradient descent.&quot;&quot;&quot;
+
+    def __init__(self, num_users: int, num_items: int, k: int = 50,
+                 lr: float = 0.01, lambda_reg: float = 0.02):
+        # Initialize latent factor matrices randomly
+        self.P = np.random.normal(0, 0.1, (num_users, k))  # user factors
+        self.Q = np.random.normal(0, 0.1, (num_items, k))  # item factors
+        self.bu = np.zeros(num_users)  # user biases
+        self.bi = np.zeros(num_items)  # item biases
+        self.mu = 0.0                  # global mean
+        self.lr = lr
+        self.lambda_reg = lambda_reg
+
+    def fit(self, ratings: list[tuple[int, int, float]], epochs: int = 100):
+        &quot;&quot;&quot;Train via SGD.&quot;&quot;&quot;
+        self.mu = np.mean([r for _, _, r in ratings])
+
+        for epoch in range(epochs):
+            np.random.shuffle(ratings)
+            total_loss = 0.0
+
+            for u, i, r in ratings:
+                # Prediction: global mean + user bias + item bias + latent interaction
+                pred = self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
+                error = r - pred
+                total_loss += error ** 2
+
+                # SGD updates with L2 regularization
+                self.bu[u] += self.lr * (error - self.lambda_reg * self.bu[u])
+                self.bi[i] += self.lr * (error - self.lambda_reg * self.bi[i])
+
+                # Update latent factors
+                pu_old = self.P[u].copy()
+                self.P[u] += self.lr * (error * self.Q[i] - self.lambda_reg * self.P[u])
+                self.Q[i] += self.lr * (error * pu_old - self.lambda_reg * self.Q[i])
+
+            if epoch % 20 == 0:
+                rmse = np.sqrt(total_loss / len(ratings))
+                print(f&quot;Epoch {epoch}: RMSE = {rmse:.4f}&quot;)
+
+    def predict(self, u: int, i: int) -&gt; float:
+        return self.mu + self.bu[u] + self.bi[i] + np.dot(self.P[u], self.Q[i])
+
+    def recommend(self, u: int, rated_items: set[int], k: int = 10) -&gt; list[int]:
+        &quot;&quot;&quot;Generate top-k recommendations for user u.&quot;&quot;&quot;
+        scores = [(i, self.predict(u, i))
+                  for i in range(len(self.Q))
+                  if i not in rated_items]
+        scores.sort(key=lambda x: x[1], reverse=True)
+        return [item for item, _ in scores[:k]]
+
+# Usage with MovieLens-100K style data
+# ratings = [(user, item, rating), ...]
+# mf = MatrixFactorization(num_users=943, num_items=1682, k=50)
+# mf.fit(ratings, epochs=100)
+# recommendations = mf.recommend(user_id=42, rated_items={item for _, item, _ in ratings if _ == 42})
+</code></pre>
+<p>Yehuda Koren's <strong>SVD++</strong> extended this by incorporating implicit feedback — what you browsed, not just what you rated — and achieved the winning RMSE of 0.8556. The Netflix Prize established matrix factorization as the dominant paradigm for nearly a decade.</p>
+<p>Rendle's <strong>Factorization Machines</strong> generalized the matrix factorization idea to arbitrary feature vectors, modeling all pairwise interactions through a factorized parametrization — the same mechanism that powers MF but applicable to any set of sparse categorical features [8].</p>
+<p>It also revealed the field's central tension: <strong>the metric that drove the competition (RMSE on withheld ratings) doesn't actually measure whether users are satisfied</strong>. Reed Hastings articulated this later: &quot;When we rate, we're meta-cognitive about quality — that's sort of our aspirational self. It works out much better, to please people, to look at the actual choices that they make.&quot; Users say they want documentaries; they watch reality TV. A recommender that trusts stated preferences over revealed preferences fails.</p>
+<h2 id="the-deep-learning-era--youtube-and-the-multi-stage-pipeline-20162020">The Deep Learning Era — YouTube and the Multi-Stage Pipeline (2016–2020)</h2>
+<p>YouTube's 2016 paper marked deep learning's entry into production recommendation. The architecture was two-stage:</p>
+<p>He et al.'s <strong>Neural Collaborative Filtering</strong> (NCF) showed that replacing the inner product in matrix factorization with a learned multi-layer perceptron could capture non-linear user–item interactions, unifying collaborative filtering with deep learning [7].</p>
+<pre><code class="language-python">class YouTubeCandidateGenerator(torch.nn.Module):
+    &quot;&quot;&quot;YouTube-style candidate generation: narrow millions → hundreds.&quot;&quot;&quot;
+
+    def __init__(self, vocab_sizes: dict[str, int], embedding_dim: int = 256):
+        super().__init__()
+        # Embedding layers for categorical features
+        self.embeddings = torch.nn.ModuleDict({
+            name: torch.nn.Embedding(size, embedding_dim)
+            for name, size in vocab_sizes.items()
+        })
+        # Concatenated embeddings → hidden layers
+        input_dim = len(vocab_sizes) * embedding_dim
+        self.layers = torch.nn.Sequential(
+            torch.nn.Linear(input_dim, 1024),
+            torch.nn.ReLU(),
+            torch.nn.Linear(1024, 512),
+            torch.nn.ReLU(),
+            torch.nn.Linear(512, 256),
+        )
+        # Output: softmax over all video IDs (treated as classes)
+        self.output = torch.nn.Linear(256, vocab_sizes['video_id'])
+
+    def forward(self, features: dict[str, torch.Tensor]) -&gt; torch.Tensor:
+        &quot;&quot;&quot;Predict the next video a user will watch.&quot;&quot;&quot;
+        embedded = [self.embeddings[name](features[name])
+                    for name in self.embeddings]
+        concat = torch.cat(embedded, dim=1)
+        hidden = self.layers(concat)
+        return self.output(hidden)
+
+# Key innovation: the model was trained on ALL YouTube watches, including those
+# on embedded players. The training objective was next-video prediction —
+# treating recommendation as an extreme multi-class classification problem.
+
+# But the real insight was about WHAT to optimize. YouTube didn't optimize for
+# clicks — they optimized for expected watch time. Clicks are easy to game
+# (clickbait thumbnails). Watch time is harder to fake and better aligned
+# with user satisfaction.
+</code></pre>
+<p>The three-stage pipeline that emerged became industry standard:</p>
+<pre><code class="language-python">def production_recsys_pipeline(user_id: int, user_features: dict,
+                               all_items: list[int], k: int = 10) -&gt; list[int]:
+    &quot;&quot;&quot;Standard three-stage recommendation pipeline.&quot;&quot;&quot;
+
+    # Stage 1: Candidate Generation — millions → thousands
+    # Multiple parallel generators: collaborative filtering, trending,
+    # new releases, content-based. High recall, low cost per item.
+    candidates_cf = cf_retriever.retrieve(user_id, k=500)
+    candidates_trending = trending_retriever.retrieve(k=200)
+    candidates_similar = similar_items_retriever.retrieve(
+        user_features['last_watched'], k=200)
+    candidates = list(set(candidates_cf + candidates_trending + candidates_similar))
+
+    # Stage 2: Ranking — thousands → hundreds
+    # Deep neural network scores each candidate using hundreds of features.
+    # High precision, moderate cost per item.
+    ranked = ranker.score(user_id, candidates, user_features)
+    ranked.sort(key=lambda x: x.score, reverse=True)
+    top = ranked[:200]
+
+    # Stage 3: Re-Ranking — hundreds → tens
+    # Apply diversity, freshness boost, business rules, exploration.
+    # Low cost per item (post-processing), high impact on user experience.
+    final = re_ranker.apply(top, user_features,
+                            diversity_factor=0.3,
+                            freshness_boost=1.2,
+                            max_same_genre=3)
+    return [item.id for item in final[:k]]
+</code></pre>
+<p>By 2020, the search field had always been multi-stage. Recommendation caught up — and that convergence is one reason the two fields are so often conflated.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>Matrix factorization dominated recommendation for a decade after the Netflix Prize, but the Prize's metric (RMSE) didn't measure user satisfaction.</strong> What would a recommendation competition look like today if the metric were retention, not rating prediction? Could we even run one?</p>
+</li>
+<li>
+<p><strong>Hastings' insight — that users' stated preferences differ from their revealed preferences — has uncomfortable implications.</strong> Should recommenders ever <em>ignore</em> what users explicitly tell them? When is the aspirational self a feature rather than noise?</p>
+</li>
+<li>
+<p><strong>The deep learning era equalized recommendation and search by giving both access to heterogeneous features.</strong> But search had decades of multi-modal infrastructure first. Did recommendation catch up, or did it just inherit search's architecture without adapting it?</p>
+</li>
+<li>
+<p><strong>Item-to-item CF at Amazon discovered cross-category connections no keyword match could find.</strong> What connections are today's models missing because they optimize for engagement rather than surprise?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Le Wu, Xiangnan He, Xiang Wang, Kun Zhang, and Meng Wang. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2022.3145690"><em>A Survey on Accuracy-Oriented Neural Recommendation: From Collaborative Filtering to Information-Rich Recommendation</em></a>. IEEE TKDE, 35(5): 4425–4445, 2023.</p>
+</li>
+<li>
+<p>David Goldberg, David Nichols, Brian M. Oki, and Douglas Terry. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138867"><em>Using Collaborative Filtering to Weave an Information Tapestry</em></a>. Communications of the ACM, 35(12): 61–70, 1992.</p>
+</li>
+<li>
+<p>Paul Resnick et al. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/192844.192905"><em>GroupLens: An Open Architecture for Collaborative Filtering of Netnews</em></a>. CSCW 1994.</p>
+</li>
+<li>
+<p>Greg Linden, Brent Smith, and Jeremy York. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MIC.2003.1167344"><em>Amazon.com Recommendations: Item-to-Item Collaborative Filtering</em></a>. IEEE Internet Computing, 7(1): 76–80, 2003.</p>
+</li>
+<li>
+<p>Yehuda Koren, Robert Bell, and Chris Volinsky. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/MC.2009.263"><em>Matrix Factorization Techniques for Recommender Systems</em></a>. IEEE Computer, 42(8): 30–37, 2009.</p>
+</li>
+<li>
+<p>Paul Covington, Jay Adams, and Emre Sargin. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/2959100.2959190"><em>Deep Neural Networks for YouTube Recommendations</em></a>. RecSys 2016.</p>
+</li>
+<li>
+<p>Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu, and Tat-Seng Chua. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/3038912.3052569"><em>Neural Collaborative Filtering</em></a>. WWW 2017.</p>
+</li>
+<li>
+<p>Steffen Rendle. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/ICDM.2010.127"><em>Factorization Machines</em></a>. ICDM 2010.</p>
+</li>
+<li>
+<p>James Bennett and Stan Lanning. <a target="_blank" rel="noopener noreferrer" href="https://www.cs.uic.edu/~liub/KDD-cup-2007/NetflixPrize-description.pdf"><em>The Netflix Prize</em></a>. KDD Cup Workshop, 2007.</p>
+</li>
+<li>
+<p>Gediminas Adomavicius and Alexander Tuzhilin. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1109/TKDE.2005.99"><em>Toward the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions</em></a>. IEEE TKDE, 17(6): 734–749, 2005.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

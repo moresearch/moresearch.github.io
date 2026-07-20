@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The rise of agentic software engineering is transforming how codebases are structured, maintained, and extended. This post examines the need for explicit contracts, modular skills, and safe parallel work patterns to support both human and agent contributors. We discuss the emergence of repository-level instruction files, the importance of clear boundaries and invariants, and strategies for reducing merge friction in multi-agent environments. Readers will learn how to design codebases that are resilient, adaptable, and ready for the next wave of collaborative, agent-driven development.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/codebases-in-the-era-of-agentic-software-engineering/">
+  <title>Agentic Engineering: Codebase Contracts and Skills — hackspree</title>
+  <meta property="og:title" content="Agentic Engineering: Codebase Contracts and Skills">
+  <meta property="og:description" content="The rise of agentic software engineering is transforming how codebases are structured, maintained, and extended. This post examines the need for explicit contracts, modular skills, and safe parallel work patterns to support both human and agent contributors. We discuss the emergence of repository-level instruction files, the importance of clear boundaries and invariants, and strategies for reducing merge friction in multi-agent environments. Readers will learn how to design codebases that are resilient, adaptable, and ready for the next wave of collaborative, agent-driven development.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/codebases-in-the-era-of-agentic-software-engineering/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Agentic Engineering: Codebase Contracts and Skills">
+  <meta name="twitter:description" content="The rise of agentic software engineering is transforming how codebases are structured, maintained, and extended. This post examines the need for explicit contracts, modular skills, and safe parallel work patterns to support both human and agent contributors. We discuss the emergence of repository-level instruction files, the importance of clear boundaries and invariants, and strategies for reducing merge friction in multi-agent environments. Readers will learn how to design codebases that are resilient, adaptable, and ready for the next wave of collaborative, agent-driven development.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-05-08">2026-05-08</time></p>
+          <h1>Agentic Engineering: Codebase Contracts and Skills</h1><p class="post-summary">The rise of agentic software engineering is transforming how codebases are structured, maintained, and extended. This post examines the need for explicit contracts, modular skills, and safe parallel work patterns to support both human and agent contributors. We discuss the emergence of repository-level instruction files, the importance of clear boundaries and invariants, and strategies for reducing merge friction in multi-agent environments. Readers will learn how to design codebases that are resilient, adaptable, and ready for the next wave of collaborative, agent-driven development.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">agents</span><span class="tag">architecture</span></div>
+          
+        </header>
+        <div class="post-body"><p>Codebases used to be written primarily for humans. The main readers were the teammates who opened files in an editor, learned the local conventions by trial and error, and built a mental map over weeks or months.</p>
+<p>That assumption is breaking down.</p>
+<p>In an agentic workflow, the first reader of a codebase is often a coding agent. The second reader may be another agent in a different worktree. The third may be a reviewer agent that only sees a diff. Humans still matter, but the codebase now has to explain itself to fast, literal, parallel workers that do not share much hidden context.</p>
+<p>That changes what “well structured” means.</p>
+<h2 id="a-modern-codebase-needs-explicit-contracts">A modern codebase needs explicit contracts</h2>
+<p>The strongest recent signal here is the emergence of repository-level instruction files such as <a target="_blank" rel="noopener noreferrer" href="https://developers.openai.com/codex/guides/agents-md">AGENTS.md in OpenAI Codex</a> and the closely related <code>CLAUDE.md</code>, skills, and subagent patterns in <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/best-practices.md">Claude Code best practices</a>, <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills.md">skills</a>, and <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/worktrees.md">worktrees</a>.</p>
+<p>Those tools all point toward the same lesson: agents do better when the repo contains a compact, explicit contract for:</p>
+<ul>
+<li>what the repo is for,</li>
+<li>which commands are authoritative,</li>
+<li>which paths are safe to change,</li>
+<li>which invariants are non-negotiable,</li>
+<li>where deeper local instructions live.</li>
+</ul>
+<p>Humans can absorb ambiguity. Agents mostly amplify it.</p>
+<p>If a repo does not declare its rules, every agent run starts by rediscovering them. That wastes context, increases variance, and creates merge friction when multiple agents land changes that were individually reasonable but globally inconsistent.</p>
+<h2 id="agentsmd-should-be-a-routing-layer-not-a-novel">AGENTS.md should be a routing layer, not a novel</h2>
+<p>The worst version of <code>AGENTS.md</code> is a giant wall of text. The best version is a routing contract.</p>
+<p>At the root, it should state the repo mission, the required workflow, the canonical test/build commands, and the directories where deeper instructions live. Then each major subtree can add a local instruction file with the context only that area needs.</p>
+<p>That lets an agent read just enough to work safely instead of loading the entire history of the repository into every run.</p>
+<p>For a Go codebase, that usually means:</p>
+<ol>
+<li>a small root <code>AGENTS.md</code>,</li>
+<li>local contracts for subsystems like <code>cmd/</code>, <code>internal/</code>, or <code>pkg/</code>,</li>
+<li>repo-local skills for recurring workflows such as adding a handler, expanding a schema, or shipping a release.</li>
+</ol>
+<p>The key idea is locality. The closer the instruction is to the code it governs, the easier it is for parallel agents to stay correct.</p>
+<h2 id="skills-are-how-you-turn-tribal-knowledge-into-executable-guidance">Skills are how you turn tribal knowledge into executable guidance</h2>
+<p>Agent-first repositories should treat skills as first-class assets. A good skill is not motivational prose. It is an operational recipe with:</p>
+<ul>
+<li>purpose,</li>
+<li>inputs,</li>
+<li>exact steps,</li>
+<li>validations,</li>
+<li>failure modes.</li>
+</ul>
+<p>That is useful for humans too, but it is especially valuable for agents because it removes guesswork from repeated tasks. Instead of hoping every agent rediscovers the right release flow, migration sequence, or API checklist, the repo can teach that behavior directly.</p>
+<p>Skills are the scalable answer to “everyone knows how to do this.” In an agentic repo, that sentence should be treated as a bug report.</p>
+<h2 id="modularity-matters-more-when-multiple-agents-work-in-parallel">Modularity matters more when multiple agents work in parallel</h2>
+<p>Parallel agents are most effective when they can work in separate git worktrees with minimal coordination. That only works if the codebase has solid seams.</p>
+<p>In Go, the natural seam is the package boundary. If a package exports a small, well-tested interface contract, different agents can work on adjacent layers without constantly reaching across the boundary.</p>
+<p>For example, an agent that owns orchestration code should not need to know how persistence is implemented. It should only need a stable interface:</p>
+<pre><code class="language-go">package contracts
+
+import &quot;context&quot;
+
+// SkillsCatalog defines the read-only contract for skill discovery.
+type SkillsCatalog interface {
+	Load(ctx context.Context, name string) (Skill, error)
+	List(ctx context.Context) ([]Skill, error)
+}
+
+// WorktreeAllocator isolates parallel work into separate trees.
+type WorktreeAllocator interface {
+	Reserve(ctx context.Context, branch string) (Worktree, error)
+	Release(ctx context.Context, path string) error
+}
+
+type Skill struct {
+	Name        string
+	Description string
+}
+
+type Worktree struct {
+	Path   string
+	Branch string
+}
+</code></pre>
+<p>This looks simple, but that simplicity is the point. If the contract is small and explicit, one agent can change the allocator implementation while another extends skill discovery without both editing the same files.</p>
+<h2 id="agent-friendly-go-packages-should-minimize-hidden-cross-package-state">Agent-friendly Go packages should minimize hidden cross-package state</h2>
+<p>A lot of merge pain in agentic work happens because packages are not really modular. They look modular, but they share config globals, mutate common registries, or depend on side effects that are never written down.</p>
+<p>A safer pattern is to make dependencies explicit in constructors:</p>
+<pre><code class="language-go">package planner
+
+import (
+	&quot;context&quot;
+	&quot;fmt&quot;
+)
+
+// TaskStore persists the generated plan steps for later execution.
+type TaskStore interface {
+	SavePlan(ctx context.Context, id string, steps []string) error
+}
+
+type Service struct {
+	store TaskStore
+}
+
+func New(store TaskStore) *Service {
+	return &amp;Service{store: store}
+}
+
+func (s *Service) Plan(ctx context.Context, id string, ask string) error {
+	// Keep the planning stages explicit so parallel agents share the same flow.
+	steps := []string{
+		fmt.Sprintf(&quot;classify: %s&quot;, ask),
+		&quot;load local contracts&quot;,
+		&quot;select skill or subagent&quot;,
+		&quot;emit scoped plan&quot;,
+	}
+	return s.store.SavePlan(ctx, id, steps)
+}
+</code></pre>
+<p>This does two things for agentic development:</p>
+<ol>
+<li>it reduces the number of invisible assumptions,</li>
+<li>it makes interface contracts testable in isolation.</li>
+</ol>
+<p>That means a parallel agent can change a planner, store, or allocator behind the same interface and still merge cleanly.</p>
+<h2 id="worktrees-are-safer-when-interface-tests-are-part-of-the-contract">Worktrees are safer when interface tests are part of the contract</h2>
+<p>When agents work in separate git trees, smooth merging depends on more than good intentions. It depends on contract tests.</p>
+<p>If package boundaries are meant to stay stable, the repo should enforce them with focused tests:</p>
+<pre><code class="language-go">package contracts_test
+
+import (
+	&quot;context&quot;
+	&quot;testing&quot;
+)
+
+// fakeCatalog is a tiny stand-in that satisfies the contract in tests.
+type fakeCatalog struct{}
+
+func (fakeCatalog) Load(context.Context, string) (Skill, error) { return Skill{Name: &quot;go-api&quot;}, nil }
+func (fakeCatalog) List(context.Context) ([]Skill, error)       { return []Skill{{Name: &quot;go-api&quot;}}, nil }
+
+func TestCatalogContract(t *testing.T) {
+	// Bind the fake to the interface so the consumer-facing seam stays explicit.
+	var svc SkillsCatalog = fakeCatalog{}
+
+	skill, err := svc.Load(context.Background(), &quot;go-api&quot;)
+	if err != nil {
+		t.Fatalf(&quot;load skill: %v&quot;, err)
+	}
+	if skill.Name == &quot;&quot; {
+		t.Fatal(&quot;expected skill name&quot;)
+	}
+}
+</code></pre>
+<p>The implementation here is tiny, but the idea scales: every important seam should have a small set of tests that define what consumers rely on. Parallel agents can change internals freely when those seams are protected.</p>
+<h2 id="the-codebase-now-needs-to-optimize-for-fast-onboarding-by-machines">The codebase now needs to optimize for fast onboarding by machines</h2>
+<p>A human teammate can survive an opaque repo if they are patient and can ask questions. An agent gets a narrower window. It needs a fast path to useful context.</p>
+<p>That suggests a different priority order than older codebases often used:</p>
+<ol>
+<li>explicit contracts before clever abstractions,</li>
+<li>local instructions before tribal knowledge,</li>
+<li>interface stability before cross-package reach,</li>
+<li>reproducible commands before “it works on my laptop.”</li>
+</ol>
+<p>This is also why repo-local templates such as <a target="_blank" rel="noopener noreferrer" href="https://github.com/eugenelim/agent-ready-repo">agent-ready-repo</a> are interesting. They encode the idea that architecture docs, operational skills, and agent-facing contracts belong inside the repo rather than floating around in chat history.</p>
+<h2 id="the-merge-target-is-not-just-correctness-but-convergence">The merge target is not just correctness, but convergence</h2>
+<p>The best agent-first codebases do more than help a single agent succeed. They help many agents converge on compatible answers.</p>
+<p>That means designing the repo so independent workers can discover the same commands, the same invariants, the same subsystem boundaries, and the same review expectations. When that happens, separate worktrees stop feeling risky. They start feeling like throughput.</p>
+<p>The old codebase question was: <em>can a human figure this out eventually?</em></p>
+<p>The new question is: <em>can multiple agents work in parallel, in separate trees, with enough shared contract to merge smoothly later?</em></p>
+<p>That is a different optimization target. It favors explicitness, modularity, skills, and durable interface contracts. Go is a strong fit for that world because its package boundaries, interfaces, tests, and deployment story make it easier to build systems that are boring in the right places.</p>
+<p>And in the era of agentic software engineering, boring seams are a superpower.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://developers.openai.com/codex/guides/agents-md">OpenAI Codex guide: AGENTS.md</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/best-practices.md">Claude Code best practices</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills.md">Claude Code skills</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/worktrees.md">Claude Code worktrees</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/eugenelim/agent-ready-repo">agent-ready-repo example</a></li>
+</ul>
+<p>This is Brooks's conceptual integrity inverted. Instead of one mind controlling the design, we have agents generating code and humans reviewing the diffs. The design authority shifts from the architect to the spec writer. The spec becomes the source of truth. The code becomes a generated artifact. The engineering question: how do you maintain conceptual integrity when the code is written by agents that don't understand the design? The answer is the same as Brooks's: one mind — the spec — controls the output. The spec is the architect. The agents are the builders.</p>
+<blockquote>
+<p>The agent does not replace the engineer. It replaces the typing. The engineering remains: what to build, why to build it, whether what was built is correct.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

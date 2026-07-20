@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Data modeling is the art of deciding how to structure data so it can be queried efficiently and understood by humans. The models change. The principles don&#39;t. From Codd&#39;s relational model to Kimball&#39;s star schemas to the modern wide table, the problem is always the same: how do you represent reality in tables?">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/data-engineering-modeling/">
+  <title>Data modeling is the hard part — hackspree</title>
+  <meta property="og:title" content="Data modeling is the hard part">
+  <meta property="og:description" content="Data modeling is the art of deciding how to structure data so it can be queried efficiently and understood by humans. The models change. The principles don&#39;t. From Codd&#39;s relational model to Kimball&#39;s star schemas to the modern wide table, the problem is always the same: how do you represent reality in tables?">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/data-engineering-modeling/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Data modeling is the hard part">
+  <meta name="twitter:description" content="Data modeling is the art of deciding how to structure data so it can be queried efficiently and understood by humans. The models change. The principles don&#39;t. From Codd&#39;s relational model to Kimball&#39;s star schemas to the modern wide table, the problem is always the same: how do you represent reality in tables?">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Data modeling is the hard part</h1><p class="post-summary">Data modeling is the art of deciding how to structure data so it can be queried efficiently and understood by humans. The models change. The principles don&#39;t. From Codd&#39;s relational model to Kimball&#39;s star schemas to the modern wide table, the problem is always the same: how do you represent reality in tables?</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">data-modeling</span><span class="tag">kimball</span><span class="tag">star-schema</span><span class="tag">normalization</span></div>
+          
+        </header>
+        <div class="post-body"><p>Data modeling is the hardest part of data engineering because it is the part that requires judgment. You can learn a tool in a week. You can learn a pipeline pattern in a day. Data modeling takes years because the feedback loop is slow — you design a model, people query it for months, and only then do you discover what you got wrong. The wrongness is expensive to fix because downstream dashboards, ML models, and business processes have been built on the original model. Changing the model breaks them. The breakage is the cost of the original design error.</p>
+<h2 id="the-relational-model">The relational model</h2>
+<p>Edgar Codd published &quot;A Relational Model of Data for Large Shared Data Banks&quot; in 1970. The paper introduced the idea that data should be stored in relations — tables — with well-defined operations for querying and manipulating them. The relational model separated the logical structure of data from its physical storage. Before Codd, databases were navigational — you followed pointers from record to record. The query path was baked into the storage structure. Codd's insight was that queries should be declarative: you specify what you want, not how to get it. SQL is the realization of that insight.</p>
+<p>The relational model introduced normalization — the process of organizing data to minimize redundancy. First normal form: no repeating groups. Second normal form: no partial dependencies on a composite key. Third normal form: no transitive dependencies. The normal forms are a hierarchy of increasingly strict constraints on table design. A database in third normal form has minimal duplication. Every fact is stored exactly once. Changes to a fact require updating a single row.</p>
+<p>Normalization is elegant. It is also slow for analytical queries. A normalized schema requires joins to reconstruct the original business entities. Joins are expensive on large tables. The tension between normalization (write efficiency, data integrity) and denormalization (read efficiency, query simplicity) is the central tension of data modeling.</p>
+<h2 id="dimensional-modeling">Dimensional modeling</h2>
+<p>Ralph Kimball resolved the tension by designing for queries, not writes. In a dimensional model, data is organized into fact tables and dimension tables. Fact tables contain measurements — sales amounts, page views, sensor readings. Each row is an event. Dimension tables contain descriptions — customer names, product categories, date attributes. Each row describes an entity. The fact table references dimension tables through foreign keys.</p>
+<p>The star schema is the simplest dimensional model. A central fact table surrounded by dimension tables, like points of a star. A sales fact table has foreign keys to date, customer, product, and store dimensions. A query joins the fact to any subset of dimensions. The joins are simple — each dimension is one hop from the fact. The simplicity makes the schema understandable to business users who write SQL.</p>
+<p>The star schema's power is that it separates the what (measurements) from the who, what, when, and where (dimensions). You can ask any question that starts with &quot;how many X by Y&quot; — how many sales by product by month? How many page views by country by device? The answer is a join between the fact and the relevant dimensions. The model constrains the questions you can ask to the questions the business needs answered. The constraint is the design.</p>
+<p>Kimball's methodology includes slowly changing dimensions (SCDs) — how to handle changes to dimension attributes over time. Type 1: overwrite the old value. Type 2: add a new row with the new value, preserving history. Type 3: add a new column for the new value. Each type trades query complexity for historical accuracy. The choice is a business decision, not a technical one. The business must decide whether historical accuracy matters enough to justify the complexity.</p>
+<h2 id="the-modern-wide-table">The modern wide table</h2>
+<p>The modern data stack has shifted toward wide, denormalized tables. The warehouse engines — Snowflake, BigQuery — are fast enough that joins are less expensive than they were. The transformation layer — dbt — makes it easy to build and maintain derived tables. The result is the One Big Table (OBT) pattern: a single table with hundreds of columns, pre-joined, pre-aggregated, ready for the dashboard to query with a simple <code>SELECT *</code>.</p>
+<p>The wide table is a response to the reality that most business users cannot write joins. They can write <code>SELECT * FROM orders_wide WHERE date &gt; '2026-01-01'</code>. The wide table makes the data accessible. The cost is storage (denormalized data is larger), maintenance (the wide table must be rebuilt when source schemas change), and lineage opacity (it's harder to trace where each column came from). The trade-off is economic: the cost of storage and compute is lower than the cost of analyst time spent writing joins incorrectly. The economics favor the wide table. The wide table is the default.</p>
+<h2 id="data-mesh-and-domain-ownership">Data mesh and domain ownership</h2>
+<p>Zhamak Dehghani's data mesh (2019) challenges the centralized data warehouse model. The argument: data should be owned by the domains that produce it, not by a central data team. Each domain publishes data products — curated datasets with defined schemas, quality guarantees, and SLAs. The central team provides the platform — infrastructure, tooling, governance standards. The domains own the data.</p>
+<p>The data mesh is a response to the scaling problems of centralized data teams. As the number of data sources grows, the central team becomes a bottleneck. Every new data source requires the central team to understand the domain, model the data, build the pipeline, and maintain it. The domain expert who understands the data is not the person building the pipeline. The knowledge gap produces errors. The bottleneck produces delays. The data mesh solves both by moving the pipeline ownership to the domain.</p>
+<p>The trade-off: domain teams must now hire data engineering skills. The central team must build a platform that makes it easy for domain teams to publish data products. The governance must be federated — standards enforced by the platform, content owned by the domains. The data mesh is an organizational pattern, not a technology. The technology is the same as the centralized model. The organization is different. The difference is the innovation.</p>
+<h2 id="the-principle">The principle</h2>
+<p>The specific model — star schema, wide table, data mesh — matters less than the principle: data must be structured so that the people who need it can find it, understand it, and trust it. The structure that achieves this for a five-person startup is different from the structure that achieves it for a five-thousand-person enterprise. The principle is the same. The implementation varies. The variation is the work.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Edgar Codd, &quot;A Relational Model of Data for Large Shared Data Banks,&quot; <em>Communications of the ACM</em>, 1970.</li>
+<li>Ralph Kimball, <em>The Data Warehouse Toolkit</em>, Wiley, 1996.</li>
+<li>Zhamak Dehghani, &quot;How to Move Beyond a Monolithic Data Lake to a Distributed Data Mesh,&quot; 2019.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#parnas-information-hiding">Parnas's Information Hiding</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Scarcity and Software Economics</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

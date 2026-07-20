@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-options/">
+  <title>Options and DeFi Derivatives — hackspree</title>
+  <meta property="og:title" content="Options and DeFi Derivatives">
+  <meta property="og:description" content="Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-options/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Options and DeFi Derivatives">
+  <meta name="twitter:description" content="Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Options and DeFi Derivatives</h1><p class="post-summary">Thales of Miletus traded the first recorded option in the 6th century BC — a bet on the olive harvest. The Black-Scholes formula made options mathematically tractable in 1973. DeFi options protocols — Hegic, Opyn, Ribbon — are automating option writing, selling, and settlement on-chain. The instrument is 2,600 years old. The execution is new.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">options</span><span class="tag">black-scholes</span><span class="tag">derivatives</span><span class="tag">hegic</span></div>
+          
+        </header>
+        <div class="post-body"><p>Aristotle, in the <em>Politics</em>, tells the story of Thales of Miletus. Thales was a philosopher. His critics mocked him for his poverty, arguing that philosophy was useless because it couldn't make money. Thales, using his knowledge of astronomy, predicted a particularly abundant olive harvest. During the winter, when demand for olive presses was low, he paid small deposits to reserve the use of all the olive presses in Miletus and Chios for the following autumn. When the harvest arrived — abundant, as he predicted — demand for olive presses surged. Thales sold his reservations at a premium. He made a fortune.</p>
+<p>The transaction was a call option. Thales paid a premium for the right, but not the obligation, to use the olive presses at a future date. If the harvest had been poor, he would have let the option expire. His loss would have been limited to the premium. The structure — limited downside, asymmetric upside, premium paid upfront — is the structure of every option contract since. Thales invented the option. He also proved that philosophy could make money. The two achievements are connected.</p>
+<h2 id="the-functional-origin-black-scholes">The functional origin: Black-Scholes</h2>
+<p>The modern options market was created by a formula. Fischer Black and Myron Scholes published &quot;The Pricing of Options and Corporate Liabilities&quot; in 1973. The Black-Scholes formula calculates the theoretical price of a European call option as a function of the underlying asset price, the strike price, the time to expiration, the risk-free interest rate, and the asset's volatility. The formula assumes continuous trading, no transaction costs, and log-normal price distributions. The assumptions are false. The formula is still useful. The usefulness derives from the formula's insight: an option can be replicated by dynamically hedging a position in the underlying asset. The replication argument is the foundation of all derivatives pricing.</p>
+<p>The Chicago Board Options Exchange opened in April 1973, the same year Black-Scholes was published. The coincidence was not planned. The coincidence was catalytic. Traders had a formula for pricing options. The formula gave them confidence to trade. The trading created liquidity. The liquidity attracted more traders. The virtuous cycle created the modern options market, which now trades trillions in notional value annually.</p>
+<h2 id="defi-options">DeFi options</h2>
+<p>DeFi options protocols are automating the options market on-chain. The approaches:</p>
+<p><strong>Order book options.</strong> Hegic, Opyn, and Lyra use on-chain order books or request-for-quote systems for options trading. Buyers and sellers match on-chain. Settlement is automated. The challenge: options are complex instruments with many parameters (strike, expiry, type). The order book for any specific option is thin. The thinness produces wide spreads. The spreads limit adoption.</p>
+<p><strong>Automated options vaults.</strong> Ribbon Finance and ThetaNuts sell options automatically on behalf of depositors. A depositor deposits ETH into a covered call vault. The vault sells call options against the ETH, collecting premiums. The premiums are distributed to depositors. The vault automates the option selling strategy. The depositor earns yield without managing strikes, expirations, or greeks. The automation is the product. The product is yield.</p>
+<p><strong>Structured products.</strong> Cega and Friktion combine options into structured products — principal-protected notes, yield enhancement, volatility trading. The investor deposits capital. The protocol executes a strategy involving multiple options positions. The strategy generates yield in most market conditions and loses principal in tail events. The risk is the tail. The tail is priced into the premium. The pricing is the challenge.</p>
+<p><strong>Perpetual options.</strong> Paradigm and Panoptic are developing perpetual options — options with no expiry, analogous to perpetual futures. The mechanism is a funding rate between option buyers and sellers. The perpetual option eliminates expiration management. The perpetual option is the next frontier.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Nassim Nicholas Taleb, <em>Dynamic Hedging: Managing Vanilla and Exotic Options</em> (1997). Taleb was a options market maker before he was an author. His book is the practitioner's guide to the reality of options trading — the greeks, the hedging, the tail risks that Black-Scholes assumes away. Taleb's later book, <em>The Black Swan</em> (2007), is about the consequences of those tail risks. The DeFi options market is still young. The tail risks have not yet materialized at scale. When they do, Taleb's framework will be the guide to understanding them. The framework is ready. The market is not.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>An option is a function from an underlying price to a payoff. Black-Scholes is the algorithm that prices that function. DeFi options vaults automate the execution of that algorithm on-chain. The automation is software engineering applied to financial engineering. The vault deposits collateral, sells options, collects premiums, reinvests — the same loop as a CI/CD pipeline: trigger, execute, verify, repeat. The domain is different. The control flow is the same.</p>
+<p>The DeFi options stack also illustrates a recurring engineering pattern: complexity compression. Black-Scholes is a partial differential equation. A covered call vault presents it as &quot;deposit ETH, earn yield.&quot; The vault compresses the complexity of options pricing, Greeks management, and position monitoring into a single user action. The compression is the product. The product is an abstraction. The abstraction is good if it hides the right things and bad if it hides the wrong things. The vault that hides tail risk from the user is a bad abstraction. The vault that surfaces tail risk is a good one. The engineer's judgment is knowing which is which.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Aristotle, <em>Politics</em>, Book I, Chapter XI (Thales and the olive presses).</li>
+<li>Fischer Black and Myron Scholes, &quot;The Pricing of Options and Corporate Liabilities,&quot; <em>Journal of Political Economy</em>, 1973.</li>
+<li>Nassim Nicholas Taleb, <em>Dynamic Hedging</em>, Wiley, 1997.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-perpetuals">Perpetual Futures</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

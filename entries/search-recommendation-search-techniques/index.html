@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-search-techniques/">
+  <title>S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things?">
+  <meta property="og:description" content="A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-search-techniques/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things?">
+  <meta name="twitter:description" content="A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: What Can Fifty Years of Search Technology Teach Us About Finding Things?</h1><p class="post-summary">A technical history of information retrieval with working Python code for each major paradigm: Boolean retrieval, TF-IDF, BM25, PageRank, Learning to Rank, and neural IR with embeddings.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">information-retrieval</span><span class="tag">tf-idf</span><span class="tag">bm25</span><span class="tag">pagerank</span><span class="tag">bert</span><span class="tag">neural-ir</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. This post is about search — fifty years of it, from Boolean to BERT. But you cannot understand what search is without understanding what it is not.</em></p>
+<p><strong>Search begins with a query.</strong> The user types words. Those words are a contract: &quot;I am looking for this. Find me the best matches.&quot; Every technique in this post — TF-IDF, BM25, PageRank, Learning to Rank, DPR — is an attempt to narrow the gap between the words the user typed and the documents they meant. The gap is irreducible because language is ambiguous and intent is underspecified, but fifty years of work has made it narrower.</p>
+<p><strong>Recommendation begins with silence.</strong> No query. No typed words. No explicit contract. The only signal is behavior — what the user clicked, watched, lingered on, skipped, abandoned. The system infers a query the user never wrote. The gap here is not lexical. It is psychological. The user may not know what they want. The system's job is to know it anyway.</p>
+<p>Search answers one question: given a query and a collection of documents, which documents are most relevant, and in what order? Every major advance in information retrieval has come from realizing the previous generation's answer was incomplete — not wrong, just missing a dimension of what &quot;relevance&quot; means.</p>
+<p>This part traces fifty years of that evolution with working Python. You'll see how each generation built on the last, what each solved, and what each left unsolved.</p>
+<h2 id="boolean-retrieval--exact-matching-and-its-limits-1960s1970s">Boolean Retrieval — Exact Matching and Its Limits (1960s–1970s)</h2>
+<p>The earliest computerized search systems used Boolean logic: a query was a logical expression of terms, and documents either matched or did not. No ranking — just set intersection.</p>
+<pre><code class="language-python">from collections import defaultdict
+from typing import list[str]
+
+class BooleanIndex:
+    &quot;&quot;&quot;The simplest retrieval engine: exact match, no ranking.&quot;&quot;&quot;
+
+    def __init__(self):
+        self.index: dict[str, set[int]] = defaultdict(set)
+        self.documents: dict[int, str] = {}
+
+    def add(self, doc_id: int, text: str):
+        self.documents[doc_id] = text
+        for token in set(text.lower().split()):
+            self.index[token].add(doc_id)
+
+    def search_and(self, terms: list[str]) -&gt; set[int]:
+        &quot;&quot;&quot;Boolean AND: all terms must appear.&quot;&quot;&quot;
+        result = None
+        for term in terms:
+            docs = self.index.get(term.lower(), set())
+            result = docs if result is None else result &amp; docs
+        return result or set()
+
+    def search_or(self, terms: list[str]) -&gt; set[int]:
+        &quot;&quot;&quot;Boolean OR: any term can appear.&quot;&quot;&quot;
+        result = set()
+        for term in terms:
+            result |= self.index.get(term.lower(), set())
+        return result
+
+# Usage
+idx = BooleanIndex()
+idx.add(1, &quot;the tragedy of star crossed lovers in Verona&quot;)
+idx.add(2, &quot;a tragic love story set in medieval Italy&quot;)
+
+# The vocabulary mismatch problem in action
+assert idx.search_and([&quot;tragic&quot;, &quot;love&quot;, &quot;story&quot;]) == {2}   # finds doc 2
+assert idx.search_and([&quot;star&quot;, &quot;crossed&quot;, &quot;lovers&quot;]) == {1} # finds doc 1
+# But: no document contains BOTH phrasings, so they never appear together.
+# Searching for &quot;tragic love story&quot; misses Shakespeare entirely.
+</code></pre>
+<p>This worked for trained librarians. It failed for everyone else. The <strong>vocabulary mismatch problem</strong> — users describe their needs with different words than authors use — is the fundamental condition of language, not a bug to be fixed. Every subsequent generation of retrieval technology is an attempt to narrow the gap.</p>
+<p>Karen Spärck Jones, who invented inverse document frequency (the weighting scheme that would become half of TF-IDF) [10], understood this better than anyone. In a 1999 reflection, she wrote: &quot;Classical document retrieval thus falls in the class of AI tasks that assist the human user but cannot, by definition, replace them.&quot; The gap can be narrowed. It cannot be closed.</p>
+<h2 id="the-vector-space-model--when-documents-became-points-in-space-1975">The Vector Space Model — When Documents Became Points in Space (1975)</h2>
+<p>Gerard Salton at Cornell proposed representing documents and queries as sparse vectors in a high-dimensional term space. A document was no longer a set of words — it was a point whose coordinates were term weights.</p>
+<p>The weighting scheme was <strong>TF-IDF</strong>:</p>
+<pre><code class="language-python">import math
+from collections import Counter
+
+def compute_tf_idf(documents: list[list[str]]) -&gt; dict[int, dict[str, float]]:
+    &quot;&quot;&quot;Compute TF-IDF vectors for a document collection.&quot;&quot;&quot;
+    N = len(documents)
+    df: dict[str, int] = Counter()
+
+    # Count document frequency for each term
+    for doc_tokens in documents:
+        for term in set(doc_tokens):
+            df[term] += 1
+
+    tfidf_vectors: dict[int, dict[str, float]] = {}
+    for i, doc_tokens in enumerate(documents):
+        tf = Counter(doc_tokens)
+        doc_len = len(doc_tokens)
+        tfidf_vectors[i] = {}
+        for term, count in tf.items():
+            # TF: normalized term frequency
+            tf_norm = count / doc_len
+            # IDF: log(N / df) — rare terms get higher weight
+            idf = math.log((N - df[term] + 0.5) / (df[term] + 0.5) + 1.0)
+            tfidf_vectors[i][term] = tf_norm * idf
+
+    return tfidf_vectors
+
+def cosine_similarity(vec_a: dict[str, float], vec_b: dict[str, float]) -&gt; float:
+    &quot;&quot;&quot;Cosine similarity between two sparse vectors.&quot;&quot;&quot;
+    common_terms = set(vec_a) &amp; set(vec_b)
+    if not common_terms:
+        return 0.0
+
+    dot = sum(vec_a[t] * vec_b[t] for t in common_terms)
+    norm_a = math.sqrt(sum(v ** 2 for v in vec_a.values()))
+    norm_b = math.sqrt(sum(v ** 2 for v in vec_b.values()))
+    return dot / (norm_a * norm_b) if norm_a and norm_b else 0.0
+
+def search_tfidf(query: list[str], tfidf_vectors: dict[int, dict[str, float]],
+                 k: int = 10) -&gt; list[tuple[int, float]]:
+    &quot;&quot;&quot;Search using TF-IDF cosine similarity.&quot;&quot;&quot;
+    # Build query vector (TF only — no IDF for ad-hoc queries in simplest form)
+    query_tf = Counter(query)
+    query_len = len(query)
+    query_vec = {t: c / query_len for t, c in query_tf.items()}
+
+    scores = [(doc_id, cosine_similarity(query_vec, doc_vec))
+              for doc_id, doc_vec in tfidf_vectors.items()]
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return scores[:k]
+
+# Usage
+docs = [
+    &quot;the tragedy of star crossed lovers in Verona&quot;.split(),
+    &quot;a tragic love story set in medieval Italy&quot;.split(),
+    &quot;machine learning algorithms for classification tasks&quot;.split(),
+]
+tfidf = compute_tf_idf(docs)
+# Now &quot;tragic love story&quot; finds BOTH documents — TF-IDF bridges the vocabulary gap
+# through shared high-IDF terms
+results = search_tfidf(&quot;tragic love story&quot;.split(), tfidf)
+</code></pre>
+<p>TF-IDF doesn't <em>understand</em> semantics. It exploits a statistical regularity: rare terms are more discriminating, and frequent local terms are more important. It's a heuristic — but an extraordinarily robust one that remains a strong baseline fifty years later.</p>
+<h2 id="bm25--the-probabilistic-framework-that-still-powers-production-1970s1990s">BM25 — The Probabilistic Framework That Still Powers Production (1970s–1990s)</h2>
+<p>Stephen Robertson, Karen Spärck Jones, and collaborators at City, University of London asked a different question: given a document and a query, what is the <em>probability</em> that the document is relevant? The answer was BM25.</p>
+<pre><code class="language-python">def bm25_score(query_terms: list[str], doc_tokens: list[str],
+               doc_lengths: list[int], avg_dl: float,
+               df: dict[str, int], N: int,
+               k1: float = 1.5, b: float = 0.75) -&gt; float:
+    &quot;&quot;&quot;
+    BM25 scoring function.
+
+    k1: controls term frequency saturation (higher = more linear)
+    b:  controls document length normalization (0 = none, 1 = full)
+    &quot;&quot;&quot;
+    dl = len(doc_tokens)
+    tf = Counter(doc_tokens)
+    score = 0.0
+
+    for term in set(query_terms):
+        if term not in df:
+            continue
+
+        # IDF component (Robertson-Spärck Jones formulation)
+        idf = math.log((N - df[term] + 0.5) / (df[term] + 0.5) + 1.0)
+
+        # TF with saturation: as count grows, additional occurrences matter less
+        f = tf.get(term, 0)
+        tf_saturated = (f * (k1 + 1)) / (f + k1 * (1 - b + b * dl / avg_dl))
+
+        score += idf * tf_saturated
+
+    return score
+
+# BM25's key innovations over TF-IDF:
+# 1. Diminishing returns for term frequency (a term appearing 10x is not 10x as
+#    important as appearing 1x — the saturation curve handles this)
+# 2. Document length normalization that's tunable (longer docs aren't inherently
+#    more relevant just because they have more words)
+
+# BM25 remains the default scoring in Elasticsearch and Lucene — which means it
+# powers production search at Netflix, Spotify, DoorDash, and most of the web.
+</code></pre>
+<p>BM25's IDF is derived from the Binary Independence Model — it has a probabilistic foundation that TF-IDF lacks. It is not obsolete in 2026. In modern hybrid systems, BM25 is the fast, cheap first stage that feeds candidates to neural re-rankers.</p>
+<h2 id="pagerank--when-the-link-graph-became-a-relevance-signal-1998">PageRank — When the Link Graph Became a Relevance Signal (1998)</h2>
+<p>Content-based retrieval treats documents independently. But on the web, documents link to each other — and those links carry information. Brin and Page's insight at Stanford was that the link graph is itself a relevance signal.</p>
+<pre><code class="language-python">import numpy as np
+
+def pagerank(adjacency: dict[int, list[int]], N: int,
+             d: float = 0.85, max_iter: int = 100, tol: float = 1e-6) -&gt; dict[int, float]:
+    &quot;&quot;&quot;
+    Compute PageRank scores from a link graph.
+
+    adjacency: {page_id: [outgoing_link_page_ids]}
+    d: damping factor — probability the random surfer continues clicking
+    &quot;&quot;&quot;
+    pr = {p: 1.0 / N for p in adjacency}  # uniform initialization
+
+    for iteration in range(max_iter):
+        new_pr = {}
+        for page in adjacency:
+            # Random jump component: (1-d)/N — every page gets baseline probability
+            # Link component: sum of PR from inbound links, divided by their out-degree
+            inbound_sum = 0.0
+            for other_page, out_links in adjacency.items():
+                if page in out_links:
+                    inbound_sum += pr[other_page] / len(out_links)
+            new_pr[page] = (1 - d) / N + d * inbound_sum
+
+        # Check convergence
+        delta = sum(abs(new_pr[p] - pr[p]) for p in pr)
+        if delta &lt; tol:
+            break
+        pr = new_pr
+
+    return pr
+
+# Usage: a tiny web of 4 pages
+web = {
+    0: [1, 2],       # page 0 links to 1 and 2
+    1: [2],          # page 1 links to 2
+    2: [0, 3],       # page 2 links to 0 and 3
+    3: [2],          # page 3 links to 2
+}
+scores = pagerank(web, N=4)
+# Page 2 gets the highest score: it has the most inbound links from important pages
+</code></pre>
+<p>PageRank didn't replace content-based retrieval — it augmented it. A modern search engine computes hundreds of features (BM25, PageRank, proximity, freshness, click-through rate, spam score) and feeds them into a learned ranking function.</p>
+<h2 id="learning-to-rank--when-ranking-became-a-supervised-ml-problem-2000s2010s">Learning to Rank — When Ranking Became a Supervised ML Problem (2000s–2010s)</h2>
+<p>The insight: ranking is just a machine learning problem. Given a query, a set of candidate documents with relevance labels, and hundreds of features, learn a function that orders them optimally.</p>
+<pre><code class="language-python">from sklearn.ensemble import GradientBoostingRegressor
+import numpy as np
+
+def train_pointwise_ltr(training_data: list[tuple[np.ndarray, float]]) -&gt; GradientBoostingRegressor:
+    &quot;&quot;&quot;
+    Pointwise LTR: predict relevance score for each (query, document) pair.
+
+    Features might include: BM25, PageRank, click rate, freshness, title match, etc.
+    &quot;&quot;&quot;
+    X = np.array([features for features, _ in training_data])
+    y = np.array([score for _, score in training_data])
+    model = GradientBoostingRegressor(n_estimators=500, max_depth=5)
+    model.fit(X, y)
+    return model
+
+def rank_candidates(model, candidates: list[tuple[int, np.ndarray]]) -&gt; list[int]:
+    &quot;&quot;&quot;Score and sort candidates using the learned model.&quot;&quot;&quot;
+    scored = [(doc_id, model.predict(features.reshape(1, -1))[0])
+              for doc_id, features in candidates]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return [doc_id for doc_id, _ in scored]
+
+# In practice, LambdaMART — gradient-boosted trees with a listwise LambdaRank
+# objective — became the industry standard. The key difference from pointwise:
+# it optimizes the ordering directly (NDCG), not individual relevance scores.
+
+# Real search engines at Microsoft, Yahoo, and Google used ~500-1000 features.
+# The hand-crafted feature era produced the best search quality we'd ever seen —
+# but it was also a maintenance nightmare. Every new signal needed a new feature.
+</code></pre>
+<h2 id="the-neural-turn--from-word2vec-to-bert-to-dense-retrieval-20132020">The Neural Turn — From Word2Vec to BERT to Dense Retrieval (2013–2020)</h2>
+<p>Three papers changed search again. Let's see what each one did to the retrieval pipeline.</p>
+<p><strong>Word2Vec (2013):</strong> Dense word vectors that capture semantic relationships.</p>
+<pre><code class="language-python"># Conceptual: Word2Vec trains on the task &quot;predict surrounding words&quot;
+# The learned vectors capture analogies: king - man + woman ≈ queen
+# In retrieval: query and document terms can be matched even when they
+# don't share exact words, by comparing their vector representations.
+
+def embed_query(query: str, word_vectors: dict[str, np.ndarray]) -&gt; np.ndarray:
+    &quot;&quot;&quot;Simple averaging of word vectors — the simplest dense query representation.&quot;&quot;&quot;
+    tokens = query.lower().split()
+    vectors = [word_vectors[t] for t in tokens if t in word_vectors]
+    return np.mean(vectors, axis=0) if vectors else np.zeros(300)
+
+# But: word vectors are context-independent. &quot;bank&quot; has the same vector
+# in &quot;river bank&quot; and &quot;investment bank.&quot; That's the problem BERT solved.
+</code></pre>
+<p><strong>BERT (2018):</strong> Deeply contextualized embeddings. A word's representation depends on the words around it.</p>
+<pre><code class="language-python"># With BERT, &quot;bank&quot; in &quot;river bank&quot; and &quot;investment bank&quot; have different vectors.
+# This transformed query–document matching.
+
+# In retrieval, BERT is typically used as a RERANKER, not a first-stage retriever:
+# 1. BM25 retrieves top-1000 candidates (fast, cheap)
+# 2. BERT cross-encoder scores each (query, candidate) pair (slow, expensive, accurate)
+
+# The cross-encoder concatenates query and document, passes them through BERT
+# jointly, and produces a single relevance score. This captures fine-grained
+# interactions but is too slow to run over the entire collection.
+</code></pre>
+<p><strong>Dense Passage Retrieval (DPR) (2020):</strong> Bi-encoder architecture that makes neural retrieval fast enough for first-stage retrieval.</p>
+<pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+class DPRBiEncoder(torch.nn.Module):
+    &quot;&quot;&quot;Dense Passage Retrieval: separate encoders for queries and passages.&quot;&quot;&quot;
+    def __init__(self, query_encoder, passage_encoder):
+        super().__init__()
+        self.query_encoder = query_encoder    # e.g., BERT-base
+        self.passage_encoder = passage_encoder # e.g., BERT-base
+
+    def encode_query(self, query_texts: list[str]) -&gt; torch.Tensor:
+        &quot;&quot;&quot;Encode queries into dense vectors.&quot;&quot;&quot;
+        return self.query_encoder(query_texts)  # shape: (batch, 768)
+
+    def encode_passages(self, passage_texts: list[str]) -&gt; torch.Tensor:
+        &quot;&quot;&quot;Encode passages into dense vectors (can be pre-computed offline).&quot;&quot;&quot;
+        return self.passage_encoder(passage_texts)  # shape: (batch, 768)
+
+    def retrieve(self, query: torch.Tensor, passage_embeddings: torch.Tensor,
+                 k: int = 10) -&gt; tuple[torch.Tensor, torch.Tensor]:
+        &quot;&quot;&quot;ANN retrieval using dot product similarity.&quot;&quot;&quot;
+        scores = torch.matmul(query, passage_embeddings.T)  # (1, num_passages)
+        top_scores, top_indices = torch.topk(scores, k=k)
+        return top_indices, top_scores
+
+# Key property: passage embeddings are pre-computed and indexed in FAISS.
+# At query time, only the query encoder runs. This makes neural first-stage
+# retrieval feasible at scale.
+</code></pre>
+<p>Guo et al.'s comprehensive survey <em>A Deep Look into Neural Ranking Models for Information Retrieval</em> (2020) catalogs this transition from hand-crafted features to learned representations, noting that the key shift was not just better accuracy — it was the elimination of feature engineering as the bottleneck in search quality improvement [1].</p>
+<h2 id="the-modern-stack-hybrid-all-the-way-down">The Modern Stack: Hybrid All the Way Down</h2>
+<p>No production search system in 2026 uses a single model. The standard architecture is a multi-stage cascade:</p>
+<pre><code class="language-python">def production_search_pipeline(query: str, k: int = 10) -&gt; list[Document]:
+    &quot;&quot;&quot;Multi-stage search: each stage is more expensive but operates on fewer candidates.&quot;&quot;&quot;
+
+    # Stage 1: Lexical retrieval (BM25 via inverted index)
+    # Cost: O(query_terms) — sub-millisecond
+    # Coverage: full corpus (millions of documents)
+    # Recall: high; Precision: low
+    candidates_bm25 = bm25_retrieve(query, top_k=1000)
+
+    # Stage 2: Dense retrieval (bi-encoder + ANN)
+    # Cost: O(log N) with FAISS — ~10ms
+    # Coverage: candidates from stage 1 re-ranked by embedding similarity
+    # Recall: high; Precision: moderate
+    query_embedding = query_encoder.encode(query)
+    candidates_dense = faiss_index.search(query_embedding, k=200)
+
+    # Stage 3: Cross-encoder re-ranking (BERT)
+    # Cost: O(candidates) with full transformer — ~100ms for 200 candidates
+    # Coverage: top-200 from dense retrieval
+    # Recall: moderate; Precision: high
+    merged = merge_and_deduplicate(candidates_bm25, candidates_dense)
+    scored = []
+    for doc in merged[:200]:
+        score = cross_encoder.score(query, doc.text)
+        scored.append((doc, score))
+    scored.sort(key=lambda x: x[1], reverse=True)
+
+    return [doc for doc, _ in scored[:k]]
+
+# Each stage compensates for the limitations of the one before it.
+# BM25 handles exact matches that confuse embeddings (rare names, IDs, codes).
+# Dense retrieval handles semantic matches that BM25 misses (synonyms, paraphrases).
+# Cross-encoder handles fine-grained relevance that dot products miss.
+</code></pre>
+<p>The comprehensive survey by Hambarde and Proença (2023) organizes this pipeline into two stages — term-based retrieval and semantic retrieval — and catalogs the models available at each level [2]. Their key insight: <strong>modern search is never one model. It's a pipeline where each stage compensates for the limitations of the one before it.</strong></p>
+<p>Manning, Raghavan, and Schütze's textbook remains the canonical reference for the information retrieval fundamentals — inverted indexes, scoring functions, and evaluation methodology — that underpin every stage of this pipeline [7].</p>
+<p>This is the critical difference from recommendation. Search has always been multi-stage. Recommendation was historically single-stage — and the move to multi-stage pipelines in recommendation was one of the key convergences between the two fields.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>BM25 has survived fifty years and still anchors production search pipelines.</strong> What properties make a retrieval model durable across paradigm shifts? Will transformer-based retrieval have the same half-life?</p>
+</li>
+<li>
+<p><strong>Multi-stage pipelines (BM25 → dense → cross-encoder) are engineering compromises, not elegant solutions.</strong> What would a single-stage retrieval architecture look like — and what would it cost?</p>
+</li>
+<li>
+<p><strong>Learning to Rank replaced hundreds of hand-crafted features with learned combinations.</strong> But feature engineering is returning — this time as prompt engineering for LLM rerankers. Are we going in circles, or is this a spiral?</p>
+</li>
+<li>
+<p><strong>The vocabulary mismatch problem that Spärck Jones identified is fundamental to language, not a bug to fix.</strong> If the gap can only be narrowed, never closed, what is the theoretical ceiling on retrieval quality — and how close are we?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Jiafeng Guo, Yixing Fan, Liang Pang, Liu Yang, Qingyao Ai, Hamed Zamani, W. Bruce Croft, et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.ipm.2019.102067"><em>A Deep Look into Neural Ranking Models for Information Retrieval</em></a>. Information Processing &amp; Management, 57(6), 2020.</p>
+</li>
+<li>
+<p>Kailash Hambarde and Hugo Proença. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2301.08801"><em>Information Retrieval: Recent Advances and Beyond</em></a>. arXiv:2301.08801, 2023.</p>
+</li>
+<li>
+<p>Gerard Salton, Anita Wong, and Chung-Shu Yang. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/361219.361220"><em>A Vector Space Model for Automatic Indexing</em></a>. Communications of the ACM, 18(11): 613–620, 1975.</p>
+</li>
+<li>
+<p>Stephen E. Robertson, Steve Walker, Susan Jones, Micheline Hancock-Beaulieu, and Mike Gatford. <a target="_blank" rel="noopener noreferrer" href="https://trec.nist.gov/pubs/trec3/papers/city.ps.gz"><em>Okapi at TREC-3</em></a>. Proceedings of TREC-3, 1994.</p>
+</li>
+<li>
+<p>Sergey Brin and Lawrence Page. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/S0169-7552(98)00110-X"><em>The Anatomy of a Large-Scale Hypertextual Web Search Engine</em></a>. Computer Networks and ISDN Systems, 30(1–7): 107–117, 1998.</p>
+</li>
+<li>
+<p>Christopher J.C. Burges. <a target="_blank" rel="noopener noreferrer" href="https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/"><em>From RankNet to LambdaRank to LambdaMART: An Overview</em></a>. Microsoft Research Technical Report MSR-TR-2010-82, 2010.</p>
+</li>
+<li>
+<p>Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. <a target="_blank" rel="noopener noreferrer" href="https://nlp.stanford.edu/IR-book/"><em>Introduction to Information Retrieval</em></a>. Cambridge University Press, 2008.</p>
+</li>
+<li>
+<p>Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.18653/v1/2020.emnlp-main.550"><em>Dense Passage Retrieval for Open-Domain Question Answering</em></a>. EMNLP 2020.</p>
+</li>
+<li>
+<p>Amit Singhal. <a target="_blank" rel="noopener noreferrer" href="http://singhal.info/ieee2001.pdf"><em>Modern Information Retrieval: A Brief Overview</em></a>. IEEE Data Engineering Bulletin, 24(4): 35–43, 2001.</p>
+</li>
+<li>
+<p>Karen Spärck Jones. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1108/eb026526"><em>A Statistical Interpretation of Term Specificity and Its Application in Retrieval</em></a>. Journal of Documentation, 28(1): 11–21, 1972. The original IDF paper.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Conceptual integrity requires one mind — or at most a resonant pair. Committees produce compromises, not coherence. Three people is already a negotiation.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/brooks-design-one-mind-rule/">
+  <title>Brooks on Software Design Series: one mind — hackspree</title>
+  <meta property="og:title" content="Brooks on Software Design Series: one mind">
+  <meta property="og:description" content="Conceptual integrity requires one mind — or at most a resonant pair. Committees produce compromises, not coherence. Three people is already a negotiation.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/brooks-design-one-mind-rule/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Brooks on Software Design Series: one mind">
+  <meta name="twitter:description" content="Conceptual integrity requires one mind — or at most a resonant pair. Committees produce compromises, not coherence. Three people is already a negotiation.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-11">2026-07-11</time></p>
+          <h1>Brooks on Software Design Series: one mind</h1><p class="post-summary">Conceptual integrity requires one mind — or at most a resonant pair. Committees produce compromises, not coherence. Three people is already a negotiation.</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">one-mind</span><span class="tag">collaboration</span><span class="tag">brooks-law</span></div>
+          
+        </header>
+        <div class="post-body"><p>Conceptual integrity requires one mind. How do you achieve that in an organization of many? Short answer: you don't. You fight a rearguard action and hope for the best.</p>
+<p><strong>The design must proceed from one mind, or from a very small number of agreeing resonant minds.</strong> Most organizations read this, nod, and schedule a cross-functional alignment workshop. The workshop produces a shared document. The document has no owner. Nothing improves. This is the industry in microcosm.</p>
+<h2 id="definitions">Definitions</h2>
+<p><strong>One-mind rule.</strong> The conceptual design — core abstractions, primitives, relationships, user mental model — must be controlled by one person. At most, two in genuine resonance.</p>
+<blockquote>
+<p>&quot;The Design of Design sharpens the earlier contention: the design must represent the vision of one designer or, at most, a pair.&quot;</p>
+</blockquote>
+<p>In 1975, Brooks allowed implementation by teams if architecture belonged to one mind. By 2010: architecture itself can have at most two authors. At this rate, by 2045 he'd argue for half a designer. The trend line is clear. The industry is moving the opposite direction.</p>
+<p><strong>Resonant pair.</strong> Two designers who share a mental model so completely either can speak for the architecture. Finishing each other's thoughts. Same taste. Same instincts. Same willingness to say no to the same things.</p>
+<blockquote>
+<p>&quot;Two people can serve as one mind only if they are in genuine resonance — finishing each other's thoughts, sharing a mental model so deeply that each knows what the other would decide. Three cannot.&quot;</p>
+</blockquote>
+<p>Brooks found this with Gerrit Blaauw on System/360. Rare. Most pairs are just two people who've learned which topics to avoid. Resonance is not collaboration. Resonance is one mind in two bodies. If you have to explain your decisions to your partner, you are not a resonant pair. You are coworkers.</p>
+<p><strong>Committee design.</strong> Multiple stakeholders add requirements. Result: accommodates everyone, satisfies no one. The platypus is nature's committee design. It works. Nobody would design it from scratch.</p>
+<blockquote>
+<p>&quot;Design by committee produces designs that offend no one and satisfy no one. Each member's wish list is accommodated, each objection smoothed over, until the result is a feature-laden compromise lacking any coherent vision.&quot;</p>
+</blockquote>
+<p>Structural. Each new mind adds assumptions. Reconciliation produces compromises. Each compromise chips at integrity. The committee made it safer, not better. Safety is the enemy of coherence. Never confuse &quot;nobody objected&quot; with &quot;this is good.&quot; Nobody objects to mediocre food either. That's why most restaurants are forgettable.</p>
+<p>Teams help with requirements (more edge cases), design space exploration (brainstorming), and implementation (parallel work). The conceptual design must belong to one person. Teams exist to execute, not to design. Meetings exist for reasons less clear.</p>
+<h2 id="costs">Costs</h2>
+<p><strong>Learning cost.</strong> Transferring a vision to <em>n</em> people takes <em>n × l</em> effort. For ten people, more time teaching than designing. Onboarding takes six months and nobody questions it because everyone has forgotten it could be otherwise.</p>
+<p><strong>Communication cost.</strong> <em>n</em> people = <em>n(n−1)/2</em> paths. Five: 10. Ten: 45. One hundred: 4,950. Overhead grows quadratically. Throughput does not. Mathematics is cruel and indifferent to your standup cadence.</p>
+<p><strong>Change control cost.</strong> More contributors = harder changes. The design calcifies. A living vision becomes a frozen document nobody fully owns. Then someone says &quot;we should refactor&quot; and the cycle begins again, with a larger committee this time.</p>
+<p><strong>Brooks's Law.</strong> Adding people to a late project makes it later. Same math applies to design. Adding designers dilutes. Your manager's solution to a late project is more people. Your manager's solution is wrong. Your manager is applying a linear fix to a quadratic problem. Mathematics will win.</p>
+<blockquote>
+<p>&quot;Adding manpower to a late software project makes it later.&quot; — <em>The Mythical Man-Month</em>, 1975</p>
+</blockquote>
+<p><strong>Essential complexity.</strong> Inherent in the problem. Cannot be eliminated. Like death, taxes, and npm dependencies.</p>
+<p><strong>Accidental complexity.</strong> Imposed by tools and methods. Can be reduced. This is what you spend most of your time fighting. The rest is meetings about complexity reduction strategies you'll never implement.</p>
+<p>From <em>No Silver Bullet</em> (1986). The rational model treats all complexity as accidental. Brooks: essential complexity remains. Conceptual integrity manages it — one voice in the design, a hundred hands building. Without the one voice, the hundred hands build a hundred different things and call it a microservices architecture.</p>
+<p>The rule is structural, not preferential. A design is interdependent decisions. Different people make different decisions — constraints conflict — system acquires multiple personalities — user suffers. &quot;Design by community&quot; is incoherent. Output is a negotiated settlement. Settlements govern societies. They cannot produce coherent software. The EU is not an API. If it were, it would have seventeen conflicting ways to authenticate.</p>
+<p>Conway's Law (1968): organizations produce designs that copy their communication structures. Read with Brooks: coherent design needs coherent design organization. One mind. A committee's communication graph is complete. Its output will be, too. This is why your microservices map exactly to your org chart. It's not supposed to. It's supposed to map to the problem. The problem doesn't care about your reporting lines.</p>
+<p>Every project needs a design owner. Reviews every interface. Says no without escalation. Job: conceptual integrity. If this person doesn't exist on your project, they are not you. Find them. Or become them. Either way, you're currently in trouble you haven't noticed yet.</p>
+<hr>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">← Part 1</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-protecting-designer">Part 3 →</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-rational-model">Part 4</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-empiricist-alternative">Part 5</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-experts-divorce">Part 6</a> · <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-great-designers">Part 7</a></p>
+<p>Fred Brooks, <em>The Mythical Man-Month</em> (1975, Anniversary Ed. 1995), <em>No Silver Bullet</em> (1986), <em>The Design of Design</em> (2010). Brooks &amp; Blaauw, <em>Computer Architecture: Concepts and Evolution</em> (1997).</p>
+<p>Brooks's principles apply beyond software. Conceptual integrity, the one-mind rule, the empiricist method — these are engineering principles that hold across any designed system. The building, the organization, the codebase, the protocol. The medium changes. The principles don't. That is the definition of engineering: principles that hold across domains.</p>
+<blockquote>
+<p>The one-mind rule is not about ego. It is about attention. One mind can hold the entire design. Two minds can hold it if they are in resonance. Three minds produce a committee. Committees produce compromises.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

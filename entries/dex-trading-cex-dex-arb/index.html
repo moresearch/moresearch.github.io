@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="CEX-DEX arbitrage is the dominant strategy in crypto. A token trades at different prices on Binance and Uniswap. The arbitrageur buys on one, sells on the other. $233M extracted in 18 months by 19 searchers. Three of them captured 75%. This post explains the strategy, the infrastructure, and why the concentration is structural.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-cex-dex-arb/">
+  <title>CEX-DEX Arbitrage — hackspree</title>
+  <meta property="og:title" content="CEX-DEX Arbitrage">
+  <meta property="og:description" content="CEX-DEX arbitrage is the dominant strategy in crypto. A token trades at different prices on Binance and Uniswap. The arbitrageur buys on one, sells on the other. $233M extracted in 18 months by 19 searchers. Three of them captured 75%. This post explains the strategy, the infrastructure, and why the concentration is structural.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-cex-dex-arb/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CEX-DEX Arbitrage">
+  <meta name="twitter:description" content="CEX-DEX arbitrage is the dominant strategy in crypto. A token trades at different prices on Binance and Uniswap. The arbitrageur buys on one, sells on the other. $233M extracted in 18 months by 19 searchers. Three of them captured 75%. This post explains the strategy, the infrastructure, and why the concentration is structural.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>CEX-DEX Arbitrage</h1><p class="post-summary">CEX-DEX arbitrage is the dominant strategy in crypto. A token trades at different prices on Binance and Uniswap. The arbitrageur buys on one, sells on the other. $233M extracted in 18 months by 19 searchers. Three of them captured 75%. This post explains the strategy, the infrastructure, and why the concentration is structural.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">cex-dex</span><span class="tag">arbitrage</span><span class="tag">searchers</span><span class="tag">consolidation</span></div>
+          
+        </header>
+        <div class="post-body"><p>CEX-DEX arbitrage is the most empirically significant trading strategy in crypto. A token trades on a centralized exchange (Binance, Coinbase, Kraken) and a decentralized exchange (Uniswap, Curve, SushiSwap). The prices differ. The arbitrageur buys on the cheaper venue, sells on the dearer, pockets the spread. The trade is the mechanism that enforces the Law of One Price across the CEX-DEX boundary.</p>
+<p>The strategy is not atomic. The CEX leg and the DEX leg execute on different systems, at different speeds, with different failure modes. The CEX leg requires an account, API keys, and compliance with the exchange's rules. The DEX leg requires a wallet, gas, and smart contract execution. The two legs cannot be bundled into a single transaction. The arbitrageur bears execution risk.</p>
+<p>The AFT 2025 study of CEX-DEX arbitrage on Ethereum, covering August 2023 to March 2025, provides the definitive empirical picture:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total value extracted</td>
+<td>$233.8 million</td>
+</tr>
+<tr>
+<td>Total arbitrage transactions</td>
+<td>~7.2 million</td>
+</tr>
+<tr>
+<td>Number of major searchers</td>
+<td>19</td>
+</tr>
+<tr>
+<td>Top 3 searcher share</td>
+<td>~75% of volume and value</td>
+</tr>
+<tr>
+<td>Daily transaction growth</td>
+<td>7.2× from Q3 2023 to Q1 2025</td>
+</tr>
+<tr>
+<td>Dominant searchers</td>
+<td>Wintermute, SCP, Kayle</td>
+</tr>
+</tbody>
+</table>
+<p>The concentration is extreme. Three searchers capture three-quarters of the value. The concentration has been increasing over time. The increase is structural. The structure is the infrastructure cost.</p>
+<h2 id="the-infrastructure">The infrastructure</h2>
+<p>CEX-DEX arbitrage requires infrastructure on both sides of the trade.</p>
+<p><strong>CEX side.</strong> Low-latency API access to Binance, Coinbase, Kraken. Colocation with the exchange's matching engine for minimum latency. Multiple accounts to avoid rate limits. Inventory of tokens on each exchange to enable immediate execution — you can't wait for a deposit to clear. The inventory is capital at risk. The capital must be managed across exchanges.</p>
+<p><strong>DEX side.</strong> Direct node access to the blockchain for mempool monitoring. Integration with block builders (Flashbots, MEV-Boost) for reliable transaction inclusion. Smart contracts optimized for gas efficiency. Flash loan integration for capital-free execution when the arbitrage is on-chain atomic. Gas price monitoring and dynamic fee adjustment.</p>
+<p><strong>The bridge between them.</strong> A system that monitors prices on both CEXs and DEXs in real time, identifies arbitrage opportunities, calculates profitability net of gas and fees, and executes the trade. The system must operate at the speed of the faster venue — if the CEX price updates before the DEX transaction confirms, the opportunity disappears. The window is milliseconds. The system that sees the window first, calculates profitability first, and executes first, wins. The system that wins consistently captures most of the value. The winner is the one with the best infrastructure.</p>
+<h2 id="the-consolidation">The consolidation</h2>
+<p>The AFT study documented a trend: searcher-builder vertical integration is deepening. Integrated searchers operate at lower margins, sometimes negative net profit, subsidized by revenue sharing with affiliated builders. The subsidy allows them to win arbitrages that independent searchers cannot profitably compete for. The independent searchers are driven out. The concentration increases.</p>
+<p>The mechanism: a builder operates a block construction service. The builder's affiliated searcher submits arbitrage bundles to the builder. The builder includes the bundle and shares the MEV revenue with the searcher. The searcher can bid more aggressively for arbitrage opportunities because part of the revenue comes back through the builder relationship. The independent searcher has no such arrangement. The independent searcher must bid less to remain profitable. The independent searcher wins fewer arbitrages. The independent searcher's volume declines. The decline feeds back: lower volume means less data for model calibration, means worse execution, means even lower volume. The feedback loop drives consolidation.</p>
+<p>This is the same dynamic that occurred in traditional equity markets, documented by Lewis in <em>Flash Boys</em>. The high-frequency trading firms that invested in infrastructure — colocation, private fiber, microwave networks — captured an increasing share of trading volume. The firms that didn't invest were driven out. The market consolidated around a few players. The players extracted rents. The rents were paid by investors in the form of wider effective spreads. The dynamic is repeating in crypto. The names are different. The structure is the same.</p>
+<h2 id="the-reference">The reference</h2>
+<p>&quot;The CEX-DEX Arbitrage Landscape on Ethereum&quot; (AFT 2025) is the definitive empirical study. It covers 18 months, 7.2 million transactions, $233.8 million in extracted value. It documents the consolidation trend, the searcher-builder vertical integration, and the implications for market efficiency and decentralization. It is the quantitative foundation for any discussion of arbitrage in crypto. The numbers are the story. The story is consolidation. The consolidation is accelerating.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>AFT 2025, &quot;The CEX-DEX Arbitrage Landscape on Ethereum: 2023–2025.&quot;</li>
+<li>Michael Lewis, <em>Flash Boys</em>, W.W. Norton, 2014.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-mev">MEV</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-latency">Latency</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

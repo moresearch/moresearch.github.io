@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The dark factory model — where humans write specs and AI agents handle everything else — is not a thought experiment. StrongDM is already running one. Here&#39;s what that means for how we build software.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/software-dark-factories/">
+  <title>Software dark factories: specs in, software out — hackspree</title>
+  <meta property="og:title" content="Software dark factories: specs in, software out">
+  <meta property="og:description" content="The dark factory model — where humans write specs and AI agents handle everything else — is not a thought experiment. StrongDM is already running one. Here&#39;s what that means for how we build software.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/software-dark-factories/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Software dark factories: specs in, software out">
+  <meta name="twitter:description" content="The dark factory model — where humans write specs and AI agents handle everything else — is not a thought experiment. StrongDM is already running one. Here&#39;s what that means for how we build software.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-07">2026-07-07</time></p>
+          <h1>Software dark factories: specs in, software out</h1><p class="post-summary">The dark factory model — where humans write specs and AI agents handle everything else — is not a thought experiment. StrongDM is already running one. Here&#39;s what that means for how we build software.</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">agents</span><span class="tag">software-engineering</span><span class="tag">dark-factory</span><span class="tag">automation</span></div>
+          
+        </header>
+        <div class="post-body"><p>In the 1980s, the Japanese robotics company FANUC built a factory where robots manufactured other robots. No human workers. No lights — because nobody was there to need them. The machines just ran.</p>
+<p>That image — a dark, humming factory floor producing goods around the clock with zero people in the loop — has haunted manufacturing ever since. Now it has arrived in software.</p>
+<p>The term &quot;dark factory&quot; was adapted to software development by Dan Shapiro in January 2026, who laid out a five-level framework for AI-assisted coding. Level 0 is hand-written code. Level 5 is: <strong>specs go in, software comes out.</strong> Three weeks after Shapiro's post, StrongDM revealed they had been running a dark factory internally since mid-2025. This is not a thought experiment. It is running in production.</p>
+<h2 id="the-five-levels-to-lights-out">The five levels to lights-out</h2>
+<p>Shapiro's framework maps cleanly to the self-driving car levels. It is worth walking through, because each step describes a working mode that exists today.</p>
+<p><strong>Level 0 — Manual.</strong> Hand-written code. AI is absent or an afterthought. This is fading fast even among skeptics.</p>
+<p><strong>Level 1 — Task delegation.</strong> AI handles discrete, on-command tasks: generate unit tests, scaffold a component, write a docstring. The human drives; AI is a tool.</p>
+<p><strong>Level 2 — Pair programming.</strong> Real-time collaboration between developer and AI. The human guides direction, AI generates code. Shapiro estimates roughly 90% of &quot;AI-native&quot; developers operate here. This is the current default.</p>
+<p><strong>Level 3 — Code review.</strong> The relationship inverts. AI authors the code; humans review diffs and approve PRs. The developer becomes a manager, not a maker. This is where the psychological shift happens — you stop thinking &quot;I write code&quot; and start thinking &quot;I specify behavior, inspect output, and approve.&quot;</p>
+<p><strong>Level 4 — Spec-driven development.</strong> Humans write detailed specifications — behaviors, acceptance criteria, edge cases — and hand them to AI agents. Hours later, humans check outputs against specs and tests. The developer becomes a product manager. The unit of work is no longer a pull request; it is a specification document.</p>
+<p><strong>Level 5 — The dark factory.</strong> Specs go in. Software comes out. AI agents write the code, other AI agents review it, still others test it. Agents iterate on failures autonomously. The human role is exclusively defining <em>what</em> to build and <em>why</em>. The <em>how</em> is fully automated.</p>
+<h2 id="strongdm-is-already-doing-it">StrongDM is already doing it</h2>
+<p>The jump from theory to practice came fast. Three weeks after Shapiro's post, StrongDM — an infrastructure access company — went public with an internal dark factory they had been running since mid-2025. The details are striking:</p>
+<ul>
+<li><strong>Team size:</strong> three engineers.</li>
+<li><strong>Rules:</strong> &quot;Code must not be written by humans&quot; and &quot;Code must not be reviewed by humans.&quot;</li>
+<li><strong>Process:</strong> Engineers write prose specifications covering edge cases, error handling, and acceptance criteria. AI agents generate the code. Other AI agents review it. Still others test it. Agents iterate on failures autonomously. Humans touch only the specification and validation layers.</li>
+<li><strong>Spend benchmark:</strong> If you aren't spending at least $1,000 per engineer per day on AI compute, &quot;you have room for improvement.&quot;</li>
+</ul>
+<p>Simon Willison, co-creator of Django, visited the StrongDM team and described their approach as &quot;very convincing.&quot; His takeaway: the critical investment was not in better AI models but in better <em>specifications</em> and test coverage. The quality of the output was a direct function of the quality of the input.</p>
+<p>This is the inversion that matters. In a traditional team, you hire for coding skill and hope the specification thinking comes along with it. In a dark factory, specification thinking <em>is</em> the job. Coding is a downstream implementation detail handled by machines.</p>
+<h2 id="the-bottleneck-moves-upstream">The bottleneck moves upstream</h2>
+<p>For decades, the primary constraint on software output was typing speed — or more precisely, the rate at which a human could translate intent into code, handle edge cases, write tests, and iterate through review. Dark factories move the bottleneck from implementation to specification.</p>
+<p>This has consequences:</p>
+<p><strong>Vague requirements become instantly visible.</strong> When a human team receives an underspecified ticket, they fill in the gaps with judgment, experience, and hallway conversations. When an AI agent receives an underspecified spec, it produces exactly what you asked for — and you discover at validation time that what you asked for was wrong. The feedback loop is shorter and more brutal. Ambiguity that would have been absorbed by a senior engineer's intuition now produces a broken build.</p>
+<p><strong>Specification becomes a first-class engineering discipline.</strong> Writing a spec that an AI can execute against is not the same as writing a Jira ticket. It requires defining behaviors, acceptance criteria, edge cases, and error handling with enough precision that a machine — with no context, no judgment, no hallway conversations — can produce working software. This is a skill. It can be learned. And in a dark factory world, it is the skill that determines output quality.</p>
+<p><strong>Senior expertise concentrates differently.</strong> Architecture, system design, security, UX — the knowledge that feeds into specifications — becomes more valuable, not less. What becomes obsolete is hand-coding CRUD endpoints or writing boilerplate authentication flows. The senior engineer stops being a high-throughput typist and becomes a high-precision spec writer and validator.</p>
+<h2 id="the-agency-model-flips">The agency model flips</h2>
+<p>For software agencies, the dark factory model rewrites the business equation. The traditional model sells developer hours. More work means more billable hours — a linear relationship between output and headcount. In a dark factory, the constraint is not hours but clarity of thought. A small team running a dark factory pipeline can match the output of a much larger traditional team because the typing is free.</p>
+<p>The new agency pitch becomes: you are not paying us to write code. You are paying us to define exactly what should be built, validate that it was built correctly, and own the outcome. The value is in the specification craftsmanship and the validation rigor, not in the keystrokes. This is a better business — higher margins, faster delivery, cleaner differentiation — but it requires agencies to sell something they are not used to selling: their thinking, not their typing.</p>
+<h2 id="the-risks-are-real">The risks are real</h2>
+<p>None of this is free of problems.</p>
+<p><strong>Quality at scale is unproven.</strong> StrongDM's experiment is one team, one domain, one set of constraints. Multiple analyses show AI-generated code carries higher defect rates than human-written code. Dark factories demand extraordinarily robust automated testing and validation to compensate for the absent human review layer. CodeRabbit and similar companies are building tools to address this gap, but the tooling is young.</p>
+<p><strong>Specification debt replaces technical debt.</strong> Flawed specs produce flawed outputs faster and more confidently than human teams would. The code &quot;works&quot; according to its tests, but the tests were generated from flawed specs. You can end up with a system that passes every automated check and is still wrong — at scale, at speed. Debugging <em>why</em> requires going back to the spec, which was written by a human who may or may not still be on the project.</p>
+<p><strong>Trust and compliance are open questions.</strong> For enterprise buyers concerned with security, compliance, and maintainability, &quot;no human ever reviewed this code&quot; is not a selling point. The dark factory model will need to build trust — through audit trails, verification tooling, and proven track records — before it is acceptable in regulated environments.</p>
+<p><strong>The name might be too good.</strong> &quot;Dark factory&quot; is visceral, memorable, and slightly ominous. That is part of its power. It is also part of the risk — the term invites reaction before understanding. Expect pushback from people who hear &quot;no humans&quot; and think &quot;no accountability.&quot;</p>
+<h2 id="what-happens-next">What happens next</h2>
+<p>The trajectory is clear even if the timeline is not. AI models improve with each release. Agent tooling matures rapidly. The economics are compelling: StrongDM's three-person team plus high compute costs still dramatically undercuts the cost of a traditional team building the same output. And a large percentage of professional software development applies well-understood patterns to business problems — CRUD, auth, API plumbing, dashboard construction. This kind of work is factory-shaped whether we like the metaphor or not.</p>
+<p>The open questions are about trust, quality, and adoption curves. Most organizations will spend years at Levels 3 and 4 before approaching true dark factory operations. The tooling needs to catch up. The specification craft needs to develop as a discipline. And the industry needs to figure out what &quot;accountable&quot; means when no human touched the code.</p>
+<p>But the direction of travel is set. The dark factory is not science fiction. It is running right now, with real users, on real infrastructure. The only question is how fast it spreads.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Dan Shapiro, <a target="_blank" rel="noopener noreferrer" href="https://danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/">The Five Levels: from spicy autocomplete to the software factory</a> (January 2026)</li>
+<li>Dark Factory, <a target="_blank" rel="noopener noreferrer" href="https://darkfactory.dev/blog/what-is-dark-factory-software-development">What is dark factory software development?</a></li>
+<li>Simon Willison's commentary on the StrongDM dark factory approach (referenced in the Dark Factory post above)</li>
+<li>FANUC's lights-out factory — the manufacturing origin of the &quot;dark factory&quot; term</li>
+</ul>
+<p>Systems design is the core engineering discipline. Every system — whether a dark factory, an agent governance framework, or a software architecture — involves the same set of decisions: what are the components? what are their interfaces? what changes do we hide? what stays stable? The engineer who can answer these questions can design any system. The domain provides the constraints. The principles provide the method.</p>
+<blockquote>
+<p>A dark factory is not a tool. It is a production function. The inputs are specifications. The outputs are software. The factory is the mechanism. The mechanism determines the economics.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

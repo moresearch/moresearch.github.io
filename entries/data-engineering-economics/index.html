@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Data is not free. It costs money to collect, store, transform, and serve. It generates value when used and costs when ignored. The economics of data engineering is the economics of an asset that depreciates faster than any other: data that was valuable yesterday may be worthless today, but it still costs money to store.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/data-engineering-economics/">
+  <title>The economics of data — hackspree</title>
+  <meta property="og:title" content="The economics of data">
+  <meta property="og:description" content="Data is not free. It costs money to collect, store, transform, and serve. It generates value when used and costs when ignored. The economics of data engineering is the economics of an asset that depreciates faster than any other: data that was valuable yesterday may be worthless today, but it still costs money to store.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/data-engineering-economics/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The economics of data">
+  <meta name="twitter:description" content="Data is not free. It costs money to collect, store, transform, and serve. It generates value when used and costs when ignored. The economics of data engineering is the economics of an asset that depreciates faster than any other: data that was valuable yesterday may be worthless today, but it still costs money to store.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The economics of data</h1><p class="post-summary">Data is not free. It costs money to collect, store, transform, and serve. It generates value when used and costs when ignored. The economics of data engineering is the economics of an asset that depreciates faster than any other: data that was valuable yesterday may be worthless today, but it still costs money to store.</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">economics</span><span class="tag">cost</span><span class="tag">build-vs-buy</span><span class="tag">data-value</span></div>
+          
+        </header>
+        <div class="post-body"><p>Data is an asset. Data is also a liability. The distinction is whether the data generates more value than it costs to maintain. Most organizations treat all data as an asset. Most data is a liability. The difference between the two is the difference between a data platform that pays for itself and a data platform that is a cost center the CFO wants to cut.</p>
+<h2 id="the-cost-structure">The cost structure</h2>
+<p>The cost of data has four components. Each is measurable. Few organizations measure them.</p>
+<p><strong>Ingestion cost.</strong> The engineering time to build and maintain data pipelines. The compute cost of running them. The cost of the ingestion tools (Fivetran, Airbyte) or the infrastructure they run on. Ingestion cost scales roughly linearly with the number of data sources.</p>
+<p><strong>Storage cost.</strong> The cost of storing data in the warehouse or data lake. Storage is cheap — $20-30 per TB per month in cloud warehouses. Storage is also unbounded — data accumulates indefinitely. A table that cost $100/month to store last year costs $200/month this year. The growth is compound. The compound growth is invisible until someone looks at the storage bill.</p>
+<p><strong>Transformation cost.</strong> The compute cost of running transformations. Every <code>dbt run</code> consumes warehouse credits. Every hourly refresh of the dashboard tables consumes credits. Transformation cost scales with data volume and refresh frequency. A dashboard that refreshes every hour costs 24 times more than a dashboard that refreshes once daily. The refresh frequency is a business decision. The cost is an engineering consequence.</p>
+<p><strong>Serving cost.</strong> The compute cost of querying the data. Every dashboard load, every ad-hoc query, every ML training job consumes warehouse credits. Serving cost scales with the number of users and the complexity of their queries. A poorly written query that scans the entire table costs more than a query that uses partitions and filters. The query author doesn't see the cost. The engineering team pays the bill.</p>
+<p>The total cost is the sum of these four. For a typical mid-size organization, the breakdown is roughly: 15% ingestion, 25% storage, 35% transformation, 25% serving. The exact numbers vary. The pattern is consistent: most of the cost is in transformation and serving, not storage. Storage is the scapegoat. Transformation is the real expense.</p>
+<h2 id="why-data-projects-fail">Why data projects fail</h2>
+<p>Data projects fail for economic reasons disguised as technical reasons. The project was &quot;too complex.&quot; The pipeline &quot;couldn't scale.&quot; The data &quot;wasn't reliable.&quot; These are symptoms. The cause is that the project's costs exceeded its benefits, and nobody measured either.</p>
+<p>A data project has benefits: faster decisions, better decisions, new revenue from data products, reduced cost of manual reporting. The benefits are diffuse — they accrue to many people across the organization. They are hard to measure. They are easy to overstate in the business case and impossible to verify after the fact.</p>
+<p>A data project has costs: engineering time, compute, storage, ongoing maintenance. The costs are concentrated — they are paid by the data engineering team. They are easy to measure. The data engineering team knows exactly how much the pipeline costs to build and run. They are rarely asked.</p>
+<p>The asymmetry — diffuse benefits, concentrated costs, neither measured accurately — produces predictable outcomes. The project is approved based on overstated benefits. The project is built. The costs exceed expectations. The benefits are invisible because nobody is measuring them. The project is declared a failure. The postmortem blames the technology. The technology was not the problem. The economics were the problem. The economics were never made explicit.</p>
+<h2 id="build-vs-buy">Build vs. buy</h2>
+<p>The build-vs-buy decision in data engineering is the same as in software engineering: build if the internal cost is less than the external cost, adjusted for risk, control, and strategic value. The data-specific twist: data tools have extreme economies of scale. A managed service (Fivetran, Snowflake, dbt Cloud) amortizes its development cost across thousands of customers. An internal pipeline tool amortizes its cost across one organization. The managed service is almost always cheaper for common use cases — ingesting from standard sources, transforming with SQL, serving dashboards. The internal tool is justified only when the use case is unique to the organization or when the strategic value of control exceeds the cost premium.</p>
+<p>The trap: organizations underestimate the maintenance cost of internal tools. The initial build is a month. The maintenance is years — bug fixes, feature requests, onboarding documentation, operational support. The maintenance cost is proportional to the number of users and the rate of change of the tool's dependencies. The number of users grows. The rate of change increases. The maintenance cost compounds. The internal tool that seemed cheaper than Fivetran at year one is more expensive than Fivetran by year three. The cost has shifted from the vendor to the internal team. The shift is invisible because internal labor is a fixed cost. The fixed cost is already paid. The marginal cost of asking the internal team to maintain another tool appears to be zero. It is not zero. It is opportunity cost — the features they could have built instead of maintaining the ingestion tool.</p>
+<h2 id="the-value-of-data">The value of data</h2>
+<p>Data has value when it is used to make a decision that produces a better outcome than the decision that would have been made without it. The value is the difference between the outcome with data and the outcome without. The value is measurable in principle. It is almost never measured in practice.</p>
+<p>Data that is collected but never used has negative value — it cost money to collect, store, and maintain, and it generated zero benefit. The storage cost accumulates. The maintenance cost accumulates. The value is zero. The net is negative. The negativity is invisible because the costs are aggregated into the data platform budget and the zero benefit is never calculated. The calculation would require asking: &quot;what decision did this dataset inform, and what was the outcome?&quot; Nobody asks. The data accumulates. The costs accumulate. The value is zero. The net is negative.</p>
+<p>The most valuable data in an organization is often the data that doesn't exist yet — the data that would answer a question the business has been asking for months but nobody has had the time to pipeline. The value is latent. The latency is a prioritization failure. The prioritization failure is an economic failure. The economic failure is that the cost of building the pipeline was compared to the engineering time required, not to the value of the decisions it would inform. The comparison was never made. The pipeline was never built. The decisions were made without data. The outcomes were worse than they could have been. The difference is the cost of not building the pipeline. The cost is real. It is unmeasured.</p>
+<h2 id="the-depreciation-problem">The depreciation problem</h2>
+<p>Data depreciates faster than any other asset. Customer behavior data from 2020 has limited relevance to customer behavior in 2026. The relevance decays over time. The storage cost is constant. The value declines. The crossover point — when the storage cost exceeds the remaining value — arrives faster than organizations expect. Most organizations never delete data. The data accumulates. The storage cost grows. The average value of the stored data declines. The decline is the depreciation.</p>
+<p>Depreciation should be accounted for. Data that is older than its useful life should be archived or deleted. The useful life depends on the domain: transaction records (7+ years, for compliance), web analytics (2 years), ML training features (6 months, or until the model is retrained). The retention policy should be explicit. The policy should be enforced automatically. The enforcement should be a pipeline that deletes old data. Most organizations have no retention policy. The absence of policy is a policy — keep everything forever. Forever is expensive.</p>
+<h2 id="the-discipline">The discipline</h2>
+<p>The discipline of data economics is the discipline of measuring what matters. Measure the cost of every pipeline: build cost, run cost, maintenance cost. Measure the value of every dataset: what decisions does it inform, what outcomes does it improve? Compare the two. Keep the datasets where value exceeds cost. Kill the rest. The killing is the discipline. The discipline is rare. The rarity is why data platforms are cost centers. The cost center is a choice. The choice is to not measure.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Benn Stancil, &quot;The Data Platform Cost Model,&quot; Mode Blog, 2020.</li>
+<li>Martin Kleppmann, <em>Designing Data-Intensive Applications</em>, O'Reilly, 2017.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Scarcity Rules Everything</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">No Free Lunch</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is economics</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

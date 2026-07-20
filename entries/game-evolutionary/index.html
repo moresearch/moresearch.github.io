@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/game-evolutionary/">
+  <title>Evolutionary Game Theory — hackspree</title>
+  <meta property="og:title" content="Evolutionary Game Theory">
+  <meta property="og:description" content="Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/game-evolutionary/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Evolutionary Game Theory">
+  <meta name="twitter:description" content="Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Evolutionary Game Theory</h1><p class="post-summary">Maynard Smith asked: what if players don&#39;t choose strategies rationally but inherit them genetically? Evolutionary game theory replaces rational choice with replicator dynamics. Strategies that perform well reproduce. Strategies that perform poorly die out. The Evolutionarily Stable Strategy cannot be invaded by mutants. This is why microservices survived and monoliths didn&#39;t.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">evolutionary</span><span class="tag">maynard-smith</span><span class="tag">replicator-dynamics</span><span class="tag">ESS</span></div>
+          
+        </header>
+        <div class="post-body"><p>John Maynard Smith published <em>Evolution and the Theory of Games</em> in 1982. He asked: what if players don't choose strategies rationally but inherit them genetically? The question launched evolutionary game theory. The key concepts: replicator dynamics and the Evolutionarily Stable Strategy (ESS).</p>
+<p>Replicator dynamics describe how the proportions of different strategies in a population change over time. Strategies that earn above-average payoffs grow. Strategies that earn below-average payoffs shrink. The growth rate is proportional to the difference between the strategy's payoff and the population average. The dynamics are deterministic. Given the initial proportions and the payoff matrix, the trajectory is determined.</p>
+<p>An Evolutionarily Stable Strategy is a strategy that, if adopted by the entire population, cannot be invaded by any small group of mutants playing a different strategy. The ESS is a refinement of Nash equilibrium for biological contexts. Every ESS is a Nash equilibrium. Not every Nash equilibrium is an ESS. The ESS requires that if a mutant strategy appears, it does worse against the existing population than the existing strategy does. The condition is stricter than Nash. The strictness is appropriate for evolution, where stability means resistance to invasion, not just mutual best response.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Biology (Maynard Smith, 1982).</strong> The hawk-dove game models animal conflict. Hawks fight for resources. Doves display but retreat if attacked. Hawk vs. Hawk: one wins, one is injured. Hawk vs. Dove: Hawk wins. Dove vs. Dove: both share. The ESS is a mixed population — some proportion of Hawks, some of Doves. The proportion depends on the value of the resource relative to the cost of injury. The prediction matches observed behavior in multiple species. Evolution is a game. The game has an equilibrium. The equilibrium is the observed behavior.</p>
+<p><strong>Economics (evolutionary game theory, Nelson and Winter, 1982).</strong> Firms don't optimize. They follow routines — organizational habits inherited from the past. Routines that produce profits survive. Routines that produce losses are replaced. The market is the selection environment. The replicator is the firm's growth rate. The ESS is the industry equilibrium. The dynamics explain why industries converge on similar practices. The practices are not optimal in any absolute sense. They are stable against invasion by alternatives.</p>
+<p><strong>Anthropology (Boyd and Richerson, 1985).</strong> Culture evolves through imitation and social learning. Cultural variants — beliefs, practices, technologies — are strategies. Successful variants are copied. Unsuccessful variants are abandoned. The replicator dynamics are cultural transmission. The ESS is a cultural equilibrium. The dynamics explain why some cultural practices persist despite being individually costly — they are stable against invasion by alternatives, even if alternatives would be better for individuals.</p>
+<p><strong>Computer science (genetic algorithms, classifier systems).</strong> Evolutionary computation uses replicator dynamics to solve optimization problems. A population of candidate solutions. Fitness evaluation. Selection. Recombination. Mutation. Repeat. The algorithm is replicator dynamics implemented in code. The solutions evolve. The evolution finds optima that gradient-based methods miss. The search is stochastic. The convergence is evolutionary.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Architecture pattern evolution.</strong> Microservices emerged as a mutant strategy. The monolith was the incumbent. Early microservices adopters demonstrated advantages — independent deployability, team autonomy, fault isolation. Other teams observed the success and adopted. The replicator dynamics: adoption rate proportional to observed advantage. The ESS: microservices are now the default for new systems. The monolith couldn't resist the invasion. Not because microservices are universally better. Because they are stable against re-invasion by the monolith pattern. Once adopted, the switching cost back to monolith is high. The switching cost is the invasion barrier.</p>
+<p><strong>Language and framework adoption.</strong> React emerged as a mutant in a jQuery-dominant ecosystem. Early adopters demonstrated advantages — component model, virtual DOM, unidirectional data flow. Adoption accelerated as the advantages became visible. jQuery declined. The replicator dynamics: framework popularity follows relative fitness. The fitness landscape changes as tooling, community, and hiring markets co-evolve. Today's ESS may not be tomorrow's. The dynamics continue.</p>
+<p><strong>Process evolution.</strong> Agile emerged as a mutant in a waterfall-dominant ecosystem. Early adopters demonstrated faster delivery, better responsiveness to change. Adoption accelerated. Waterfall declined — not eliminated, but no longer the default. The replicator dynamics: process fitness is measured by organizational survival. Organizations that adopted agile survived at higher rates. The surviving organizations shaped the hiring market. The hiring market shaped the training pipeline. The pipeline reinforced agile. The equilibrium is self-reinforcing.</p>
+<p><strong>The persistence of patterns.</strong> Some architecture patterns persist despite being widely criticized. The distributed monolith — microservices with tight coupling — persists because it is an ESS in certain environments. A team that inherits a distributed monolith can't unilaterally refactor to clean boundaries. The refactoring requires coordination across teams. The coordination is a public good. The individually rational choice is to work within the existing architecture. The equilibrium is suboptimal but stable. Stability doesn't mean goodness. It means resistance to change.</p>
+<h2 id="the-evolutionary-lens">The evolutionary lens</h2>
+<p>Evolutionary game theory gives the software engineer a lens: what strategies are growing in the population? What strategies are stable against invasion? The dominant architecture, the dominant language, the dominant process — they are not necessarily optimal. They are evolutionary equilibria. They persist because they resist invasion. Understanding the invasion barrier — switching cost, coordination cost, network effects — explains why they persist. Changing them requires lowering the barrier or raising the fitness of the alternative. The lowering is mechanism design. The raising is engineering. Both are evolutionary.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>John Maynard Smith, <em>Evolution and the Theory of Games</em>, Cambridge University Press, 1982.</li>
+<li>John Maynard Smith and George Price, &quot;The Logic of Animal Conflict,&quot; <em>Nature</em>, 1973.</li>
+<li>Richard Nelson and Sidney Winter, <em>An Evolutionary Theory of Economic Change</em>, Harvard University Press, 1982.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Field Guide to Scarcity Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/scarcity-in-practice/">
+  <title>Five Habits — hackspree</title>
+  <meta property="og:title" content="Five Habits">
+  <meta property="og:description" content="How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/scarcity-in-practice/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Five Habits">
+  <meta name="twitter:description" content="How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Five Habits</h1><p class="post-summary">How to apply scarcity thinking, game theory, and mechanism design to daily software engineering decisions. Five frameworks, five questions, five habits.</p>
+          <div class="tags"><span class="tag">scarcity</span><span class="tag">game-theory</span><span class="tag">mechanism-design</span><span class="tag">practice</span><span class="tag">software-engineering</span></div>
+          
+        </header>
+        <div class="post-body"><p>The theory is useful. The practice is harder. Here are five frameworks for applying scarcity thinking, game theory, and mechanism design to daily software engineering decisions.
+The difference between knowing a principle and applying it is the difference between owning a cookbook and cooking dinner. Most engineers who read Robbins will agree that scarcity matters. Most will return to work and debate architectures without naming the scarce resource. The knowing is easy. The doing is hard. The gap between knowing and doing is a habit. Habits are built by repetition, not by insight. The five habits below are designed to be repeated until they're automatic. The goal is not to understand scarcity. The goal is to feel its absence like a missing step on a staircase.</p>
+<p>Alan Perlis, the first Turing Award winner, wrote: &quot;Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it.&quot; Most software teams are pragmatists. They suffer complexity because avoiding it requires upfront investment and removing it requires genius. The five frameworks that follow are for pragmatists who want to suffer less. Genius is not required. Discipline is.</p>
+<h2 id="1-name-the-scarce-resource">1. Name the scarce resource</h2>
+<p>Before every architectural decision, ask: what is the scarce resource? Is it developer time? Optimize for simplicity of change. Is it compute? Optimize for efficiency. Is it attention? Optimize for clarity. Is it coordination capacity? Optimize for independent deployability. The scarce resource determines the optimal trade.</p>
+<p>Most architectural debates skip this step. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. &quot;We are optimizing for developer time, not compute.&quot; &quot;We are optimizing for change velocity, not operational simplicity.&quot; The debate resolves. The constraint determines the answer. Name the constraint.</p>
+<h2 id="2-identify-the-game">2. Identify the game</h2>
+<p>Every situation involving multiple players is a game. Ask: who are the players? What are their strategies? What are their payoffs? What do they know that others don't? Is the game cooperative or non-cooperative? Zero-sum or non-zero-sum? Simultaneous or sequential? One-shot or repeated?</p>
+<p>Naming the game changes how you think about it. &quot;This is a stag hunt — we all benefit if we coordinate, but if anyone defects we all lose&quot; is different from &quot;this is chicken — someone needs to swerve or we crash.&quot; The game type suggests the solution. Stag hunts need coordination mechanisms. Chicken needs a pre-committed rule about who yields. Prisoner's Dilemmas need repeated interaction and reputation. Battle of the sexes needs a selection mechanism. Name the game. The solution follows.</p>
+<h2 id="3-design-the-mechanism">3. Design the mechanism</h2>
+<p>If you don't like the equilibrium, change the game. Mechanism design works backward from desired outcomes to the rules that produce them. Ask: what outcome do I want? What rules would produce it? What information do players need? What incentives do they face? How do I make defection visible and costly?</p>
+<p>Automated contract testing is mechanism design. &quot;No Friday deploys&quot; is mechanism design. A booking calendar for staging is mechanism design. A test budget per service is mechanism design. Each mechanism changes the payoffs. Changed payoffs change behavior. Design the mechanism. Don't plead for the behavior.</p>
+<h2 id="4-account-for-complexity">4. Account for complexity</h2>
+<p>Complexity is a cost. It consumes attention, time, and future change capacity. Every feature adds complexity. The complexity has a present cost and a future cost — the accumulated drag on every subsequent change. The future cost is invisible in the current sprint. It is visible in year three.</p>
+<p>Account for it. When estimating a feature, include the complexity cost. &quot;This feature will take two weeks to build and will add complexity equivalent to 5% of the current system, which will cost approximately one week per quarter in reduced velocity. The NPV at our discount rate is negative. Don't build it, or build it simpler.&quot; Most teams don't do this math. The math exists. Do it.</p>
+<h2 id="5-use-the-robbins-test">5. Use the Robbins test</h2>
+<p>For any decision, ask Robbins's four questions: What is the end? What are the means? Are they scarce? Do they have alternative uses? If yes — and it always is — the decision is economic. Name the opportunity cost. &quot;Building this feature means not building that one.&quot; Name the trade. Make the choice explicit. Explicit choices are better than implicit ones. Implicit choices are still choices. They're just choices made without awareness that a choice was being made.</p>
+<h2 id="five-habits">Five habits</h2>
+<p><strong>Habit 1: Before debating architecture, name the scarce resource.</strong> If you can't name it, you don't understand the trade.</p>
+<p><strong>Habit 2: Before negotiating with another team, model their scarcity.</strong> What are they optimizing for? What are they giving up? If you don't know, ask. Their answer will explain their behavior more than any personality trait.</p>
+<p><strong>Habit 3: Before adding a feature, calculate the complexity budget.</strong> How much does this cost in future velocity? Is the return worth the cost? Most features pass the &quot;is it useful?&quot; test. Few pass the &quot;is it worth the complexity?&quot; test.</p>
+<p><strong>Habit 4: Before accepting a broken process, ask what game it's producing.</strong> The process is a mechanism. The mechanism produces an equilibrium. If the equilibrium is bad, the mechanism is wrong. Change the mechanism. Don't blame the players.</p>
+<p><strong>Habit 5: Before choosing a technology, ask what game it enables.</strong> REST produces spatial coupling. NATS produces spatial decoupling. The technology is not neutral. It embeds assumptions about how players will interact. Choose the technology that produces the game you want to play.</p>
+<h2 id="the-meta-habit">The meta-habit</h2>
+<p>Scarcity thinking becomes a habit. You start seeing opportunity costs everywhere. You start modeling other teams' incentives before meeting them. You start recognizing game structures in organizational conflicts. You start designing mechanisms instead of pleading for behavior. The habit is the point. The tools — economics, game theory, mechanism design — are lenses. The lenses change what you see. What you see changes what you do.</p>
+<hr>
+<p><strong>This is part 6 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

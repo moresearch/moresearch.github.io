@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Bell Labs produced the transistor, Unix, C, information theory, and nine Nobel Prizes. It did so because three historical accidents converged: a regulated monopoly, American economic supremacy after WWII, and the greatest migration of scientific talent in history. None of these are reproducible.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/bell-labs-freedom-to-innovate/">
+  <title>The freedom to innovate was a historical accident — hackspree</title>
+  <meta property="og:title" content="The freedom to innovate was a historical accident">
+  <meta property="og:description" content="Bell Labs produced the transistor, Unix, C, information theory, and nine Nobel Prizes. It did so because three historical accidents converged: a regulated monopoly, American economic supremacy after WWII, and the greatest migration of scientific talent in history. None of these are reproducible.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/bell-labs-freedom-to-innovate/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The freedom to innovate was a historical accident">
+  <meta name="twitter:description" content="Bell Labs produced the transistor, Unix, C, information theory, and nine Nobel Prizes. It did so because three historical accidents converged: a regulated monopoly, American economic supremacy after WWII, and the greatest migration of scientific talent in history. None of these are reproducible.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The freedom to innovate was a historical accident</h1><p class="post-summary">Bell Labs produced the transistor, Unix, C, information theory, and nine Nobel Prizes. It did so because three historical accidents converged: a regulated monopoly, American economic supremacy after WWII, and the greatest migration of scientific talent in history. None of these are reproducible.</p>
+          <div class="tags"><span class="tag">bell-labs</span><span class="tag">innovation</span><span class="tag">history</span><span class="tag">economics</span><span class="tag">unix</span><span class="tag">research</span></div>
+          
+        </header>
+        <div class="post-body"><p>Bell Labs produced the transistor. The laser. The Unix operating system. The C programming language. Information theory. Communications satellites. The silicon solar cell. Cellular telephony. The charge-coupled device that made digital cameras possible. Statistical process control. Nine Nobel Prizes. Four Turing Awards. The modern world was built in a single building in Murray Hill, New Jersey, by a few thousand people working for a telephone company.</p>
+<p>This was not a coincidence of genius. It was a coincidence of conditions. Three historical accidents converged to create the most productive research institution in history. None of them were designed. None of them are reproducible. Understanding why Bell Labs worked is understanding why nothing like it exists today — and what that means for the freedom to innovate.</p>
+<h2 id="the-regulated-monopoly-a-tax-on-phone-calls-that-funded-basic-research">The regulated monopoly: a tax on phone calls that funded basic research</h2>
+<p>AT&amp;T was a government-guaranteed monopoly. The Communications Act of 1934 established the Federal Communications Commission and blessed AT&amp;T's control of the American telephone system. In exchange, AT&amp;T accepted regulation — rate-setting, service obligations, and a commitment to universal service. The bargain was explicit: you get a monopoly. We regulate your prices. You serve everyone.</p>
+<p>The bargain had a side effect nobody planned for: it created the most stable R&amp;D funding stream in history. Every American phone bill contained what amounted to a small tax that flowed to Bell Labs. The revenue was predictable across decades. It did not depend on quarterly earnings, competitive threats, or the stock market. It depended on Americans making phone calls. Americans made more phone calls every year. The funding grew. The research continued.</p>
+<blockquote>
+<p>&quot;That freedom was predicated on the steady stream of revenue provided by the monthly bills paid by telephone subscribers, which allowed Bell Labs to function much like a national laboratory.&quot; — Jon Gertner, <em>The Idea Factory</em></p>
+</blockquote>
+<p>Mervin Kelly, the Bell Labs director most responsible for its culture, described research as a &quot;non-scheduled area of work.&quot; No deadlines. No objectives. No progress reports. Researchers could pursue their own investigations &quot;sometimes without concrete goals, for years on end.&quot; Claude Shannon spent a decade developing information theory with no mandate to produce a commercial product. He was trying to understand communication itself. The monopoly paid him to think. The thinking produced the bit, the mathematical foundation of the digital age.</p>
+<blockquote>
+<p>&quot;We give much attention to the maintenance of an atmosphere of freedom and an environment stimulating to scholarship.&quot;</p>
+</blockquote>
+<p>This was not a mission statement that a shareholder-owned company could write. It was a mission statement that a regulated monopoly, indifferent to competition because there was none, could write and mean. The monopoly was the funding model. The regulation was the accountability. The freedom was the byproduct.</p>
+<p>The physical architecture reinforced the culture. Kelly personally designed the Murray Hill building with long corridors and modular rooms that mixed theorists, experimentalists, and technicians across disciplines. Office doors were kept open. Physicists sat next to chemists. Mathematicians sat next to metallurgists. The policy was explicit: you will encounter people who don't work on what you work on. You will talk to them. Something will happen. The building was an idea-mating machine before anyone had the vocabulary for it. Ridley's &quot;ideas having sex&quot; was the architecture of Murray Hill, implemented in brick and corridor.</p>
+<p>The math group captured the spirit. Thornton Fry, who ran it, said: &quot;Mathematicians are queer people. Anybody who was queer enough that you didn't know what to do with him, you said, 'This fellow is a mathematician. Let's have him transferred over to Fry.'&quot; Claude Shannon thrived there. &quot;Kind of free-wheeling,&quot; he called it. &quot;I enjoyed it more that way, where I was working on my own projects.&quot; Shannon juggled, rode a unicycle down the halls, built a machine that solved mazes, and founded information theory. Nobody told him to stop juggling. The monopoly paid for the unicycle.</p>
+<h2 id="the-american-century-why-the-money-was-there">The American century: why the money was there</h2>
+<p>America emerged from World War II as the only major industrial power whose territory had not been bombed, whose factories had not been destroyed, whose population had not been decimated. The Bretton Woods system, established in 1944, made the dollar the world's reserve currency, pegged to gold at $35 per ounce. Every other currency pegged to the dollar. The system gave America an export privilege no other nation had: the world needed dollars to trade, and America could print them.</p>
+<p>The Marshall Plan rebuilt Europe with American capital, purchasing American goods. The GI Bill educated millions of returning soldiers at government expense, creating the most skilled workforce in history. Federal investment in highways, universities, and basic research — the NSF, the NIH, DARPA, the national laboratory system — created infrastructure that private capital would never have built alone. The Cold War directed defense spending into semiconductors, computing, communications, and aerospace. Bell Labs was a private institution funded by a regulated monopoly, but it operated in an economy that was being systematically invested in by the federal government at every level.</p>
+<p>The phone monopoly thrived because the economy thrived. Americans made more calls because Americans had more money, more businesses, more reasons to communicate. The Bell Labs tax grew because the base it taxed grew. The virtuous cycle was not accidental, but it was not designed either. It was the intersection of a global monetary system, a domestic investment program, and a regulatory bargain that nobody had optimized for innovation. The innovation was a side effect. It was the best side effect in history.</p>
+<h2 id="the-talent-migration-europes-loss-americas-gain">The talent migration: Europe's loss, America's gain</h2>
+<p>The third accident was the movement of people. Between 1933 and 1945, the United States received the greatest transfer of scientific talent in history. Fascism expelled Europe's best minds. America received them.</p>
+<p>The Hungarians came first, and they came in extraordinary concentration. John von Neumann. Edward Teller. Eugene Wigner. Leo Szilard. Theodore von Kármán. They were called &quot;The Martians&quot; — a joke about their otherworldly intelligence and impenetrable language. Enrico Fermi, when asked whether extraterrestrials existed, replied: &quot;Of course, they are already here among us: they just call themselves Hungarians.&quot;</p>
+<p>Von Neumann alone invented game theory, the architecture of the stored-program computer, the mathematical foundation of quantum mechanics, and the implosion mechanism for the atomic bomb. He did this while being a full-time consultant to the Army, the Navy, the Air Force, the Atomic Energy Commission, the RAND Corporation, IBM, and Bell Labs. He was not an exception among the Martians. He was representative.</p>
+<p>Einstein fled Germany in 1933. Fermi fled Italy in 1938 — his wife was Jewish. Hans Bethe fled Germany. Felix Bloch fled. Emilio Segrè fled. James Franck resigned his Göttingen post in 1935 in protest and left. George Gamow escaped Soviet Russia. The list is not a list of great scientists. It is a list of people who, had they stayed in Europe, would have been killed. They came to America. They built American science.</p>
+<p>The Manhattan Project was staffed disproportionately by European refugees. The Theoretical Division at Los Alamos, under Hans Bethe, was dominated by German-speaking physicists — Peierls, Frisch, Placzek, Bethe, Weisskopf. Oppenheimer quipped: &quot;May the Lord preserve us from the enemy without and from the Hungarians within&quot; — Teller was obsessed with the hydrogen bomb and would not stop talking about it. The bomb was built by refugees from the regimes America was bombing.</p>
+<p>After the war, these scientists dispersed into American institutions. Bell Labs got its share. The transistor was invented by Shockley, Bardeen, and Brattain — two Americans and an American. But the environment they worked in was shaped by the presence of European-trained physicists, mathematicians, and engineers who had brought their training, their methods, and their standards with them. The American scientific establishment before the war was provincial. After the war, it was the world's best. The difference was not gradual improvement. It was the sudden arrival of thousands of the most trained minds in Europe, concentrated in a few institutions, funded by a government that had just won a global war and an economy that was growing at rates never seen before or since.</p>
+<p>The talent migration was not a policy. It was a humanitarian catastrophe in Europe that America benefited from. The scientists did not come because America had a better research environment. They came because staying in Europe meant death. America built the better research environment after they arrived, in part because they arrived. The environment and the talent co-evolved. The monopoly money funded the environment. The migration supplied the talent. The combination produced Bell Labs.</p>
+<h2 id="the-paradox-the-monopoly-that-suppressed-what-it-discovered">The paradox: the monopoly that suppressed what it discovered</h2>
+<p>The story contains a paradox that matters. The regulated monopoly that funded utopian research freedom also suppressed technologies that threatened AT&amp;T's business model. Magnetic tape recording was developed at Bell Labs in the 1930s. AT&amp;T suppressed it for nearly fifty years, fearing that the possibility of recording conversations would discourage telephone use. An answering machine that could record calls was a threat to the business of carrying calls. The monopoly that funded the research killed the product.</p>
+<p>Packet switching — the foundation of the internet — was presented to AT&amp;T by Paul Baran in the 1960s. The company dismissed it. AT&amp;T's business was circuit-switched voice calls. Packet switching was the opposite of circuit switching. The monopoly that funded Claude Shannon could not imagine a network built on Shannon's own principles. Fiber optics, mobile telephony, DSL — all developed at Bell Labs, all deployed with deliberate slowness, all constrained by the imperative not to disrupt the existing revenue model.</p>
+<blockquote>
+<p>&quot;Bell Labs was never a place that could originate technologies that could, by the remotest possibility, threaten the Bell system itself.&quot; — Tim Wu</p>
+</blockquote>
+<p>The freedom was real. The boundary was real. You could invent anything that did not threaten the monopoly. The transistor was fine — it amplified signals, which was useful for the phone network. The laser was fine — it could carry signals through fiber, someday. Unix was fine — it was an operating system for internal use, and AT&amp;T licensed it essentially for free to universities. C was fine — it was a tool for writing Unix. Information theory was fine — it was mathematics, and mathematics threatens no business model.</p>
+<p>But anything that might change how people communicated — anything that might make them use the phone network less, or differently, or not at all — was suppressed. The freedom was conditional. The condition was invisible to the researchers but absolute in its effect. The researchers thought they had freedom. They had freedom within the perimeter. The perimeter was drawn by the business model. The business model was protected by the monopoly. The monopoly was protected by the government. The government was accountable to the voters. The voters wanted cheap phone service. Cheap phone service required the monopoly. The monopoly required the perimeter. The perimeter suppressed the answering machine. The loop was closed.</p>
+<h2 id="the-breakdown">The breakdown</h2>
+<p>The AT&amp;T divestiture of 1982 broke the monopoly. Bell Labs survived in diminished form through Lucent, Alcatel-Lucent, and now Nokia. It never recovered its former scale or ambition. The funding model was gone. The regulated utility that had taxed phone calls to fund basic research was replaced by competitive telecommunications companies that had to justify every research dollar to shareholders every quarter. The freedom to spend a decade on information theory with no commercial mandate did not survive the transition. Nothing like it has existed since.</p>
+<p>The Bretton Woods system ended in 1971 when Nixon closed the gold window. The dollar floated. The privileged position of the American economy persisted, but the structural guarantee of it did not. The postwar boom was a one-time event, fueled by the destruction of every competitor's industrial base and the creation of a global monetary system that America controlled. Those conditions cannot be recreated without another global war that destroys every other economy, which is not something to wish for.</p>
+<p>The talent migration was a one-time event. Europe produced a generation of extraordinary scientists in the 1920s and early 1930s. Fascism expelled them. America received them. The generation aged, retired, and died. The pipeline from European universities to American research institutions has never again operated at that volume or that quality. European universities recovered. European scientists stayed in Europe. The asymmetry was temporary. Its effects were permanent.</p>
+<h2 id="what-replaced-it">What replaced it</h2>
+<p>The research model that replaced Bell Labs is the venture-capital-funded startup. The startup model is good at developing products. It is terrible at funding basic research with no visible commercial application and a ten-year time horizon. Nobody pitches a VC on &quot;I want to understand the fundamental nature of communication and I need a decade of funding with no deliverables.&quot; Claude Shannon would not get funded today. He would be told to focus, to find a market, to build an MVP, to show traction. Information theory would not exist. The bit would not have a name. The digital age would rest on a foundation that was never laid.</p>
+<p>The corporate research lab model that survived — Microsoft Research, Google Research, DeepMind, OpenAI — is different from Bell Labs in a crucial respect. These labs are funded by competitive companies in competitive markets. Their research freedom is conditional on continued corporate success and continued executive patience. When the market turns, the research budget is cut. When the executive changes, the research direction changes. The freedom is not structural. It is discretionary. Discretionary freedom can be withdrawn. Bell Labs' freedom was structural — embedded in the regulatory bargain, funded by a tax on a necessity. As long as Americans made phone calls, the research continued. Google Research depends on Google's advertising revenue. If advertising revenue declines, research declines. The funding is not a tax on a necessity. It is a share of a competitive surplus. Competitive surpluses are temporary. Necessities are durable.</p>
+<h2 id="the-lesson">The lesson</h2>
+<p>Bell Labs was not a replicable model. It was a historical accident produced by the intersection of a regulated monopoly, a globally dominant economy, and a one-time talent migration. You cannot recreate it by making your office plan open or by giving your engineers 20% time or by hiring a chief innovation officer. The conditions that produced it were structural, not cultural. The culture was an effect of the conditions. You can copy the open doors. You cannot copy the monopoly, the Bretton Woods system, or the European scientific diaspora of 1933-1945.</p>
+<p>The lesson is not that we should recreate Bell Labs. The lesson is that the conditions for deep innovation are structural, not managerial. They depend on funding models that are stable across decades, not quarters. They depend on freedom that is guaranteed by the structure of the institution, not by the goodwill of a manager. They depend on concentrations of talent that are produced by forces larger than any hiring pipeline — war, migration, economic transformation. When those conditions coincide, extraordinary things happen. When they don't, we get what we have: incremental improvement, well-funded but narrowly focused, producing products rather than principles, optimizing the transistor rather than discovering it.</p>
+<p>The freedom to innovate is not a policy choice. It is a property of a system. The system that produced Bell Labs no longer exists. The system that replaced it produces different things — faster iteration, better products, more responsive markets. It does not produce the laser, the transistor, Unix, C, and information theory in a single building over three decades. Nothing does. Nothing will, until the structural conditions that made it possible happen again. The conditions were accidents. Accidents are not strategies.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Jon Gertner, <em>The Idea Factory: Bell Labs and the Great Age of American Innovation</em>, Penguin, 2012.</li>
+<li>Tim Wu, <em>The Master Switch: The Rise and Fall of Information Empires</em>, Knopf, 2010.</li>
+<li>Mervin Kelly, internal Bell Labs memos on research culture, 1940s-1950s.</li>
+<li>Claude Shannon, <em>A Mathematical Theory of Communication</em>, Bell System Technical Journal, 1948.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#disruptive-innovation">Disruptive Innovation</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#bsd-openbsd-linux">BSD is clean, OpenBSD is cleaner</a></li>
+</ul>
+<p>Engineering is the discipline of building things that work within constraints. Every topic on this blog — operating systems, AI models, trading infrastructure, research labs, innovation economics — is examined through the lens of systems design. The lens is engineering. The method is: understand the constraints, design within them, verify the design works, iterate. The domain provides the specifics. The method is universal.</p>
+<blockquote>
+<p>Innovation is not a process. It is a condition. The condition is freedom from quarterly earnings, freedom from feature requests, freedom to pursue a question for a decade. Bell Labs had that condition. Nobody does now.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Kafka&#39;s partition model is its superpower and its shackle — it gives you ordering guarantees at the cost of fixed parallelism and painful rebalancing. NATS JetStream takes the opposite approach: messages are stored in a single append-only stream, and consumers read independently with their own cursors. With Orbit.go&#39;s partitioned consumer groups, you get Kafka-style key-based ordering without Kafka&#39;s partition management overhead. This post explains the architectural difference and why it matters for teams that need streaming but don&#39;t want to operate Kafka.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/nats-jetstream-vs-kafka-streaming-without-partitions/">
+  <title>NATS JetStream vs Kafka: Streaming Without the Partition Tax — hackspree</title>
+  <meta property="og:title" content="NATS JetStream vs Kafka: Streaming Without the Partition Tax">
+  <meta property="og:description" content="Kafka&#39;s partition model is its superpower and its shackle — it gives you ordering guarantees at the cost of fixed parallelism and painful rebalancing. NATS JetStream takes the opposite approach: messages are stored in a single append-only stream, and consumers read independently with their own cursors. With Orbit.go&#39;s partitioned consumer groups, you get Kafka-style key-based ordering without Kafka&#39;s partition management overhead. This post explains the architectural difference and why it matters for teams that need streaming but don&#39;t want to operate Kafka.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/nats-jetstream-vs-kafka-streaming-without-partitions/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NATS JetStream vs Kafka: Streaming Without the Partition Tax">
+  <meta name="twitter:description" content="Kafka&#39;s partition model is its superpower and its shackle — it gives you ordering guarantees at the cost of fixed parallelism and painful rebalancing. NATS JetStream takes the opposite approach: messages are stored in a single append-only stream, and consumers read independently with their own cursors. With Orbit.go&#39;s partitioned consumer groups, you get Kafka-style key-based ordering without Kafka&#39;s partition management overhead. This post explains the architectural difference and why it matters for teams that need streaming but don&#39;t want to operate Kafka.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>NATS JetStream vs Kafka: Streaming Without the Partition Tax</h1><p class="post-summary">Kafka&#39;s partition model is its superpower and its shackle — it gives you ordering guarantees at the cost of fixed parallelism and painful rebalancing. NATS JetStream takes the opposite approach: messages are stored in a single append-only stream, and consumers read independently with their own cursors. With Orbit.go&#39;s partitioned consumer groups, you get Kafka-style key-based ordering without Kafka&#39;s partition management overhead. This post explains the architectural difference and why it matters for teams that need streaming but don&#39;t want to operate Kafka.</p>
+          <div class="tags"><span class="tag">nats</span><span class="tag">jetstream</span><span class="tag">kafka</span><span class="tag">streaming</span><span class="tag">partitioned-consumers</span><span class="tag">distributed-systems</span><span class="tag">orbit</span></div>
+          
+        </header>
+        <div class="post-body"><p>Kafka is the default answer for event streaming. It earned that position honestly — it solves a hard problem with a clear architecture. But operating Kafka is itself a hard problem. The partition is the unit of parallelism, and that design choice cascades into every operational concern: rebalancing, key distribution, retention, and scaling.</p>
+<p>NATS JetStream approaches streaming from the opposite direction. Instead of partitioning the log for parallelism, it separates storage (the stream) from consumption (the consumer). Multiple consumers read the same stream independently, each at its own pace, with its own filter and acknowledgement state. Parallelism comes from concurrent consumers, not from partitions. Ordering comes from consumer configuration, not from partition assignment.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/orbit-partitioned-consumer-groups/">Orbit.go's partitioned consumer groups</a> — a pure client-side library — bridge the remaining gap, bringing Kafka-style key-based ordering to JetStream without requiring stream partitioning. The result is streaming that's simpler to operate and more flexible to scale, with the ordering guarantees Kafka users expect.</p>
+<h2 id="the-kafka-partition-model">The Kafka partition model</h2>
+<p>Kafka's fundamental abstraction is the partitioned log. Each topic is split into N partitions. Each partition is an ordered, immutable sequence of messages. Producers write to partitions based on a partitioning key. Consumers read from partitions in order. The partition is the unit of parallelism — you can have at most one consumer per partition (in the same consumer group) and at most as many active consumers as there are partitions.</p>
+<p>This model provides strong guarantees:</p>
+<ul>
+<li><strong>Ordering per partition:</strong> Messages with the same key land in the same partition and are consumed in order. Ordering is guaranteed within a partition, not across partitions.</li>
+<li><strong>Parallelism via partition count:</strong> To increase throughput, increase the partition count. More partitions means more concurrent consumers.</li>
+<li><strong>Durability via replication:</strong> Each partition has a leader and N followers. The leader handles reads and writes. Followers replicate the log. If the leader fails, a follower takes over.</li>
+</ul>
+<p>These guarantees come with operational constraints:</p>
+<ul>
+<li>
+<p><strong>Fixed parallelism ceiling.</strong> Partition count is set at topic creation and is hard to change. Increasing partitions is possible but disruptive — it changes the key-to-partition mapping, breaking ordering for keys that move to new partitions. Decreasing partitions is effectively impossible without deleting and recreating the topic. You must provision for peak parallelism at topic creation, paying for capacity you may not need for months.</p>
+</li>
+<li>
+<p><strong>Rebalancing is expensive.</strong> When a consumer joins or leaves a consumer group, Kafka triggers a rebalance: partitions are reassigned across the new set of consumers. During rebalance, consumption pauses. For large consumer groups with many partitions, rebalancing can take seconds to minutes. The cooperative rebalance protocol (KIP-429) mitigates this but doesn't eliminate it. Every deployment, every scale-up, every crash triggers a rebalance.</p>
+</li>
+<li>
+<p><strong>Hot partitions are undivisible.</strong> If a single key generates disproportionate traffic (a &quot;hot&quot; partition), you can't split that partition without breaking ordering. The partition is atomic. You can't subdivide it. You can't parallelize within it. The partition is the bottleneck, and you can't make it wider.</p>
+</li>
+<li>
+<p><strong>Operational complexity.</strong> Kafka requires ZooKeeper (pre-3.3) or KRaft (3.3+). It requires careful JVM tuning. It requires disk provisioning for partitioned logs with configurable retention. It requires monitoring of under-replicated partitions, consumer lag, and broker resource utilization. Running Kafka well is a specialized skill. Running Kafka at scale is a team.</p>
+</li>
+</ul>
+<h2 id="the-jetstream-model-one-stream-many-consumers">The JetStream model: one stream, many consumers</h2>
+<p>JetStream inverts the relationship between storage and consumption. A <strong>stream</strong> is a named append-only log that captures messages on one or more subjects. A <strong>consumer</strong> is a named view into a stream — a cursor with a filter, an acknowledgement policy, and a delivery mode.</p>
+<pre><code class="language-go">// One stream captures all order events
+js.AddStream(&amp;nats.StreamConfig{
+    Name:     &quot;ORDERS&quot;,
+    Subjects: []string{&quot;orders.&gt;&quot;},
+    Storage:  nats.FileStorage,
+    Replicas: 3,
+})
+
+// Multiple consumers read independently
+// Consumer A: fulfillment, reading from the beginning
+js.AddConsumer(&quot;ORDERS&quot;, &amp;nats.ConsumerConfig{
+    Durable:       &quot;fulfillment&quot;,
+    FilterSubject: &quot;orders.created&quot;,
+    DeliverPolicy: nats.DeliverAllPolicy,
+    AckPolicy:     nats.AckExplicitPolicy,
+})
+
+// Consumer B: analytics, only new messages
+js.AddConsumer(&quot;ORDERS&quot;, &amp;nats.ConsumerConfig{
+    Durable:       &quot;analytics&quot;,
+    FilterSubject: &quot;orders.&gt;&quot;,
+    DeliverPolicy: nats.DeliverNewPolicy,
+})
+
+// Consumer C: fraud detection, last per subject
+js.AddConsumer(&quot;ORDERS&quot;, &amp;nats.ConsumerConfig{
+    Durable:       &quot;fraud-check&quot;,
+    FilterSubject: &quot;orders.payment.*&quot;,
+    DeliverPolicy: nats.DeliverLastPerSubjectPolicy,
+})
+</code></pre>
+<p>Notice what's missing: no partition count. No key-to-partition mapping. No partition assignment. The stream is a single log. Consumers are independent views. Each consumer has its own cursor. Each consumer acknowledges independently. The stream doesn't care how many consumers exist or what they're doing — it just appends messages.</p>
+<p>Parallelism works differently in this model. A single consumer can be read by multiple instances concurrently. NATS distributes messages across instances that are pulling from the same consumer — no rebalancing, no partition assignment, no pause in consumption when an instance joins or leaves:</p>
+<pre><code class="language-go">// Instance 1, 2, and 3 all pull from the same consumer
+sub, _ := js.PullSubscribe(&quot;orders.created&quot;, &quot;fulfillment&quot;)
+for {
+    msgs, _ := sub.Fetch(10)
+    for _, msg := range msgs {
+        process(msg)
+        msg.Ack()
+    }
+}
+</code></pre>
+<p>The three instances collectively consume from <code>fulfillment</code>. Each <code>Fetch(10)</code> returns up to 10 messages. NATS distributes messages across the active pullers. If Instance 1 crashes, Instances 2 and 3 continue — their pull requests are now served faster because there are fewer pullers competing. No rebalance. No partition reassignment. No pause.</p>
+<p>This is elastic by default. You deploy more instances, they start pulling, throughput increases. You deploy fewer, throughput decreases. No topic configuration to update. No partition count to pre-provision. The parallelism is dynamic, not static.</p>
+<h2 id="the-ordering-trade-off">The ordering trade-off</h2>
+<p>JetStream's elastic model has a trade-off: ordering is not guaranteed across concurrent pulls. If Instance 1 pulls messages 1-10 and Instance 2 pulls messages 11-20 simultaneously, and Instance 2 processes faster, message 11 might be acknowledged before message 1. Messages are stored in order. They may be processed out of order.</p>
+<p>For many workloads, this is fine. If each message is independent — a notification, a metric, a log entry — processing order doesn't matter. But for workloads that require per-key ordering (all events for Customer A processed in order), it's a real constraint.</p>
+<p>The traditional solution is to set <code>MaxAckPending</code> to 1, which serializes all processing through a single message in flight at a time. This guarantees order but kills throughput. You've traded parallelism for ordering, and you're paying for it on every message, even ones with different keys that could safely be processed in parallel.</p>
+<p>This is exactly the gap that Orbit.go's partitioned consumer groups fill.</p>
+<h2 id="partitioned-consumer-groups-kafka-semantics-jetstream-simplicity">Partitioned consumer groups: Kafka semantics, JetStream simplicity</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/synadia-io/orbit.go">Orbit.go</a> implements what Jean-Noël Moyne describes as &quot;functionally equivalent to what Apache Kafka calls 'consumer groups' and how they implement partitioning&quot; — entirely on the client side.</p>
+<p>The key insight: most real-world ordering requirements are per-key, not global. You need Customer A's events processed in order. You don't need all customers' events processed in order. Kafka enforces this via partitions — same key → same partition → same consumer → ordered processing. Orbit.go enforces this via subject token hashing on top of JetStream consumers — same key → same member → ordered processing.</p>
+<h3 id="static-partitioned-consumer-groups">Static partitioned consumer groups</h3>
+<p>Static groups require the stream to have a partition number as the first subject token (achievable via a stream subject transform at ingest). The library maps member names to partition numbers using consistent hashing:</p>
+<pre><code class="language-go">// Stream subjects include partition number
+// orders.{partition}.created, orders.{partition}.paid, ...
+
+group := orbit.CreateStaticGroup(&quot;order-processors&quot;, streamConfig, memberNames)
+group.Join(&quot;fulfillment-member&quot;, consumerConfig, func(msg jetstream.Msg) {
+    // Messages for this member's partitions arrive in order
+    processInOrder(msg)
+    msg.Ack()
+})
+</code></pre>
+<p>Guarantees:</p>
+<ul>
+<li>Each partition is handled by exactly one member at a time</li>
+<li>Messages within a partition are processed in order</li>
+<li>Multiple partitions can be processed in parallel by different members</li>
+<li>If a member instance crashes, NATS 2.11's pinned consumer feature ensures the replacement instance picks up where the old one left off</li>
+</ul>
+<p>Static groups are faster and use fewer server resources, but membership is fixed at creation. No adding members at runtime. The trade-off is latency and resource efficiency for operational flexibility.</p>
+<h3 id="elastic-partitioned-consumer-groups">Elastic partitioned consumer groups</h3>
+<p>Elastic groups work on any existing stream — no partition token required. The library materializes the group as a work queue stream that sources from the original, inserting partition numbers during sourcing:</p>
+<pre><code class="language-go">group := orbit.CreateElasticGroup(&quot;order-processors&quot;, sourceStream, maxMembers)
+group.AddMember(&quot;fulfillment&quot;)   // Add at runtime
+group.AddMember(&quot;audit&quot;)         // Add at runtime
+group.DropMember(&quot;fulfillment&quot;)  // Remove at runtime
+
+group.Join(&quot;fulfillment&quot;, consumerConfig, func(msg jetstream.Msg) {
+    processInOrder(msg)
+    msg.Ack()
+})
+</code></pre>
+<p>The work queue stream holds copies of messages, so consumption lag can be monitored by checking the work queue stream size. You can cap the work queue stream size; if it hits the limit, sourcing pauses briefly. This prevents unbounded memory consumption from a work queue that outpaces its consumers.</p>
+<p>Elastic groups use more server resources and add slight latency (the materialization step), but you get runtime elasticity. Add members when load increases. Drop members when load decreases. No partition reassignment. No key-to-partition remapping. No rebalancing pause.</p>
+<h2 id="side-by-side-kafka-vs-jetstream-with-partitioned-consumers">Side by side: Kafka vs JetStream with partitioned consumers</h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Kafka</th>
+<th>JetStream + Orbit.go</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Unit of storage</strong></td>
+<td>Partitioned topic</td>
+<td>Single stream</td>
+</tr>
+<tr>
+<td><strong>Unit of parallelism</strong></td>
+<td>Partition (fixed at creation)</td>
+<td>Consumer instances (dynamic)</td>
+</tr>
+<tr>
+<td><strong>Ordering</strong></td>
+<td>Per partition</td>
+<td>Per consumer (or per member in a group)</td>
+</tr>
+<tr>
+<td><strong>Adding parallelism</strong></td>
+<td>Increase partitions (disruptive)</td>
+<td>Deploy more instances (elastic)</td>
+</tr>
+<tr>
+<td><strong>Rebalancing</strong></td>
+<td>Pauses consumption</td>
+<td>No pause (pull-based distribution)</td>
+</tr>
+<tr>
+<td><strong>Hot partition</strong></td>
+<td>Undivisible bottleneck</td>
+<td>Elastic member can be dedicated</td>
+</tr>
+<tr>
+<td><strong>Retention</strong></td>
+<td>Time or size per partition</td>
+<td>Time, size, or count per stream</td>
+</tr>
+<tr>
+<td><strong>Replication</strong></td>
+<td>Per partition (leader/follower)</td>
+<td>Per stream (Raft across cluster nodes)</td>
+</tr>
+<tr>
+<td><strong>Operational complexity</strong></td>
+<td>ZooKeeper/KRaft, JVM tuning, partition monitoring</td>
+<td>Single Go binary, streams and consumers</td>
+</tr>
+<tr>
+<td><strong>Key-based ordering</strong></td>
+<td>Built-in (partition by key)</td>
+<td>Via Orbit.go (hash by subject token)</td>
+</tr>
+</tbody>
+</table>
+<p>The fundamental difference: Kafka builds ordering into the storage layer (partitions). JetStream builds ordering into the consumption layer (consumers and consumer groups). The JetStream approach is more flexible because consumers can be reconfigured without touching the stream. The Kafka approach provides stronger guarantees because the ordering is physically enforced by the log structure. Whether one is better depends on whether you value operational flexibility or storage-level guarantees more.</p>
+<h2 id="when-kafka-still-makes-sense">When Kafka still makes sense</h2>
+<p>Kafka's partition model is not a mistake. It's the right design for workloads where:</p>
+<p><strong>Ordering is truly global.</strong> If every message in a topic must be processed in exact append order (not just per-key order), Kafka partitions give you that — one partition, one consumer. JetStream can do this with <code>MaxAckPending: 1</code> but at the same throughput cost.</p>
+<p><strong>You need the Kafka ecosystem.</strong> Kafka Connect provides a rich set of source and sink connectors. Kafka Streams provides a sophisticated stream processing library with exactly-once semantics, stateful operations (joins, aggregations, windows), and an interactive query API. ksqlDB provides SQL over streams. The ecosystem is deep and mature. If your architecture depends on these tools, Kafka is the right choice.</p>
+<p><strong>Your team already operates Kafka well.</strong> Running Kafka is a skill. If your team has invested in that skill and the operational burden is manageable, the migration cost to NATS may not be justified. Don't migrate because NATS is simpler. Migrate because the operational burden of Kafka is a meaningful drag on your team's velocity.</p>
+<p><strong>You need compacted topics.</strong> Kafka's log compaction retains the latest value for each key, enabling table-like semantics for changelogs. JetStream doesn't have a direct equivalent (though <code>DiscardNewPerSubject</code> with <code>MaxMsgsPerSubject: 1</code> provides a rough approximation for single-message-per-subject use cases).</p>
+<p>For greenfield systems that need streaming but don't already depend on the Kafka ecosystem, JetStream with Orbit.go partitioned consumer groups addresses the same ordering requirements with significantly less operational overhead. You get key-based ordering. You get parallel consumption. You don't get partition management, rebalance pauses, or ZooKeeper. For most teams, that's a good trade.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/orbit-partitioned-consumer-groups/">Client-side Partitioned Consumer Groups for JetStream</a> — Jean-Noël Moyne, NATS Blog</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://github.com/synadia-io/orbit.go">Orbit.go on GitHub</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/nats-concepts/jetstream">NATS JetStream Documentation</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://kafka.apache.org/documentation/#intro_concepts_and_terms">Kafka Documentation — Topic Partitioning</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

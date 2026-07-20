@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/catalog-of-scarcity-games/">
+  <title>Field Guide to Scarcity Games — hackspree</title>
+  <meta property="og:title" content="Field Guide to Scarcity Games">
+  <meta property="og:description" content="An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/catalog-of-scarcity-games/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Field Guide to Scarcity Games">
+  <meta name="twitter:description" content="An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Field Guide to Scarcity Games</h1><p class="post-summary">An exhaustive taxonomy of game types, organized by cooperation, conflict, timing, information, symmetry, player count, determinism, strategy, state space, time horizon, and special classes. Every category has a concrete software example. A reference for recognizing game structures in architecture.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">taxonomy</span><span class="tag">reference</span><span class="tag">software-engineering</span></div>
+          
+        </header>
+        <div class="post-body"><p>Every software situation is a game. The game has a type. The type determines the appropriate analysis. This catalog classifies games along eleven independent dimensions. Each category includes a concrete software example. Use it to locate any situation in game-theoretic space. The location tells you what you're dealing with. What you're dealing with determines what you should do.</p>
+<p>This catalog is a diagnostic tool. When a situation feels stuck — the migration isn't happening, the standard isn't being adopted, the teams keep breaking each other's APIs — locate it here. The name of the game tells you why it's stuck. The why tells you what to change. Most organizational interventions fail because they treat every stuck situation as a communication problem. Some are stag hunts. Some are chicken. Some are commons tragedies. The solution to a stag hunt is visible early adopters. The solution to chicken is a pre-committed rule. The solution to a commons tragedy is a governance mechanism. The solutions are different because the games are different. The catalog tells you which one you're in.</p>
+<blockquote>
+<p>&quot;Simplicity does not precede complexity, but follows it.&quot; — Alan Perlis</p>
+</blockquote>
+<p>The catalog that follows is a map of the complexity. Use it to find the simplicity on the other side.</p>
+<h2 id="by-cooperation">By cooperation</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cooperative</strong></td>
+<td>Players can form binding agreements. — SLA with penalty clauses. The SLA is the binding agreement.</td>
+</tr>
+<tr>
+<td><strong>Non-cooperative</strong></td>
+<td>No binding agreements. — Teams without API contracts. Communication is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Cheap talk</strong></td>
+<td>Communication allowed but unenforceable. — &quot;We promise not to break the API.&quot; Without testing, this is cheap talk.</td>
+</tr>
+<tr>
+<td><strong>Bargaining</strong></td>
+<td>Two-player cooperative game over surplus division. — Two teams negotiating shared infrastructure costs.</td>
+</tr>
+<tr>
+<td><strong>Team problems</strong></td>
+<td>Non-cooperative structure, identical payoffs. — Team sharing the same OKRs. Incentives aligned by design.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-conflict-of-interest">By conflict of interest</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Zero-sum</strong></td>
+<td>One's gain = another's loss. — Fixed headcount allocation. Every hire for Team A is one Team B doesn't get.</td>
+</tr>
+<tr>
+<td><strong>Non-zero-sum</strong></td>
+<td>Players can both gain or both lose. — API design. Both gain from clean contract. Both lose from broken one.</td>
+</tr>
+<tr>
+<td><strong>Coordination</strong></td>
+<td>No conflict. Players need to align. — Choosing a shared logging format. Everyone wants the same thing.</td>
+</tr>
+<tr>
+<td><strong>Mixed-motive</strong></td>
+<td>Both conflict and cooperation incentives. — Most real situations. Shared goals but private priorities.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-timing">By timing</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simultaneous</strong></td>
+<td>Players move without observing others. — Teams making independent tech choices in the same quarter.</td>
+</tr>
+<tr>
+<td><strong>Sequential</strong></td>
+<td>Players move in turn. — Deployment ordering. Stackelberg: first-mover advantage.</td>
+</tr>
+<tr>
+<td><strong>Repeated</strong></td>
+<td>Same game multiple times. — Sprint planning. Repetition enables reputation and reciprocity.</td>
+</tr>
+<tr>
+<td><strong>One-shot</strong></td>
+<td>Played exactly once. — A rewrite decision. No repetition.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>State evolves probabilistically. — Incident response. Alerts arrive randomly.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-information">By information</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Complete information</strong></td>
+<td>All players know all payoffs. — Open-source. Everyone sees the code, issues, priorities.</td>
+</tr>
+<tr>
+<td><strong>Incomplete information</strong></td>
+<td>Private information. Bayesian games. — Team proposing rewrite has private info about true motivation.</td>
+</tr>
+<tr>
+<td><strong>Perfect information</strong></td>
+<td>All previous moves known. — Monolith. Every module observes every other module's state.</td>
+</tr>
+<tr>
+<td><strong>Imperfect information</strong></td>
+<td>Some moves unknown. — Microservices. Service A can't observe Service B's internal state.</td>
+</tr>
+<tr>
+<td><strong>Symmetric information</strong></td>
+<td>Same uncertainty. — Both teams uncertain about new CTO's priorities.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric information</strong></td>
+<td>Different knowledge. — Senior engineer knows legacy weaknesses. New hire doesn't.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-symmetry">By symmetry</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Symmetric</strong></td>
+<td>Payoffs depend only on strategies, not identity. — Two identical microservices with the same SLA.</td>
+</tr>
+<tr>
+<td><strong>Asymmetric</strong></td>
+<td>Changing identities changes payoffs. — Frontend vs. backend team. Different constraints, different strategies.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-player-count">By player count</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1-player</strong></td>
+<td>Decision theory. No strategic interaction. — Choosing an algorithm. Nature is the constraint.</td>
+</tr>
+<tr>
+<td><strong>2-player</strong></td>
+<td>Classic case. — Two teams negotiating an API contract.</td>
+</tr>
+<tr>
+<td><strong>N-player</strong></td>
+<td>Three or more. Coalitions possible. — Organization with many teams. Alliances form. Politics emerges.</td>
+</tr>
+<tr>
+<td><strong>Large/Many-player</strong></td>
+<td>Continuum. Atomic vs. non-atomic. — Open-source ecosystem. No single contributor changes equilibrium.</td>
+</tr>
+<tr>
+<td><strong>Mean field</strong></td>
+<td>Players interact through state distribution. — Microservices at scale. Each service interacts with aggregate behavior.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-determinism">By determinism</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deterministic</strong></td>
+<td>No chance elements. — Deterministic deployment pipeline.</td>
+</tr>
+<tr>
+<td><strong>Stochastic</strong></td>
+<td>Some moves by nature/chance. — System with probabilistic failures.</td>
+</tr>
+<tr>
+<td><strong>Games of chance</strong></td>
+<td>All moves by one player and chance. — A/B testing. Nature randomizes users.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-strategy-type">By strategy type</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pure strategy</strong></td>
+<td>Single deterministic action. — Always use the same database for every service.</td>
+</tr>
+<tr>
+<td><strong>Mixed strategy</strong></td>
+<td>Randomize over actions. — Random on-call assignment. Prevents predictable exploitation.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-stateaction-space">By state/action space</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite</strong></td>
+<td>Finite actions and states. — Choosing between exactly three database options.</td>
+</tr>
+<tr>
+<td><strong>Infinite/Continuous</strong></td>
+<td>Continuous spaces. — Allocating compute resources. Continuous variable.</td>
+</tr>
+<tr>
+<td><strong>Discrete-time</strong></td>
+<td>Decisions at discrete intervals. — Sprint planning. Every two weeks.</td>
+</tr>
+<tr>
+<td><strong>Continuous-time</strong></td>
+<td>Decisions at every instant. — Real-time auto-scaling. Differential equations.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-time-horizon">By time horizon</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Finite horizon</strong></td>
+<td>Known number of periods. — Project with fixed deadline and milestones.</td>
+</tr>
+<tr>
+<td><strong>Infinite horizon</strong></td>
+<td>No predetermined end. — Ongoing system maintenance. Cooperation sustainable.</td>
+</tr>
+<tr>
+<td><strong>Discounted</strong></td>
+<td>Future payoffs weighted less. — Quarterly planning. This quarter &gt; next year.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="special-game-classes">Special game classes</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Signaling</strong></td>
+<td>Informed player acts to reveal info. — Detailed RFC signals competence and seriousness.</td>
+</tr>
+<tr>
+<td><strong>Screening</strong></td>
+<td>Uninformed player moves first. — Requiring prototype before architecture review.</td>
+</tr>
+<tr>
+<td><strong>Stackelberg</strong></td>
+<td>Leader-follower. Leader first. — Platform team sets API standard. Services build against it.</td>
+</tr>
+<tr>
+<td><strong>Pursuit-evasion</strong></td>
+<td>Zero-sum differential. — Intrusion detection. Attacker evades. Defender pursues.</td>
+</tr>
+<tr>
+<td><strong>Mechanism design</strong></td>
+<td>Reverse game theory. — SLAs, contract testing, deployment gates, code review requirements.</td>
+</tr>
+<tr>
+<td><strong>Global games</strong></td>
+<td>Noisy private signals of underlying state. — Teams deciding on new tech based on private maturity signals.</td>
+</tr>
+<tr>
+<td><strong>Combinatorial</strong></td>
+<td>Finite, deterministic, perfect-info, 2P, zero-sum. — Automated theorem proving. Compiler optimization.</td>
+</tr>
+<tr>
+<td><strong>Evolutionary</strong></td>
+<td>Fit strategies survive. Replicator dynamics. — Architecture patterns that persist. Microservices resist re-monolithing.</td>
+</tr>
+<tr>
+<td><strong>Partizan</strong></td>
+<td>Moves differ per player. — Frontend and backend teams have different available moves.</td>
+</tr>
+<tr>
+<td><strong>Impartial</strong></td>
+<td>Moves depend only on position, not player. — Identical services with identical deployment options.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>This is part 7 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

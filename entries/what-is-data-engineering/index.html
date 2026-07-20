@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Data engineering is the discipline of building systems that collect, store, transform, and serve data. It is not glamorous. It is not AI. It is the plumbing that makes AI possible. Without it, models have nothing to train on and dashboards show yesterday&#39;s numbers.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/what-is-data-engineering/">
+  <title>What data engineering actually is — hackspree</title>
+  <meta property="og:title" content="What data engineering actually is">
+  <meta property="og:description" content="Data engineering is the discipline of building systems that collect, store, transform, and serve data. It is not glamorous. It is not AI. It is the plumbing that makes AI possible. Without it, models have nothing to train on and dashboards show yesterday&#39;s numbers.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/what-is-data-engineering/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="What data engineering actually is">
+  <meta name="twitter:description" content="Data engineering is the discipline of building systems that collect, store, transform, and serve data. It is not glamorous. It is not AI. It is the plumbing that makes AI possible. Without it, models have nothing to train on and dashboards show yesterday&#39;s numbers.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>What data engineering actually is</h1><p class="post-summary">Data engineering is the discipline of building systems that collect, store, transform, and serve data. It is not glamorous. It is not AI. It is the plumbing that makes AI possible. Without it, models have nothing to train on and dashboards show yesterday&#39;s numbers.</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">etl</span><span class="tag">pipelines</span><span class="tag">infrastructure</span></div>
+          
+        </header>
+        <div class="post-body"><p>Data engineering is the discipline of building systems that collect, store, transform, and serve data. It sits between the systems that produce data — applications, sensors, user interactions — and the systems that consume data — dashboards, machine learning models, analysts. It is the plumbing. Plumbing is unglamorous. Plumbing is essential. Without plumbing, the house is uninhabitable.</p>
+<p>The field emerged from a specific historical sequence. In the 1980s and 1990s, organizations built data warehouses — centralized repositories that aggregated data from operational systems for reporting and analysis. Ralph Kimball and Bill Inmon developed competing methodologies. Kimball advocated dimensional modeling — star schemas with fact tables and dimension tables, optimized for query performance. Inmon advocated the Corporate Information Factory — a normalized enterprise data warehouse feeding departmental data marts. The debate was religious. Both approaches worked. Both assumed that data was structured, that schemas were stable, and that the warehouse team could enforce standards.</p>
+<p>The 2000s broke these assumptions. The volume of data exploded. The variety of data exploded — logs, JSON, sensor readings, social media feeds, clickstreams. The velocity of data increased — real-time streams replaced nightly batch loads. The old warehouse architectures couldn't keep up. Hadoop emerged. MapReduce provided a programming model for distributed data processing. HDFS provided a distributed filesystem. The ecosystem was complex, Java-heavy, and operated by a priesthood of engineers who understood the arcana of YARN configuration and NameNode failover. It worked. It was unpleasant.</p>
+<p>The 2010s simplified the stack. Apache Spark replaced MapReduce with an in-memory processing engine that was faster and easier to program. Cloud data warehouses — Snowflake, BigQuery, Redshift — made the warehouse model viable again at cloud scale. The ELT pattern (Extract, Load, Transform) replaced ETL (Extract, Transform, Load): load raw data into the warehouse first, transform it later using the warehouse's own compute. The shift moved transformation logic from external pipelines into SQL, where analysts could contribute.</p>
+<p>The 2020s are the era of the modern data stack. Fivetran and Airbyte handle extraction. dbt handles transformation — SQL-based, version-controlled, tested. Snowflake, BigQuery, and Databricks handle storage and query. Airflow and Prefect handle orchestration. The tools are better. The principles are the same: get data from where it is to where it needs to be, reliably, at the right time, in the right shape.</p>
+<h2 id="the-core-problems">The core problems</h2>
+<p>Data engineering has five core problems. Every tool, every architecture, every methodology is a response to one or more of them.</p>
+<p><strong>Ingestion.</strong> Getting data into the system. From databases (CDC — change data capture), from APIs (REST, GraphQL), from files (CSV, JSON, Parquet), from streams (Kafka, Kinesis). The data arrives in different formats, at different cadences, with different reliability characteristics. The ingestion layer must handle all of them without losing data, duplicating data, or falling behind.</p>
+<p><strong>Storage.</strong> Keeping data somewhere it can be accessed. The choice of storage format — row-oriented vs. columnar, compressed vs. uncompressed, partitioned vs. monolithic — determines query performance, storage cost, and the ability to evolve schemas over time. The choice of storage engine — data warehouse vs. data lake vs. lakehouse — determines who can query the data and with what tools.</p>
+<p><strong>Transformation.</strong> Turning raw data into useful data. Cleaning — removing duplicates, fixing nulls, standardizing formats. Enriching — joining with reference data, computing derived fields, applying business logic. Aggregating — rolling up to daily, weekly, monthly levels for dashboards. The transformation layer is where most of the engineering effort goes. It is also where most of the bugs are.</p>
+<p><strong>Orchestration.</strong> Making everything run at the right time, in the right order, with the right dependencies. Pipeline A must finish before Pipeline B starts. Pipeline B must not run if Pipeline A produced bad data. The orchestration layer manages schedules, dependencies, retries, alerts, and backfills. It is the conductor. When the conductor fails, the orchestra plays anyway — out of sync, producing cacophony.</p>
+<p><strong>Serving.</strong> Getting data to the people who need it. Dashboards (Looker, Tableau, Metabase). Ad-hoc queries (SQL editors, notebooks). Machine learning feature stores. Reverse ETL — sending transformed data back to operational systems (CRM, email, advertising). The serving layer determines whether the data is actually used. The best pipeline in the world is worthless if nobody looks at its output.</p>
+<h2 id="how-it-differs-from-software-engineering">How it differs from software engineering</h2>
+<p>Data engineering is software engineering with different constraints. Software engineering optimizes for correctness, latency, and throughput of application logic. Data engineering optimizes for correctness, latency, and throughput of data movement and transformation. The difference is the nature of the bugs.</p>
+<p>A software bug produces a wrong output for a specific input. A data engineering bug produces a wrong output for millions of records, discovered three weeks later when the CFO asks why revenue is down. The blast radius is larger. The debugging is harder — you must trace the error backward through multiple transformation steps, each of which may have run days or weeks ago. The fix requires not just correcting the code but reprocessing the affected data, which may take hours or days. The operational complexity of data engineering is higher than application engineering because the state — the data — is larger, more persistent, and harder to repair.</p>
+<p>Data engineering also has a different failure mode: silent corruption. A software system crashes visibly — errors, exceptions, downtime. A data pipeline can produce wrong numbers silently, for weeks, before anyone notices. The pipeline didn't fail. It ran successfully. The data is wrong. The wrongness is invisible until someone looks at the numbers and says &quot;that doesn't seem right.&quot; The delay between corruption and detection is the most dangerous property of data systems.</p>
+<h2 id="the-data-engineers-mindset">The data engineer's mindset</h2>
+<p>The data engineer thinks in terms of data flows, not control flows. The question is not &quot;what does this function return?&quot; but &quot;where does this data come from, what happens to it along the way, and who consumes the output?&quot; The data engineer traces lineage forward and backward through the system. Forward: if this source data changes, what downstream tables are affected? Backward: if this dashboard number is wrong, which pipeline produced it, from which source, using which transformation logic? The ability to trace lineage is the data engineer's superpower. The inability to trace lineage is why data projects fail.</p>
+<p>The data engineer is paranoid about state. Every pipeline should be idempotent — running it twice produces the same result as running it once. Every pipeline should be retryable — if it fails, it can be restarted without corrupting the output. Every pipeline should be testable — a small sample of input data should produce a predictable output. Every pipeline should be monitored — if it produces zero rows, or ten times the usual number of rows, or rows with nulls where there should be values, someone should be alerted. The paranoia is not anxiety. It is engineering.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Ralph Kimball, <em>The Data Warehouse Toolkit</em>, Wiley, 1996.</li>
+<li>Bill Inmon, <em>Building the Data Warehouse</em>, Wiley, 1992.</li>
+<li>Maxime Beauchemin, &quot;The Rise of the Data Engineer,&quot; 2017.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is economics</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

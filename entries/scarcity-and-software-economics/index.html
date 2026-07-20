@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/scarcity-and-software-economics/">
+  <title>No Free Lunch — hackspree</title>
+  <meta property="og:title" content="No Free Lunch">
+  <meta property="og:description" content="Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/scarcity-and-software-economics/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="No Free Lunch">
+  <meta name="twitter:description" content="Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>No Free Lunch</h1><p class="post-summary">Barry Boehm named the field in 1981. This post defines every economic concept that applies to software — opportunity cost, sunk cost, NPV, option value, technical debt, build vs. buy — and shows how Brooks, Parnas, and Lehman were economists before the field existed.</p>
+          <div class="tags"><span class="tag">software-economics</span><span class="tag">boehm</span><span class="tag">opportunity-cost</span><span class="tag">technical-debt</span><span class="tag">npv</span></div>
+          
+        </header>
+        <div class="post-body"><p>Barry Boehm published <em>Software Engineering Economics</em> in 1981. The book applied cost estimation, net present value, and decision analysis to software projects. It named a field that had been practiced without a name since the first programmer decided which feature to build first. The vocabulary is precise. Most engineers use it without knowing the definitions. The definitions matter.</p>
+<p>Milton Friedman distilled economics to one sentence: &quot;There's no such thing as a free lunch.&quot; Every feature has a cost. The cost is not just the time to build it. It is the time plus the complexity it adds plus the features you didn't build instead. The lunch appears free. The bill arrives in year three.</p>
+<p>Every organization has a discount rate — the rate at which it discounts the future relative to the present. The discount rate is the most important number in your technical culture and the one nobody knows. A high discount rate means next quarter matters more than next year. Features ship. Refactors don't. Complexity accumulates. A low discount rate means sustainability matters. The refactor gets done. The feature waits. Neither rate is correct in the abstract. The correct rate depends on whether the company will exist in five years. The discount rate should be a conscious choice. It never is. It is set by the urgency of the nearest deadline. The deadline is a discount rate of nearly infinity. Infinity is too high.</p>
+<h2 id="the-terminology">The terminology</h2>
+<p><strong>Opportunity cost.</strong> The value of the best alternative foregone. Every hour on Feature A is an hour not on Feature B. The cost of Feature A is the time to build it plus the value of whatever you would have built instead. Opportunity cost is invisible. It appears on no invoice. It is the largest cost in software engineering. The features you didn't build are the cost of the features you did.</p>
+<p><strong>Sunk cost.</strong> A cost already incurred and unrecoverable. The three years on the monolith are sunk. They should not influence the migration decision. They do. The influence is irrational. The irrationality is human. The only defense is to externalize the decision to a process that doesn't know the sunk cost.</p>
+<p><strong>Marginal cost.</strong> The cost of one additional unit. The marginal cost of a user is near zero for software. The marginal cost of complexity is not zero — adding a feature to an already-complex system costs more than adding it to a simple one. Software has decreasing marginal cost of serving users and increasing marginal cost of adding features. The first makes software businesses attractive. The second makes them eventually unmaintainable.</p>
+<p><strong>Comparative advantage.</strong> Produce what you're relatively better at. Trade for the rest. Ricardo's logic, applied to microservices. A team better at both frontend and backend should specialize in whichever it has the greater relative advantage in. Absolute advantage doesn't matter. Comparative advantage does. Most teams don't know theirs. They assume they should build everything. They are wrong.</p>
+<p><strong>Economies of scale.</strong> Cost per unit decreases as volume increases. The monolith has economies of scale: one build pipeline, one deployment. Microservices lose these in exchange for independent deployability. The optimal number of services is where the marginal benefit of independence equals the marginal cost of lost scale. Few calculate this. Most guess. The guess is usually wrong.</p>
+<p><strong>Diseconomies of scale.</strong> Cost per unit increases as volume increases. Brooks's Law is a diseconomy: adding people increases output by less than the increase in coordination cost. Net effect negative. Diseconomies of scale are why organizations don't grow infinitely. At some size, internal coordination cost exceeds external transaction cost. Coase (1937): firms exist because internal transactions are cheaper than market transactions. The firm's boundary is where internal cost equals market cost. The service's boundary is where building equals buying.</p>
+<p><strong>Net present value (NPV).</strong> The current value of future cash flows, discounted by the time value of money. A refactoring costing $100K now and saving $20K/year for ten years has NPV dependent on the discount rate. At 5%, positive. At 15%, negative. The discount rate is the organization's preference for present over future. Organizations with high discount rates don't refactor. The rate is set by quarterly earnings pressure. The pressure is economic. The decision not to refactor is economic, stated in technical language.</p>
+<p><strong>Option value.</strong> The value of keeping a choice available. A clean interface has option value: change the implementation later without changing callers. The option costs more upfront. The option is valuable — being able to change without coordination. Financial options have a market price (Black-Scholes). Software options don't. They have an implicit value estimated by the architect. Good architects price options correctly. Bad architects don't know they're pricing options.</p>
+<p><strong>Technical debt as economic debt.</strong> Borrowing future productivity to increase present velocity. Principal: the cleanup work required. Interest: reduced velocity from uncleaned code. Interest compounds. Compounding interest eventually consumes all available velocity. The system becomes unchangeable. The debt must be repaid or defaulted on. Default is a rewrite. The rewrite is bankruptcy. The accounting that didn't track the debt was wrong.</p>
+<p><strong>Cost of delay.</strong> Revenue or value lost per unit time by not shipping. If Feature A generates $10K/week and takes 10 weeks, cost of delay is $100K. If Feature B generates $2K/week, cost of delay is $20K. Build A first. Most prioritization ignores cost of delay. They prioritize by effort, by intuition, by the loudest stakeholder. That framework is not a framework. It is ritualized negotiation.</p>
+<p><strong>Build vs. buy.</strong> Make-or-buy. Build if internal cost &lt; market cost, adjusted for risk, control, and strategic value. Coase: the boundary of the firm is where internal cost equals market cost. Teams that build everything have not calculated the boundary. They have assumed it.</p>
+<h2 id="the-economists-who-didnt-know-they-were-economists">The economists who didn't know they were economists</h2>
+<p>Tony Hoare observed: &quot;There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.&quot; The difficult method costs more upfront. The easy method costs more over time. The economics of software is the economics of choosing which cost to pay. Most choose the easy method. The easy method is why refactoring exists.</p>
+<p><strong>Brooks.</strong> Conceptual integrity is an economic argument. One mind controls the design because coordination cost exceeds the benefit of additional designers. The n(n−1)/2 communication paths make adding designers counterproductive. Brooks's Law is a statement about the diseconomy of scale in software teams. Brooks was doing economics without the vocabulary.</p>
+<p><strong>Parnas.</strong> Information hiding is an economic strategy. Invest in a stable interface. The return is reduced propagation of change. The investment costs more upfront. The return accrues over time. The net present value is positive if the decision is sufficiently volatile. Parnas was pricing options without Black-Scholes.</p>
+<p><strong>Lehman.</strong> E-type systems must evolve. Evolution increases complexity unless work is done to reduce it. The work costs time and attention — both scarce. The complexity budget is finite. The accounting that ignores it produces systems cheap to build and expensive to maintain. Lehman was doing cost accounting without the ledger.</p>
+<p><strong>Christensen.</strong> Incumbents are held captive by their customers. The captivity is rational under conditions of scarcity. The resources that could fund the disruption are allocated to sustaining innovations for existing customers. The allocation is optimal in the short run. Fatal in the long run. Christensen was describing capital allocation under asymmetric constraints without calling it that.</p>
+<hr>
+<p><strong>This is part 3 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">Part 1: On Scarcity</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Barry W. Boehm, <em>Software Engineering Economics</em>, Prentice-Hall, 1981.</li>
+<li>R.H. Coase, &quot;The Nature of the Firm,&quot; <em>Economica</em>, 1937.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+<li>Clayton M. Christensen, <em>The Innovator's Dilemma</em>, Harvard Business School Press, 1997.</li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The KU Leuven research program on extracting DMN decision models from text using deep learning and LLMs, generating chatbots from decision models, and building explainable assistants — the academic foundation for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation).">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/on-rule-engines-automating-decision-models/">
+  <title>On Rule Engines — Automating Decision Models — hackspree</title>
+  <meta property="og:title" content="On Rule Engines — Automating Decision Models">
+  <meta property="og:description" content="The KU Leuven research program on extracting DMN decision models from text using deep learning and LLMs, generating chatbots from decision models, and building explainable assistants — the academic foundation for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation).">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/on-rule-engines-automating-decision-models/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Rule Engines — Automating Decision Models">
+  <meta name="twitter:description" content="The KU Leuven research program on extracting DMN decision models from text using deep learning and LLMs, generating chatbots from decision models, and building explainable assistants — the academic foundation for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation).">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-15">2026-07-15</time></p>
+          <h1>On Rule Engines — Automating Decision Models</h1><p class="post-summary">The KU Leuven research program on extracting DMN decision models from text using deep learning and LLMs, generating chatbots from decision models, and building explainable assistants — the academic foundation for Pattern 4 (LLM extracts rules) and Pattern 5 (chatbot delegation).</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">enterprise</span><span class="tag">automation</span><span class="tag">composite-ai</span><span class="tag">decision-making</span><span class="tag">symbolic-ai</span><span class="tag">dmn</span><span class="tag">research</span></div>
+          
+        </header>
+        <div class="post-body"><p>The first essay traced the 40-year arc from Forgy's RETE algorithm to MCP. The second examined the five architectural patterns for blending LLMs with rule engines. This third essay turns to the academic research that validates, extends, and operationalizes those patterns.</p>
+<p>While Pierre Feillet was developing composite AI patterns from enterprise practice at IBM, a sustained research program at KU Leuven's LIRIS (Leuven Institute for Research on Information Systems), led by Professor Jan Vanthienen and driven primarily by Alexandre Goossens and Vedavyas Etikala, was systematically attacking the same problem from the academic side.</p>
+<blockquote>
+<p>Feillet's five patterns describe <em>what</em> to build. The KU Leuven papers describe <em>how</em> to build it.</p>
+</blockquote>
+<h2 id="mapping-the-landscape-ksem-2021">Mapping the landscape (KSEM 2021)</h2>
+<p>The research program began with a survey. Etikala and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-82153-1_17"><em>An Overview of Methods for Acquiring and Generating Decision Models</em></a> (KSEM 2021) provided a taxonomy of techniques for acquiring decision models from various knowledge sources. Business decisions are of significant value — but manually modeling them is costly, tedious, and time-consuming.</p>
+<p>The survey classified approaches along three dimensions: <strong>source type</strong> (text, legacy code, models, event logs), <strong>extraction target</strong> (dependencies, logic, full models), and <strong>technique family</strong> (rule-based NLP, traditional ML, deep learning). Deep learning approaches were largely unexplored for DMN extraction. The Gauntlet had been thrown.</p>
+<h2 id="first-extraction-results-bpm-2021">First extraction results (BPM 2021)</h2>
+<p>Goossens, Claessens, Parthoens, and Vanthienen took the first step in <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-94343-1_27"><em>Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques</em></a> (BPM 2021 Workshops). This was the first systematic attempt to apply deep learning specifically to DMN extraction.</p>
+<p>The approach: collect a labeled dataset of sentences from real use cases, train two architectures — <strong>BERT</strong> and <strong>Bi-LSTM-CRF</strong> — for two tasks:</p>
+<pre><code class="language-python"># Task 1: Sentence classification — does this sentence describe decision logic?
+sentences = [
+    (&quot;Applicants with credit score below 620 shall be denied.&quot;, &quot;decision_logic&quot;),
+    (&quot;The loan officer reviews the application package.&quot;, &quot;process_description&quot;),
+    (&quot;DTI ratio is calculated as total monthly debt / gross monthly income.&quot;, &quot;definition&quot;),
+]
+classifier = FineTunedBERT(sentences, labels=[&quot;decision_logic&quot;, &quot;process_description&quot;, &quot;definition&quot;])
+
+# Task 2: Dependency extraction — which decisions depend on which?
+# Input: &quot;The eligibility decision depends on the credit assessment and the income verification.&quot;
+# Output: eligibility -&gt; [credit_assessment, income_verification]
+extractor = BiLSTMCRF(dependency_sentences)
+</code></pre>
+<p>The results demonstrated sufficiently high performance to support (semi)-automatic extraction. A preliminary version appeared at RuleML+RR 2021 as <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_11"><em>Deep Learning for the Identification of Decision Modelling Components from Text</em></a>.</p>
+<blockquote>
+<p>The &quot;semi&quot; in semi-automatic was established from the start: extraction works, but human review remains essential.</p>
+</blockquote>
+<h2 id="full-dmn-extraction-expert-systems-with-applications-2023">Full DMN extraction (Expert Systems with Applications, 2023)</h2>
+<p>The definitive study came with Goossens, De Smedt, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.eswa.2022.118667"><em>Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques</em></a> (Expert Systems with Applications, Vol. 211, 2023). Five contributions:</p>
+<ol>
+<li><strong>First investigation</strong> of deep learning specifically for extracting DMN models from text</li>
+<li>Sentence <strong>classification</strong> for logic/dependency detection with high accuracy</li>
+<li><strong>Dependency extraction</strong> from sentences — the structural backbone of a DMN model</li>
+<li><strong>First labeled dataset</strong> made publicly available for decision model extraction research</li>
+<li><strong>First extraction tool</strong> made available as open source</li>
+</ol>
+<p>The extracted model looks like:</p>
+<pre><code class="language-yaml"># DMN model extracted from policy text by BERT-based pipeline
+decisions:
+  - id: eligibility
+    label: &quot;Determine Loan Eligibility&quot;
+    dependencies: [credit_assessment, income_verification, collateral_check]
+    logic:
+      - when: &quot;credit_score &lt; 620&quot;
+        then: &quot;deny&quot;
+      - when: &quot;620 &lt;= credit_score &lt;= 699 AND dti_ratio &lt; 43%&quot;
+        then: &quot;approve_standard&quot;
+      - when: &quot;credit_score &gt;= 700 AND dti_ratio &lt; 36%&quot;
+        then: &quot;approve_preferred&quot;
+
+  - id: pricing
+    label: &quot;Determine Interest Rate&quot;
+    dependencies: [eligibility, market_conditions]
+    logic:
+      - when: &quot;eligibility = approve_preferred AND ltv_ratio &lt; 80%&quot;
+        then: &quot;rate = base_rate - 0.5%&quot;
+      - when: &quot;eligibility = approve_standard&quot;
+        then: &quot;rate = base_rate + 0.25%&quot;
+</code></pre>
+<blockquote>
+<p>The leap from &quot;can we extract?&quot; to &quot;here is the tool and the dataset&quot; is what makes this paper the landmark in the field.</p>
+</blockquote>
+<h2 id="gpt-3-enters-the-picture-rulemlrr-2023">GPT-3 enters the picture (RuleML+RR 2023)</h2>
+<p>Goossens, Vandevelde, Vanthienen, and Vennekens explored the next logical step in <a target="_blank" rel="noopener noreferrer" href="https://ceur-ws.org/Vol-3485/paper3896.pdf"><em>GPT-3 for Decision Logic Modeling</em></a> (RuleML+RR 2023 Companion). Replace fine-tuned BERT with prompt-engineered GPT-3:</p>
+<pre><code class="language-python"># Fine-tuned approach (BPM 2021, ESWA 2023):
+# Requires labeled dataset, domain-specific training, high accuracy on known formats
+model = FineTunedBERT.train(labeled_sentences, labels)
+rules = model.extract(policy_text)
+
+# Prompt-engineered approach (RuleML+RR 2023):
+# No training data needed, general model, potentially lower structured accuracy
+rules = llm.extract(policy_text, prompt=&quot;&quot;&quot;
+    Extract decision rules from the following policy text.
+    Output as a decision table in JSON format.
+    Each rule must include: when (conditions), then (conclusion).
+    Link each rule to its source paragraph.
+&quot;&quot;&quot;)
+</code></pre>
+<blockquote>
+<p>The shift trades training cost for prompt engineering cost. No fine-tuning dataset needed — but structured extraction accuracy may be lower.</p>
+</blockquote>
+<p>A companion presentation by Vanthienen and Goossens at DecisionCamp 2023, <a target="_blank" rel="noopener noreferrer" href="https://decisioncamp2023.wordpress.com/"><em>GPT-3 for Decision Requirements Modeling and Advice</em></a>, extended this to decision requirements modeling.</p>
+<h2 id="explainable-assistants-bpm-2022">Explainable assistants (BPM 2022)</h2>
+<p>Extracting a model is half the problem. Goossens, Maes, Timmermans, and Vanthienen's <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-031-25383-6_3"><em>Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes</em></a> (BPM 2022 Workshops) asks: once you have a DMN model, how do you make it accessible?</p>
+<p>They propose a <strong>generic intelligent assistant</strong> that can reason with <em>any</em> DMN model to provide explanations:</p>
+<pre><code class="language-python">class DecisionAssistant:
+    &quot;&quot;&quot;Generic assistant: works with any DMN model.&quot;&quot;&quot;
+    def __init__(self, dmn_model: DMNModel):
+        self.model = dmn_model
+
+    def explain(self, decision_id: str, inputs: dict) -&gt; Explanation:
+        &quot;&quot;&quot;Explain why a decision reached its conclusion.&quot;&quot;&quot;
+        trace = self.model.execute(decision_id, inputs)
+        return Explanation(
+            decision=trace.outcome,
+            fired_rules=[step.rule for step in trace.steps],
+            input_facts=trace.facts_used,
+            reasoning_chain=[
+                f&quot;Rule {step.rule.id} fired because {step.rule.condition} matched {step.matched_facts}&quot;
+                for step in trace.steps
+            ],
+        )
+</code></pre>
+<blockquote>
+<p>An extracted DMN model paired with an explanation-capable assistant satisfies the regulatory requirement to show <em>why</em> a decision was made — not in post-hoc rationalization but in a traceable chain from facts through rules to conclusions.</p>
+</blockquote>
+<h2 id="chatbots-from-decision-models-rulemlrr-2021">Chatbots from decision models (RuleML+RR 2021)</h2>
+<p>Etikala, Goossens, Van Veldhoven, and Vanthienen close the loop in <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_10"><em>Automatic Generation of Intelligent Chatbots from DMN Decision Models</em></a> (RuleML+RR 2021). Their framework generates a chatbot directly from a DMN model's structure:</p>
+<pre><code class="language-python"># A DMN model becomes a conversational interface automatically
+dmn = DMNModel.load(&quot;mortgage-eligibility.dmn&quot;)
+
+chatbot = ChatbotGenerator(dmn).generate()
+# Generated chatbot behavior:
+#   Slot 1: &quot;What is the loan amount?&quot;        → dmn.inputs.loan_amount
+#   Slot 2: &quot;What is your annual income?&quot;     → dmn.inputs.applicant_income
+#   Slot 3: &quot;What is your credit score?&quot;       → dmn.inputs.credit_score
+#   Slot 4: &quot;What is the property value?&quot;      → dmn.inputs.property_value
+#   --- all required inputs gathered ---
+#   Invoke: dmn.decide(&quot;eligibility&quot;, inputs)
+#   Response: &quot;Based on your credit score of 720 and DTI of 32%,
+#              you qualify for preferred rates at 6.0%.&quot;
+
+# The DMN schema IS the conversation contract
+</code></pre>
+<blockquote>
+<p>A missing required field is not an ambiguous conversational state. It is a slot in the DMN input schema that has not been filled, and the chatbot knows it needs to ask for it.</p>
+</blockquote>
+<p>This solves the two hard problems Feillet identified for Pattern 5: the DMN input schema provides the formal delegation contract, and missing required fields are unambiguously identifiable slots to ask about.</p>
+<h2 id="the-research-arc">The research arc</h2>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Paper</th>
+<th>Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Survey</td>
+<td>Etikala &amp; Vanthienen (KSEM 2021)</td>
+<td>Taxonomy of acquisition methods</td>
+</tr>
+<tr>
+<td>Feasibility</td>
+<td>Goossens et al. (BPM 2021)</td>
+<td>First deep learning DMN extraction</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Goossens, De Smedt, Vanthienen (ESWA 2023)</td>
+<td>Full extraction, open dataset and tools</td>
+</tr>
+<tr>
+<td>Modernize</td>
+<td>Goossens et al. (RuleML+RR 2023)</td>
+<td>GPT-3 for decision logic modeling</td>
+</tr>
+<tr>
+<td>Explain</td>
+<td>Goossens et al. (BPM 2022)</td>
+<td>Explainable assistant from any DMN model</td>
+</tr>
+<tr>
+<td>Converse</td>
+<td>Etikala et al. (RuleML+RR 2021)</td>
+<td>Chatbots from DMN models</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rulego-an-open-source-implementation-path">RuleGo: an open-source implementation path</h2>
+<p>The patterns and research are not confined to academic papers and enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> provides a concrete implementation path:</p>
+<pre><code class="language-go">// Pattern 4 implemented with RuleGo: LLM generates RuleGo chain JSON from policy
+policyText := readPolicy(&quot;underwriting-policy-2026.txt&quot;)
+chainJSON := llm.Extract(policyText, PromptConfig{
+    Format: &quot;rulego_chain&quot;,
+    Schema: rulego.ChainSchema,
+})
+
+// The generated chain runs deterministically, LLM-free at runtime
+chain := rulego.LoadChain(chainJSON)
+decision := chain.Run(loanApplication)
+
+// Generated chain structure:
+// {
+//   &quot;ruleChain&quot;: {
+//     &quot;nodes&quot;: [
+//       {&quot;id&quot;: &quot;credit-check&quot;, &quot;type&quot;: &quot;switch&quot;,
+//        &quot;cases&quot;: [
+//          {&quot;when&quot;: &quot;credit_score &lt; 620&quot;, &quot;then&quot;: &quot;deny&quot;},
+//          {&quot;when&quot;: &quot;credit_score &gt;= 620 &amp;&amp; credit_score &lt;= 699&quot;, &quot;then&quot;: &quot;dti-check&quot;},
+//          {&quot;when&quot;: &quot;credit_score &gt;= 700&quot;, &quot;then&quot;: &quot;preferred-check&quot;}
+//        ]},
+//       {&quot;id&quot;: &quot;dti-check&quot;, &quot;type&quot;: &quot;switch&quot;, ...},
+//       {&quot;id&quot;: &quot;preferred-check&quot;, &quot;type&quot;: &quot;switch&quot;, ...}
+//     ]
+//   }
+// }
+</code></pre>
+<h2 id="open-questions">Open questions</h2>
+<p><strong>The extraction quality bar.</strong> At what accuracy threshold does the economics flip? At 90%, a human reviews every rule. At 95%? At 99%? The savings come from turning a <em>writing</em> task into a <em>reviewing</em> task — but the threshold where you stop reviewing every rule is where the operational gains live.</p>
+<p><strong>Rule lifecycle management.</strong> When source documents change, extracted rules must change. Governed policy evolution, versioned extraction, conflict detection between old and new rules — this synchronization problem is where the next wave of research needs to go.</p>
+<p><strong>Testing composite systems.</strong> How do you test a system where one component is deterministic and the other probabilistic? Property-based testing: invariants that must hold regardless of surface variation.</p>
+<p><strong>Vendor neutrality.</strong> The patterns are general but the implementations assume IBM products. RuleGo demonstrates one open-source path, but the interfaces between components are not yet standardized.</p>
+<p><strong>The MCP interface standard.</strong> How does an LRM discover available decision services? What information passes between them? How are partial results and confidence signals communicated?</p>
+<h2 id="the-composite-ai-thesis">The composite AI thesis</h2>
+<!-- raw HTML omitted -->
+<p>The central thesis running through this series: the future of enterprise AI is composite. LLMs handle the <strong>perception</strong> layer — unstructured text, intents, entities, fluency. Rule engines, built on Forgy's insight from 1979, handle the <strong>reasoning</strong> layer — deterministic logic, auditable decisions, regulatory compliance. The FSM handles the <strong>process</strong> layer — sequencing decisions through states and transitions.</p>
+<blockquote>
+<p>Let the neuronal system handle the messiness of natural language. Let the symbolic system handle the precision of business logic. Let the state machine handle the process that connects them.</p>
+</blockquote>
+<p>A decision system that cannot explain itself is not enterprise-grade. A decision system that cannot handle ambiguity is not useful. The composite approach accepts both constraints and designs for them. That has been the engineering move since Forgy built the first discrimination network in 1979.</p>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Pierre Feillet, Allen Chan, Luigi Pichett, Yazan Obeidi. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. Medium, August 4, 2023.</p>
+</li>
+<li>
+<p>Pierre Feillet. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/rule-engines-never-died-theyre-running-alongside-your-lrm-6f39cad6e1d3"><em>Rule Engines Never Died — They're Running Alongside Your Large Reasoning Models</em></a>. Medium, June 4, 2026.</p>
+</li>
+<li>
+<p>Alexandre Goossens, Johannes De Smedt, Jan Vanthienen. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.eswa.2022.118667"><em>Extracting Decision Model and Notation Models from Text Using Deep Learning Techniques</em></a>. Expert Systems with Applications, 211: 118667, 2023.</p>
+</li>
+<li>
+<p>Alexandre Goossens, Simon Vandevelde, Jan Vanthienen, Joost Vennekens. <a target="_blank" rel="noopener noreferrer" href="https://ceur-ws.org/Vol-3485/paper3896.pdf"><em>GPT-3 for Decision Logic Modeling</em></a>. RuleML+RR Companion, CEUR Vol. 3485, 2023.</p>
+</li>
+<li>
+<p>Alexandre Goossens, Ulysse Maes, Yves Timmermans, Jan Vanthienen. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-031-25383-6_3"><em>Automated Intelligent Assistance with Explainable Decision Models in Knowledge-Intensive Processes</em></a>. BPM Workshops 2022, LNBIP 460, pp. 25–36.</p>
+</li>
+<li>
+<p>Alexandre Goossens, Michelle Claessens, Charlotte Parthoens, Jan Vanthienen. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-94343-1_27"><em>Extracting Decision Dependencies and Decision Logic from Text Using Deep Learning Techniques</em></a>. BPM Workshops 2021, LNBIP 436, pp. 349–361.</p>
+</li>
+<li>
+<p>Vedavyas Etikala, Jan Vanthienen. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-82153-1_17"><em>An Overview of Methods for Acquiring and Generating Decision Models</em></a>. KSEM 2021, LNCS 12817, pp. 200–208.</p>
+</li>
+<li>
+<p>Vedavyas Etikala, Alexandre Goossens, Ziboud Van Veldhoven, Jan Vanthienen. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1007/978-3-030-91167-6_10"><em>Automatic Generation of Intelligent Chatbots from DMN Decision Models</em></a>. RuleML+RR 2021, LNCS 12851, pp. 142–157.</p>
+</li>
+<li>
+<p>Jan Vanthienen, Alexandre Goossens. <a target="_blank" rel="noopener noreferrer" href="https://decisioncamp2023.wordpress.com/"><em>GPT-3 for Decision Requirements Modeling and Advice</em></a>. DecisionCamp 2023.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0. Includes <a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a> for LLM integration and MCP support.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

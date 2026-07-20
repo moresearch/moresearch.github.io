@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Code review works. Sleep deprivation destroys performance. The language you choose probably doesn&#39;t matter. And a famous study claiming Haskell prevents bugs turned out to be wrong. What happens when you actually read the papers.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/empirical-se-what-studies-say/">
+  <title>Empirical Software Engineering: What the Studies Actually Say — hackspree</title>
+  <meta property="og:title" content="Empirical Software Engineering: What the Studies Actually Say">
+  <meta property="og:description" content="Code review works. Sleep deprivation destroys performance. The language you choose probably doesn&#39;t matter. And a famous study claiming Haskell prevents bugs turned out to be wrong. What happens when you actually read the papers.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/empirical-se-what-studies-say/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Empirical Software Engineering: What the Studies Actually Say">
+  <meta name="twitter:description" content="Code review works. Sleep deprivation destroys performance. The language you choose probably doesn&#39;t matter. And a famous study claiming Haskell prevents bugs turned out to be wrong. What happens when you actually read the papers.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-20">2026-07-20</time></p>
+          <h1>Empirical Software Engineering: What the Studies Actually Say</h1><p class="post-summary">Code review works. Sleep deprivation destroys performance. The language you choose probably doesn&#39;t matter. And a famous study claiming Haskell prevents bugs turned out to be wrong. What happens when you actually read the papers.</p>
+          <div class="tags"><span class="tag">empirical-se</span><span class="tag">evidence</span><span class="tag">code-review</span><span class="tag">human-factors</span><span class="tag">replication</span></div>
+          
+        </header>
+        <div class="post-body"><p>The first post made the case that we know almost nothing. This post is about what we actually do know — the handful of findings that have survived scrutiny, replication, and the self-correction mechanisms of science.</p>
+<h2 id="what-works-code-review">What works: code review</h2>
+<p>The strongest, most replicated finding in empirical software engineering is that <strong>code review finds bugs.</strong> It consistently catches a large portion of defects in reasonable time. This is not surprising — having a second person look at the code works for the same reason having a second person look at anything works. But the studies add texture.</p>
+<p><strong>File position matters.</strong> A 2022 study (<em>First Come First Served: The Impact of File Position on Code Review</em>) found that reviewers give more scrutiny to files appearing earlier in a changeset. Later files get less attention. If you want a file reviewed thoroughly, put it first.</p>
+<p><strong>Not all review is equal.</strong> Google's internal study of their own review practices (<em>Modern Code Review: A Case Study at Google</em>) found that review effectiveness varies enormously with reviewer expertise, changeset size, and tooling. The practice is effective, but the variance is large. &quot;Do code review&quot; is like &quot;eat healthy&quot; — the general advice is correct, the specific execution determines most of the outcome.</p>
+<p><strong>Most review catches style, not logic.</strong> The SmartBear study (<em>Best Kept Secrets of Peer Code Review</em>) found a roughly 3:1 ratio of style issues to actual bugs. Review catches formatting problems and naming issues far more reliably than it catches subtle control-flow errors. This is not an argument against review. It's an argument for understanding what review actually provides.</p>
+<blockquote>
+<p>Code review is the closest thing empirical SE has to a settled finding: it works, consistently, across contexts. Everything else is weaker.</p>
+</blockquote>
+<h2 id="what-works-basic-testing">What works: basic testing</h2>
+<p>Yuan et al.'s <em>Simple Testing Can Prevent Most Critical Failures</em> (USENIX OSDI '14) is the kind of study that makes you reconsider everything you think about sophistication.</p>
+<p>The authors examined real-world catastrophic production failures — the kind that take down services and make the front page of Hacker News — and asked: what testing would have caught this? The answer, in the majority of cases, was <strong>trivial testing.</strong> Not property-based testing. Not formal verification. Not chaos engineering. Just basic unit tests and integration tests on the code paths that failed.</p>
+<blockquote>
+<p>The finding is humbling: most catastrophic failures would have been prevented by practices we already know how to do and mostly don't do consistently. The problem is not lack of sophisticated techniques. The problem is lack of consistent application of simple ones.</p>
+</blockquote>
+<h2 id="what-works-not-being-exhausted">What works: not being exhausted</h2>
+<p>The human-factors literature is unambiguous. Sleep deprivation degrades cognitive performance measurably and dramatically. Extended overtime in construction produces <em>negative</em> total productivity after a few weeks (CURT, NIOSH). In game development, mandated crunch correlates with <em>worse</em> project outcomes (Tozour, The Game Outcomes Project). Fucci et al. demonstrated that a single night of sleep deprivation measurably degrades novice programmers' performance on coding tasks.</p>
+<blockquote>
+<p>The effect sizes on human factors dwarf the effect sizes on any technical choice. You will get more improvement from letting your team sleep than from switching languages, frameworks, or methodologies. The evidence for this is overwhelming. The adoption rate is abysmal.</p>
+</blockquote>
+<h2 id="what-doesnt-work-the-language-doesnt-care-about-you">What doesn't work: the language doesn't care about you</h2>
+<p>In 2014, Ray et al. published <em>A Large Scale Study of Programming Languages and Code Quality in GitHub.</em> It appeared to show that functional languages — Haskell, Clojure, Scala — produced fewer defects than procedural and scripting languages. The paper made the rounds. It was cited as proof that type systems prevent bugs, that functional programming is safer, that language choice is a significant lever for quality.</p>
+<p>Then Berger et al. replicated the study. They controlled for project size, developer experience, and other confounds the original had missed. <strong>The effect largely vanished.</strong> Languages that appeared safer were mostly being used by more experienced developers on smaller projects. When you controlled for that, the language effect became negligible.</p>
+<blockquote>
+<p>This is how science is supposed to work: study finds effect, replication corrects it, knowledge advances. In software engineering, the original study became folklore and the replication was ignored. The lesson is not &quot;language studies are hard.&quot; The lesson is &quot;don't believe a single study, ever.&quot;</p>
+</blockquote>
+<h2 id="what-we-dont-know-tdd-types-pair-programming">What we don't know: TDD, types, pair programming</h2>
+<p>The evidence for TDD is mixed and weak. Wayne personally likes it but acknowledges the data doesn't strongly support it. The evidence for static typing preventing bugs is, in his words, that one study &quot;found no clear evidence it helps — or hurts.&quot; Pair programming shows some benefit in some studies, but the effect is smaller and less consistent than code review.</p>
+<blockquote>
+<p>None of this means these practices are worthless. It means the evidence doesn't support being dogmatic about them. Anyone who tells you a practice is mandatory or immoral is making a claim they cannot back with data. They are selling you vibes dressed as expertise.</p>
+</blockquote>
+<h2 id="the-meta-lesson">The meta-lesson</h2>
+<p>The most important finding in empirical software engineering is not about any specific practice. It's about the structure of knowledge itself.</p>
+<p>Most things we believe about software development come from authority, anecdote, and marketing. A small fraction come from studies. Of those studies, a meaningful portion fail to replicate. The findings that survive are humbler than we want them to be: fundamentals, consistently applied, under conditions of adequate sleep and manageable stress, produce better outcomes than heroics.</p>
+<blockquote>
+<p>The evidence doesn't tell you which framework to use. It tells you to review the code, test the critical paths, and go to bed at a reasonable hour. Everything else is speculation. Some of it is good speculation. None of it is science.</p>
+</blockquote>
+<hr>
+<p><em>Based on Hillel Wayne's talk <a target="_blank" rel="noopener noreferrer" href="https://www.hillelwayne.com/talks/ese/">What We Know We Don't Know</a>. Part 1: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-nothing-is-real">Nothing Is Real</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#empirical-se-how-to-think">How to Think Empirically</a>.</em></p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

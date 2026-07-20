@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Insurance began at Lloyd&#39;s coffee house in 1688, where merchants pooled risk to protect their ships. DeFi insurance protocols — Nexus Mutual, Unslashed, InsurAce — automate risk pooling on-chain. Members contribute capital to a mutual. Claims are assessed by members. The model is the same as Lloyd&#39;s. The execution is code.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-insurance/">
+  <title>Insurance Protocols — hackspree</title>
+  <meta property="og:title" content="Insurance Protocols">
+  <meta property="og:description" content="Insurance began at Lloyd&#39;s coffee house in 1688, where merchants pooled risk to protect their ships. DeFi insurance protocols — Nexus Mutual, Unslashed, InsurAce — automate risk pooling on-chain. Members contribute capital to a mutual. Claims are assessed by members. The model is the same as Lloyd&#39;s. The execution is code.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-insurance/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Insurance Protocols">
+  <meta name="twitter:description" content="Insurance began at Lloyd&#39;s coffee house in 1688, where merchants pooled risk to protect their ships. DeFi insurance protocols — Nexus Mutual, Unslashed, InsurAce — automate risk pooling on-chain. Members contribute capital to a mutual. Claims are assessed by members. The model is the same as Lloyd&#39;s. The execution is code.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Insurance Protocols</h1><p class="post-summary">Insurance began at Lloyd&#39;s coffee house in 1688, where merchants pooled risk to protect their ships. DeFi insurance protocols — Nexus Mutual, Unslashed, InsurAce — automate risk pooling on-chain. Members contribute capital to a mutual. Claims are assessed by members. The model is the same as Lloyd&#39;s. The execution is code.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">insurance</span><span class="tag">nexus-mutual</span><span class="tag">lloyds</span><span class="tag">risk</span></div>
+          
+        </header>
+        <div class="post-body"><p>Insurance is the oldest risk management tool. A group of people faces a common risk — shipwreck, fire, death. Each contributes to a pool. When one suffers a loss, the pool compensates them. The contributions are premiums. The payouts are claims. The pool is the mutual. The mutual is the insurance company.</p>
+<p>The first modern insurance market was Lloyd's of London, which began at Edward Lloyd's coffee house on Tower Street in 1688. Merchants, shipowners, and underwriters gathered at Lloyd's to share news of shipping, negotiate insurance contracts, and pool risk. A shipowner seeking insurance would pass a slip around the coffee house. Underwriters would sign their names under the risk they were willing to accept, each taking a fraction. The slip was the contract. The signature was the commitment. The coffee house was the exchange.</p>
+<p>The Lloyd's model persists today. Lloyd's is not an insurance company. It is a market where syndicates of underwriters compete to accept risk. The syndicates are backed by capital providers — &quot;Names&quot; — who put up their personal wealth as collateral. The Names earn premiums in good years and lose their fortunes in bad ones. The unlimited liability of Names was the mechanism that aligned incentives: the underwriter had skin in the game.</p>
+<h2 id="defi-insurance">DeFi insurance</h2>
+<p>DeFi insurance protocols apply the mutual model to crypto risks. The risks: smart contract bugs, oracle manipulation, stablecoin depegs, exchange hacks. The protocols: Nexus Mutual, InsurAce, Unslashed. The mechanism: members deposit capital into a mutual. Members purchase coverage against specific risks. When a claim is filed, members vote on whether to pay it. The vote is the claims assessment. The assessment is decentralized.</p>
+<p>Nexus Mutual, launched in 2019, is the largest DeFi insurance protocol. It has paid claims for the UST depeg, the FTX collapse, and multiple protocol hacks. The claims process is governed by NXM token holders, who stake their tokens on the outcome of claims assessments. If a claim is valid and the assessors correctly vote to pay, they earn rewards. If a claim is fraudulent and assessors vote to deny, they also earn rewards. If assessors vote incorrectly — paying a fraudulent claim or denying a valid one — they lose their stake. The staking mechanism aligns incentives. The alignment is the mechanism design.</p>
+<p>The challenge: claims assessment requires expertise. A smart contract bug may have been exploited by an attacker. Was the loss caused by a bug in the covered protocol or by user error? The distinction requires technical analysis. The analysis is provided by claims assessors. The assessors are compensated for their work. The compensation attracts expertise. The expertise is the product.</p>
+<h2 id="the-risk">The risk</h2>
+<p>Mutual insurance is capital-constrained. The capital in the mutual must cover all potential claims. If claims exceed capital, the mutual is insolvent. The insolvency risk is managed by risk-based pricing: higher-risk protocols pay higher premiums. The premium is the price of risk. The price is set by the market — by the willingness of capital providers to accept the risk at a given premium. The market for risk is the innovation. The innovation is the same as Lloyd's in 1688. The venue is different. The principle is the same.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Lloyd's of London, <em>A History of Lloyd's</em> (various editions). The history of Lloyd's is the history of insurance. The coffee house. The slip. The Name. The syndicate. The innovation of Lloyd's was the market for risk — bringing together those who had risk and those who would accept it for a price. DeFi insurance protocols are recreating that market on-chain. The market is the same. The technology is different. The principles — pooling, diversification, skin in the game — are unchanged.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>DeFi insurance is a distributed consensus protocol applied to claims assessment. A claim is filed. Assessors vote. The vote must reach consensus. If the assessors are honest, the correct outcome is reached. If assessors collude, the outcome can be manipulated. The mechanism — stake-weighted voting with economic penalties for incorrect votes — is the same mechanism as proof-of-stake consensus. The validators (assessors) stake tokens on their assessment. If the majority is honest, the honest assessors earn rewards and the dishonest lose their stake. The protocol is a blockchain consensus algorithm applied to a different type of state transition — a claim rather than a block.</p>
+<p>The capital constraint — the mutual must hold enough capital to cover all potential claims — is the same constraint as any capacity-planning problem. You have a pool of resources (capital) and a stream of demands (claims). You must size the pool so that the probability of exhaustion is below a threshold. The math is queuing theory. The same math that determines how many servers you need for a web application determines how much capital an insurance mutual needs. The domain is insurance. The math is capacity planning.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lloyd's of London, historical archives.</li>
+<li>Nexus Mutual, &quot;Nexus Mutual Documentation.&quot;</li>
+<li>Hugh Eaves, &quot;The History of Insurance,&quot; Lloyd's Library.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity">On Scarcity</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

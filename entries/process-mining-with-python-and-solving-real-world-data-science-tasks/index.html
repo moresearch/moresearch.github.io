@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/process-mining-with-python-and-solving-real-world-data-science-tasks/">
+  <title>Process Mining with Python and Solving Real‑World Data Science Tasks — hackspree</title>
+  <meta property="og:title" content="Process Mining with Python and Solving Real‑World Data Science Tasks">
+  <meta property="og:description" content="Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/process-mining-with-python-and-solving-real-world-data-science-tasks/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Process Mining with Python and Solving Real‑World Data Science Tasks">
+  <meta name="twitter:description" content="Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-05-20">2026-05-20</time></p>
+          <h1>Process Mining with Python and Solving Real‑World Data Science Tasks</h1><p class="post-summary">Practical notes combining process mining techniques in Python with pragmatic data‑science workflows; inspired by two Medium posts.</p>
+          <div class="tags"><span class="tag">data-science</span><span class="tag">process-mining</span><span class="tag">python</span><span class="tag">tutorial</span></div>
+          
+        </header>
+        <div class="post-body"><p>TL;DR</p>
+<p>Process mining turns event data into process models and performance insights; Python (pandas + PM4Py) makes it accessible. Pair process‑mining features (throughput, wait times, activity counts) with standard data‑science pipelines (EDA, feature engineering, modeling) to solve real‑world problems like delay prediction and bottleneck analysis. This post synthesizes practical steps and code pointers inspired by two Medium articles: &quot;Process Mining with Python&quot; and &quot;Solving a real‑world data science task with Python.&quot; Links in References.</p>
+<p>Introduction</p>
+<p>Two approachable Medium posts highlight hands‑on ways to extract insights from logs and run pragmatic data‑science projects from end to end. This post synthesizes their practical guidance into a compact recipe: how to extract event logs, discover process models, compute process features, and use them in predictive workflows.</p>
+<ol>
+<li>From raw events to an event log</li>
+</ol>
+<p>Key columns: case id (process instance), activity name, timestamp. Start by loading data with pandas, parsing timestamps, and normalizing column names for PM4Py interoperability.</p>
+<p>Example:</p>
+<pre><code class="language-python">import pandas as pd
+from pm4py.objects.conversion.log import factory as log_converter
+
+df = pd.read_csv('events.csv', parse_dates=['timestamp'])
+# rename columns for PM4Py
+df = df.rename(columns={'case_id':'case:concept:name', 'activity':'concept:name', 'timestamp':'time:timestamp'})
+log = log_converter.apply(df)
+</code></pre>
+<ol start="2">
+<li>Discovering process models and visualizing</li>
+</ol>
+<p>Use discovery algorithms (e.g., Inductive Miner, Heuristics Miner) to build models. PM4Py supports several miners and visualization backends.</p>
+<pre><code class="language-python">from pm4py.algo.discovery.inductive import factory as inductive_miner
+from pm4py.visualization.petrinet import factory as pn_vis
+
+net, im, fm = inductive_miner.apply(log)
+gviz = pn_vis.apply(net, im, fm)
+pn_vis.view(gviz)
+</code></pre>
+<ol start="3">
+<li>Feature engineering for ML</li>
+</ol>
+<p>Process mining yields rich features per case: total throughput time, activity counts, time between specific activities, resource load, and frequency of rare paths. These make strong predictors when combined with static attributes from the business data.</p>
+<p>Practical features:</p>
+<ul>
+<li>case_duration = max(timestamp) - min(timestamp)</li>
+<li>activity_counts: how many times each activity appears per case</li>
+<li>waiting_times: mean/median time between consecutive activities</li>
+<li>path_signature: compressed representation of the activity sequence</li>
+</ul>
+<ol start="4">
+<li>A pragmatic modeling loop</li>
+</ol>
+<p>Apply typical data‑science steps: split by case, build features, train/test, and validate with time‑aware splitting to avoid leakage. For production, monitor model drift and re-run process feature extraction as logs evolve.</p>
+<ol start="5">
+<li>Putting process mining inside a real project</li>
+</ol>
+<p>The Medium examples emphasize real‑world concerns: messy timestamps, missing case identifiers, and schema drift. Good practices:</p>
+<ul>
+<li>validate and canonicalize timestamps early</li>
+<li>infer case IDs when absent (grouping heuristics)</li>
+<li>keep a reproducible ETL script for event extraction</li>
+</ul>
+<ol start="6">
+<li>When to use process features vs raw sequence models</li>
+</ol>
+<p>Simple tabular models with hand‑crafted process features are often more interpretable and cheaper to maintain than sequence models. Use sequence models (RNNs/transformers over activities) when history encoding clearly improves predictive performance and the team can maintain the complexity.</p>
+<p>Checklist to get started</p>
+<ul>
+<li><input disabled="" type="checkbox"> Identify the event sources and the case id column</li>
+<li><input disabled="" type="checkbox"> Export a sample CSV with: case_id, activity, timestamp, and any static attributes</li>
+<li><input disabled="" type="checkbox"> Run PM4Py discovery on the sample; inspect model and logs for obvious issues</li>
+<li><input disabled="" type="checkbox"> Create per‑case features and run exploratory modeling (time‑aware CV)</li>
+<li><input disabled="" type="checkbox"> Add monitoring: data schema checks and drift detection</li>
+</ul>
+<p>Skill curation and SkillOS: making pipelines live</p>
+<p>Google's SkillOS thread (explained in AVB's Paper Breakdown) describes a two-part architecture: a frozen executor that solves tasks by loading reusable &quot;skills&quot; from a SkillRepo, and a trainable Curator that observes executor trajectories and issues structured edits to the SkillRepo (insert/update/delete). The Curator is trained with a group-based curriculum and a composite reward that measures downstream task success, function-call validity, information compression, and content quality.</p>
+<p>For process‑mining pipelines the Curator can distill robust ETL and feature‑engineering recipes into SKILL.md files (frontmatter + concise description used for BM25 retrieval, step‑by‑step workflow, worked example, and &quot;when not to use&quot;). Example skills: <code>extract_event_log</code>, <code>feature_engineer_case_features</code>, <code>build_delay_model</code>.</p>
+<p>Benefits: repeated runs produce distilled, versioned recipes that accelerate reproducible pipelines and improve executor reliability while keeping instructions modular and auditable.</p>
+<p>Operational notes: require human review before promoting automated updates; avoid embedding dataset‑specific constants; maintain test tasks to evaluate curator changes.</p>
+<p>References</p>
+<ul>
+<li>Hussam Alhumsi: &quot;Process Mining with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6">https://hussamalhumsi-21111.medium.com/process-mining-with-python-6ca1d733b3e6</a></li>
+<li>İ. Cem Özçelik: &quot;Solving a Real‑World Data Science Task with Python&quot; — <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1">https://medium.com/@i.cemozcelik/solving-a-real-world-data-science-tasks-with-python-c43aa7d654d1</a></li>
+<li>AVB (SkillOS thread / breakdown): <a target="_blank" rel="noopener noreferrer" href="https://x.com/neural_avb/status/2053873358853591435?s=20">https://x.com/neural_avb/status/2053873358853591435?s=20</a></li>
+</ul>
+<p>Notes: This post paraphrases and synthesizes practical advice from the referenced Medium posts and general process‑mining best practices. For full, article‑level detail, consult the original posts.</p>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

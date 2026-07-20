@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/how-factorio-and-sc2-shaped-my-systems-thinking/">
+  <title>Factorio &amp; SC2: Systems Thinking — hackspree</title>
+  <meta property="og:title" content="Factorio &amp; SC2: Systems Thinking">
+  <meta property="og:description" content="Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/how-factorio-and-sc2-shaped-my-systems-thinking/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Factorio &amp; SC2: Systems Thinking">
+  <meta name="twitter:description" content="Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-05-08">2026-05-08</time></p>
+          <h1>Factorio &amp; SC2: Systems Thinking</h1><p class="post-summary">Factorio taught me to reason about throughput, bottlenecks, and layout, while StarCraft II taught me tempo, prioritization, and hotkey discipline. Both transferred directly into effective terminal and Vim-based engineering work.</p>
+          <div class="tags"><span class="tag">systems</span><span class="tag">productivity</span><span class="tag">reflections</span></div>
+          
+        </header>
+        <div class="post-body"><p>I do not think I learned systems thinking only from engineering.</p>
+<p>A surprising amount of it came from games, especially <strong>Factorio</strong> and <strong>StarCraft II</strong>.</p>
+<p>That does not mean games magically teach software architecture. What they did give me was repeated exposure to the exact kinds of pressure that matter in real engineering work: limited attention, constrained resources, competing priorities, incomplete information, and the need to build systems that keep working while I am busy somewhere else.</p>
+<p>Over time, I started to realize that a lot of the habits that make me effective in terminal- and Vim-heavy environments were strengthened by those games long before I had language for them.</p>
+<h2 id="factorio-taught-me-to-think-in-flows-not-parts">Factorio taught me to think in flows, not parts</h2>
+<p>Factorio is one of the cleanest lessons I know in throughput thinking.</p>
+<p>At first, the game looks like a construction game. Later, it becomes obvious that it is really a lesson in <strong>flows</strong>:</p>
+<ul>
+<li>ore becomes plates,</li>
+<li>plates become intermediate products,</li>
+<li>intermediates become higher-order assemblies,</li>
+<li>energy, belts, inserters, trains, and layout all constrain the whole pipeline.</li>
+</ul>
+<p>The key mental shift is that local correctness is not enough. A single sub-factory can be beautifully designed and still fail the system if it starves upstream or overloads downstream.</p>
+<p>That maps directly to software.</p>
+<p>In a codebase, I care much more now about how information, control, and dependency pressure move through the system than about whether one module looks clever in isolation. Factorio trained my brain to look for:</p>
+<ol>
+<li>bottlenecks,</li>
+<li>wasted movement,</li>
+<li>hidden coupling,</li>
+<li>poor observability,</li>
+<li>and scaling limits that only appear after expansion.</li>
+</ol>
+<p>That is an engineering habit.</p>
+<p>When I open a Go service or a shell pipeline, I often think about it the same way I think about a Factorio bus or train network: where is the actual choke point, what resource is really scarce, and which redesign improves throughput without adding chaos?</p>
+<h2 id="factorio-also-taught-me-to-value-layout-as-an-operational-decision">Factorio also taught me to value layout as an operational decision</h2>
+<p>One of the biggest transfers from Factorio into coding is respect for layout.</p>
+<p>In the game, layout is not decoration. Layout determines whether the factory is easy to expand, easy to debug, and easy to reason about under growth. A cramped but “efficient” build often becomes a trap later.</p>
+<p>That same instinct helps in terminal and Vim environments.</p>
+<p>I like tools that preserve spatial memory:</p>
+<ul>
+<li>stable file trees,</li>
+<li>stable keymaps,</li>
+<li>stable command patterns,</li>
+<li>stable pane layouts,</li>
+<li>stable text structure.</li>
+</ul>
+<p>The reason is not aesthetic purity. It is operational speed. Good layout reduces context-switch cost.</p>
+<p>Factorio makes that lesson painfully obvious because bad layout punishes you every time the system scales. So does a codebase.</p>
+<h2 id="starcraft-ii-taught-me-prioritization-under-pressure">StarCraft II taught me prioritization under pressure</h2>
+<p>If Factorio trained system layout and throughput thinking, <strong>StarCraft II</strong> trained tempo and prioritization.</p>
+<p>SC2 is not just about speed. It is about deciding what matters <strong>right now</strong> while the rest of the game keeps moving.</p>
+<p>You cannot do everything at once. You have to:</p>
+<ul>
+<li>macro while scouting,</li>
+<li>spend money while defending,</li>
+<li>expand while preserving unit production,</li>
+<li>and avoid wasting attention on the wrong fight.</li>
+</ul>
+<p>That feels very familiar to real engineering.</p>
+<p>When I am coding inside Vim or a terminal-heavy workflow, the whole environment rewards the same skill: keep the main loop alive while handling interruptions. That means I am constantly asking:</p>
+<ol>
+<li>what is the highest-leverage action in this moment,</li>
+<li>what can be deferred safely,</li>
+<li>what needs to stay on rhythm,</li>
+<li>what signal is actually worth interrupting for.</li>
+</ol>
+<p>SC2 trained my brain to stop romanticizing constant reaction. Not every alert deserves a response. Not every branch of work deserves equal attention. Good play is partly about refusing low-value actions. So is good engineering.</p>
+<h2 id="hotkeys-changed-how-i-think-about-tools">Hotkeys changed how I think about tools</h2>
+<p>Both Factorio and SC2 reward compressing common actions into reliable motor patterns. That maps directly into why I like Vim and terminal workflows so much.</p>
+<p>Once the tool becomes hotkey-native, the interaction stops feeling like “issue a command from scratch every time.” It becomes a vocabulary of rehearsed moves.</p>
+<p>That has two effects:</p>
+<p>First, it reduces friction. I do not want to re-decide how to move, search, select, split, grep, format, diff, or commit every few minutes.</p>
+<p>Second, it preserves cognitive energy for the actual problem.</p>
+<p>That is what good hotkey systems do. They move execution into muscle memory and free working memory for reasoning.</p>
+<p>Vim is excellent at this when it clicks. The terminal is excellent at this too. You start thinking in composable verbs and operators rather than isolated GUI actions.</p>
+<p>Games taught me to respect that style of interaction before I understood it formally.</p>
+<h2 id="map-awareness-became-systems-awareness">Map awareness became systems awareness</h2>
+<p>Another direct transfer from SC2 is the idea of map awareness.</p>
+<p>Strong play depends on more than your current camera position. You need a model of what is happening elsewhere:</p>
+<ul>
+<li>your production,</li>
+<li>your expansions,</li>
+<li>likely enemy timings,</li>
+<li>vulnerable paths,</li>
+<li>information gaps.</li>
+</ul>
+<p>In engineering terms, that becomes system awareness.</p>
+<p>When I work effectively in a terminal environment, I am usually maintaining a rough mental map of:</p>
+<ul>
+<li>what processes are running,</li>
+<li>which files are authoritative,</li>
+<li>where the risky boundaries are,</li>
+<li>which commands are safe,</li>
+<li>what the current bottleneck is,</li>
+<li>and what state the repo is in.</li>
+</ul>
+<p>That is not very different from strategy-game awareness. It is still about managing incomplete information across a live system.</p>
+<h2 id="terminal-work-feels-natural-to-me-for-the-same-reason-these-games-did">Terminal work feels natural to me for the same reason these games did</h2>
+<p>A good terminal workflow feels alive in the same way a strategy game does.</p>
+<p>There is rhythm. There is structure. There is feedback. There are repeated loops. There is economy in movement. There is a constant tradeoff between local action and global awareness.</p>
+<p>That is why I think the transition from those games into terminal/Vim-heavy coding felt natural to me. The surface domain changed, but the cognitive style did not.</p>
+<p>I was still:</p>
+<ul>
+<li>building repeatable flows,</li>
+<li>reducing wasted motion,</li>
+<li>maintaining a global map,</li>
+<li>watching for bottlenecks,</li>
+<li>and turning frequent actions into low-friction habits.</li>
+</ul>
+<h2 id="my-real-takeaway">My real takeaway</h2>
+<p>Factorio and SC2 did not teach me software engineering directly. They taught me habits that made software engineering easier to learn deeply.</p>
+<p>Factorio sharpened my instinct for pipelines, layout, scaling, and bottlenecks.</p>
+<p>StarCraft II sharpened my instinct for tempo, triage, attention management, and hotkey discipline.</p>
+<p>Together, they made terminal and Vim environments feel less like harsh tools and more like expressive systems. And I think that is why those environments still feel so productive to me now: they reward exactly the kind of system-level thinking those games trained over and over again.</p>
+<p>Game design and systems thinking share a common structure: a set of rules, agents acting within those rules, and emergent behavior that no individual agent intended. The same structure appears in market design, protocol design, and software architecture. The engineer who studies games learns to see the rules behind the behavior. The behavior that looks like chaos is often the equilibrium of a system whose rules you haven't discovered yet. The discovery is the engineering.</p>
+<blockquote>
+<p>Games teach systems thinking because they are systems. Factorio is a supply chain. StarCraft is a resource allocation problem. The player who sees the system behind the graphics wins. The engineer who sees the system behind the code does too.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

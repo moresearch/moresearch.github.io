@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Multi-agent AI systems now trade crypto with Sharpe ratios above 2.0. LLMs ingest on-chain data, social sentiment, and market signals. Specialized agents — research, risk, execution, governance — coordinate through structured interfaces. The architecture is microservices for money. The next generation of traders is not human.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-ai-agents/">
+  <title>AI Agents for Trading — hackspree</title>
+  <meta property="og:title" content="AI Agents for Trading">
+  <meta property="og:description" content="Multi-agent AI systems now trade crypto with Sharpe ratios above 2.0. LLMs ingest on-chain data, social sentiment, and market signals. Specialized agents — research, risk, execution, governance — coordinate through structured interfaces. The architecture is microservices for money. The next generation of traders is not human.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-ai-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AI Agents for Trading">
+  <meta name="twitter:description" content="Multi-agent AI systems now trade crypto with Sharpe ratios above 2.0. LLMs ingest on-chain data, social sentiment, and market signals. Specialized agents — research, risk, execution, governance — coordinate through structured interfaces. The architecture is microservices for money. The next generation of traders is not human.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>AI Agents for Trading</h1><p class="post-summary">Multi-agent AI systems now trade crypto with Sharpe ratios above 2.0. LLMs ingest on-chain data, social sentiment, and market signals. Specialized agents — research, risk, execution, governance — coordinate through structured interfaces. The architecture is microservices for money. The next generation of traders is not human.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">ai-agents</span><span class="tag">llm</span><span class="tag">multi-agent</span><span class="tag">trading</span></div>
+          
+        </header>
+        <div class="post-body"><p>The preceding posts in this series described algorithmic trading strategies implemented as deterministic programs: arbitrage bots, market-making algorithms, MEV searchers. These programs follow rules. The rules are designed by humans. The programs execute the rules at machine speed. The programs are effective. They are also brittle — a rule designed for one market regime fails in another, and the program doesn't know to adapt.</p>
+<p>AI agents represent a different paradigm. An AI agent is not a set of fixed rules. It is a system that perceives, reasons, and acts. It ingests data. It forms beliefs. It chooses actions. It learns from outcomes. The agent adapts. The adaptation is the edge. The edge is not in being faster than the next bot. It is in being smarter about what to do with the speed.</p>
+<h2 id="the-architecture">The architecture</h2>
+<p>Nex-T1, a multi-agent LLM-based trading system deployed in 2025, achieved a Sharpe ratio of 2.34 — 65% better than single-agent baselines — while cutting maximum drawdown nearly in half. The architecture is instructive:</p>
+<p><strong>Research agents.</strong> Scan on-chain data (transaction volumes, liquidity flows, whale movements), off-chain data (news, social sentiment, regulatory announcements), and market data (prices, volumes, order book depth). Synthesize into structured reports. The reports are the input to the strategy layer. The research agents are the eyes of the system.</p>
+<p><strong>Risk management agents.</strong> Evaluate position sizing, portfolio exposure, and drawdown risk. Propose position adjustments, stop-losses, and circuit breakers. The risk agents are independent of the strategy agents — a bug in a strategy agent should not prevent a risk agent from closing a dangerous position. The separation is architectural. The architecture is the safety mechanism.</p>
+<p><strong>Execution agents.</strong> Route trades across venues. Optimize for execution price, latency, and gas cost. Split large orders to minimize price impact. Monitor fill rates and adjust routing. The execution agents are the hands of the system. The hands must be fast. The speed is infrastructure.</p>
+<p><strong>Governance agents.</strong> Monitor the system's behavior for anomalies. Enforce compliance with risk limits, trading mandates, and regulatory requirements. The governance agent is the override — if the strategy agents propose a trade that violates the system's constraints, the governance agent blocks it. The override is the failsafe.</p>
+<p>The agents communicate through structured interfaces — typed messages, defined schemas, explicit contracts. The architecture is microservices applied to trading. Each agent is a service. Each service has a narrow responsibility. The services compose. The composition is the system. The system trades. The trades are profitable.</p>
+<h2 id="the-functional-origin-expert-systems-and-black-boxes">The functional origin: expert systems and black boxes</h2>
+<p>The idea of automated trading is not new. Expert systems — rule-based programs that encode human expertise — were applied to trading in the 1980s. They were rigid. They required explicit rules for every situation. The rules were incomplete. The incompleteness was exploited by traders who understood the rules. The expert systems lost money.</p>
+<p>Machine learning — statistical models trained on historical data — replaced expert systems in the 2000s. ML models could identify patterns that humans couldn't. They were also black boxes — their decisions were unexplainable. The lack of explainability was a barrier in regulated markets. The barrier limited adoption.</p>
+<p>LLM-based agents combine the flexibility of ML with the explainability of expert systems. The agent can explain its reasoning — &quot;I propose reducing ETH exposure because on-chain whale movement data suggests a large holder is preparing to sell.&quot; The explanation is auditable. The auditability satisfies compliance requirements. The flexibility handles novel situations. The combination is new. The combination is powerful.</p>
+<h2 id="the-edge">The edge</h2>
+<p>The edge of AI agents over traditional algorithmic strategies is adaptability. A stat arb model calibrated on historical data degrades when the market regime changes. The model doesn't know the regime changed. It continues applying the old calibration. The calibration is wrong. The model loses money.</p>
+<p>An LLM-based agent reads the news. It sees that a major protocol was hacked. It understands the implication: volatility will increase, correlations will break, stat arb strategies will fail. It reduces position sizes. It widens stop-losses. It shifts capital to safer assets. The adaptation is immediate. The adaptation is based on reasoning about the world, not on pattern matching historical data. The reasoning is the edge.</p>
+<p>The edge erodes. More agents enter the market. The agents compete. The competition compresses margins. The agents must become smarter, faster, better-informed. The arms race continues. The arms race is the subject of this entire series. The next generation of combatants is not human. The combatants are agents. The agents are learning. The game is accelerating.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Nexis-AI, &quot;Nex-T1: Multi-Agent Orchestration Framework for Autonomous DeFi Trading&quot; (2025). The paper describing the 25-agent system. The architecture — specialized agents, structured interfaces, governance override — is the template for the next generation of trading systems. The template is open-source. The open-source availability accelerates adoption. The adoption accelerates competition. The competition accelerates the arms race. The cycle is the subject of this series. The series is a map. The map is not the territory. The territory moves.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Nexis-AI, &quot;Nex-T1: Multi-Agent Orchestration Framework for Autonomous DeFi Trading,&quot; 2025.</li>
+<li>Andrew Lo, <em>Adaptive Markets</em>, Princeton University Press, 2017.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#algorithmic-trading-crypto">Algorithmic trading in crypto</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#cosmos-sdk-ai-agents">Cosmos SDK for AI agents</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Design the Game</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

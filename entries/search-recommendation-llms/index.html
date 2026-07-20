@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-llms/">
+  <title>S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?">
+  <meta property="og:description" content="LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-llms/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?">
+  <meta name="twitter:description" content="LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: If LLMs Can Do Both, Does the Distinction Still Matter?</h1><p class="post-summary">LLMs transform search and recommendation in different ways — RAG, generative retrieval, conversational recommendation, agentic pipelines. But the distinction survives in objective alignment, evaluation, serendipity tolerance, and infrastructure.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">llm</span><span class="tag">rag</span><span class="tag">generative-retrieval</span><span class="tag">agentic</span><span class="tag">survey</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. LLMs don't know which one they're doing. They see tokens in, tokens out. The distinction that traditional retrieval systems encode in architecture — inverted index vs. embedding store, NDCG vs. retention, sub-100ms keystroke latency vs. nightly batch refresh — must now be encoded somewhere else. The question is where.</em></p>
+<p><strong>Ask an LLM &quot;What is the capital of France?&quot;</strong> That is search. The model retrieves a fact that matches the explicit query. Fidelity to the question is all that counts. If the model answers &quot;Rome&quot; because it has learned that users who ask about capitals often enjoy Italian geography, the model is broken. The query is a contract. The answer must honor it.</p>
+<p><strong>Ask an LLM &quot;What should I watch tonight? I loved <em>Dark</em> and <em>Severance</em>.&quot;</strong> That is recommendation. The model infers preferences from the examples and generates suggestions the user might not have thought of. Serendipity is not a bug — it is the point. If the model says &quot;watch <em>Dark</em> again,&quot; it has failed. The same model performed both tasks. The same prompt interface hid the difference. The difference did not disappear. It moved into the prompt, the objective function, the evaluation framework, and the human expectation of what &quot;good&quot; means. LLMs are infrastructure. They do not eliminate the distinction between search and recommendation. They make it more important to get right.</p>
+<p>The arrival of LLMs is the most significant development in both information retrieval and recommendation since BERT [7]. But the way LLMs affect each field is different, and understanding the difference is essential for engineering.</p>
+<p>Two recent surveys capture the scope. Zhu et al. (2024) organize LLM-IR integration into four roles: query rewriter, retriever, reranker, and reader [1]. Li et al. (2024) provide the cross-cutting view — framing both search and recommendation as instances of generative retrieval and identifying where they converge and where they diverge [2].</p>
+<p>The key insight: <strong>LLMs don't eliminate the distinction. They reveal it at a higher level of abstraction.</strong> Both fields are moving toward generative paradigms, but the <em>thing being generated</em> is different. Search generates answers from documents. Recommendation generates item predictions from user histories.</p>
+<h2 id="how-llms-transform-search">How LLMs Transform Search</h2>
+<p>LLMs operate at four levels in the search pipeline:</p>
+<pre><code class="language-python"># Level 1: Query Understanding — LLMs disambiguate and expand queries
+def llm_query_understanding(raw_query: str, llm) -&gt; dict:
+    &quot;&quot;&quot;Transform natural language into structured search intent.&quot;&quot;&quot;
+    prompt = f&quot;&quot;&quot;
+    Parse this search query into structured intent:
+    Query: &quot;{raw_query}&quot;
+
+    Return JSON with: intent_type, entities, constraints, expansions.
+    &quot;&quot;&quot;
+    response = llm.generate(prompt)
+    return json.loads(response)
+
+# &quot;Show me movies like Inception but funnier&quot;
+# → {intent_type: &quot;similar_items_with_constraint&quot;,
+#    entities: [&quot;Inception&quot;],
+#    constraints: [&quot;genre: comedy&quot;, &quot;tone: lighter&quot;],
+#    expansions: [&quot;mind-bending heist films&quot;, &quot;comedic thrillers&quot;]}
+
+# Level 2: Document Understanding — LLMs generate richer representations
+def llm_enrich_document(doc: str, llm) -&gt; dict:
+    &quot;&quot;&quot;Generate structured metadata that transcends keyword matching.&quot;&quot;&quot;
+    prompt = f&quot;&quot;&quot;
+    For this document, generate:
+    1. A 2-sentence summary
+    2. 5-10 key phrases
+    3. Entity tags (people, places, concepts)
+    4. A semantic embedding-friendly description
+
+    Document: {doc[:4000]}
+    &quot;&quot;&quot;
+    return llm.generate_structured(prompt)
+
+# Level 3: RAG — Retrieve then generate a synthesized answer
+def rag_search(query: str, retriever, llm, k: int = 5) -&gt; str:
+    &quot;&quot;&quot;The dominant LLM-search paradigm in 2025.&quot;&quot;&quot;
+    # Retrieve relevant documents
+    docs = retriever.retrieve(query, k=k)
+
+    # Generate answer grounded in retrieved documents
+    context = &quot;\n\n&quot;.join(f&quot;[{i+1}] {doc.text}&quot; for i, doc in enumerate(docs))
+    prompt = f&quot;&quot;&quot;
+    Answer the query using ONLY the provided documents.
+    Cite sources by number.
+
+    Query: {query}
+
+    Documents:
+    {context}
+    &quot;&quot;&quot;
+    return llm.generate(prompt)
+
+# Level 4: Generative Retrieval — the model IS the index
+# The most radical approach: the LLM directly generates document IDs
+# without an explicit retrieval index. Still experimental.
+</code></pre>
+<p>The core search user need — &quot;I have a question, find me the answer&quot; — aligns naturally with LLM capabilities. The LLM augments retrieval at every stage without replacing it [6]. This paradigm extends the text-to-text framework [10] that first showed how retrieval tasks could be unified under a generative umbrella.</p>
+<h2 id="how-llms-transform-recommendation">How LLMs Transform Recommendation</h2>
+<p>For recommendation, the transformation is more structural:</p>
+<pre><code class="language-python"># Level 1: Feature Engineering Automation
+# LLMs generate rich profiles from sparse structured data.
+# DoorDash's content embeddings and Consumer Memory Blocks are paradigmatic:
+# the LLM produces the fuel, retrieval and ranking remain purpose-built.
+
+def llm_generate_item_profile(item: dict, llm) -&gt; str:
+    &quot;&quot;&quot;Produce a rich narrative that a standard encoder can embed.&quot;&quot;&quot;
+    return llm.generate(f&quot;Describe this item for a recommendation system: {item}&quot;)
+
+# Level 2: Generative Recommendation
+# Instead of scoring candidates, the LLM autoregressively generates item tokens.
+# Meta's HSTU, Kuaishou's OneRec, Google's TIGER are examples.
+
+class GenerativeRecommender:
+    &quot;&quot;&quot;Recommendation as sequence-to-sequence: predict next-item tokens.&quot;&quot;&quot;
+    def recommend(self, user_history: list[int], llm, k: int = 10) -&gt; list[int]:
+        prompt = f&quot;User interaction history (item IDs): {user_history}\nPredict next items:&quot;
+        # LLM autoregressively generates item IDs
+        return llm.generate_tokens(prompt, max_tokens=k)
+
+# Level 3: Conversational Recommendation
+# Multi-turn dialogue where the system elicits preferences and adapts.
+
+def conversational_recommendation_loop(user_id: str, llm, catalog):
+    &quot;&quot;&quot;Search and recommendation blur into conversation.&quot;&quot;&quot;
+    context = {&quot;history&quot;: get_user_history(user_id)}
+    for turn in range(5):
+        user_input = get_user_response()
+        if is_search_like(user_input):    # &quot;I want a sci-fi movie&quot;
+            results = catalog.search(user_input)
+            context[&quot;mode&quot;] = &quot;search&quot;
+        else:                              # &quot;something cerebral, not too long&quot;
+            results = catalog.recommend(context)
+            context[&quot;mode&quot;] = &quot;recommendation&quot;
+        llm_response = llm.generate_response(results, context)
+        show_to_user(llm_response)
+
+# Level 4: Agentic Recommendation
+# LLM-powered agents that plan, use tools, maintain memory, reason.
+# ARAG (SIGIR 2025): 4 specialized agents — User Understanding, NLI,
+# Context Summary, Item Ranker — achieve +42.1% NDCG@5 over vanilla RAG.
+</code></pre>
+<h2 id="why-the-distinction-survives">Why the Distinction Survives</h2>
+<p>Despite this convergence, the distinction remains essential for four reasons:</p>
+<p><strong>1. Objective alignment.</strong> A search system optimizing for engagement shows addictive content instead of answering the query. A recommendation system optimizing for precision produces an echo chamber.</p>
+<pre><code class="language-python"># Wrong: one objective for both
+def bad_unified_objective(model_output, labels):
+    return cross_entropy(model_output, labels)  # what are we even optimizing?
+
+# Right: task-aware objectives
+def search_objective(predictions, relevance_labels):
+    return ndcg_loss(predictions, relevance_labels)  # did we retrieve the right thing?
+
+def recommendation_objective(predictions, engagement_labels):
+    return binary_cross_entropy(predictions, engagement_labels)  # will user engage?
+    # Plus: diversity bonus, freshness decay, exploration budget, long-term retention proxy
+</code></pre>
+<p><strong>2. Evaluation.</strong> Search: NDCG, MRR, precision@K against relevance judgments. Recommendation: retention, discovery, session length, long-term satisfaction. These are correlated but not identical.</p>
+<p><strong>3. The serendipity gradient.</strong> In search, serendipity is a bug. In recommendation, it's a feature.</p>
+<pre><code class="language-python">def demonstrate_serendipity_gradient():
+    &quot;&quot;&quot;The same behavior is a bug in one context and a feature in the other.&quot;&quot;&quot;
+
+    # SEARCH: User types &quot;The Godfather&quot;
+    # System returns &quot;Goodfellas&quot; because &quot;people who watch The Godfather
+    # also love Goodfellas&quot;
+    # → BROKEN. The user wanted The Godfather. Return The Godfather.
+
+    # RECOMMENDATION: User browses homepage on Friday night
+    # System shows &quot;The Godfather&quot; — which the user has already seen 4 times
+    # → BROKEN. The user wants something new. Show Goodfellas.
+
+    # Both failures happen when teams optimize for the wrong thing.
+    # The first optimized for engagement instead of relevance.
+    # The second optimized for precision instead of discovery.
+</code></pre>
+<p><strong>4. Infrastructure.</strong> Search: inverted indices, real-time query parsing, sub-100ms latency at high QPS. Recommendation: user profile stores, embedding indices, offline batch pipelines amortized across daily refresh cycles.</p>
+<pre><code class="language-python"># Search infrastructure
+class SearchServing:
+    latency_sla: float = 0.100  # seconds — user is waiting
+    qps: int = 10_000           # every keystroke is a query
+    freshness: str = &quot;real-time&quot;  # new documents must be searchable immediately
+    index_type: str = &quot;inverted&quot;  # keyword → posting list
+
+# Recommendation infrastructure
+class RecServing:
+    latency_sla: float = 0.200  # seconds — page load, more forgiving
+    qps: int = 1_000            # one request per page view
+    freshness: str = &quot;daily&quot;      # embeddings recomputed nightly
+    index_type: str = &quot;ANN&quot;      # vector → nearest neighbors
+</code></pre>
+<h2 id="the-survey-papers-agree">The Survey Papers Agree</h2>
+<p>The Li et al. (2024) survey on generative search and recommendation puts it well: the fields share a common mathematical framework — matching entities across representation spaces — but differ in the <em>nature of the mismatch</em> [2]. Search deals with query–document mismatch: different words for the same concept. Recommendation deals with user–item mismatch: users and items live in completely different semantic spaces. The first is a lexical/semantic gap. The second is a modality gap. Solving them requires different tools, even when those tools share a common transformer backbone.</p>
+<p>The Gupta et al. (2025) survey on generative recommendation reinforces this: industrial systems like TIGER, LIGER, OneRec, and HSTU all treat recommendation as its own generative problem with its own tokenization, its own evaluation, and its own cold-start challenges [3]. None of them use the same architecture unmodified for search.</p>
+<p>LLMs are infrastructure. They don't eliminate the distinction between search and recommendation — they make it more important to get right.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>LLMs are infrastructure, not a replacement for retrieval.</strong> But the history of software is infrastructure absorbing what was once application logic. Will retrieval become just another token prediction task?</p>
+</li>
+<li>
+<p><strong>Generative recommendation (TIGER, HSTU, OneRec) treats item prediction as autoregressive generation.</strong> If the model is the index, the retriever, and the ranker — where does the search/recommendation boundary go? Does it vanish, or does it move into the prompt?</p>
+</li>
+<li>
+<p><strong>The surveys agree: LLMs affect search and recommendation differently.</strong> But most LLM research papers treat them as interchangeable downstream tasks. Is the research community making the same mistake the engineering community is learning to avoid?</p>
+</li>
+<li>
+<p><strong>Conversational recommendation collapses the boundary between search and discovery into dialogue.</strong> If users can't tell whether they're searching or being recommended to — does the distinction still matter? For whom?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Yutao Zhu, Huaying Yuan, Shuting Wang, et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.07107"><em>Large Language Models for Information Retrieval: A Survey</em></a>. ACM Transactions on Information Systems, 2024.</p>
+</li>
+<li>
+<p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
+</li>
+<li>
+<p>Shashank Gupta et al. <a target="_blank" rel="noopener noreferrer" href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.176523089.94266134/v2"><em>Generative Recommendation: A Survey of Models, Systems, and Industrial Advances</em></a>. TechRxiv, 2025.</p>
+</li>
+<li>
+<p>Chi Zhang et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.21931"><em>ARAG: Agentic Retrieval Augmented Generation for Personalized Recommendation</em></a>. SIGIR 2025.</p>
+</li>
+<li>
+<p>Zhuang Liu et al. <a target="_blank" rel="noopener noreferrer" href="https://ieeexplore.ieee.org/abstract/document/11129085"><em>A Comprehensive Survey on LLM-Powered Recommender Systems</em></a>. IEEE Access, 2024.</p>
+</li>
+<li>
+<p>Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, Sebastian Riedel, and Douwe Kiela. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2005.11401"><em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em></a>. NeurIPS 2020.</p>
+</li>
+<li>
+<p>Tom Brown et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2005.14165"><em>Language Models are Few-Shot Learners</em></a>. NeurIPS 2020. The GPT-3 paper.</p>
+</li>
+<li>
+<p>Sébastien Bubeck et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2303.12712"><em>Sparks of Artificial General Intelligence: Early Experiments with GPT-4</em></a>. arXiv, 2023.</p>
+</li>
+<li>
+<p>Hugo Touvron et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.13971"><em>LLaMA: Open and Efficient Foundation Language Models</em></a>. arXiv, 2023.</p>
+</li>
+<li>
+<p>Colin Raffel et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1910.10683"><em>Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer</em></a>. JMLR, 2020.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-practical-architecture/">
+  <title>S&amp;R: How Should You Architect a System That Handles Both Search and Recommendation? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: How Should You Architect a System That Handles Both Search and Recommendation?">
+  <meta property="og:description" content="Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-practical-architecture/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: How Should You Architect a System That Handles Both Search and Recommendation?">
+  <meta name="twitter:description" content="Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: How Should You Architect a System That Handles Both Search and Recommendation?</h1><p class="post-summary">Practical guidance for building systems that handle both search and recommendation: real-life analogies, error cost analysis, five architectural principles, and a reference hybrid architecture sketch.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">architecture</span><span class="tag">system-design</span><span class="tag">llm</span><span class="tag">practical</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation. This post is about building systems that handle both — correctly. The distinction is not academic. It has consequences for your latency budget, your index design, your evaluation framework, and your error recovery strategy. Ignore it and you will build a system that is mediocre at both.</em></p>
+<p><strong>Search</strong> demands sub-100ms latency per keystroke, an inverted index that can retrieve on any term, and an error model where mistakes are visible and dismissable. The user sees a wrong result, scrolls past it, and reforms their query. The system's job is to make the right result <em>findable</em>. Getting search right means the user finds what they asked for. Getting it wrong means they try another query — or another product.</p>
+<p><strong>Recommendation</strong> tolerates ~200ms per page load, an ANN index that finds neighbors in embedding space, and an error model where mistakes are invisible but trust-eroding. The user doesn't see what wasn't shown. They just feel, over weeks, that the system doesn't get them — and they churn. The system's job is to make the right result <em>unavoidable</em>. Getting recommendation right means the user discovers something they didn't know they wanted. Getting it wrong means they leave and never come back. Same infrastructure can serve both. The architecture must know the difference.</p>
+<p>This series has traced the fifty-year history of search, the thirty-year history of recommendation, Netflix's dual-stack architecture, how four major companies handle the boundary, and how LLMs transform both fields. This post translates that history into practical guidance.</p>
+<h2 id="the-distinction-in-everyday-life">The Distinction in Everyday Life</h2>
+<p>Before the architecture, a mental model. The search–recommendation distinction isn't an engineering abstraction — it's visible in how we make decisions every day.</p>
+<p><strong>The Restaurant Menu (Search) vs. The Chef's Tasting Menu (Recommendation).</strong> When you scan a menu, you're doing search: you have an intent (&quot;I feel like pasta&quot;) and you're scanning a structured catalog. Your satisfaction depends on whether the menu accurately represents what the kitchen delivers. A mistake — &quot;I ordered carbonara, got bolognese&quot; — is a retrieval error. When the chef sends out a tasting menu, you're receiving recommendation: the chef built a model of you and is making predictions. A mistake — &quot;the chef brought me mushrooms, which I hate&quot; — is a modeling error. Different failures, different fixes.</p>
+<p><strong>The Grocery List (Search) vs. The Recipe Suggestion (Recommendation).</strong> You walk into a store with a list: milk, eggs, bread. Search. The store's app notices your cart and says: &quot;With those ingredients, you could make shakshuka. Want me to show you cumin and paprika?&quot; Recommendation. The deviation from the list is the <em>point</em> in one case. It's a <em>failure</em> in the other.</p>
+<p><strong>The Error Cost Difference.</strong> A search error is a precision failure: &quot;I asked for X and got Y.&quot; The user immediately knows something is wrong. The error is visible and attributable. A recommendation error is a relevance failure: &quot;The system showed me something I don't care about.&quot; The user doesn't know if the system is broken or if they're just having a bad experience. The error is invisible and erodes trust cumulatively.</p>
+<p>This is why Peter Norvig's 80% rule applies to search but not recommendation. If a search engine gets 80% right, users happily ignore the other 20% — they can see what went wrong. If a recommender gets 80% right, users notice the 20% wrong more than the 80% right, because every wrong suggestion is an interruption — screen space that could have shown something they'd love.</p>
+<h3 id="why-two-sides-of-the-same-coin-is-misleading">Why &quot;Two Sides of the Same Coin&quot; Is Misleading</h3>
+<p>The coin metaphor implies you can flip from one to the other by changing perspective. You can't. The data is different (queries vs. behavioral histories). The latency profiles are different (sub-100ms real-time vs. batch-refreshed). The error tolerance is different (visible and dismissable vs. invisible and trust-eroding). The user posture is different (active and goal-directed vs. passive and open).</p>
+<p>The better metaphor is a <strong>restaurant</strong>: search is the menu, recommendation is the tasting menu, and the LLM-powered hybrid is a waiter who listens to what you're in the mood for, knows what the kitchen does well tonight, and helps you decide — sometimes by pointing at the menu, sometimes by making a suggestion you wouldn't have thought of, and always by knowing which mode you're in right now.</p>
+<h2 id="five-principles-for-search-and-recommendation">Five Principles for Search and Recommendation</h2>
+<p><strong>1. Make task identity a first-class feature.</strong></p>
+<pre><code class="language-python">class TaskAwareModel(torch.nn.Module):
+    &quot;&quot;&quot;
+    Whether you use Netflix's approach (separate output heads on a shared backbone),
+    Spotify's approach (LLM router dispatching to separate systems), or DoorDash's
+    approach (separate retrieval with shared embeddings) — the model must know
+    whether it's doing search or recommendation.
+    &quot;&quot;&quot;
+
+    def __init__(self, shared_backbone, num_tasks: int):
+        super().__init__()
+        self.backbone = shared_backbone
+        self.task_embedding = torch.nn.Embedding(num_tasks, embedding_dim)
+        self.heads = torch.nn.ModuleDict({
+            &quot;search&quot;: SearchHead(),
+            &quot;recommendation&quot;: RecommendationHead(),
+            &quot;similar_items&quot;: SimilarItemsHead(),
+        })
+
+    def forward(self, inputs, task_type: str):
+        task_encoding = self.task_embedding(TASK_IDS[task_type])
+        hidden = self.backbone(inputs, task_encoding)
+        return self.heads[task_type](hidden)
+
+# The task_type signal propagates through the entire model.
+# It tells the model: &quot;optimize for relevance to query&quot; vs.
+# &quot;optimize for long-term engagement.&quot; These are different instructions.
+</code></pre>
+<p><strong>2. Don't let personalization overpower query relevance.</strong></p>
+<p>Netflix learned this the hard way with UniCoRn. They added personalization to search incrementally, with explicit guardrails. The fully personalized model improved both tasks — but only after careful tuning to ensure search results remain <em>relevant to the query</em> even as they benefit from personalization signals. This is a specific instance of a broader principle: model complexity in ML systems incurs a technical debt that compounds silently [5].</p>
+<pre><code class="language-python">def safe_personalized_search(query: str, user_profile: dict,
+                             base_ranker, personalization_model,
+                             relevance_threshold: float = 0.7) -&gt; list[Item]:
+    &quot;&quot;&quot;Personalize search results without overriding query relevance.&quot;&quot;&quot;
+    # Stage 1: Get relevance-scored candidates
+    candidates = base_ranker.retrieve(query, k=200)
+
+    # Stage 2: Apply personalization re-ranking
+    personalized = personalization_model.rerank(candidates, user_profile)
+
+    # Stage 3: Enforce relevance floor
+    # A result that is NOT relevant to the query should never outrank
+    # a result that IS relevant, regardless of personalization score.
+    for i, item in enumerate(personalized):
+        if item.relevance_score &lt; relevance_threshold:
+            personalized[i].final_score *= 0.1  # severe penalty
+
+    personalized.sort(key=lambda x: x.final_score, reverse=True)
+    return personalized[:10]
+</code></pre>
+<p><strong>3. Treat the user's posture as a design constraint.</strong></p>
+<p>Search users lean forward; recommendation users lean back. This affects latency budgets, UI, and the acceptable cost of being wrong.</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Search</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Latency SLA</td>
+<td>&lt;100ms per keystroke</td>
+<td>&lt;200ms per page load</td>
+</tr>
+<tr>
+<td>Error visibility</td>
+<td>User sees it immediately</td>
+<td>User may never notice — or slowly churn</td>
+</tr>
+<tr>
+<td>Query volume</td>
+<td>Every keystroke</td>
+<td>Every page view</td>
+</tr>
+<tr>
+<td>Freshness requirement</td>
+<td>Near-real-time (new docs)</td>
+<td>Daily batch (new items)</td>
+</tr>
+<tr>
+<td>UI expectation</td>
+<td>Explicit, controllable</td>
+<td>Ambient, delightful</td>
+</tr>
+</tbody>
+</table>
+<p><strong>4. Share infrastructure where it makes sense — separate where it doesn't.</strong></p>
+<pre><code class="language-python"># SHARED: embedding stores, feature stores, model training pipelines
+shared_infrastructure = {
+    &quot;feature_store&quot;: &quot;Feast&quot;,           # same features, different consumers
+    &quot;embedding_index&quot;: &quot;FAISS/Milvus&quot;,  # same ANN, different query patterns
+    &quot;model_registry&quot;: &quot;MLflow&quot;,         # same versioning, different models
+    &quot;experiment_platform&quot;: &quot;A/B tests&quot;, # same framework, different metrics
+}
+
+# SEPARATE: retrieval indices, ranking objectives, evaluation
+separate_infrastructure = {
+    &quot;search_index&quot;: &quot;Elasticsearch/BM25&quot;,     # inverted index, text-optimized
+    &quot;recs_index&quot;: &quot;ANN over user-item space&quot;, # vector index, behavior-optimized
+    &quot;search_objective&quot;: &quot;NDCG/MRR&quot;,           # relevance to query
+    &quot;recs_objective&quot;: &quot;retention/discovery&quot;,  # long-term satisfaction
+    &quot;search_eval&quot;: &quot;explicit relevance judgments&quot;,  # human-labeled
+    &quot;recs_eval&quot;: &quot;A/B test on member retention&quot;,    # behavioral
+}
+</code></pre>
+<p>These infrastructure choices — what to share, what to separate — are foundational decisions in data-intensive system design [7].</p>
+<p><strong>5. LLMs are infrastructure, not a replacement for retrieval.</strong></p>
+<p>The most successful production deployments use LLMs for content understanding, query intent classification, and feature generation <em>offline</em>, while keeping online retrieval in purpose-built low-latency systems:</p>
+<pre><code class="language-python">class HybridLLMRetrievalPipeline:
+    &quot;&quot;&quot;LLMs enrich — they don't replace.&quot;&quot;&quot;
+
+    def offline_enrichment(self, catalog: list[Item]):
+        &quot;&quot;&quot;LLM generates rich profiles. Runs nightly. Costs amortized.&quot;&quot;&quot;
+        for item in catalog:
+            item.llm_profile = self.llm.describe(item)       # rich description
+            item.llm_embedding = self.encoder.encode(item.llm_profile)
+            item.llm_tags = self.llm.extract_tags(item)      # structured metadata
+
+    def online_search(self, query: str, k: int = 10) -&gt; list[Item]:
+        &quot;&quot;&quot;No LLM in the request path. Sub-100ms.&quot;&quot;&quot;
+        # LLM-generated embeddings and tags are already indexed.
+        # This is just BM25 + ANN retrieval + cross-encoder re-rank.
+        return self.retrieval_pipeline.search(query, k)
+
+    def online_recommendations(self, user_id: str, k: int = 10) -&gt; list[Item]:
+        &quot;&quot;&quot;No LLM in the request path. Sub-200ms.&quot;&quot;&quot;
+        # LLM-generated carousel intents are pre-computed.
+        # This is just embedding lookup + ANN + re-rank.
+        return self.recs_pipeline.recommend(user_id, k)
+</code></pre>
+<h2 id="a-reference-architecture">A Reference Architecture</h2>
+<p>Bringing everything together — inspired by real-world architectures from Netflix and others [6] — here's what a system that handles both search and recommendation looks like in 2026:</p>
+<pre><code class="language-python">class SearchAndRecommendationSystem:
+    &quot;&quot;&quot;
+    Reference architecture for a system that does both.
+
+    Shared: embeddings, feature store, LLM enrichment pipeline.
+    Separate: retrieval indices, ranking heads, objectives, evaluation.
+    Task-aware: every model knows which mode it's in.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        # Shared offline enrichment (LLM — runs nightly)
+        self.content_enricher = LLMContentEnricher()
+        self.embedding_encoder = GeminiEncoder(dim=256)
+
+        # Separate retrieval indices
+        self.search_index = ElasticsearchBM25()     # text-optimized
+        self.recs_index = MilvusANN()               # user-item optimized
+
+        # Shared backbone, task-specific heads
+        self.model = TaskAwareTwoTower(
+            shared_backbone=TransformerEncoder(layers=6),
+            tasks=[&quot;search&quot;, &quot;recommendations&quot;, &quot;similar_items&quot;]
+        )
+
+        # Separate evaluation
+        self.search_eval = SearchEvaluator(metric=&quot;ndcg@10&quot;)
+        self.recs_eval = RecsEvaluator(metric=&quot;retention_30d&quot;)
+
+    def nightly_batch(self):
+        &quot;&quot;&quot;Run once per day: LLM content enrichment, embedding refresh.&quot;&quot;&quot;
+        for item in self.catalog:
+            item.profile = self.content_enricher.describe(item)
+            item.embedding = self.embedding_encoder.encode(item.profile)
+
+        self.search_index.rebuild()
+        self.recs_index.rebuild()
+        self.content_enricher.generate_carousels()  # DoorDash-style memory blocks
+
+    def serve_search(self, query: str, user_id: str) -&gt; SearchResult:
+        &quot;&quot;&quot;Online search: sub-100ms, no LLM in path.&quot;&quot;&quot;
+        candidates = self.search_index.retrieve(query, k=200)
+        scored = self.model.score(candidates, task=&quot;search&quot;,
+                                  query=query, user_id=user_id)
+        return self.search_reranker.apply(scored, user_id)
+
+    def serve_homepage(self, user_id: str) -&gt; list[Carousel]:
+        &quot;&quot;&quot;Online recommendations: sub-200ms, no LLM in path.&quot;&quot;&quot;
+        carousels = self.carousel_store.lookup(user_id)
+        filled_carousels = []
+        for carousel in carousels:
+            items = self.recs_index.retrieve(carousel.embedding, k=20)
+            scored = self.model.score(items, task=&quot;recommendations&quot;,
+                                      user_id=user_id)
+            filled_carousels.append(Carousel(carousel.title, scored[:10]))
+        return filled_carousels
+</code></pre>
+<h2 id="conclusion-the-coin-and-the-mint">Conclusion: The Coin and the Mint</h2>
+<p>In 1992, Belkin and Croft asked whether information retrieval and information filtering were two sides of the same coin. Thirty-four years later, the question has a sharper answer: <strong>they share a mint.</strong></p>
+<p>The mathematical machinery — vector spaces, embedding learning, transformer attention, contrastive objectives — is increasingly shared. Netflix's UniCoRn, Spotify's intent router, DoorDash's content embeddings, Pinterest's multi-task two-tower models — all exploit this commonality. As Greg Linden showed at Amazon, the algorithms that retrieve known items and the algorithms that surface unknown ones succeed for different reasons. As Reed Hastings understood, the emotional contract of &quot;Netflix gets me&quot; is not the same as &quot;Netflix found what I searched for.&quot; As Karen Spärck Jones knew in 1999, systems that assist human users cannot replace them — they can only narrow the gap. As Peter Norvig warned, the gap between &quot;here are some suggestions&quot; and &quot;here is what you need&quot; demands a higher standard of trust.</p>
+<p>The arrival of LLMs makes these distinctions <em>more</em> important, not less. When a single model can retrieve, rank, recommend, and explain — all in natural language — the question is no longer &quot;can we unify?&quot;</p>
+<p>The question is: <strong>&quot;do we know which one we're doing right now?&quot;</strong></p>
+<p>The answer must be yes. Because search competes with ignorance — it helps people find what they know they need. Recommendation competes with sleep — it surfaces what people didn't know they wanted, in a world of infinite alternatives. They are not the same fight. And the systems that win both are the ones that never forget which one they're fighting right now.</p>
+<hr>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>The five principles in this post are derived from what worked at Netflix, Spotify, DoorDash, Airbnb, and Pinterest.</strong> What principles are <em>missing</em> because no company has solved certain problems yet — like fully autonomous switching between search and recommendation without explicit routing?</p>
+</li>
+<li>
+<p><strong>LLMs as offline enrichment, purpose-built systems for online serving — this is the consensus in 2026.</strong> Will it hold? Or will end-to-end generative models become fast enough that the hybrid architecture becomes unnecessary overhead?</p>
+</li>
+<li>
+<p><strong>&quot;Do we know which one we're doing right now?&quot; is the organizing question of this series.</strong> Five years from now, will that question still need a human-designed answer — or will the system infer it from context more reliably than any explicit signal?</p>
+</li>
+<li>
+<p><strong>Search competes with ignorance. Recommendation competes with sleep.</strong> What does a system that does both compete with — and how do we measure whether it's winning?</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Nicholas J. Belkin and W. Bruce Croft. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138861"><em>Information Filtering and Information Retrieval: Two Sides of the Same Coin?</em></a>. Communications of the ACM, 35(12): 29–38, 1992.</p>
+</li>
+<li>
+<p>Francesco Ricci, Lior Rokach, and Bracha Shapira (editors). <a target="_blank" rel="noopener noreferrer" href="https://link.springer.com/book/10.1007/978-1-0716-2197-4"><em>Recommender Systems Handbook</em>, 3rd Edition</a>. Springer, 2022.</p>
+</li>
+<li>
+<p>Yutao Zhu et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.07107"><em>Large Language Models for Information Retrieval: A Survey</em></a>. ACM TOIS, 2024.</p>
+</li>
+<li>
+<p>Yongqi Li et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.16924"><em>A Survey of Generative Search and Recommendation in the Era of Large Language Models</em></a>. arXiv:2404.16924, 2024.</p>
+</li>
+<li>
+<p>D. Sculley, Gary Holt, Daniel Golovin, Eugene Davydov, Todd Phillips, Dietmar Ebner, Vinay Chaudhary, Michael Young, Jean-Francois Crespo, and Dan Dennison. <a target="_blank" rel="noopener noreferrer" href="https://research.google/pubs/pub43146/"><em>Machine Learning: The High Interest Credit Card of Technical Debt</em></a>. SE4ML, NeurIPS 2014.</p>
+</li>
+<li>
+<p>Xavier Amatriain and Justin Basilico. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2645710.2645775"><em>Recommender Systems in Industry: A Netflix Case Study</em></a>. RecSys 2014 Tutorial.</p>
+</li>
+<li>
+<p>Martin Kleppmann. <a target="_blank" rel="noopener noreferrer" href="https://dataintensive.net/"><em>Designing Data-Intensive Applications</em></a>. O'Reilly, 2017. The canonical reference on system design for data-intensive applications.</p>
+</li>
+<li>
+<p>Gregor Hohpe and Bobby Woolf. <a target="_blank" rel="noopener noreferrer" href="https://www.enterpriseintegrationpatterns.com/"><em>Enterprise Integration Patterns</em></a>. Addison-Wesley, 2003.</p>
+</li>
+<li>
+<p>Eugene Yan et al. <a target="_blank" rel="noopener noreferrer" href="https://eugeneyan.com/writing/applying-ml/"><em>Applying ML to Search and Recommendation</em></a>. Blog, 2024.</p>
+</li>
+<li>
+<p>Chip Huyen. <a target="_blank" rel="noopener noreferrer" href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/"><em>Designing Machine Learning Systems</em></a>. O'Reilly, 2022.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-stat-arb/">
+  <title>Statistical Arbitrage — hackspree</title>
+  <meta property="og:title" content="Statistical Arbitrage">
+  <meta property="og:description" content="Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-stat-arb/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Statistical Arbitrage">
+  <meta name="twitter:description" content="Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Statistical Arbitrage</h1><p class="post-summary">Statistical arbitrage is not about a single price discrepancy. It is about a statistical edge across many trades. Pairs trading, cointegration, mean reversion. The math is from the 1980s. The execution is now on-chain. The principles haven&#39;t changed. The speed has.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">stat-arb</span><span class="tag">pairs-trading</span><span class="tag">cointegration</span><span class="tag">mean-reversion</span></div>
+          
+        </header>
+        <div class="post-body"><p>Statistical arbitrage is the exploitation of statistical mispricings. Unlike pure arbitrage — buy cheap, sell dear, simultaneously — stat arb involves risk. The mispricing may persist. It may widen before it corrects. The stat arb trader bets that it will correct, on average, over many trades. The edge is small per trade. The volume makes it profitable.</p>
+<p>The strategy emerged from the quantitative trading revolution of the 1980s. Gerry Bamberger and Nunzio Tartaglia at Morgan Stanley developed the first pairs trading strategies. The idea: identify two stocks that historically move together. When they diverge — one rises, the other falls — the spread between them has widened beyond its historical range. Buy the underperformer. Short the overperformer. Wait for convergence. The trade is market-neutral — you are not betting on the direction of the market, only on the relationship between the two stocks. Market-neutral strategies attracted capital because they were uncorrelated with the market. The lack of correlation was the selling point.</p>
+<h2 id="the-functional-origin-pairs-trading">The functional origin: pairs trading</h2>
+<p>Pairs trading is the simplest stat arb strategy. Two assets with a historical relationship. A spread between them that mean-reverts. The trader identifies the relationship, waits for divergence, enters the trade, exits on convergence. The relationship can be economic — two companies in the same industry, two tokens on the same blockchain — or statistical — two assets whose prices are cointegrated.</p>
+<p>Cointegration, developed by Clive Granger (Nobel Prize, 2003) and Robert Engle (Nobel Prize, 2003), is the statistical property that makes pairs trading work. Two time series are cointegrated if each is non-stationary (its statistical properties change over time) but a linear combination of them is stationary (mean-reverts). The classic example: a drunk and her dog on a leash. Both walk randomly. The distance between them — the leash length — is stationary. The dog wanders. The drunk wanders. The leash pulls them back together. The leash is the cointegrating relationship.</p>
+<p>In finance: two stocks in the same sector. Each follows a random walk. Their price ratio mean-reverts. The ratio is the leash. The trader buys when the ratio is low relative to its historical average — the underperformer is cheap relative to the outperformer. The trader sells when the ratio reverts. The trade is profitable if the cointegrating relationship persists. The relationship can break. The break is the risk.</p>
+<p>In crypto: ETH and a liquid staking derivative like stETH. The two should trade at parity — 1 stETH = 1 ETH. They occasionally diverge — stETH trades at a discount during market stress, when holders want to exit staked positions quickly. The divergence is the opportunity. The trader buys stETH at a discount, waits for convergence, sells at parity. The trade is directional in the pair but market-neutral in dollar terms. The risk: the discount widens further, the trader's capital is locked, the convergence takes longer than the trader can afford. The risk is real. The risk is managed by position sizing and stop-losses.</p>
+<h2 id="statistical-arbitrage-in-crypto">Statistical arbitrage in crypto</h2>
+<p>Crypto stat arb has advantages over traditional stat arb. The data is public and real-time. Every trade on a DEX is on-chain. Every price on a CEX is streamed. The data quality is higher than in traditional markets, where dark pools and off-exchange trading obscure true volumes. The crypto market structure — fragmented across hundreds of venues, each with its own liquidity profile — creates more opportunities for statistical mispricing than the consolidated equity markets. The fragmentation is the opportunity.</p>
+<p>The strategies:</p>
+<p><strong>Cross-DEX pairs.</strong> The same token pair trades on multiple DEXs. The prices are usually close. When they diverge, the divergence is an opportunity. The trader buys on the cheaper DEX, sells on the dearer. The trade is atomic if the DEXs are on the same chain. It is non-atomic if they are on different chains — the trader bears bridge latency risk.</p>
+<p><strong>Liquid staking derivative arbitrage.</strong> stETH/ETH, rETH/ETH, cbETH/ETH. The derivatives should trade at or near parity with the underlying. They don't always. The discount widens during market stress. The trader accumulates at a discount, waits for convergence, redeems. The trade has a natural exit: the derivative can be redeemed for the underlying after the unstaking period. The redemption is the convergence guarantee. The guarantee makes the trade lower-risk than traditional pairs trading. The lower risk attracts capital. The capital compresses the spread.</p>
+<p><strong>Mean reversion in AMM pools.</strong> AMM pools exhibit mean-reverting behavior around the external market price. When a pool's price diverges from the CEX price, arbitrageurs trade against the pool to bring it back. The mean reversion is not guaranteed — it depends on arbitrageurs acting. But the arbitrageurs are reliable because the trade is profitable. The stat arb trader can front-run the arbitrageurs: enter when the divergence appears, exit when the arbitrageurs correct it. The trade is a bet on arbitrageurs doing their job. The bet is well-founded. The arbitrageurs are reliable.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em> (2017). Lo's book is not specifically about statistical arbitrage. It is about the broader framework that makes stat arb intelligible: markets are not perfectly efficient. They are adaptive systems populated by boundedly rational agents competing for profits. The competition produces efficiency in the long run. The transition produces profit opportunities for those who can identify and exploit them faster than others. Stat arb is the mechanism of the transition. The stat arb trader is the agent of efficiency. The efficiency, once achieved, eliminates the stat arb trader's edge. The trader must find new edges. The search is continuous. The search is the subject of this series.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Clive Granger, &quot;Investigating Causal Relations by Econometric Models and Cross-Spectral Methods,&quot; <em>Econometrica</em>, 1969.</li>
+<li>Robert Engle and Clive Granger, &quot;Co-Integration and Error Correction: Representation, Estimation, and Testing,&quot; <em>Econometrica</em>, 1987.</li>
+<li>Andrew Lo, <em>Adaptive Markets: Financial Evolution at the Speed of Thought</em>, Princeton University Press, 2017.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-market-making">Market Making</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

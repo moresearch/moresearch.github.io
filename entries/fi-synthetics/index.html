@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A synthetic asset is a token that tracks the price of something without requiring custody of that thing. Synthetix lets you trade synthetic gold, synthetic Apple stock, synthetic Bitcoin — all on-chain, collateralized by crypto. The functional origin is the contract for difference (CFD), invented in London in the 1950s. The execution is on Ethereum.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-synthetics/">
+  <title>Synthetic Assets — hackspree</title>
+  <meta property="og:title" content="Synthetic Assets">
+  <meta property="og:description" content="A synthetic asset is a token that tracks the price of something without requiring custody of that thing. Synthetix lets you trade synthetic gold, synthetic Apple stock, synthetic Bitcoin — all on-chain, collateralized by crypto. The functional origin is the contract for difference (CFD), invented in London in the 1950s. The execution is on Ethereum.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-synthetics/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Synthetic Assets">
+  <meta name="twitter:description" content="A synthetic asset is a token that tracks the price of something without requiring custody of that thing. Synthetix lets you trade synthetic gold, synthetic Apple stock, synthetic Bitcoin — all on-chain, collateralized by crypto. The functional origin is the contract for difference (CFD), invented in London in the 1950s. The execution is on Ethereum.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Synthetic Assets</h1><p class="post-summary">A synthetic asset is a token that tracks the price of something without requiring custody of that thing. Synthetix lets you trade synthetic gold, synthetic Apple stock, synthetic Bitcoin — all on-chain, collateralized by crypto. The functional origin is the contract for difference (CFD), invented in London in the 1950s. The execution is on Ethereum.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">synthetics</span><span class="tag">synthetix</span><span class="tag">cfds</span><span class="tag">derivatives</span></div>
+          
+        </header>
+        <div class="post-body"><p>A synthetic asset is a financial instrument that simulates the payoff of another asset without requiring ownership of that asset. A synthetic S&amp;P 500 token tracks the price of the S&amp;P 500 index without the holder owning any of the underlying stocks. The synthetic is created by collateralization: a user deposits crypto as collateral and mints the synthetic token. The token's value is maintained by an oracle that reports the price of the underlying asset. If the synthetic token's price diverges from the underlying, arbitrageurs trade the divergence back to parity.</p>
+<p>Synthetix, launched in 2018, is the dominant synthetic asset protocol. Users deposit SNX (the Synthetix governance token) as collateral and mint synthetic assets — synths — that track currencies, commodities, cryptocurrencies, and equities. The synths trade on Synthetix's own exchange. The exchange uses a pooled collateral model: all synths are backed by the collective SNX collateral, not by individual positions. The pooling enables infinite liquidity — any synth can be traded against any other synth at the oracle price, with zero slippage. The zero slippage is the key innovation. The key innovation is funded by SNX stakers, who bear the risk of the pooled collateral.</p>
+<h2 id="the-functional-origin-contracts-for-difference">The functional origin: contracts for difference</h2>
+<p>The contract for difference (CFD) was invented in London in the 1950s by hedge funds seeking to trade equities on margin without triggering stamp duty — a tax on share transactions. The CFD is an agreement between two parties to exchange the difference between the opening and closing price of an underlying asset. The buyer doesn't own the asset. The seller doesn't deliver it. They settle the price difference in cash.</p>
+<p>CFDs became popular among retail traders in the 1990s, offered by spread-betting firms like IG Index. The appeal: leveraged exposure to any asset class without owning the underlying, without paying stamp duty, and without the complexity of futures or options. The risk: the leverage amplifies losses. The risk materialized in 2015 when the Swiss National Bank unpegged the franc from the euro. EUR/CHF collapsed. Retail CFD traders were wiped out. Several brokers went bankrupt.</p>
+<p>Synthetic assets are CFDs on a blockchain. The collateral is on-chain. The settlement is automatic. The counterparty is the protocol, not a broker. The protocol's solvency depends on the collateralization ratio. If the ratio falls below the threshold, the protocol must liquidate positions or mint new tokens. The mechanism is the same as MakerDAO's DAI, generalized to any asset.</p>
+<h2 id="the-pooled-collateral-model">The pooled collateral model</h2>
+<p>Synthetix's pooled collateral model is the key architectural difference from MakerDAO. In MakerDAO, each vault is independent — if one vault is undercollateralized, only that vault is liquidated. In Synthetix, all synths are backed by a single pool of SNX collateral. The pool absorbs gains and losses collectively. If the value of outstanding synths exceeds the value of the collateral pool, the protocol is insolvent. The insolvency risk is collective. The collective risk requires a higher collateralization ratio — Synthetix targets 400-500%, compared to MakerDAO's 150%.</p>
+<p>The pooled model enables infinite liquidity. Because all synths are fungible against the collateral pool, any synth can be traded for any other synth at the oracle price. There is no order book. There is no AMM curve. There is no slippage. The trade is executed against the pool at the oracle price plus a fee. The fee goes to SNX stakers. The model is elegant. The elegance is the attraction. The attraction is counterbalanced by the complexity of managing a pooled collateral system with exposure to dozens of synthetic assets.</p>
+<h2 id="the-frontier">The frontier</h2>
+<p>Synthetic assets enable on-chain exposure to off-chain assets. The oracle reports the price of Apple stock. The protocol mints sAAPL. The user trades sAAPL on-chain. The exposure is synthetic. The custody is unnecessary. The border between traditional finance and DeFi is the oracle. The oracle is the bridge. The bridge enables a future where any asset can be traded on-chain without the asset ever touching a blockchain. The future is synthetic. The synthesis is the product.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Synthetix, &quot;Synthetix Litepaper&quot; (2018). The original description of the pooled collateral model and the infinite liquidity exchange. The litepaper is 12 pages. The key insight — pooled collateral enables zero-slippage trading between any synthetic assets — is on page 3. The rest is implementation. The implementation is now managing billions in synthetic asset value. The value is the proof of the concept.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>A synthetic asset is a data pipeline. The oracle is the data source. The protocol is the transformation layer. The synthetic token is the output. The pipeline ingests a price feed, transforms it into a token with the same economic exposure, and delivers it to the user. The same pattern as an ETL pipeline: extract (oracle price), transform (mint synth at oracle price), load (deliver token to user). The domain is finance. The architecture is data engineering.</p>
+<p>The pooled collateral model is a shared-nothing architecture applied to risk. Each synth is backed by the entire collateral pool, not by individual positions. The risk is shared. The sharing eliminates counterparty risk between synth holders but creates systemic risk — if the collateral value crashes, all synths are affected simultaneously. This is the same trade-off as a monolith vs. microservices. The monolith (pooled collateral) is efficient and simple until it fails globally. Microservices (isolated vaults, like MakerDAO) are resilient to individual failures but less capital-efficient. The trade-off is architectural. The domain determines which side is correct.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Synthetix, &quot;Synthetix Litepaper,&quot; 2018.</li>
+<li>IG Group, &quot;Contracts for Difference,&quot; IG Documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-stablecoins">Stablecoins</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-perpetuals">Perpetual Futures</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

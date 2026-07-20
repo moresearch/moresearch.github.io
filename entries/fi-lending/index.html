@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Lending is the oldest financial instrument. The Code of Hammurabi regulated interest rates in 1754 BC. Compound and Aave automated lending on-chain with overcollateralized pools and algorithmically set interest rates. The functional origin is 3,800 years old. The code is seven years old. The principle is the same.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-lending/">
+  <title>Lending Protocols — hackspree</title>
+  <meta property="og:title" content="Lending Protocols">
+  <meta property="og:description" content="Lending is the oldest financial instrument. The Code of Hammurabi regulated interest rates in 1754 BC. Compound and Aave automated lending on-chain with overcollateralized pools and algorithmically set interest rates. The functional origin is 3,800 years old. The code is seven years old. The principle is the same.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-lending/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Lending Protocols">
+  <meta name="twitter:description" content="Lending is the oldest financial instrument. The Code of Hammurabi regulated interest rates in 1754 BC. Compound and Aave automated lending on-chain with overcollateralized pools and algorithmically set interest rates. The functional origin is 3,800 years old. The code is seven years old. The principle is the same.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Lending Protocols</h1><p class="post-summary">Lending is the oldest financial instrument. The Code of Hammurabi regulated interest rates in 1754 BC. Compound and Aave automated lending on-chain with overcollateralized pools and algorithmically set interest rates. The functional origin is 3,800 years old. The code is seven years old. The principle is the same.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">lending</span><span class="tag">compound</span><span class="tag">aave</span><span class="tag">credit</span></div>
+          
+        </header>
+        <div class="post-body"><p>Lending is the oldest financial instrument. Before there were equities, before there were bonds, before there were derivatives, there were loans. A farmer borrows seed grain after a bad harvest. A merchant borrows capital for a voyage. A king borrows to finance a war. The lender provides resources now in exchange for repayment with interest later. The interest compensates for the time value of money and the risk of default.</p>
+<p>The Code of Hammurabi, inscribed in Babylon around 1754 BC, regulated lending. It set maximum interest rates — 33.3% for grain loans, 20% for silver loans. It required loans to be witnessed. It specified penalties for fraudulent lending practices. The code is the oldest surviving legal text. Its largest single subject is lending. Lending is that old. Lending is that central to civilization.</p>
+<h2 id="the-functional-origin-the-moneylender">The functional origin: the moneylender</h2>
+<p>In medieval Europe, lending was constrained by usury laws — the Catholic Church prohibited charging interest on loans. The prohibition created a market niche filled by Jews, who were not subject to canon law, and by Lombards, Italian merchants who developed bills of exchange that disguised interest as exchange-rate differentials. The moneylender lent at interest and was vilified for it. The vilification was moral. The function was economic. The economy needed credit. The moneylender provided it. The moral opposition was overcome by economic necessity.</p>
+<p>The Medici family, in 15th-century Florence, systematized lending into banking. They took deposits, made loans, transferred funds across Europe through bills of exchange, and financed trade, government, and the arts. The Medici bank was the largest financial institution in Europe. Its innovation was scale: lending as an institution rather than an individual activity. Deposits funded loans. Loans generated interest. Interest funded expansion. The virtuous cycle was the model for modern banking.</p>
+<p>The model had a structural vulnerability: loans were not fully collateralized. The Medici bank lent to kings and princes who could not be compelled to repay. The bank failed in 1494 when its largest borrowers defaulted. The failure was the consequence of unsecured lending to sovereigns. The lesson: collateral matters. The lesson was learned by DeFi lending protocols 500 years later.</p>
+<h2 id="defi-lending-compound-and-aave">DeFi lending: Compound and Aave</h2>
+<p>Compound, launched in 2018, introduced the pool-based lending model to DeFi. Lenders deposit tokens into a pool. Borrowers borrow from the pool. Interest rates are set algorithmically: as utilization (the percentage of the pool that is borrowed) increases, the interest rate increases. The rate curve incentivizes equilibrium — when borrowing demand is high, rates rise, attracting more deposits and discouraging borrowing. When demand is low, rates fall. The algorithm is the market maker for credit.</p>
+<p>All loans are overcollateralized. A borrower must deposit more value than they borrow. If the collateral value falls below the liquidation threshold, the position is liquidated: anyone can repay the loan and claim the collateral at a discount. The liquidation incentive ensures that positions are closed before they become undercollateralized. The overcollateralization eliminates credit risk. The trade-off: capital efficiency. Overcollateralized lending cannot expand the credit supply. It can only recycle existing capital. The limitation is the subject of undercollateralized lending protocols, which are still experimental.</p>
+<p>Aave, launched in 2020, extended Compound's model with flash loans (borrow and repay in one transaction, zero collateral), rate switching (stable vs. variable), and multi-asset pools. Aave is now the largest DeFi lending protocol, with billions in total value locked.</p>
+<h2 id="the-interest-rate-model">The interest rate model</h2>
+<p>The core innovation of DeFi lending is the algorithmic interest rate. Traditional lending uses credit scores, relationship banking, and manual underwriting. DeFi lending uses a utilization curve: borrow rate = base rate + (utilization rate × multiplier), with a &quot;kink&quot; at optimal utilization where the slope steepens. The curve is transparent. The curve is enforced by code. The curve eliminates the need for credit assessment. The collateral substitutes for the credit score.</p>
+<p>The utilization curve is a market mechanism. When utilization is low, rates are low — capital is abundant, borrowers are scarce. When utilization is high, rates rise sharply — capital is scarce, borrowers are abundant. The sharp rise above the kink prevents the pool from being fully utilized, which would prevent depositors from withdrawing. The kink is the safety valve. The safety valve is algorithmic. The algorithm is the lender of last resort.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Sidney Homer and Richard Sylla, <em>A History of Interest Rates</em> (1963, 4th edition 2005). The definitive history of lending from ancient Mesopotamia to the modern era. The book documents 5,000 years of interest rates across civilizations, tracing the evolution of credit from temple loans in Babylon to the Eurodollar market. The data shows that interest rates reflect the intersection of time preference, risk, and institutional structure. DeFi lending changes the institutional structure. Time preference and risk remain. The book is the context. The context is essential.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>DeFi lending is a state machine. The pool is the state. Deposits, borrows, repays, liquidations are the transitions. The utilization curve is the control law. The entire protocol is a finite state machine with economic incentives as the transition guards. The engineering pattern is the same as any event-sourced system: each transaction is an event, the pool state is the projection, the interest rate is a derived value computed from the utilization ratio. The architecture would be familiar to any engineer who has built a CQRS system. The domain is lending. The pattern is event sourcing.</p>
+<p>The liquidation mechanism is a watchdog timer. If collateral value falls below threshold, liquidate. The watchdog is decentralized — anyone can trigger it. The incentive is the liquidation discount. The mechanism is the same as a circuit breaker in a distributed system: detect the fault condition, trigger the protective action, compensate the responder. The domain is different. The control flow is identical.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Sidney Homer and Richard Sylla, <em>A History of Interest Rates</em>, Wiley, 4th edition, 2005.</li>
+<li>Robert Leshner and Geoffrey Hayes, &quot;Compound: The Money Market Protocol,&quot; 2019.</li>
+<li>Aave, &quot;Aave Protocol Whitepaper,&quot; 2020.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-flash-loans">Flash Loans</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-stablecoins">Stablecoins</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Consolidated best practices and practical guidance for building evaluation, task, and agent harnesses that produce reliable, replayable results.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/harness-engineering-best-practices-for-ai-agents/">
+  <title>Harness Engineering: Best Practices for Reliable Agent Systems — hackspree</title>
+  <meta property="og:title" content="Harness Engineering: Best Practices for Reliable Agent Systems">
+  <meta property="og:description" content="Consolidated best practices and practical guidance for building evaluation, task, and agent harnesses that produce reliable, replayable results.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/harness-engineering-best-practices-for-ai-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Harness Engineering: Best Practices for Reliable Agent Systems">
+  <meta name="twitter:description" content="Consolidated best practices and practical guidance for building evaluation, task, and agent harnesses that produce reliable, replayable results.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-05-20">2026-05-20</time></p>
+          <h1>Harness Engineering: Best Practices for Reliable Agent Systems</h1><p class="post-summary">Consolidated best practices and practical guidance for building evaluation, task, and agent harnesses that produce reliable, replayable results.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">agents</span><span class="tag">evaluation</span></div>
+          
+        </header>
+        <div class="post-body"><p>Agent quality is rarely limited by model intelligence alone. Most failures show up in the harness around the model: weak fixtures, vague success criteria, missing tool mocks, and no clean way to replay a bad run.</p>
+<p>If the harness is sloppy, the team ends up debating anecdotes instead of improving behavior.</p>
+<h2 id="treat-the-harness-as-product-infrastructure">Treat the harness as product infrastructure</h2>
+<p>A good agent harness is not a throwaway script. It is the system that tells you whether the agent is getting better or just getting luckier.</p>
+<p>That means the harness should:</p>
+<ul>
+<li>capture full inputs, tool calls, and outputs,</li>
+<li>replay tasks deterministically where possible,</li>
+<li>isolate external dependencies behind controllable fakes or fixtures,</li>
+<li>score outcomes with explicit checks instead of vibes.</li>
+</ul>
+<p>Once the harness is trustworthy, iteration gets much faster because regressions stop hiding inside impressive demos.</p>
+<h2 id="build-cases-from-real-failures">Build cases from real failures</h2>
+<p>The highest-value harness cases usually come from production misses:</p>
+<ol>
+<li>a tool call that should have been blocked,</li>
+<li>a loop that should have terminated earlier,</li>
+<li>a formatting step that silently broke downstream parsing,</li>
+<li>an agent that took a plausible-but-wrong shortcut.</li>
+</ol>
+<p>Every one of those should become a permanent evaluation case.</p>
+<blockquote>
+<p>The best harnesses turn yesterday's incident into tomorrow's baseline.</p>
+</blockquote>
+<h2 id="prefer-observable-steps-over-layered-checks">Prefer observable steps over layered checks</h2>
+<p>End-to-end tests matter, but they are not enough on their own. Agent systems benefit from layered checks:</p>
+<ul>
+<li>prompt-level cases,</li>
+<li>tool-selection cases,</li>
+<li>state-transition cases,</li>
+<li>final outcome cases.</li>
+</ul>
+<p>That layering makes failures legible. Instead of “the agent failed,” you get “the planner chose the wrong tool” or “the verifier accepted malformed output.”</p>
+<h2 id="keep-the-pass-fail-contract-concrete">Keep the pass-fail contract concrete</h2>
+<p>For each harness case, define:</p>
+<ul>
+<li>what the agent is allowed to do,</li>
+<li>what it must never do,</li>
+<li>what exact evidence counts as success,</li>
+<li>what artifacts should be stored for debugging.</li>
+</ul>
+<p>That discipline matters more as agents gain more tools and more autonomy. The wider the action space, the more valuable a narrow, repeatable harness becomes.</p>
+<hr>
+<h2 id="browser-tasks-run-against-real-pages">Browser tasks: run against real pages</h2>
+<p>If an agent claims it can use the web, the harness should make it prove it on the web. Use real interfaces, preserve the messy interaction sequence, and score outcomes with concrete checks.</p>
+<p>Real pages expose real weaknesses: buttons move, forms span multiple steps, state must persist across actions, and success depends on the whole sequence, not one isolated click. Polite demos can be useful for unit tests, but a serious claim about browser competence should survive an honest environment.</p>
+<h2 id="coding-harnesses-use-real-repositories">Coding harnesses: use real repositories</h2>
+<p>Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.</p>
+<p>Prefer messy repositories over perfect examples, failing tests over vague grading, and issue-driven tasks over isolated snippets. Tests are better than vibes: failing tests produce clear, automatable signals that scale.</p>
+<h2 id="tasks-that-fight-back">Tasks that fight back</h2>
+<p>A harness should ask the system to do tasks that require tools, retrieval, and real-world messiness. Useful harness cases are:</p>
+<ul>
+<li>small enough to score,</li>
+<li>rich enough to require multiple steps,</li>
+<li>messy enough that shortcuts stop working.</li>
+</ul>
+<p>If every test can be passed by pattern-matching the prompt, you are not measuring the assistant — you are measuring prompt luck.</p>
+<h2 id="observe-the-whole-operating-system-when-relevant">Observe the whole operating system when relevant</h2>
+<p>Desktop and multimodal agents need execution harnesses that see the same OS complexity users experience: window state, clipboard and file effects, long action sequences, and recovery after mistakes. Honest environments create honest confidence.</p>
+<h2 id="go-for-reliable-pipelines">Go for reliable pipelines</h2>
+<p>Harness engineering is fundamentally about building repeatable, trustworthy evaluation pipelines that can scale with complexity. Use boring, predictable tools and explicit pipelines to manage worker queues, sandboxes, artifact capture, and metric aggregation. Go is a practical choice for many of these pieces because of its concurrency model, static binaries, and clear CLIs.</p>
+<h2 id="task-harness-engineering-practical-pattern">Task harness engineering (practical pattern)</h2>
+<p>Task harnesses turn high-level engineering questions—&quot;Can this system finish a real task?&quot;—into reproducible, debuggable experiments. They are stateful, often non-deterministic, and rely on high-fidelity mocks or real infra. Use eval harnesses for filtering, then escalate to task harnesses for realism and agent harnesses for tool integration checks.</p>
+<h2 id="fowlers-view-guides--sensors">Fowler's view: guides + sensors</h2>
+<p>Treat the harness as a control system of guides (feedforward) and sensors (feedback). Start with cheap computational controls (linters, unit tests), add fast feedback (CI, structural tests), and layer inferential sensors (LLM-based reviewers) only where they measurably reduce supervision cost. Capture incidents and convert them into lasting harness cases.</p>
+<h2 id="self-improving-harness-workflows">Self-improving harness workflows</h2>
+<p>Combine short skill loops (read lessons → do work → reflect → write lessons) with harness practices: instrument runs, compact context when needed, and route workloads by role. Let usage data drive which harness cases matter most.</p>
+<h2 id="how-to-consolidate-posts">How to consolidate posts</h2>
+<p>When consolidating multiple related posts, create a canonical merged post with a clear, focused title and stable slug. In the original files add <code>draft: true</code> and a one-line note pointing to the canonical post. The generator will skip draft files.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>A harness is the way a team learns whether its agents are improving. Make harnesses observable, replayable, and concrete. Use layered checks to keep failures legible and prefer boring, robust pipelines that scale with real-world complexity.</p>
+<p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
+<blockquote>
+<p>Engineering a harness is engineering the interface between the agent and the world. The interface determines what the agent sees. What the agent sees determines what it can do. What it can do determines what it can become.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Yield farming is the practice of deploying capital across DeFi protocols to earn returns. The functional origin is sharecropping — providing land (capital) in exchange for a share of the harvest (yield). The innovation is liquidity mining — protocols paying users in governance tokens to bootstrap liquidity. The economics are incentive design. The risks are impermanent loss, smart contract bugs, and the inevitable decline of unsustainable yields.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/fi-yield-farming/">
+  <title>Yield Farming — hackspree</title>
+  <meta property="og:title" content="Yield Farming">
+  <meta property="og:description" content="Yield farming is the practice of deploying capital across DeFi protocols to earn returns. The functional origin is sharecropping — providing land (capital) in exchange for a share of the harvest (yield). The innovation is liquidity mining — protocols paying users in governance tokens to bootstrap liquidity. The economics are incentive design. The risks are impermanent loss, smart contract bugs, and the inevitable decline of unsustainable yields.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/fi-yield-farming/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Yield Farming">
+  <meta name="twitter:description" content="Yield farming is the practice of deploying capital across DeFi protocols to earn returns. The functional origin is sharecropping — providing land (capital) in exchange for a share of the harvest (yield). The innovation is liquidity mining — protocols paying users in governance tokens to bootstrap liquidity. The economics are incentive design. The risks are impermanent loss, smart contract bugs, and the inevitable decline of unsustainable yields.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Yield Farming</h1><p class="post-summary">Yield farming is the practice of deploying capital across DeFi protocols to earn returns. The functional origin is sharecropping — providing land (capital) in exchange for a share of the harvest (yield). The innovation is liquidity mining — protocols paying users in governance tokens to bootstrap liquidity. The economics are incentive design. The risks are impermanent loss, smart contract bugs, and the inevitable decline of unsustainable yields.</p>
+          <div class="tags"><span class="tag">defi</span><span class="tag">yield-farming</span><span class="tag">liquidity-mining</span><span class="tag">incentives</span><span class="tag">compound</span></div>
+          
+        </header>
+        <div class="post-body"><p>Yield farming is the practice of deploying capital across DeFi protocols to earn the highest available return. The farmer deposits tokens into lending pools, AMM liquidity pools, or options vaults. The protocols pay interest, trading fees, or incentive rewards. The farmer monitors returns and reallocates capital as yields change. The activity is called farming because the capital is the seed and the yield is the harvest.</p>
+<p>Yield farming emerged in the summer of 2020 — &quot;DeFi Summer&quot; — when Compound introduced liquidity mining. Compound distributed COMP governance tokens to users who borrowed and lent on the protocol. The distribution turned lending from a low-yield activity into a high-yield one. Users borrowed assets they didn't need, lent them back, and earned COMP on both sides. The activity was economically circular — it didn't increase lending efficiency, it harvested tokens. The harvest was profitable while COMP traded at high valuations. The valuations were sustained by the expectation of future protocol revenue. The expectation was speculative. The speculation was the yield.</p>
+<h2 id="the-functional-origin-sharecropping">The functional origin: sharecropping</h2>
+<p>Sharecropping is an agricultural arrangement where a landowner provides land to a farmer in exchange for a share of the crop. The arrangement emerged after the American Civil War, when former slaves had labor but no land, and former plantation owners had land but no labor. The sharecropper worked the land. The landowner provided the capital — land, tools, seed. The harvest was split. The split was the return on capital.</p>
+<p>The arrangement was exploitative in practice — landowners often manipulated accounts to keep sharecroppers in debt — but the economic logic was sound: capital and labor combine to produce output. The capital provider earns a return proportional to the capital's contribution. The labor provider earns a return proportional to the labor's contribution. The split is the subject of bargaining.</p>
+<p>Yield farming is sharecropping on blockchain rails. The farmer provides capital — tokens deposited into a protocol. The protocol provides the &quot;land&quot; — the smart contract infrastructure that generates fees. The harvest is the fees plus the incentive tokens. The split is determined by the protocol's parameters, not by a landowner's accounting. The transparency eliminates the exploitation vector. The automation eliminates the bargaining. The code is the landlord. The code is neutral.</p>
+<h2 id="liquidity-mining">Liquidity mining</h2>
+<p>Liquidity mining is the distribution of protocol governance tokens to users who provide liquidity. The mechanism: the protocol allocates a percentage of its token supply to liquidity providers. The tokens are distributed pro-rata based on each provider's share of the pool. The tokens have value if the protocol has value. The value of the tokens is the incentive to provide liquidity.</p>
+<p>Liquidity mining is an incentive design problem. The protocol wants to attract liquidity — deeper pools mean lower slippage, which attracts traders, which generates fees, which attracts more liquidity. The incentive tokens are the subsidy. The subsidy is paid to early liquidity providers to overcome the chicken-and-egg problem: no one wants to provide liquidity to an empty pool, and no one wants to trade in a pool with no liquidity. The subsidy breaks the equilibrium. The subsidy costs the protocol dilution of its token. The dilution is the cost of bootstrapping.</p>
+<p>The problem: liquidity mining attracts mercenary capital. When yields are high, capital floods in. When yields decline — because the token price falls, or the subsidy ends, or a competing protocol offers higher yields — capital floods out. The mercenary capital is not loyal. The loyalty must be earned by the protocol's fundamentals: fee generation, user growth, sustainable economics. The protocols that achieve fundamentals survive the end of the subsidy. The protocols that don't die when the subsidies stop. The death is the market's verdict on the protocol's underlying value.</p>
+<h2 id="the-strategies">The strategies</h2>
+<p><strong>Simple lending.</strong> Deposit stablecoins into Aave or Compound. Earn the lending interest rate. The rate fluctuates with utilization. The yield is modest — typically 2-10% APY for stablecoins. The risk is low — the protocols are battle-tested, the collateral is overcollateralized. Simple lending is the baseline. The baseline is the risk-free rate of DeFi.</p>
+<p><strong>LP farming.</strong> Provide liquidity to an AMM pool. Earn trading fees plus incentive tokens. The yield is higher than lending. The risk is higher — impermanent loss, smart contract risk, incentive token price risk. LP farming is the most common yield farming strategy. The commonness is evidence of the risk-return trade-off. The trade-off is the farmer's decision.</p>
+<p><strong>Leveraged farming (yield looping).</strong> Deposit collateral. Borrow against it. Deposit the borrowed funds. Repeat. The leverage multiplies the yield and the risk. If the lending rate exceeds the farming yield, the position loses money. If the collateral value falls, the position is liquidated. Leveraged farming is the riskiest yield strategy. The riskiest strategy attracts the most sophisticated farmers. The sophistication is the barrier to entry. The barrier protects the yields of those who cross it.</p>
+<p><strong>Auto-compounding.</strong> Protocols like Yearn and Beefy automatically compound yields — harvesting rewards, selling them for the underlying asset, redepositing. The compounding increases APY. The automation saves gas. The protocol takes a fee. The fee is the price of convenience. The convenience is the product.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Vitalik Buterin, &quot;On Liquidity Mining&quot; (2020). Buterin argued that liquidity mining is only sustainable if the distributed tokens confer genuine governance rights over a protocol that generates genuine revenue. Otherwise, liquidity mining is a wealth transfer from late buyers of the token to early farmers. The wealth transfer is zero-sum. The zero-sum game ends when the music stops. The music stopped for many protocols in 2022. The protocols that survived had fundamentals. The fundamentals were revenue. The revenue was from fees. The fees were from users. The users were real.</p>
+<h2 id="the-engineering-connection">The engineering connection</h2>
+<p>Liquidity mining is an incentive design problem — the same class of problem as designing a recommendation algorithm or a caching policy. You have a desired behavior (provide liquidity). You have a budget (protocol tokens). You need to allocate the budget to maximize the behavior while minimizing cost. The solution space is mechanism design. The constraints are Sybil resistance, capital efficiency, and retention of liquidity after the subsidy ends. The engineer who designs a liquidity mining program is designing a market. The same skills — optimization under constraints, adversarial thinking, measurement of outcomes — apply to any incentive system.</p>
+<p>The auto-compounding vault (Yearn, Beefy) is an automation pattern: harvest rewards, sell for the underlying, reinvest, repeat. The loop is a cron job implemented as a smart contract. The gas cost per harvest must be less than the rewards gained, or the strategy loses money. The optimization problem is: given gas costs, reward rates, and pool sizes, what is the optimal harvest frequency? The answer is a function of the same variables that determine cache invalidation intervals, batch sizes, and polling frequencies in any distributed system. The domain is yield. The math is operations research.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Vitalik Buterin, &quot;On Liquidity Mining,&quot; 2020.</li>
+<li>Compound, &quot;Compound Governance,&quot; 2020.</li>
+<li>Yearn Finance, &quot;Yearn Vaults,&quot; Yearn Documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-lending">Lending Protocols</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

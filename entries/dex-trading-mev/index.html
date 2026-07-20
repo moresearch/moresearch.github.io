@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="MEV is the profit extractable from ordering, including, or excluding transactions within a block. It is the dark forest of crypto — an adversarial environment where every transaction in the mempool is prey. Phil Daian named it in 2019. The name stuck. The phenomenon is the economic layer of blockchain consensus.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-mev/">
+  <title>Maximal Extractable Value — hackspree</title>
+  <meta property="og:title" content="Maximal Extractable Value">
+  <meta property="og:description" content="MEV is the profit extractable from ordering, including, or excluding transactions within a block. It is the dark forest of crypto — an adversarial environment where every transaction in the mempool is prey. Phil Daian named it in 2019. The name stuck. The phenomenon is the economic layer of blockchain consensus.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-mev/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Maximal Extractable Value">
+  <meta name="twitter:description" content="MEV is the profit extractable from ordering, including, or excluding transactions within a block. It is the dark forest of crypto — an adversarial environment where every transaction in the mempool is prey. Phil Daian named it in 2019. The name stuck. The phenomenon is the economic layer of blockchain consensus.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Maximal Extractable Value</h1><p class="post-summary">MEV is the profit extractable from ordering, including, or excluding transactions within a block. It is the dark forest of crypto — an adversarial environment where every transaction in the mempool is prey. Phil Daian named it in 2019. The name stuck. The phenomenon is the economic layer of blockchain consensus.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">mev</span><span class="tag">flashbots</span><span class="tag">front-running</span><span class="tag">sandwich-attacks</span></div>
+          
+        </header>
+        <div class="post-body"><p>Maximal Extractable Value — MEV — is the profit that can be extracted by controlling transaction ordering within a block. The term was coined by Phil Daian and colleagues in the 2019 paper &quot;Flash Boys 2.0.&quot; The name is a deliberate reference to Michael Lewis's <em>Flash Boys</em>, which documented the high-frequency trading arms race in traditional equity markets. The arms race migrated to crypto. The stakes are the same. The speed is higher.</p>
+<p>MEV exists because blockchains are not instant. Transactions are broadcast to a mempool — a waiting room where they sit until a block producer includes them in a block. While in the mempool, transactions are visible. Their contents are known. The block producer can choose which transactions to include, in what order. The choice is economic. Transactions with higher fees are more attractive to include. Transactions that create profit opportunities — arbitrage, liquidation, sandwich attacks — can be front-run, back-run, or sandwiched. The profit is the MEV. The extractor is the searcher. The victim is the user whose transaction created the opportunity.</p>
+<h2 id="the-functional-origin-flash-boys">The functional origin: Flash Boys</h2>
+<p>Michael Lewis's <em>Flash Boys: A Wall Street Revolt</em> (2014) told the story of the high-frequency trading revolution in U.S. equity markets. The key discovery: the physical distance between exchanges created arbitrage opportunities that could be exploited by traders with faster connections. The traders built microwave towers, laid fiber-optic cable in the straightest possible lines, and colocated servers in exchange data centers. The speed advantage was measured in microseconds. The profit was measured in billions.</p>
+<p>The crypto parallel is exact. The mempool is the digital equivalent of the physical distance between exchanges. Transactions in the mempool are visible. A searcher who can read the mempool faster, simulate the transaction's effect, and submit a profitable counterpart transaction before the original is included — that searcher extracts the MEV. The speed advantage is measured in milliseconds. The profit is measured in hundreds of millions.</p>
+<p>The difference: in traditional markets, the arms race was infrastructure — microwave towers, fiber routes, exchange colocation. In crypto, the arms race is also infrastructure — but the infrastructure is mempool access, private relay connections, and integration with block builders. The traditional HFT firm needed a microwave license. The crypto MEV searcher needs a connection to a block builder. The barrier is different. The dynamic is the same.</p>
+<h2 id="the-forms-of-mev">The forms of MEV</h2>
+<p><strong>Front-running.</strong> A searcher sees a large buy order in the mempool. The searcher submits their own buy order for the same token with a higher gas price, getting included before the victim. The searcher's buy moves the price up. The victim's buy executes at the higher price. The searcher sells immediately after, pocketing the difference. The victim paid more. The searcher extracted the difference. The extraction is front-running.</p>
+<p><strong>Sandwich attacks.</strong> A variant. The searcher buys before the victim and sells after. The victim's trade is sandwiched between the searcher's two trades. The victim buys at an artificially elevated price. The searcher profits from both legs. The sandwich is the most profitable form of MEV for liquid token pairs with active mempools.</p>
+<p><strong>Back-running.</strong> A searcher sees a trade that will move the price. The searcher submits a trade after the victim's trade, profiting from the price movement. Back-running is less profitable than front-running — the price has already moved — but less risky — the searcher doesn't need to predict the direction, only react to it. Liquidation of undercollateralized loans is a form of back-running: the searcher sees the price update that triggers the liquidation and submits the liquidation transaction immediately after.</p>
+<p><strong>Just-in-time liquidity.</strong> A searcher sees a large swap in the mempool. They deposit liquidity into the pool just before the swap executes, earn the swap fees, and withdraw immediately after. The LP earns fees with zero inventory risk. JIT liquidity is a form of MEV extraction that benefits the extractor at the expense of passive LPs, whose fee income is diluted.</p>
+<h2 id="the-infrastructure-flashbots">The infrastructure: Flashbots</h2>
+<p>Flashbots was launched in 2020 by Phil Daian, Stephane Gosselin, and colleagues. It is a research and development organization focused on MEV. Its primary product: MEV-Boost, a middleware that separates block building from block proposing. Block builders construct blocks. Block proposers — validators — choose which block to propose. MEV-Boost allows validators to auction their block space to builders. Builders compete to offer the most valuable block. Validators earn the MEV. The auction democratizes MEV access — instead of requiring every validator to run MEV extraction infrastructure, they can outsource to builders and capture the value through competition.</p>
+<p>Flashbots also operates a private relay. Searchers submit bundles — groups of transactions that must be executed atomically and in order — to the relay. The relay forwards bundles to builders. The bundles are not broadcast to the public mempool. The privacy prevents front-running of the searcher's own transactions. The relay is the infrastructure that makes MEV extraction possible without the searcher's strategies being copied or front-run.</p>
+<p>The Flashbots model has been criticized for centralizing block building. A small number of builders dominate the market. The builders integrate vertically with searchers. The integration concentrates MEV extraction. The concentration creates a new class of intermediary between users and validators. The intermediary extracts rent. The rent is paid by users. The concentration is the subject of ongoing research and regulatory attention.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Phil Daian et al., &quot;Flash Boys 2.0: Frontrunning, Transaction Reordering, and Consensus Instability in Decentralized Exchanges&quot; (2019). The paper that named MEV. It documented the prevalence of front-running and sandwich attacks on Ethereum DEXs, measured the extracted value, and proposed architectural responses. The paper is the foundation of MEV research. Every subsequent paper in the field cites it. The phenomenon it documented has grown by orders of magnitude. The growth is the subject of the posts that follow.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Phil Daian et al., &quot;Flash Boys 2.0,&quot; 2019.</li>
+<li>Michael Lewis, <em>Flash Boys: A Wall Street Revolt</em>, W.W. Norton, 2014.</li>
+<li>Flashbots, <a target="_blank" rel="noopener noreferrer" href="https://docs.flashbots.net">docs.flashbots.net</a>.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-order-book">The Order Book</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

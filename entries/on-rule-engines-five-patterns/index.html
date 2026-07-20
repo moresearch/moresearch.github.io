@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Five architectural patterns for blending LLMs with rule-based decision engines — NLU to rules, rules to NLG, rules orchestrating LLMs, LLM-driven rule extraction, and chatbot delegation. Each pattern answers a different question about where the LLM sits in the decision pipeline and what role it plays.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/on-rule-engines-five-patterns/">
+  <title>On Rule Engines — Five Patterns for Composite AI — hackspree</title>
+  <meta property="og:title" content="On Rule Engines — Five Patterns for Composite AI">
+  <meta property="og:description" content="Five architectural patterns for blending LLMs with rule-based decision engines — NLU to rules, rules to NLG, rules orchestrating LLMs, LLM-driven rule extraction, and chatbot delegation. Each pattern answers a different question about where the LLM sits in the decision pipeline and what role it plays.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/on-rule-engines-five-patterns/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Rule Engines — Five Patterns for Composite AI">
+  <meta name="twitter:description" content="Five architectural patterns for blending LLMs with rule-based decision engines — NLU to rules, rules to NLG, rules orchestrating LLMs, LLM-driven rule extraction, and chatbot delegation. Each pattern answers a different question about where the LLM sits in the decision pipeline and what role it plays.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-15">2026-07-15</time></p>
+          <h1>On Rule Engines — Five Patterns for Composite AI</h1><p class="post-summary">Five architectural patterns for blending LLMs with rule-based decision engines — NLU to rules, rules to NLG, rules orchestrating LLMs, LLM-driven rule extraction, and chatbot delegation. Each pattern answers a different question about where the LLM sits in the decision pipeline and what role it plays.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">enterprise</span><span class="tag">automation</span><span class="tag">composite-ai</span><span class="tag">decision-making</span><span class="tag">symbolic-ai</span><span class="tag">fsm</span></div>
+          
+        </header>
+        <div class="post-body"><p>The first essay in this series traced the 40-year arc from Forgy's RETE algorithm to the Model Context Protocol and established the core distinction: rule engines produce proofs, large reasoning models produce rationales. Both are useful. Neither alone suffices for production AI.</p>
+<p>This essay — the second in a five-part series — examines the five architectural patterns that Pierre Feillet, Allen Chan, Luigi Pichett, and Yazan Obeidi proposed in their 2023 article <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. They let an architect reason about <em>where</em> in the pipeline the LLM should sit and <em>what role</em> it should play.</p>
+<blockquote>
+<p>These are not theoretical constructs. They are battle-tested integration topologies from enterprise practice.</p>
+</blockquote>
+<h2 id="what-an-enterprise-decision-requires">What an enterprise decision requires</h2>
+<p>Feillet's article enumerates eight criteria. They explain why the LLM-only approach keeps hitting a wall in production.</p>
+<ol>
+<li><strong>Accuracy.</strong> A loan decision wrong 2% of the time is not 98% accurate — it is a regulatory finding and a lawsuit. Correctness means <em>every time</em>.</li>
+<li><strong>Scalability.</strong> Millions of claims per day cannot degrade when the rule base grows to tens of thousands of rules. RETE's performance-independence from rule count matters here.</li>
+<li><strong>Adaptability.</strong> Regulations and policies change. The system must accommodate new rules without a multi-month DevOps cycle.</li>
+<li><strong>Latency.</strong> Budgets vary — milliseconds for fraud, seconds for pre-approval, minutes for underwriting — but must be predictable. LLM latency is variable; rule engine latency is not.</li>
+<li><strong>Auditability.</strong> &quot;The model's attention weights converged on that outcome&quot; is not an acceptable answer to a regulator.</li>
+<li><strong>Privacy.</strong> Enterprise decisions involve PII, financial data, and health records. Sending sensitive data to a third-party LLM API is often not an option.</li>
+<li><strong>Monitoring.</strong> Decision volumes, rule firing frequencies, exception rates — operational requirements, not afterthoughts.</li>
+<li><strong>Cost.</strong> LLM inference at scale is expensive. Rule engine execution is cheap. The composite system's cost profile varies dramatically by pattern.</li>
+</ol>
+<blockquote>
+<p>Every one of these criteria pushes in the same direction: the LLM should not be the decision-maker.</p>
+</blockquote>
+<h2 id="why-llms-alone-fail">Why LLMs alone fail</h2>
+<p>LLMs &quot;show impressive results and some reasoning capabilities&quot; yet &quot;fail as easily when repeating the experience.&quot; This is the architecture, not a bug. LLMs are probability distributions over token sequences. For creative tasks, variation is a feature. For mortgage decisions, it is a liability.</p>
+<pre><code class="language-python"># The fundamental problem in one line:
+# An LLM called 3 times on the same loan application may give 3 different answers.
+for i in range(3):
+    decision = llm.generate(f&quot;Decide on this loan: {application}&quot;)
+    print(decision)  # &quot;Approved&quot; → &quot;Denied&quot; → &quot;Approved with conditions&quot;
+</code></pre>
+<blockquote>
+<p>The rule engine guarantees correctness relative to its encoded rules. The LRM generates text that sounds like reasoning. In enterprise contexts, you need the first and want the second — which is exactly why you combine them.</p>
+</blockquote>
+<h2 id="five-patterns-for-composite-ai">Five patterns for composite AI</h2>
+<h3 id="pattern-1-nlu--rules">Pattern 1: NLU → Rules</h3>
+<!-- raw HTML omitted -->
+<p>An LLM comprehends unstructured text and extracts structured data; a rule engine reasons deterministically on that data.</p>
+<pre><code class="language-go">// Pattern 1: NLU extracts, rules decide
+func intakeClaim(description string) (Decision, error) {
+    // Step 1: LLM extracts structured fields from free text
+    structured, err := llm.Extract(description, ClaimSchema{
+        Fields: []string{&quot;incident_type&quot;, &quot;fault_party&quot;, &quot;damage_types&quot;, &quot;date&quot;},
+    })
+    if err != nil {
+        return Decision{}, fmt.Errorf(&quot;extraction failed: %w&quot;, err)
+    }
+
+    // Step 2: Rule engine decides on structured data
+    decision, err := ruleEngine.Decide(&quot;claims-coverage&quot;, map[string]interface{}{
+        &quot;incident_type&quot;: structured.IncidentType,
+        &quot;fault_party&quot;:   structured.FaultParty,
+        &quot;damage_types&quot;:  structured.DamageTypes,
+        &quot;policy_terms&quot;:  loadPolicy(structured.PolicyID),
+    })
+    if err != nil {
+        return Decision{}, fmt.Errorf(&quot;decision failed: %w&quot;, err)
+    }
+
+    return decision, nil
+}
+</code></pre>
+<p><strong>What works.</strong> Sequential API calls. The LLM never makes a business decision. The rule engine never parses messy language.</p>
+<p><strong>What doesn't.</strong> When expected data is missing, the system needs guardrails. Does it reject? Clarify? Escalate?</p>
+<blockquote>
+<p>The abstraction leaks at the schema boundary. Schema design is the hidden engineering work in Pattern 1.</p>
+</blockquote>
+<h3 id="pattern-2-rules--nlg">Pattern 2: Rules → NLG</h3>
+<!-- raw HTML omitted -->
+<p>The flow reverses: a rule engine decides on structured data, then an LLM generates natural language.</p>
+<pre><code class="language-go">// Pattern 2: Rules decide, LLM communicates
+func notifyCustomer(application LoanApplication) (string, error) {
+    // Step 1: Rule engine produces a structured decision
+    decision, err := ruleEngine.Decide(&quot;loan-underwriting&quot;, map[string]interface{}{
+        &quot;amount&quot;:        application.Amount,
+        &quot;credit_score&quot;:  application.CreditScore,
+        &quot;dti_ratio&quot;:     application.DTIRatio,
+        &quot;collateral&quot;:    application.CollateralValue,
+    })
+    if err != nil {
+        return &quot;&quot;, err
+    }
+
+    // Step 2: LLM generates the customer letter from the decision
+    letter, err := llm.Generate(LetterTemplate, map[string]interface{}{
+        &quot;decision&quot;:     decision.Outcome,    // &quot;approved&quot;
+        &quot;amount&quot;:       decision.Amount,     // 350000
+        &quot;rate&quot;:         decision.Rate,       // 6.25
+        &quot;conditions&quot;:   decision.Conditions, // [&quot;income_verification&quot;, &quot;appraisal&quot;]
+        &quot;tone&quot;:         application.Channel, // &quot;email_formal&quot;
+        &quot;language&quot;:     application.Locale,  // &quot;es-MX&quot;
+    })
+
+    return letter, err
+}
+</code></pre>
+<blockquote>
+<p>This is the safest pattern from a compliance perspective. The LLM never influences the decision — it only communicates it.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> Testing NLG output is genuinely hard. The LLM may phrase the same decision in dozens of valid ways. You need semantic testing:</p>
+<pre><code class="language-go">func TestNotificationLetter(t *testing.T) {
+    decision := Decision{Outcome: &quot;denied&quot;, Reason: &quot;DTI exceeds threshold&quot;}
+    letter := generateLetter(decision)
+
+    // Can't assert on exact string — assert on invariants
+    if !strings.Contains(letter, &quot;denied&quot;) {
+        t.Error(&quot;letter must communicate denial&quot;)
+    }
+    if !strings.Contains(letter, &quot;debt-to-income&quot;) {
+        t.Error(&quot;letter must mention the reason&quot;)
+    }
+    if strings.Contains(letter, &quot;approved&quot;) {
+        t.Error(&quot;letter must not imply approval&quot;)
+    }
+}
+</code></pre>
+<blockquote>
+<p>Constrained generation — not free-form text — is the requirement. A Spanish-language denial letter that subtly softens rejection language creates compliance exposure.</p>
+</blockquote>
+<h3 id="pattern-3-rules-orchestrate-llm">Pattern 3: Rules orchestrate LLM</h3>
+<!-- raw HTML omitted -->
+<p>The rule engine is the master orchestrator, invoking LLMs on demand for delegated NLP tasks.</p>
+<pre><code class="language-go">// Pattern 3: Rules drive the process, LLM is a tool called on demand
+func adjudicateClaim(claim Claim) (Decision, error) {
+    engine := rulego.NewRuleChain(&quot;claims-adjudication&quot;,
+        // Step 1: Validate coverage
+        rulego.NewTransformNode(&quot;validate-coverage&quot;).
+            WithScript(`msg.Metadata.covered = msg.Data.policyActive &amp;&amp; msg.Data.claimType == &quot;covered&quot;`),
+        // Step 2: If covered, check amount threshold
+        rulego.NewSwitchNode(&quot;threshold-check&quot;).
+            WithCase(&quot;below_10k&quot;, &quot;auto-approve&quot;).
+            WithCase(&quot;above_10k&quot;, &quot;fraud-review&quot;),
+        // Step 3: Invoke LLM for fraud review — only when threshold exceeded
+        rulego.NewRestNode(&quot;fraud-review&quot;).
+            WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+            WithBodyTemplate(`Analyze for anomalies:
+                Claim: {{.Data.description}}
+                History: {{.Data.priorClaims}}
+                Amount: {{.Data.claimAmount}}
+                Respond with JSON: {&quot;risk&quot;: &quot;low|medium|high&quot;, &quot;findings&quot;: [...]}`),
+        // Step 4: Route based on LLM result
+        rulego.NewSwitchNode(&quot;fraud-route&quot;).
+            WithCase(&quot;low_risk&quot;, &quot;auto-approve&quot;).
+            WithCase(&quot;medium_risk&quot;, &quot;manual-review&quot;).
+            WithCase(&quot;high_risk&quot;, &quot;investigate&quot;),
+    )
+    return engine.Run(claim)
+}
+</code></pre>
+<p><strong>What works.</strong> Costs are proportional to actual need — not every transaction invokes the LLM. The rule engine remains in control.</p>
+<blockquote>
+<p>The rule engine needs orchestration rules: when to call the LLM, what prompt to send, how to interpret the response, what fallback to use if the LLM returns nonsense.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> The coupling is tight. The rule engine must mediate the structured-unstructured frontier — taking probabilistic LLM output and converting it into deterministic actions. These are not business rules. They are meta-rules governing the LLM interaction itself.</p>
+<h3 id="pattern-4-llm-extracts-rules">Pattern 4: LLM extracts rules</h3>
+<!-- raw HTML omitted -->
+<p>The most ambitious pattern: LLMs at <em>design time</em> extract automation assets from plain-text policy documents.</p>
+<pre><code class="language-python"># Pattern 4: LLM reads policy, generates executable rules
+policy_text = &quot;&quot;&quot;
+4.2.3 Loan Eligibility: Applicants with a credit score below 620
+shall be denied. Applicants with credit score 620-699 and debt-to-income
+ratio below 43% may be approved with standard rates. Applicants with
+credit score 700+ and DTI below 36% qualify for preferred rates.
+&quot;&quot;&quot;
+
+rules = llm.extract(policy_text, format=&quot;decision_table&quot;)
+# Output:
+# [
+#   { &quot;when&quot;: &quot;credit_score &lt; 620&quot;, &quot;then&quot;: &quot;deny&quot; },
+#   { &quot;when&quot;: &quot;620 &lt;= credit_score &lt;= 699 AND dti &lt; 43%&quot;, &quot;then&quot;: &quot;approve_standard&quot; },
+#   { &quot;when&quot;: &quot;credit_score &gt;= 700 AND dti &lt; 36%&quot;, &quot;then&quot;: &quot;approve_preferred&quot; },
+# ]
+
+# Rules are validated, reviewed by humans, then deployed to the engine.
+# The LLM is not in the runtime path. The rules execute deterministically.
+for rule in rules:
+    ruleEngine.addRule(rule, source=policy_text, paragraph=&quot;4.2.3&quot;)
+</code></pre>
+<blockquote>
+<p>Pattern 4 moves the LLM from the runtime path — where its latency, cost, and non-determinism are liabilities — to the development path, where its ability to process large volumes of unstructured text is an asset.</p>
+</blockquote>
+<p><strong>What doesn't.</strong> Prompt chains or fine-tuned models, companion tools for validation and synchronization, and a human review gate. The LLM turns weeks of manual rule writing into hours of review — but cannot replace expert judgment. The lifecycle problem — keeping extracted rules in sync with evolving source documents — persists long after initial extraction. This is where the KU Leuven research program enters (Part 3).</p>
+<h3 id="pattern-5-chatbot-delegates-to-rules">Pattern 5: Chatbot delegates to rules</h3>
+<!-- raw HTML omitted -->
+<p>An LLM drives the conversation; when a business decision is needed, the chatbot delegates to a rule engine.</p>
+<pre><code class="language-go">// Pattern 5: Chatbot handles conversation, delegates decisions
+func handleMortgageChat(session ChatSession, userMessage string) (string, error) {
+    // Step 1: LLM understands the user's intent and extracts parameters
+    intent, params, err := llm.UnderstandIntent(userMessage, MortgageIntents{
+        Intents: []string{&quot;rate_inquiry&quot;, &quot;apply&quot;, &quot;check_status&quot;, &quot;general_question&quot;},
+        Slots:   []string{&quot;loan_amount&quot;, &quot;income&quot;, &quot;credit_score&quot;, &quot;property_value&quot;},
+    })
+
+    // Step 2: If this is a decision trigger, delegate to rule engine
+    if intent == &quot;apply&quot; &amp;&amp; allRequiredFieldsPresent(params) {
+        decision, err := ruleEngine.Decide(&quot;mortgage-eligibility&quot;, params)
+        if err != nil {
+            return llm.Generate(&quot;Something went wrong. Let me connect you with a specialist.&quot;, nil)
+        }
+
+        // Step 3: LLM restitutes the deterministic decision in natural language
+        return llm.Generate(&quot;mortgage-decision-response&quot;, map[string]interface{}{
+            &quot;decision&quot;:     decision,
+            &quot;missing_info&quot;: missingFields(params),
+            &quot;next_steps&quot;:   nextStepsForDecision(decision),
+            &quot;tone&quot;:         session.UserPreferences.Tone,
+        })
+    }
+
+    // Not a decision trigger — LLM handles conversation freely
+    return llm.Chat(session.Context, userMessage)
+}
+</code></pre>
+<blockquote>
+<p>The delegation boundary needs a formal contract: the rule engine exposes a decision service with a defined input schema, and the chatbot populates that schema conversationally. A missing required field is not an ambiguous conversational state — it is a slot in the schema that has not been filled.</p>
+</blockquote>
+<p><strong>Two hard problems.</strong> <strong>Decision trigger detection</strong> — when has the user crossed from browsing to deciding? <strong>Incomplete context</strong> — &quot;my income is around 80K&quot; when the engine needs an exact figure. The chatbot must ask, not fabricate.</p>
+<h2 id="fsms-with-rule-engines-process-skeleton-decision-muscle">FSMs with rule engines: process skeleton, decision muscle</h2>
+<p>The five Feillet patterns describe how to combine LLMs with rule engines. But there is an orthogonal architectural dimension that predates LLMs entirely: combining finite state machines with rule engines.</p>
+<pre><code class="language-go">// The composed architecture in one structure
+type MortgagePipeline struct {
+    fsm    *StateMachine           // owns process state and transitions
+    rules  map[string]*RuleEngine  // one rule engine per decision gate
+}
+
+func (p *MortgagePipeline) Process(app LoanApplication) error {
+    for p.fsm.State != &quot;closed&quot; {
+        state := p.fsm.State
+        // Delegate to the rule engine for this state
+        decision, err := p.rules[state].Decide(app.AccumulatedFacts())
+        if err != nil {
+            return err
+        }
+        // The decision determines the next transition
+        p.fsm.Transition(decision.NextState)
+    }
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>The FSM manages <em>where you are in the process</em>. The rule engine manages <em>what you know and what you should conclude</em>. The LLM manages <em>how you communicate at the boundaries</em>. Three concerns. Three tools. One system.</p>
+</blockquote>
+<p>The FSM vs. rule engine distinction is explored in depth in Part 4. The composed architecture — with full code, testing strategies, and audit patterns — is developed in Part 5.</p>
+<h2 id="choosing-a-pattern">Choosing a pattern</h2>
+<table>
+<thead>
+<tr>
+<th>Boundary</th>
+<th>Pattern</th>
+<th>Signal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unstructured → structured</td>
+<td>1: NLU → Rules</td>
+<td>LLM extracts, rules decide</td>
+</tr>
+<tr>
+<td>Structured → unstructured</td>
+<td>2: Rules → NLG</td>
+<td>Rules decide, LLM communicates</td>
+</tr>
+<tr>
+<td>Complex NLP orchestration</td>
+<td>3: Rules drive LLM</td>
+<td>Rules call LLM on demand</td>
+</tr>
+<tr>
+<td>Policy → code</td>
+<td>4: LLM extracts rules</td>
+<td>LLM at design time only</td>
+</tr>
+<tr>
+<td>Conversational decisions</td>
+<td>5: Chatbot + Rules</td>
+<td>LLM talks, rules decide</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>The patterns compose. A real system might use Pattern 4 to extract rules during development, Pattern 1 for intake, Pattern 2 for communications, and Pattern 5 for the conversational interface — with Pattern 3 orchestrating complex processes where LLM calls are needed selectively.</p>
+</blockquote>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Pierre Feillet, Allen Chan, Luigi Pichett, Yazan Obeidi. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. Medium, August 4, 2023.</p>
+</li>
+<li>
+<p>Pierre Feillet. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/rule-engines-never-died-theyre-running-alongside-your-lrm-6f39cad6e1d3"><em>Rule Engines Never Died — They're Running Alongside Your Large Reasoning Models</em></a>. Medium, June 4, 2026.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0. Includes <a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a> for LLM integration and MCP support.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 3: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-automating-decision-models">On Rule Engines — Automating Decision Models</a> · Part 5: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-powered-by-rule-engines">State Machines Powered by Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

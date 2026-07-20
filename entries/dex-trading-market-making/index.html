@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-market-making/">
+  <title>Market Making — hackspree</title>
+  <meta property="og:title" content="Market Making">
+  <meta property="og:description" content="A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-market-making/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Market Making">
+  <meta name="twitter:description" content="A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Market Making</h1><p class="post-summary">A market maker posts bids and asks and stands ready to trade. The profit is the spread. The risk is adverse selection — informed traders who trade against you when the price is about to move. The Avellaneda-Stoikov model formalized this trade-off in 2008. It is now the standard model for algorithmic market making in both traditional and crypto markets.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">market-making</span><span class="tag">avellaneda-stoikov</span><span class="tag">adverse-selection</span><span class="tag">inventory</span></div>
+          
+        </header>
+        <div class="post-body"><p>A market maker provides liquidity. They post a bid — a price at which they will buy. They post an ask — a price at which they will sell. They earn the spread between the bid and the ask. They lose when the price moves against their inventory. The market maker's art is setting the bid and ask such that spread income exceeds inventory losses over time.</p>
+<p>The market maker is the counterparty to every impatient trader. The trader who must buy now crosses the spread and pays the ask. The trader who must sell now crosses the spread and receives the bid. The market maker absorbs the order flow imbalance. When there are more buyers than sellers, the market maker accumulates a short position — selling to buyers, hoping the price doesn't rise too far before sellers arrive. When there are more sellers than buyers, the market maker accumulates a long position. The inventory is the risk. The spread is the compensation for bearing it.</p>
+<h2 id="the-functional-origin-the-jobber">The functional origin: the jobber</h2>
+<p>The market maker's role emerged on the London Stock Exchange in the 19th century. The jobber was a member who made markets in specific securities. The jobber quoted two prices — the bid and the ask — and stood ready to trade at those prices with any broker who approached. The jobber did not deal with the public. The jobber dealt only with brokers. The brokers dealt with the public. The jobber's profit was the spread. The jobber's risk was adverse selection: a broker with better information about the security's true value would trade against the jobber's quote, profiting at the jobber's expense.</p>
+<p>The jobber's defense was the spread. A wider spread compensated for higher adverse selection risk. A narrower spread attracted more order flow. The optimal spread balanced the two. The jobber who set spreads too wide lost business. The jobber who set spreads too narrow lost money to informed traders. The balance was learned through experience. The learning was trial and error. The errors were expensive. The experience was the jobber's edge.</p>
+<p>The electronic market maker of today is the jobber, automated. The spread is set by an algorithm. The algorithm reads the order book, estimates adverse selection risk, tracks inventory, and adjusts quotes in microseconds. The algorithm is faster than any human jobber. It is also less judgmental. The human jobber could sense when a broker was informed — the broker was nervous, the broker was eager, the broker asked for an unusually large size. The algorithm sees only the order flow. The signal is statistical. The edge is quantitative. The quantification is the subject of this post.</p>
+<h2 id="the-avellaneda-stoikov-model">The Avellaneda-Stoikov model</h2>
+<p>Marco Avellaneda and Sasha Stoikov published &quot;High-Frequency Trading in a Limit Order Book&quot; in 2008. The paper formalized the market maker's problem as stochastic optimal control. The market maker chooses bid and ask quotes to maximize expected utility of terminal wealth, subject to inventory risk and adverse selection. The solution is a closed-form approximation: the optimal bid and ask are functions of the market maker's current inventory, the volatility of the asset, the market maker's risk aversion, and the intensity of order arrival.</p>
+<p>The key insight: the market maker should skew quotes away from their inventory. If the market maker is long — has bought more than they've sold — they should lower their bid (less willing to buy more) and lower their ask (more willing to sell). The skew reduces inventory risk. If the market maker is short, they should raise both bid and ask. The spread widens with volatility and risk aversion. The spread narrows with order arrival intensity — more competition means tighter spreads.</p>
+<p>The model is implemented in production market-making systems. It is the standard. It is taught in quantitative finance programs. It is adapted for crypto with modifications: gas costs replace exchange fees, AMM curves replace order book depth, and the discrete block time of blockchains replaces the continuous time of traditional markets. The adaptations are engineering. The core model is the same. The model works. The work is in the calibration.</p>
+<h2 id="market-making-in-crypto">Market making in crypto</h2>
+<p>Crypto market making has three forms:</p>
+<p><strong>CEX market making.</strong> Traditional order book market making on centralized exchanges. The market maker runs a server colocated with the exchange, streams order book updates, adjusts quotes in microseconds. The model is Avellaneda-Stoikov with exchange-specific calibrations. The competition is intense. The margins are thin. The thin margins are the evidence of competition.</p>
+<p><strong>AMM liquidity provision.</strong> Providing liquidity to a constant-function market maker. The LP deposits tokens into a pool. The pool's formula sets the price. The LP earns fees from trades. The LP bears impermanent loss. The LP's problem is similar to the market maker's: earn fee income while managing inventory risk. The difference: the AMM LP doesn't set the spread. The formula sets the spread. The LP only chooses the range (in Uniswap V3) and the amount. The LP's optimization is passive — choose parameters, deposit, wait. The active management is the subject of concentrated liquidity strategies.</p>
+<p><strong>On-chain order book market making.</strong> Running a market-making bot on a DEX with an on-chain order book (Serum, dYdX, Hyperliquid). The bot posts bids and asks as transactions. Each quote update costs gas. The gas cost constrains the update frequency. The constraint creates a trade-off: update frequently for tighter spreads (higher gas cost, more accurate quotes) or update infrequently to save gas (wider spreads to protect against adverse selection). The trade-off is the gas cost of decentralization. The gas cost is paid by the market maker. The cost is passed to traders in wider spreads. The wider spreads are the price of trustlessness.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008. The foundational paper on algorithmic market making. It is 25 pages. It assumes knowledge of stochastic calculus. The key result — the optimal quote skew formula — is implementable in a few lines of code. The implementation is the easy part. The calibration — estimating volatility, order arrival intensity, adverse selection — is the hard part. The calibration is the edge. The edge is the market maker's competitive advantage. The advantage erodes as competitors adopt the same model. The erosion is the subject of the arms race.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Marco Avellaneda and Sasha Stoikov, &quot;High-Frequency Trading in a Limit Order Book,&quot; <em>Quantitative Finance</em>, 2008.</li>
+<li>Larry Harris, <em>Trading and Exchanges</em>, Oxford University Press, 2003.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">AMMs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-arbitrage">Arbitrage</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

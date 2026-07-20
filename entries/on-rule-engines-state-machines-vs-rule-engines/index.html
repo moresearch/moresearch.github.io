@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A deep dive into the architectural distinction between finite state machines and rule engines — when to use each, anti-patterns that arise from using the wrong one, and a decision framework for choosing. With code.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/on-rule-engines-state-machines-vs-rule-engines/">
+  <title>On Rule Engines — State Machines vs. Rule Engines — hackspree</title>
+  <meta property="og:title" content="On Rule Engines — State Machines vs. Rule Engines">
+  <meta property="og:description" content="A deep dive into the architectural distinction between finite state machines and rule engines — when to use each, anti-patterns that arise from using the wrong one, and a decision framework for choosing. With code.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/on-rule-engines-state-machines-vs-rule-engines/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Rule Engines — State Machines vs. Rule Engines">
+  <meta name="twitter:description" content="A deep dive into the architectural distinction between finite state machines and rule engines — when to use each, anti-patterns that arise from using the wrong one, and a decision framework for choosing. With code.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-15">2026-07-15</time></p>
+          <h1>On Rule Engines — State Machines vs. Rule Engines</h1><p class="post-summary">A deep dive into the architectural distinction between finite state machines and rule engines — when to use each, anti-patterns that arise from using the wrong one, and a decision framework for choosing. With code.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">fsm</span><span class="tag">state-machines</span><span class="tag">architecture</span><span class="tag">enterprise</span><span class="tag">design</span></div>
+          
+        </header>
+        <div class="post-body"><p>The first essay in this series introduced the distinction between finite state machines and rule engines. This essay — the fourth in a five-part series — develops that distinction in depth. Expect code, anti-patterns, and a framework for choosing.</p>
+<blockquote>
+<p>Every system architect should be able to answer one question cold: is this a job for an FSM or a rule engine?</p>
+</blockquote>
+<h2 id="two-questions-two-tools">Two questions, two tools</h2>
+<p>A <strong>finite state machine</strong> answers <em>what happens next?</em> It is procedural. You define states. You define transitions between them. The machine is always in exactly one state. When an event arrives, the machine consults its transition table and moves — or stays put.</p>
+<p>A <strong>rule engine</strong> answers <em>what should we conclude?</em> It is declarative. You define condition-action pairs. The engine evaluates all rules against a working memory of facts. Any rule whose conditions are satisfied is eligible to fire. The engine — not the author — determines evaluation order through its conflict resolution strategy.</p>
+<pre><code class="language-go">// FSM: you define what happens next
+type ClaimFSM struct {
+    state string
+    transitions map[string]map[string]string
+}
+
+func NewClaimFSM() *ClaimFSM {
+    return &amp;ClaimFSM{
+        state: &quot;intake&quot;,
+        transitions: map[string]map[string]string{
+            &quot;intake&quot;:       {&quot;submit&quot;: &quot;review&quot;, &quot;withdraw&quot;: &quot;closed&quot;},
+            &quot;review&quot;:       {&quot;approve&quot;: &quot;payment&quot;, &quot;reject&quot;: &quot;closed&quot;, &quot;need_info&quot;: &quot;intake&quot;},
+            &quot;payment&quot;:      {&quot;complete&quot;: &quot;closed&quot;},
+        },
+    }
+}
+
+// Rule engine: you define what should be concluded
+rules := []Rule{
+    {When: &quot;claim.amount &gt; 10000 AND claim.type = 'injury'&quot;, Then: Action(&quot;flag&quot;, &quot;senior_review&quot;)},
+    {When: &quot;claimant.prior_claims &gt; 3 AND claim.type = 'property'&quot;, Then: Action(&quot;flag&quot;, &quot;fraud_check&quot;)},
+    {When: &quot;policy.active = false&quot;, Then: Action(&quot;deny&quot;, &quot;coverage_lapsed&quot;)},
+}
+</code></pre>
+<blockquote>
+<p>The FSM asks: given where I am and what just happened, where do I go? The rule engine asks: given everything I know, what should I conclude?</p>
+</blockquote>
+<h2 id="the-distinction-in-detail">The distinction, in detail</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FSM</th>
+<th>Rule Engine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core question</strong></td>
+<td>What happens next?</td>
+<td>What should we conclude?</td>
+</tr>
+<tr>
+<td><strong>Paradigm</strong></td>
+<td>Procedural</td>
+<td>Declarative</td>
+</tr>
+<tr>
+<td><strong>State</strong></td>
+<td>Explicit states + transition table</td>
+<td>Working memory of facts</td>
+</tr>
+<tr>
+<td><strong>Control flow</strong></td>
+<td>Defined by transition graph</td>
+<td>Defined by rule firing (inference + agenda)</td>
+</tr>
+<tr>
+<td><strong>Author thinks about</strong></td>
+<td>States, events, transitions</td>
+<td>Conditions, actions, conflict resolution</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Workflows, protocols, pipelines</td>
+<td>Policies, decisions, classifications</td>
+</tr>
+<tr>
+<td><strong>Complexity driver</strong></td>
+<td>States × transitions</td>
+<td>Rules × fact combinations</td>
+</tr>
+<tr>
+<td><strong>Determinism</strong></td>
+<td>Deterministic given state + event</td>
+<td>Deterministic given rule set + facts</td>
+</tr>
+<tr>
+<td><strong>Auditability</strong></td>
+<td>Trace: state sequence + transitions taken</td>
+<td>Trace: fired rules + matched facts</td>
+</tr>
+</tbody>
+</table>
+<p>The distinction is not academic. Using the wrong tool produces systems that work but are impossible to maintain.</p>
+<h2 id="anti-pattern-1-encoding-policy-as-an-fsm">Anti-pattern 1: Encoding policy as an FSM</h2>
+<p>Consider a loan eligibility policy: credit score bands, debt-to-income thresholds, collateral requirements, regulatory jurisdictions. Encode this as an FSM:</p>
+<pre><code class="language-go">// ANTI-PATTERN: Policy encoded as states
+// Each combination of conditions becomes a state. Explosion ensues.
+type LoanPolicyFSM struct {
+    creditScore int
+    dti         float64
+    state       string
+}
+
+func (f *LoanPolicyFSM) evaluate() string {
+    // What should be 3 rules becomes a combinatorial state explosion
+    switch {
+    case f.creditScore &lt; 620:
+        return &quot;deny&quot;
+    case f.creditScore &gt;= 620 &amp;&amp; f.creditScore &lt;= 699 &amp;&amp; f.dti &lt; 0.43:
+        return &quot;approve_standard&quot;
+    case f.creditScore &gt;= 700 &amp;&amp; f.dti &lt; 0.36:
+        return &quot;approve_preferred&quot;
+    // Add collateral rules? Multiply states by collateral types.
+    // Add jurisdiction rules? Multiply by 50 states × federal regs.
+    // The state space is the Cartesian product of all condition dimensions.
+    }
+    return &quot;manual_review&quot;
+}
+</code></pre>
+<blockquote>
+<p>Two conditions produce 3 outcomes. Three conditions produce 9. Five conditions with regulatory variation produce hundreds. The FSM approach scales exponentially with condition dimensions.</p>
+</blockquote>
+<p>The fix: policy belongs in a rule engine.</p>
+<pre><code class="language-go">// CORRECT: Policy as rules — each dimension adds rules, not states
+rules := []Rule{
+    {When: &quot;credit_score &lt; 620&quot;, Then: Action(&quot;deny&quot;)},
+    {When: &quot;credit_score &gt;= 620 AND credit_score &lt;= 699 AND dti &lt; 0.43&quot;, Then: Action(&quot;approve&quot;, &quot;standard&quot;)},
+    {When: &quot;credit_score &gt;= 700 AND dti &lt; 0.36&quot;, Then: Action(&quot;approve&quot;, &quot;preferred&quot;)},
+    {When: &quot;collateral.value &lt; loan.amount * 0.8 AND loan.type = 'unsecured'&quot;,
+     Then: Action(&quot;require&quot;, &quot;additional_collateral&quot;)},
+    // Adding a new condition dimension adds one rule, not a Cartesian product
+    {When: &quot;jurisdiction = 'CA' AND loan.amount &gt; 500000&quot;,
+     Then: Action(&quot;require&quot;, &quot;california_disclosure&quot;)},
+}
+engine := NewRuleEngine(rules)
+engine.Insert(loanFacts)
+decision := engine.Run()
+</code></pre>
+<blockquote>
+<p>Policy dimensions add rules linearly. States multiply transitions exponentially. That is the entire argument for using the right tool.</p>
+</blockquote>
+<h2 id="anti-pattern-2-encoding-workflow-as-flat-rules">Anti-pattern 2: Encoding workflow as flat rules</h2>
+<p>Now the inverse. Consider a claims processing pipeline: intake → review → investigation → payment → close. Encode this as flat rules:</p>
+<pre><code class="language-python"># ANTI-PATTERN: Workflow smuggled through working memory facts
+rules = [
+    Rule(&quot;step = 'intake' AND form.complete = true&quot;, actions=[
+        Action(&quot;validate&quot;, &quot;form&quot;),
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;review&quot;),       # process state as a fact!
+    ]),
+    Rule(&quot;step = 'review' AND claim.amount &lt; 1000&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;payment&quot;),       # implicit transition
+    ]),
+    Rule(&quot;step = 'review' AND claim.amount &gt;= 1000&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;investigation&quot;), # implicit transition
+    ]),
+    Rule(&quot;step = 'investigation' AND fraud_check.complete = true&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;payment&quot;),       # implicit transition
+        Action(&quot;set&quot;, &quot;fraud_flag&quot;, fraud_check.result),
+    ]),
+    Rule(&quot;step = 'payment' AND payment.processed = true&quot;, actions=[
+        Action(&quot;set&quot;, &quot;step&quot;, &quot;closed&quot;),        # implicit transition
+    ]),
+]
+</code></pre>
+<p>What is wrong with this? Everything.</p>
+<ol>
+<li><strong>The process state is smuggled.</strong> <code>step</code> is a working memory fact, not a first-class state. Nothing guarantees only one <code>step</code> fact exists. Nothing prevents contradictory transitions.</li>
+<li><strong>Transitions are implicit.</strong> The author intended intake → review → payment → closed. But the rules don't express this as a graph. You cannot look at the rule set and see the process.</li>
+<li><strong>Adding a state requires discipline.</strong> To add a &quot;fraud_check&quot; state between investigation and payment, you must update every rule that references <code>step = 'investigation'</code> and <code>step = 'payment'</code>. Miss one and you have a bug that only manifests when a specific combination of facts triggers the stale transition.</li>
+<li><strong>Testing is combinatorial.</strong> Each rule depends on <code>step</code> plus domain facts. To test the payment transition, you must set up facts that satisfy both the step condition <em>and</em> all other conditions in the rule.</li>
+</ol>
+<blockquote>
+<p>The process is there, but it is encoded indirectly through fact manipulation. You can read the rule set and not see the state machine. That is the definition of implicit.</p>
+</blockquote>
+<p>The fix: workflow belongs in an FSM.</p>
+<pre><code class="language-python"># CORRECT: Process as explicit states and transitions
+class ClaimProcess:
+    states = [&quot;intake&quot;, &quot;review&quot;, &quot;investigation&quot;, &quot;payment&quot;, &quot;closed&quot;]
+    transitions = {
+        &quot;intake&quot;:       {&quot;validated&quot;: &quot;review&quot;, &quot;incomplete&quot;: &quot;intake&quot;},
+        &quot;review&quot;:       {&quot;low_value&quot;: &quot;payment&quot;, &quot;needs_review&quot;: &quot;investigation&quot;},
+        &quot;investigation&quot;: {&quot;cleared&quot;: &quot;payment&quot;, &quot;flagged&quot;: &quot;closed&quot;},
+        &quot;payment&quot;:      {&quot;processed&quot;: &quot;closed&quot;},
+    }
+
+    def __init__(self):
+        self.state = &quot;intake&quot;
+
+    def handle(self, event):
+        if event in self.transitions[self.state]:
+            self.state = self.transitions[self.state][event]
+            return self.state
+        raise InvalidTransition(self.state, event)
+</code></pre>
+<blockquote>
+<p>If you find yourself writing <code>step = 'something'</code> in every rule condition, you are encoding a state machine in a rule engine. Stop. Use an FSM.</p>
+</blockquote>
+<h2 id="the-decision-framework">The decision framework</h2>
+<p>When choosing between an FSM and a rule engine, ask three questions:</p>
+<p><strong>1. Is the problem primarily about sequence or about conditions?</strong></p>
+<p>Sequence-driven → FSM. Condition-driven → rule engine.</p>
+<p>A claims process is about sequence: intake, then review, then investigation, then payment. A loan eligibility policy is about conditions: credit score, DTI, collateral value.</p>
+<pre><code class="language-go">// Sequence-driven: the order of states IS the business logic
+// Process: intake → review → underwriting → approval → closing
+// You cannot skip review. You cannot go back from closing.
+fsm := NewFSM() // correct choice
+
+// Condition-driven: the combination of facts IS the business logic
+// Policy: if credit &gt; 700 AND DTI &lt; 36% AND LTV &lt; 80% → preferred rate
+// The order of evaluating credit, DTI, and LTV does not matter.
+engine := NewRuleEngine() // correct choice
+</code></pre>
+<p><strong>2. Does the complexity grow with states or with conditions?</strong></p>
+<p>If adding a new business rule means adding a state → you are in the wrong tool. If adding a new process step means updating multiple rules → you are in the wrong tool.</p>
+<pre><code class="language-go">// Complexity smell: adding a condition dimension explodes states
+// Adding &quot;jurisdiction&quot; to a loan FSM: 50 states × existing states = explosion
+// Adding &quot;jurisdiction&quot; to a rule engine: one rule, maybe a decision table
+
+// Complexity smell: adding a process step touches many rules
+// Adding &quot;fraud_check&quot; to flat rules: update every rule with step guards
+// Adding &quot;fraud_check&quot; to an FSM: add one state, two transitions
+</code></pre>
+<p><strong>3. Will an auditor need to trace the process or explain the decision?</strong></p>
+<p>Process trace → FSM. Decision explanation → rule engine. Both → compose them (Part 5).</p>
+<pre><code class="language-go">// FSM audit: state sequence
+// &quot;Application reached underwriting via: intake → review → underwriting&quot;
+fsm.AuditTrail() // [intake, review, underwriting]
+
+// Rule engine audit: rule trace
+// &quot;Decision: deny. Rules fired: R-17 (credit &lt; 620), R-23 (DTI &gt; 43%)&quot;
+engine.Explanation() // [{rule: R-17, reason: &quot;credit_score=590 &lt; 620&quot;}, ...]
+</code></pre>
+<h2 id="when-the-problem-is-both">When the problem is both</h2>
+<p>Most real business problems are both procedural and decisional. A mortgage origination system has a process (application → review → underwriting → approval → closing) and decisions at each gate (eligibility rules, pricing rules, compliance rules).</p>
+<p>The mistake is picking one tool and forcing the other concern into it. The solution — developed in Part 5 — is composition: FSM as process skeleton, rule engine as decision muscle.</p>
+<pre><code>[Application] → [Review] → [Underwriting] → [Approval] → [Closing]
+                    |            |               |
+                    v            v               v
+               Rule Engine   Rule Engine    Rule Engine
+               (completeness (credit risk,   (final conditions,
+                check)        collateral)     compliance)
+</code></pre>
+<blockquote>
+<p>The FSM manages where you are. The rule engine manages what you conclude. Neither is asked to do the other's job. The composite handles both.</p>
+</blockquote>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Charles L. Forgy. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>. Artificial Intelligence, 19(1): 17–37, 1982.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 5: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-powered-by-rule-engines">On Rule Engines — State Machines Powered by Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/game-stag-hunt/">
+  <title>The Stag Hunt — hackspree</title>
+  <meta property="og:title" content="The Stag Hunt">
+  <meta property="og:description" content="Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/game-stag-hunt/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Stag Hunt">
+  <meta name="twitter:description" content="Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The Stag Hunt</h1><p class="post-summary">Jean-Jacques Rousseau described it in 1755: two hunters must decide whether to hunt a stag together or take a rabbit alone. The stag is worth more. The rabbit is certain. If either defects, the stag escapes. The Stag Hunt models coordination under trust — and explains network effects, standard adoption, and why good architectures fail to spread.</p>
+          <div class="tags"><span class="tag">game-theory</span><span class="tag">stag-hunt</span><span class="tag">coordination</span><span class="tag">trust</span><span class="tag">network-effects</span></div>
+          
+        </header>
+        <div class="post-body"><p>Jean-Jacques Rousseau described the Stag Hunt in his <em>Discourse on Inequality</em> (1755):</p>
+<blockquote>
+<p>&quot;If it was a matter of hunting a deer, everyone well realized that he must remain faithfully at his post; but if a hare happened to pass within reach of one of them, we cannot doubt that he would have gone off in pursuit without scruple.&quot;</p>
+</blockquote>
+<p>Two hunters. They can hunt a stag together or hunt rabbits alone. The stag requires both to cooperate. If both hunt the stag, they share a large reward. If one defects to hunt rabbits, the defector gets a rabbit — less than half a stag but guaranteed — and the cooperator gets nothing. If both hunt rabbits, each gets a rabbit.</p>
+<p>The payoff matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Hunt Stag</th>
+<th>Hunt Rabbit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hunt Stag</strong></td>
+<td>(10, 10)</td>
+<td>(0, 5)</td>
+</tr>
+<tr>
+<td><strong>Hunt Rabbit</strong></td>
+<td>(5, 0)</td>
+<td>(5, 5)</td>
+</tr>
+</tbody>
+</table>
+<p>There are two Nash equilibria: both hunt stag and both hunt rabbit. Both are stable. Neither player can unilaterally improve by switching. The stag equilibrium is Pareto-superior. The rabbit equilibrium is risk-dominant — if you're uncertain what the other will do, rabbit is safer. The game is about trust and coordination, not conflict. The challenge is moving from the rabbit equilibrium to the stag equilibrium.</p>
+<h2 id="interpretations-from-different-branches">Interpretations from different branches</h2>
+<p><strong>Classical game theory.</strong> The stag hunt has two pure-strategy Nash equilibria. Equilibrium selection — which one the players end up in — is not determined by the payoff structure alone. It depends on beliefs, expectations, and focal points. Schelling's concept of the focal point was developed partly to explain equilibrium selection in coordination games.</p>
+<p><strong>Risk dominance (Harsanyi and Selten).</strong> The rabbit equilibrium risk-dominates the stag equilibrium if the expected payoff of hunting rabbit, given uncertainty about the other player, exceeds the expected payoff of hunting stag. Formally: (5+5)/2 &gt; (10+0)/2 → 5 &gt; 5, so neither risk-dominates. In the classic stag hunt, the equilibria are payoff-equivalent under uniform uncertainty. But if the stag is worth more — say 20 — then (20+0)/2 = 10 &gt; 5, and stag risk-dominates. The size of the prize determines whether coordination on the ambitious outcome is rational under uncertainty.</p>
+<p><strong>Evolutionary game theory.</strong> In a population playing stag hunts, which equilibrium is selected depends on the initial proportion of stag hunters. If enough players hunt stag, the stag equilibrium is reached. There is a critical threshold. Below the threshold, the population converges to rabbits. The threshold is the tipping point. The dynamics are the replicator equation.</p>
+<p><strong>Network economics.</strong> The stag hunt models adoption of technologies with network effects. A communication standard is a stag. Everyone benefits if everyone uses it. But if you're the first adopter, you bear the switching cost with no guarantee others will follow. The critical mass problem is the stag hunt in economic form.</p>
+<h2 id="software-engineering-interpretations">Software engineering interpretations</h2>
+<p><strong>Logging standardization.</strong> SRE proposes a standard logging library. If all 12 services adopt it, logs become queryable across services. If only some adopt, the adopters get no benefit — their logs are standardized but they can't query across services. If nobody adopts, nothing changes. The stag is the universal query. The rabbit is keeping your own format. The critical mass problem: who goes first?</p>
+<p><strong>API gateway adoption.</strong> The platform team builds an API gateway. Each service team must decide whether to route through it. If all use it, the organization gets unified auth, rate limiting, and monitoring. If some bypass it, the bypassers move faster (no gateway latency, no configuration overhead) and the adopters get partial benefit. The stag is the unified gateway. The rabbit is direct access. The critical mass is the number of services needed for the gateway's benefits to be self-sustaining.</p>
+<p><strong>Design system adoption.</strong> The design team ships a component library. Each frontend team chooses whether to use it. If all use it, the product gets visual consistency and shared maintenance. If some don't, the non-adopters ship faster and the adopters maintain the library for everyone. The stag is consistency. The rabbit is velocity. The library needs critical mass to survive.</p>
+<h2 id="resolving-the-stag-hunt">Resolving the stag hunt</h2>
+<p>The stag hunt is resolved by mechanisms that raise confidence that others will cooperate. Visible early adopters signal commitment. Public commitments — &quot;we will adopt the standard by Q3&quot; — reduce uncertainty. Sequential adoption with increasing benefits — each new adopter increases the value for remaining players — creates the tipping dynamic. Schelling's focal points — obvious choices that everyone expects everyone else to make — select the equilibrium. &quot;We'll all use the most popular format on npm.&quot; The format is a focal point. The popularity is the signal.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Jean-Jacques Rousseau, <em>Discourse on the Origin and Basis of Inequality Among Men</em>, 1755.</li>
+<li>Brian Skyrms, <em>The Stag Hunt and the Evolution of Social Structure</em>, Cambridge University Press, 2004.</li>
+<li>Thomas Schelling, <em>The Strategy of Conflict</em>, Harvard University Press, 1960.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Scarcity and Games</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Scarcity and Software Games</a></li>
+</ul>
+<p>Game theory is engineering when applied to systems design. The players are components. The strategies are behaviors. The payoffs are performance metrics. The equilibrium is the system's steady state. The mechanism designer is the engineer — designing rules that produce desired outcomes without controlling individual decisions. Every protocol, every API contract, every rate limiter is mechanism design in code. The game is the system. The rules are the architecture.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

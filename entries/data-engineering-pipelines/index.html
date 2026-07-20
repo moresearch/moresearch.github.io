@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A data pipeline is a program that moves data from A to B, transforming it along the way. It sounds simple. It is not. Pipelines fail silently, corrupt data, run late, and cost more to maintain than to build. The discipline of pipeline engineering is the discipline of making data movement boring.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/data-engineering-pipelines/">
+  <title>Pipelines, ETL, and the art of moving data — hackspree</title>
+  <meta property="og:title" content="Pipelines, ETL, and the art of moving data">
+  <meta property="og:description" content="A data pipeline is a program that moves data from A to B, transforming it along the way. It sounds simple. It is not. Pipelines fail silently, corrupt data, run late, and cost more to maintain than to build. The discipline of pipeline engineering is the discipline of making data movement boring.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/data-engineering-pipelines/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Pipelines, ETL, and the art of moving data">
+  <meta name="twitter:description" content="A data pipeline is a program that moves data from A to B, transforming it along the way. It sounds simple. It is not. Pipelines fail silently, corrupt data, run late, and cost more to maintain than to build. The discipline of pipeline engineering is the discipline of making data movement boring.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Pipelines, ETL, and the art of moving data</h1><p class="post-summary">A data pipeline is a program that moves data from A to B, transforming it along the way. It sounds simple. It is not. Pipelines fail silently, corrupt data, run late, and cost more to maintain than to build. The discipline of pipeline engineering is the discipline of making data movement boring.</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">etl</span><span class="tag">elt</span><span class="tag">pipelines</span><span class="tag">orchestration</span></div>
+          
+        </header>
+        <div class="post-body"><p>A data pipeline is a program that moves data from somewhere to somewhere else, transforming it along the way. It is the simplest concept in data engineering. It is also where most of the pain lives. Pipelines break. Pipelines run late. Pipelines produce wrong data and nobody notices for three weeks. Pipelines cost ten times more to maintain than to build. The discipline of pipeline engineering is the discipline of making data movement boring. Boring is the highest compliment a pipeline can receive.</p>
+<h2 id="etl-vs-elt">ETL vs. ELT</h2>
+<p>The traditional pattern is ETL: Extract, Transform, Load. Extract data from source systems. Transform it — clean, enrich, aggregate — using an external processing engine. Load the transformed data into the warehouse. The transformation happens outside the warehouse, in a pipeline tool or custom code.</p>
+<p>The modern pattern is ELT: Extract, Load, Transform. Extract data from sources. Load it into the warehouse raw, in its original format. Transform it inside the warehouse using SQL. The transformation happens after loading, using the warehouse's compute.</p>
+<p>The shift from ETL to ELT was driven by the cloud data warehouse. Snowflake and BigQuery separate storage from compute. You can run transformations on massive datasets without provisioning infrastructure. The warehouse scales compute elastically. The transformation is just SQL. The SQL is version-controlled, tested, and documented by tools like dbt. The analyst who writes the query can also write the transformation. The engineer who built the pipeline doesn't need to understand the business logic.</p>
+<p>ELT has a deeper advantage: the raw data is preserved. If the transformation logic is wrong, you can fix it and re-transform from the raw data. In ETL, if the transformation is wrong and the raw data was discarded, you must re-extract from the source — if the source still has the data. The raw layer is insurance. The insurance costs storage. Storage is cheap. The insurance is worth it.</p>
+<h2 id="the-properties-of-a-good-pipeline">The properties of a good pipeline</h2>
+<p><strong>Idempotent.</strong> Running the pipeline twice produces the same result as running it once. If a pipeline fails halfway through and you restart it, you should not get duplicate data. Idempotency is achieved by deduplication — checking whether a record already exists before inserting it — or by overwriting the output partition entirely. Overwriting is simpler. Deduplication is harder but necessary when you can't afford to recompute the entire output.</p>
+<p><strong>Retryable.</strong> If the pipeline fails, it can be restarted without manual intervention. The retry should be automatic, with exponential backoff, up to a maximum number of attempts. The failure should be logged, with enough context to debug it. The alert should fire only after all retries are exhausted. Alerting on the first failure generates noise. Alerting after retry exhaustion generates signal.</p>
+<p><strong>Observable.</strong> You can answer: did the pipeline run? Did it succeed? How many rows did it process? How long did it take? Were there any anomalies — zero rows when there should be thousands, ten times the usual row count, nulls in columns that should never be null? Observability requires metrics, logs, and alerts. The metrics must be queryable historically — &quot;is this week's row count unusual compared to the last twelve weeks?&quot; The alert threshold must be tuned to avoid false positives while catching genuine anomalies.</p>
+<p><strong>Testable.</strong> You can verify that the pipeline produces correct output. Schema tests: does the output table have the expected columns with the expected types? Data tests: are primary keys unique? Are foreign keys present in the referenced table? Are values within expected ranges? Business logic tests: does the revenue column sum to the expected value given known inputs? Tests catch errors before users do. Users catching errors is the worst outcome.</p>
+<p><strong>Lineage-tracked.</strong> You can trace any row in any dashboard back to its source. The trace requires metadata: which pipeline produced this table, from which source tables, using which transformation logic, running at which time. Lineage is essential for debugging — &quot;this number looks wrong, where did it come from?&quot; — and for impact analysis — &quot;if we change this source schema, what downstream tables are affected?&quot; Lineage is the data engineer's call stack.</p>
+<h2 id="the-patterns">The patterns</h2>
+<p><strong>Full refresh.</strong> Drop the output table. Rebuild it from scratch. Simple. Correct. Expensive for large tables. The full refresh is the default for small datasets and the fallback when incremental logic fails.</p>
+<p><strong>Incremental.</strong> Process only the data that changed since the last run. Requires a reliable way to identify changed records — a timestamp column, a change log, a CDC feed. More complex than full refresh. More efficient. The incremental pattern is necessary for large tables but introduces the risk of drift: over time, incremental updates accumulate errors that a full refresh would eliminate. Periodic full refreshes — weekly, monthly — reset the drift.</p>
+<p><strong>CDC (Change Data Capture).</strong> Read the database's transaction log directly. Capture every insert, update, and delete as it happens. Debezium for PostgreSQL, MySQL, MongoDB. The CDC feed is a stream of events. The pipeline consumes the stream and applies changes to the warehouse. CDC is the gold standard for freshness — the warehouse is seconds behind the source. It is also the most operationally complex. The CDC connector can fail. The transaction log can be purged before the connector reads it. The schema can change and break the connector's parsing. CDC is powerful. CDC is not free.</p>
+<p><strong>Lambda architecture.</strong> Maintain two parallel pipelines: a batch layer that processes all historical data and produces accurate but delayed results, and a speed layer that processes recent data in real time with approximate results. The serving layer merges both. The lambda architecture was popular in the Hadoop era. It has been largely replaced by stream processing systems (Kafka Streams, Flink) that can handle both real-time and historical processing in a single framework.</p>
+<p><strong>Kappa architecture.</strong> Process everything as a stream. Historical data is replayed from the stream's retention log. New data arrives in real time. The same code handles both. Simpler than lambda. Requires a stream platform with long-term retention — Kafka with tiered storage, or a cloud-native equivalent. Kappa is the modern default for organizations that have invested in streaming infrastructure.</p>
+<h2 id="the-economics">The economics</h2>
+<p>Pipelines cost more to maintain than to build. The initial build is a week. The maintenance is years. Every source system change — a renamed column, a new data type, a deprecated API — requires a pipeline update. Every business logic change requires a transformation update. Every scale increase — more data, more users, more dashboards — requires performance optimization. The maintenance cost is proportional to the number of pipelines and the rate of change of their dependencies.</p>
+<p>The economics favor fewer pipelines, simpler pipelines, and pipelines owned by the people who understand the data. The centralized data team that builds pipelines for every department becomes a bottleneck. The data mesh model — each domain owns its pipelines — distributes the maintenance cost to the teams that benefit from the data. The distribution is the economics of the data mesh. The same economics that favor microservices over monoliths — independent deployability, domain ownership, reduced coordination cost — favor the data mesh over the centralized warehouse. The principles are identical. The domain is different.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Maxime Beauchemin, &quot;Functional Data Engineering — a modern paradigm for batch data processing,&quot; 2018.</li>
+<li>Jay Kreps, &quot;Questioning the Lambda Architecture,&quot; 2014.</li>
+<li>dbt Labs, &quot;What is dbt?&quot; dbt Documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#no-solutions-only-tradeoffs">No solutions, only trade-offs</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

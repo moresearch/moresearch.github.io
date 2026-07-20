@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The API gateway is the traditional choke point for microservices security — every request passes through it, every auth decision is centralized, and every service behind it trusts the gateway implicitly. NATS inverts this with decentralized JWT-based authentication and authorization: every connection carries its own credentials, the server enforces subject-level permissions on every publish and subscribe, and accounts provide tenant isolation without a gateway. Using the Vitrifi case study as a reference, this post explains how NATS security works, how it compares to the gateway model, and when a gateway still makes sense.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/nats-multi-tenancy-security-vs-api-gateway/">
+  <title>NATS Multi-Tenancy and Security: JWT Auth vs the API Gateway — hackspree</title>
+  <meta property="og:title" content="NATS Multi-Tenancy and Security: JWT Auth vs the API Gateway">
+  <meta property="og:description" content="The API gateway is the traditional choke point for microservices security — every request passes through it, every auth decision is centralized, and every service behind it trusts the gateway implicitly. NATS inverts this with decentralized JWT-based authentication and authorization: every connection carries its own credentials, the server enforces subject-level permissions on every publish and subscribe, and accounts provide tenant isolation without a gateway. Using the Vitrifi case study as a reference, this post explains how NATS security works, how it compares to the gateway model, and when a gateway still makes sense.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/nats-multi-tenancy-security-vs-api-gateway/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NATS Multi-Tenancy and Security: JWT Auth vs the API Gateway">
+  <meta name="twitter:description" content="The API gateway is the traditional choke point for microservices security — every request passes through it, every auth decision is centralized, and every service behind it trusts the gateway implicitly. NATS inverts this with decentralized JWT-based authentication and authorization: every connection carries its own credentials, the server enforces subject-level permissions on every publish and subscribe, and accounts provide tenant isolation without a gateway. Using the Vitrifi case study as a reference, this post explains how NATS security works, how it compares to the gateway model, and when a gateway still makes sense.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>NATS Multi-Tenancy and Security: JWT Auth vs the API Gateway</h1><p class="post-summary">The API gateway is the traditional choke point for microservices security — every request passes through it, every auth decision is centralized, and every service behind it trusts the gateway implicitly. NATS inverts this with decentralized JWT-based authentication and authorization: every connection carries its own credentials, the server enforces subject-level permissions on every publish and subscribe, and accounts provide tenant isolation without a gateway. Using the Vitrifi case study as a reference, this post explains how NATS security works, how it compares to the gateway model, and when a gateway still makes sense.</p>
+          <div class="tags"><span class="tag">nats</span><span class="tag">security</span><span class="tag">jwt</span><span class="tag">multi-tenancy</span><span class="tag">api-gateway</span><span class="tag">authentication</span><span class="tag">authorization</span><span class="tag">distributed-systems</span></div>
+          
+        </header>
+        <div class="post-body"><p>The API gateway is the standard answer to microservices security. External traffic hits the gateway. The gateway authenticates, authorizes, rate-limits, and routes. Services behind the gateway trust that incoming requests have been vetted. The network enforces the boundary: everything outside the gateway is untrusted, everything inside is trusted. The security model is perimeter-based.</p>
+<p>NATS takes the opposite approach. Every connection authenticates directly to the NATS server — no proxy, no sidecar, no gateway. Authorization is enforced at the subject level on every publish and subscribe. Multi-tenancy is implemented through accounts that provide cryptographic isolation between tenants sharing the same NATS infrastructure. The security model is credential-based.</p>
+<p>The Vitrifi case study on the <a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/nats-vitrifi-secret-weapon/">NATS blog</a> demonstrates this model in production: a SaaS workflow automation platform using NATS accounts with JWT-based authentication to ensure &quot;each tenant's data and processing remain entirely separate while sharing infrastructure.&quot; No API gateway per tenant. No network segmentation per tenant. Cryptographic isolation at the messaging layer.</p>
+<h2 id="the-api-gateway-model">The API gateway model</h2>
+<p>In the traditional model, security is enforced at the edge:</p>
+<pre><code>External Client → [API Gateway] → Service A → Service B → Service C
+                      ↑
+            Auth, TLS, rate limiting,
+            routing, API keys, JWT validation
+</code></pre>
+<p>The gateway does everything: terminates TLS, validates API keys or JWTs, enforces rate limits, applies routing rules, transforms requests, logs access. Services behind the gateway trust that the gateway has done its job. Service A doesn't authenticate Service B because both are inside the perimeter. The perimeter is the security boundary.</p>
+<p>This model has real advantages:</p>
+<p><strong>Centralized policy.</strong> Security rules are in one place. Adding a new rate limit, rotating an API key, or changing an authentication provider happens at the gateway. Services don't change.</p>
+<p><strong>Mature ecosystem.</strong> API gateways are a mature product category. Kong, Apigee, AWS API Gateway, Envoy-based gateways — they all provide roughly the same feature set with battle-tested implementations. The patterns are documented. The operations are understood.</p>
+<p><strong>Separation of concerns.</strong> Security teams own the gateway. Development teams own the services. The security boundary is also an organizational boundary. Security doesn't need to understand the services' internals. Developers don't need to implement authentication.</p>
+<p>And it has real disadvantages:</p>
+<p><strong>The gateway is a choke point.</strong> Every request passes through it. When it's down, everything is down. When it's slow, everything is slow. High availability requires multiple gateway instances behind a load balancer, which adds another layer of infrastructure.</p>
+<p><strong>The gateway is a single point of policy.</strong> A misconfigured routing rule affects every service it routes to. A bug in the rate limiter affects every client. The blast radius of gateway misconfiguration is the entire system.</p>
+<p><strong>East-west traffic is unprotected.</strong> Traffic between services behind the gateway is implicitly trusted. If Service A is compromised, it can call Service B without additional authentication. The perimeter model assumes the interior is safe. When it isn't — and it eventually isn't — lateral movement is unconstrained.</p>
+<p><strong>The gateway doesn't understand application semantics.</strong> It sees HTTP methods and paths. It doesn't see business operations. A rule that says &quot;Service A can POST to <code>/api/orders</code>&quot; doesn't distinguish between &quot;create an order&quot; and &quot;cancel an order.&quot; The authorization is coarse-grained because the gateway operates at the protocol layer, not the application layer.</p>
+<p>The service mesh partially addresses the east-west problem with mTLS between services, but it adds the operational complexity discussed in the first post of this series. And it still doesn't solve the application-semantics problem — mTLS authenticates the service identity, not the operation.</p>
+<h2 id="the-nats-model-decentralized-credential-based-security">The NATS model: decentralized credential-based security</h2>
+<p>In NATS, there is no gateway. Every client — whether it's an external API service or an internal worker — authenticates directly to the NATS server:</p>
+<pre><code>Service A ──► NATS Server ──► Service B
+   │              │               │
+   └── JWT ───────┘               │
+   └── Subject permissions ───────┘
+</code></pre>
+<p>Authentication happens at connection time. Each connection presents credentials (JWT, nkey, or token). The server validates them against the configured trust chain. Once authenticated, every publish and subscribe is authorized against the user's JWT claims:</p>
+<pre><code class="language-go">claims := jwt.NewUserClaims(userPub)
+claims.Pub.Allow = []string{
+    &quot;heartbeat.service-a&quot;,
+    &quot;orders.response.service-a.&gt;&quot;,
+}
+claims.Sub.Allow = []string{
+    &quot;_INBOX.&gt;&quot;,
+    &quot;orders.request.service-a&quot;,
+}
+</code></pre>
+<p>The user can publish on <code>heartbeat.service-a</code> and <code>orders.response.service-a.&gt;</code>. They cannot publish on <code>orders.response.service-b.&gt;</code> or <code>heartbeat.service-b</code>. They can subscribe to <code>_INBOX.&gt;</code> (required for request-reply) and <code>orders.request.service-a</code> (their own requests). They cannot subscribe to <code>orders.request.service-b</code>. The NATS server enforces this at the protocol layer. If the client sends a <code>PUB</code> on an unauthorized subject, the server rejects it before the message touches any subscriber.</p>
+<p>This is Parnas's information hiding applied to security. The user's permissions are scoped to what they need — their own heartbeat, their own requests, their own responses. They don't need to know other services exist. They don't have permission to interact with them. The security boundary is the subject, and the enforcement is cryptographic.</p>
+<h3 id="the-trust-chain">The trust chain</h3>
+<p>NATS JWT security uses a three-tier trust chain: operator → account → user.</p>
+<pre><code>Operator JWT
+  └── Account JWT
+        ├── User JWT (hub)
+        └── User JWT (spoke)
+</code></pre>
+<p>The operator is the trust anchor. It signs account JWTs. Account JWTs define the security boundary — JetStream limits, import/export policies, user claim signing keys. User JWTs carry scoped subject permissions and are signed by the account key.</p>
+<p>This chain means:</p>
+<ul>
+<li>The operator can revoke an entire account by expiring its JWT</li>
+<li>An account can revoke a user by expiring their JWT</li>
+<li>A user's permissions are bounded by what the account allows — even a compromised account key can't escalate beyond the operator's grant</li>
+<li>No user in Account A can access subjects in Account B unless there's an explicit import/export between the accounts</li>
+</ul>
+<p>The trust chain is decentralized. There's no central authentication service that must be online for connections to be established. The NATS server validates JWTs locally against the operator's public key. The JWT itself carries the claims. The server only needs the operator JWT and the account JWT in its resolver. Connections are authenticated pairwise between client and server, not through a centralized gateway.</p>
+<h3 id="accounts-the-multi-tenancy-primitive">Accounts: the multi-tenancy primitive</h3>
+<p>NATS accounts are the key abstraction for multi-tenancy. An account is a security boundary. Subjects within an account are isolated from subjects in other accounts. Services in Account A cannot see subjects in Account B unless Account B explicitly exports them and Account A explicitly imports them.</p>
+<p>This maps directly to SaaS multi-tenancy. Each tenant gets an account. Each tenant's services are users within that account. Tenant A's <code>orders.created</code> subject is different from Tenant B's <code>orders.created</code> subject — they share a subject name but are isolated by account. No data leaks between tenants because the server won't route messages across accounts without explicit import/export.</p>
+<p>Vitrifi's platform uses this model in production: &quot;As a SaaS platform, tenant isolation is achieved through NATS accounts combined with JWT-based authentication, ensuring each tenant's data and processing remain entirely separate while sharing infrastructure.&quot;</p>
+<p>The operational benefit is significant. You don't need a separate NATS cluster per tenant. You don't need network segmentation (VPCs, subnets, security groups) per tenant. You don't need an API gateway per tenant. Tenants share the same NATS servers, the same network, the same infrastructure — and cannot see each other's traffic because the server enforces isolation at the protocol layer. Adding a tenant is creating a new account and issuing user JWTs. Removing a tenant is expiring the account JWT.</p>
+<h2 id="leaf-nodes-security-at-the-edge">Leaf nodes: security at the edge</h2>
+<p>NATS leaf nodes extend the security model to edge deployments without requiring VPNs or network-level trust:</p>
+<pre><code>                    ┌──────────────┐
+Edge Location       │   NATS Hub   │
+                    │  (cluster)   │
+┌──────────┐        │              │
+│ Leaf     │◄──────►│  Account A   │
+│ Node     │  Leaf  │  Account B   │
+│ (remote) │  conn  │  Account C   │
+└──────────┘        └──────────────┘
+</code></pre>
+<p>A leaf node is a NATS server running at the edge (a retail store, a factory, an IoT gateway). It connects to the hub cluster over a single outbound connection — no inbound firewall rules required. The leaf authenticates as a NATS client. Local clients connect to the leaf. The leaf exports subjects that the edge can publish and imports subjects the edge can subscribe to.</p>
+<p>The security properties are:</p>
+<ul>
+<li><strong>Local traffic stays local.</strong> Services at the edge communicate through the leaf without traversing the WAN. A leaf node is a full NATS server — it routes messages locally for clients connected to it.</li>
+<li><strong>Remote traffic is scoped.</strong> The hub only sees subjects the leaf exports. The leaf only receives subjects it imports. The leaf cannot subscribe to subjects it hasn't been granted access to.</li>
+<li><strong>Authentication is local to the edge.</strong> Edge clients authenticate to the leaf. The leaf authenticates to the hub. Credentials don't leave the edge. The hub trusts the leaf, not the edge clients.</li>
+<li><strong>No VPN required.</strong> The leaf connection is a single outbound TLS connection. No site-to-site VPN. No network-level trust. The security boundary is the NATS connection, not the network.</li>
+</ul>
+<p>This is fundamentally different from the API gateway model, where edge traffic must reach the gateway — which is in the cloud, behind a load balancer, accessible from the internet. With leaf nodes, the edge has its own messaging infrastructure. It operates autonomously when the WAN is down. It synchronizes when the WAN is up. The security model works the same way in both cases.</p>
+<h2 id="when-the-api-gateway-still-makes-sense">When the API gateway still makes sense</h2>
+<p>NATS JWT security doesn't replace every API gateway use case:</p>
+<p><strong>External clients that don't speak NATS.</strong> Mobile apps, browsers, and third-party webhooks speak HTTP. They need an HTTP endpoint. An API gateway or a thin NATS-to-HTTP bridge at the boundary is still necessary. The gateway becomes the edge translation layer — it terminates HTTP, validates API keys, and publishes to NATS subjects. But it doesn't need to handle internal service-to-service traffic. Its scope shrinks to the system boundary, where it belongs.</p>
+<p><strong>API key management.</strong> NATS supports JWT, nkey, and token authentication. It doesn't have a built-in API key management system with developer portals, key rotation APIs, and usage analytics. If you need those, an API gateway in front of the NATS boundary handles the developer-facing API management, while NATS handles the internal security.</p>
+<p><strong>Request transformation and enrichment.</strong> NATS doesn't inspect or modify message payloads. If you need to add headers, rewrite URLs, or transform request bodies based on client identity, you need something above the messaging layer. The gateway can do this at the edge, publishing enriched messages to NATS subjects.</p>
+<p><strong>DDoS protection and WAF.</strong> NATS doesn't provide web application firewall features or volumetric DDoS protection. Those are edge concerns that belong at the network boundary, not the messaging layer. A CDN or WAF in front of the gateway handles these.</p>
+<p>The pattern is: gateway at the boundary for protocol translation and edge security, NATS internally for service-to-service communication and tenant isolation. The gateway doesn't need to be a full API management platform. It can be a thin HTTP-to-NATS bridge — validate the JWT, extract the tenant, publish to the tenant-scoped subject. The heavy lifting of authentication, authorization, and isolation is done by NATS.</p>
+<h2 id="the-vitrifi-pattern-in-practice">The Vitrifi pattern in practice</h2>
+<p>Vitrifi's architecture demonstrates this model end-to-end. The platform has two major sections: a Content Management System (where users design workflows) and a Core section (where workflows execute). NATS sits between them.</p>
+<p>When workflows are published from the CMS, they're transformed into immutable objects and persisted using <a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/nats-vitrifi-secret-weapon/">NATS as a key-value store</a>. The KV store provides &quot;strong consistency within clusters and eventual consistency across distributed deployments&quot; — replacing what would traditionally be a database with operational features (revision history, cross-cluster replication, automatic expiration) built into the messaging infrastructure.</p>
+<p>Workflow state updates flow through JetStream with pull consumers for high-volume messages and push consumers for discrete actions that need immediate handling (pausing or canceling a workflow). Exactly-once delivery is critical for the Trigger Server, which converts incoming messages into workflow initiation commands — achieved through &quot;message de-duplication, delivery tracking and acknowledgement mechanisms.&quot;</p>
+<p>Multi-cloud resilience is a natural property of the architecture: &quot;if the cloud deployment fails, the private datacenter continues seamlessly because the platform is fundamentally asynchronous — all events flow through NATS.&quot; There's no failover to configure. No active-passive gateway pair to manage. The messaging fabric spans clouds. The services connect wherever they're running. Resilience is a property of decoupling, not a feature of a load balancer.</p>
+<p>The security model is consistent across all of this — workflows in one tenant's account cannot see or affect workflows in another tenant's account. The CMS publishes to the tenant's subjects. The Core section subscribes to the tenant's subjects. The isolation is cryptographic, not network-based. Adding a tenant is provisioning an account. Removing a tenant is expiring the account JWT. The operational surface area for tenant management is minimal because the security model is built into the messaging infrastructure from the start.</p>
+<h2 id="security-that-scales-with-the-system">Security that scales with the system</h2>
+<p>The API gateway model scales security at the cost of centralization — bigger gateways, more gateway instances, more complex gateway configuration. The NATS model scales security at the cost of credential management — more JWTs, more accounts, more import/export policies. The difference is that credential management can be automated (issue JWTs at deploy time, expire them at decommission time, rotate them on a schedule) while centralized policy management becomes a bottleneck as the number of services and tenants grows.</p>
+<p>A system with 100 services and 50 tenants behind an API gateway has one place where security policy is defined and one place where it can be wrong. A system with the same scale on NATS has 100 user JWTs, 50 accounts, and a handful of import/export policies — but each piece is small, independently verifiable, and automatically enforced by the server. The gateway concentrates risk. NATS distributes it. For systems that need to grow beyond what a single team can carefully manage, distribution beats concentration.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/nats-vitrifi-secret-weapon/">NATS.io: The Secret Weapon Behind Vitrifi's Workflow Automation Platform</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/running-a-nats-service/configuration/securing_nats">NATS Documentation — JWTs and Security</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/running-a-nats-service/configuration/leafnodes">NATS Documentation — Leaf Nodes</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/running-a-nats-service/configuration/securing_nats/accounts">NATS Documentation — Accounts</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

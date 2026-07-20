@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/dex-trading-arbitrage/">
+  <title>Arbitrage — hackspree</title>
+  <meta property="og:title" content="Arbitrage">
+  <meta property="og:description" content="Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/dex-trading-arbitrage/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Arbitrage">
+  <meta name="twitter:description" content="Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Arbitrage</h1><p class="post-summary">Arbitrage is the oldest strategy in finance: buy cheap, sell dear, simultaneously. In crypto, flash loans made arbitrage available to anyone with code. The strategy is simple. The execution is not. The game is speed, and speed is infrastructure.</p>
+          <div class="tags"><span class="tag">dex</span><span class="tag">arbitrage</span><span class="tag">flash-loans</span><span class="tag">cex-dex</span><span class="tag">mev</span></div>
+          
+        </header>
+        <div class="post-body"><p>Arbitrage is the purchase and sale of the same asset in different markets to profit from price differences. It is the oldest trading strategy. It is also the purest: if two markets price the same thing differently, an arbitrageur can buy in the cheaper market and sell in the more expensive, pocketing the difference. The trade is riskless in theory — both legs execute at known prices, the profit is locked at execution. In practice, execution risk, latency, and competition make arbitrage a technological arms race.</p>
+<p>The classical definition comes from Gustave de Molinari, a 19th-century French economist, but the practice is older than the definition. Medieval merchants arbitraged between markets separated by geography — buying spices in Venice, selling in Bruges. The internet collapsed geography. The price difference between New York and London narrowed to milliseconds. Crypto collapsed it further. The &quot;markets&quot; are now protocols on the same blockchain. The geography is the mempool. The distance is latency.</p>
+<h2 id="the-functional-origin-the-law-of-one-price">The functional origin: the Law of One Price</h2>
+<p>The Law of One Price states that identical goods should trade at identical prices in efficient markets. If they don't, arbitrageurs will buy the cheaper and sell the dearer until the prices converge. The arbitrageur's profit is the market's mechanism for enforcing the law. The law is not a law of nature. It is an equilibrium condition. The equilibrium is maintained by arbitrageurs. The arbitrageurs are paid for maintaining it. The payment is the spread.</p>
+<p>The Law of One Price was formulated by William Stanley Jevons in <em>The Theory of Political Economy</em> (1871). Jevons observed that &quot;in the same open market, at any one moment, there cannot be two prices for the same kind of article.&quot; The observation was empirical. The mechanism was arbitrage. The mechanism is the same today. The markets are now AMM pools and CEX order books. The Law of One Price is enforced by bots that execute in milliseconds. The bots are paid in extracted spread. The spread is the market's payment for maintaining efficiency.</p>
+<h2 id="arbitrage-in-crypto">Arbitrage in crypto</h2>
+<p>Crypto arbitrage takes several forms. The simplest is <strong>pool arbitrage</strong>: the same token pair trades at different prices in two AMM pools on the same chain. Buy in the cheaper pool, sell in the dearer pool, profit. The trade must be atomic — both legs in the same transaction — because the price will move after the first leg. A flash loan enables atomic execution. Borrow a large amount of token A. Execute the buy in pool 1. Execute the sell in pool 2. Repay the loan plus fee. Keep the profit. If any leg fails, the entire transaction reverts. The loan is never drawn. The risk is zero. The cost is gas + flash loan fee.</p>
+<p><strong>CEX-DEX arbitrage</strong>: a token trades at a different price on Binance than on Uniswap. The arbitrageur must execute on both venues simultaneously. This is not atomic — the CEX leg and the DEX leg are separate transactions on separate systems. The arbitrageur bears execution risk: one leg succeeds, the other fails. The risk is managed by speed — the faster you detect and execute, the less likely the price moves against you. The speed is the edge.</p>
+<p><strong>Cross-chain arbitrage</strong>: the same token trades on two different blockchains. Arbitrage requires bridging — sending the token from one chain to the other. The bridge takes time. During the bridge, the price may move. The arbitrageur bears bridge latency risk. The risk is managed by maintaining inventory on both chains and netting flows rather than bridging each trade.</p>
+<p><strong>Triangular arbitrage</strong>: three tokens. ETH → USDC → BTC → ETH. The product of the three exchange rates should equal one. If it doesn't, there is a triangular arbitrage. The strategy is common in forex. It is also common in crypto. It requires no external price feed. It is pure math on the chain.</p>
+<h2 id="the-empirical-reality">The empirical reality</h2>
+<p>The CEX-DEX arbitrage market on Ethereum, measured from August 2023 to March 2025, extracted $233.8 million. Three searchers captured 75% of the volume. The daily transaction count grew 7.2× over the period. The concentration is extreme. The concentration is structural. The infrastructure cost — colocation with sequencers, low-latency mempool access, private relay connections — creates barriers to entry. The barriers produce concentration. The concentration raises the question: is the Law of One Price being enforced by a competitive market or by a cartel of the fastest?</p>
+<p>The AFT 2025 study of CEX-DEX arbitrage documented a shift: searcher-builder vertical integration is deepening. Integrated searchers operate at lower margins, sometimes negative net profit, subsidized by builder revenue sharing. The subsidy drives out independent searchers. The concentration increases. The market becomes less competitive. The Law of One Price is still enforced. The enforcers are fewer. The fewer enforcers extract more rent. The rent is paid by traders in the form of wider effective spreads. The market is efficient. The efficiency is expensive.</p>
+<h2 id="the-reference">The reference</h2>
+<p>Robert Shiller's <em>Irrational Exuberance</em> (2000) is not about arbitrage. It is about why arbitrage fails to enforce the Law of One Price at scale. Shiller documented persistent mispricings — the dot-com bubble, the housing bubble — that arbitrageurs could not or did not correct. The limits of arbitrage are the subject of Shleifer and Vishny's &quot;The Limits of Arbitrage&quot; (1997): arbitrage is risky, capital is constrained, and arbitrageurs who trade against bubbles can be wiped out before the bubble corrects. The limits are real in traditional markets. In crypto, the limits are different — not capital constraints but latency constraints, gas constraints, and infrastructure constraints. The constraints shape the market structure. The structure is the subject of the posts that follow.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>William Stanley Jevons, <em>The Theory of Political Economy</em>, 1871.</li>
+<li>Andrei Shleifer and Robert Vishny, &quot;The Limits of Arbitrage,&quot; <em>Journal of Finance</em>, 1997.</li>
+<li>AFT 2025, &quot;CEX-DEX Arbitrage on Ethereum: 2023–2025.&quot;</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-order-book">The Order Book</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dex-trading-amms">Automated Market Makers</a></li>
+</ul>
+<p>Trading infrastructure is distributed systems engineering. The order book, the AMM, the matching engine, the relay — each is a component in a latency-critical distributed system. The engineering constraints are the same as any real-time system: throughput, latency, reliability, correctness under concurrency. The domain is finance. The engineering is systems.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

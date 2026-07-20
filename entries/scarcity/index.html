@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/scarcity/">
+  <title>The First Lesson — hackspree</title>
+  <meta property="og:title" content="The First Lesson">
+  <meta property="og:description" content="Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/scarcity/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The First Lesson">
+  <meta name="twitter:description" content="Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>The First Lesson</h1><p class="post-summary">Robbins defined economics as choice under scarcity in 1932: ends, means, scarcity, alternative uses. Software engineering is economics by other means. Time, attention, complexity, and compute are the four scarcities that shape every architecture decision.</p>
+          <div class="tags"><span class="tag">scarcity</span><span class="tag">economics</span><span class="tag">software-engineering</span><span class="tag">robbins</span></div>
+          
+        </header>
+        <div class="post-body"><p>In 1932, Lionel Robbins published <em>An Essay on the Nature and Significance of Economic Science</em>. On page 15, he wrote:</p>
+<blockquote>
+<p>&quot;Economics is the science which studies human behaviour as a relationship between ends and scarce means which have alternative uses.&quot;</p>
+</blockquote>
+<p>Four concepts. <strong>Ends</strong> — what you want. <strong>Means</strong> — what you have. <strong>Scarcity</strong> — means are finite. <strong>Alternative uses</strong> — means can be deployed in different ways, forcing choice. Every human activity involving these four conditions is economic. Robbins made this explicit:</p>
+<blockquote>
+<p>&quot;Insofar as it deals with the influence of scarcity, any kind of human behaviour falls within the scope of Economic Generalisations. There are no limitations on the subject-matter of Economic Science save this.&quot;</p>
+</blockquote>
+<p>There are no limitations on the subject-matter. Software engineering is human behaviour under conditions of scarcity. Time is scarce. Attention is scarce. Compute is scarce. Complexity budget is scarce. You have finite means — developer hours, cognitive capacity, hardware, money — and infinite ends — features to build, bugs to fix, systems to improve, customers to satisfy. The means have alternative uses. Every hour spent on one feature is an hour not spent on another. Every dollar spent on infrastructure is a dollar not spent on hiring. Every ounce of cognitive capacity spent on one problem is an ounce not available for another. This is economics. The subject-matter is software. The structure is scarcity.</p>
+<p>Thomas Sowell sharpened Robbins: &quot;The first lesson of economics is scarcity: There is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.&quot; Milton Friedman made it simpler: &quot;There's no such thing as a free lunch.&quot; Every resource has an alternative use. Every choice has a cost. The cost is whatever you gave up.</p>
+<p>Most people think the opposite of scarcity is abundance. It isn't. The opposite of scarcity is waste. Abundance without discipline produces waste. Scarcity with discipline produces focus. The difference between a great engineering team and a mediocre one is not how many resources they have. It is how they choose under scarcity. Great teams make the scarcity explicit. Mediocre teams pretend it doesn't exist. Both face the same constraints. One names them. The other pretends.</p>
+<h2 id="the-four-scarcities-of-software">The four scarcities of software</h2>
+<p><strong>Time is scarce.</strong> You have finite developer hours. Every feature you build is a feature you didn't build. Every refactor you do is a refactor you didn't do. Every meeting you attend is code you didn't write. The scarcity of time forces prioritization. Prioritization is an economic act. The framework for prioritization — what to build now, what to build later, what to never build — is capital budgeting applied to code. The budget is time. The investments are features. The returns are user value, revenue, reduced maintenance cost. The same mathematics that determines whether to build a factory determines whether to build a microservice. The logic is identical.</p>
+<p><strong>Attention is scarce.</strong> A developer can hold one complex problem in their head at a time. Two if exceptional. Three is impossible. The scarcity of attention is the binding constraint on software complexity. Brooks's Law — adding people to a late project makes it later — is a statement about attention scarcity. Each new person must learn the system. The teaching consumes the attention of those who already know it. Communication overhead grows quadratically. Attention per person shrinks. The project gets later. Brooks's argument for conceptual integrity — one mind controlling the design — is also about attention scarcity. The design must fit in one mind because only one mind can hold it. When the design exceeds one mind's capacity, it must be split. The split requires coordination. Coordination consumes attention. Attention consumed by coordination is not available for design. Design quality degrades.</p>
+<p><strong>Complexity budget is scarce.</strong> Lehman's Second Law: complexity increases unless work is done to reduce it. The work requires time and attention, both scarce. The complexity budget is the total complexity the system can absorb before becoming unmaintainable. Every feature adds to the budget. Every quick fix adds. Every workaround adds. The budget is finite. When exhausted, the system must be rewritten. The rewrite is expensive. The expense is the cost of exceeding the budget. The budget was always finite. The accounting ignored it.</p>
+<p>Parnas's information hiding is an economic strategy. Hide volatile decisions behind stable interfaces. The interface is the investment. The hiding is the return. When the volatile decision changes, the change is contained within the module. The containment saves time, attention, and complexity budget. The investment costs more upfront. The return accrues over time — every change that doesn't propagate is a cost avoided. The net present value is positive if the decision is sufficiently volatile. Parnas didn't state it in economic terms. The economics are implicit. The economics are correct.</p>
+<p><strong>Compute is scarce.</strong> Moore's Law made compute cheap but not free. Cloud computing made it elastic but not infinite. Every algorithm choice trades compute for something else — development time, code simplicity, latency. The trade is economic. The price of compute determines which side is optimal. When compute was expensive, developers optimized for cycles. When compute became cheap, they optimized for developer time. The price changed. The optimal trade changed. The change was economic. The economics were invisible to the developers. They thought they were making technical decisions. They were making economic decisions with technical parameters.</p>
+<h2 id="the-robbins-test">The Robbins test</h2>
+<p>Robbins gives a test for any decision. Ask four questions:</p>
+<ol>
+<li>What is the end? (What are you trying to achieve?)</li>
+<li>What are the means? (What resources do you have?)</li>
+<li>Are the means scarce? (Could you use them for something else?)</li>
+<li>Do they have alternative uses? (What are you giving up?)</li>
+</ol>
+<p>If the answer to 3 and 4 is yes — and it always is — the decision is economic. Treat it as such. Name the scarce resource. Name the alternative foregone. Calculate the trade. Make the choice. The choice will be better for having been made explicitly.</p>
+<p>Most software decisions are made without naming the scarcity. Two engineers debate two architectures. Neither names the constraint. The debate is unresolvable because the constraint is unstated. State the constraint. The debate resolves. This feature or that feature? State the scarce resource. This architecture or that architecture? State the trade. The Robbins test makes implicit economics explicit. Explicit economics are debatable. Implicit economics are invisible. Invisible economics produce worse decisions.</p>
+<h2 id="the-unifying-principle">The unifying principle</h2>
+<p>Resources are finite. Ends are infinite. Means have alternative uses. Every decision is a choice under scarcity. The choice has consequences. The consequences propagate. The propagation is the system's behavior. The behavior is emergent from the choices. The choices are economic. Software engineering is economics.</p>
+<hr>
+<p><strong>This is part 1 of a 7-part series on scarcity and software.</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-games">Part 2: On Games</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-economics">Part 3: On Software Engineering Economics</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-software-games">Part 4: On Games in Software</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-and-mechanism-design">Part 5: On AI and Mechanism Design</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Part 6: On Practice</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#catalog-of-scarcity-games">Part 7: The Catalog of Games</a></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul>
+<li>Lionel Robbins, <em>An Essay on the Nature and Significance of Economic Science</em>, Macmillan, 1932.</li>
+<li>Frederick P. Brooks, Jr., <em>The Mythical Man-Month</em>, Addison-Wesley, 1975.</li>
+<li>David L. Parnas, &quot;On the Criteria to Be Used in Decomposing Systems into Modules,&quot; <em>Communications of the ACM</em>, 1972.</li>
+<li>M.M. Lehman, &quot;Programs, Life Cycles, and Laws of Software Evolution,&quot; <em>Proceedings of the IEEE</em>, 1980.</li>
+</ul>
+<p>Scarcity is the universal engineering constraint. Time, attention, compute, complexity — every engineering decision is made within a budget. The budget is economic. The engineer who doesn't track the budget makes decisions blind. The engineer who tracks it makes decisions with full knowledge of the trade-off. The trade-off is the decision. The budget is the constraint. Scarcity is the unifying principle.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Tracing a 40-year arc from Charles Forgy&#39;s RETE algorithm to the Model Context Protocol, this essay explores how rule engines and large reasoning models answer the same fundamental question through different mechanisms — and why the most important trend is not replacement but convergence.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/on-rule-engines-rete-to-mcp/">
+  <title>On Rule Engines — From RETE to MCP — hackspree</title>
+  <meta property="og:title" content="On Rule Engines — From RETE to MCP">
+  <meta property="og:description" content="Tracing a 40-year arc from Charles Forgy&#39;s RETE algorithm to the Model Context Protocol, this essay explores how rule engines and large reasoning models answer the same fundamental question through different mechanisms — and why the most important trend is not replacement but convergence.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/on-rule-engines-rete-to-mcp/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Rule Engines — From RETE to MCP">
+  <meta name="twitter:description" content="Tracing a 40-year arc from Charles Forgy&#39;s RETE algorithm to the Model Context Protocol, this essay explores how rule engines and large reasoning models answer the same fundamental question through different mechanisms — and why the most important trend is not replacement but convergence.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-15">2026-07-15</time></p>
+          <h1>On Rule Engines — From RETE to MCP</h1><p class="post-summary">Tracing a 40-year arc from Charles Forgy&#39;s RETE algorithm to the Model Context Protocol, this essay explores how rule engines and large reasoning models answer the same fundamental question through different mechanisms — and why the most important trend is not replacement but convergence.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">enterprise</span><span class="tag">automation</span><span class="tag">composite-ai</span><span class="tag">symbolic-ai</span><span class="tag">rete</span><span class="tag">mcp</span><span class="tag">fsm</span></div>
+          
+        </header>
+        <div class="post-body"><p>Enterprise decision automation sits at an uncomfortable intersection. Large Language Models promise natural interaction and flexibility. Business decisions demand auditability, determinism, and compliance with regulations that do not negotiate. The question is not which technology wins. The question is how to combine them — and the answer has roots going back nearly half a century.</p>
+<blockquote>
+<p>The question is not which technology wins. The question is how to combine them.</p>
+</blockquote>
+<p>Pierre Feillet addressed this in his 2023 article <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a> and his 2026 follow-up <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/rule-engines-never-died-theyre-running-alongside-your-lrm-6f39cad6e1d3"><em>Rule Engines Never Died — They're Running Alongside Your Large Reasoning Models</em></a>. The second article traces a 40-year arc from Charles Forgy's RETE algorithm to the Model Context Protocol and argues that the most important trend in enterprise AI is not replacement but convergence.</p>
+<p>This essay — the first in a five-part series — begins where the story begins: with the RETE algorithm, the architecture of rule engines, the rise of large reasoning models, and the fundamental distinction between finite state machines and rule engines that every system architect should understand.</p>
+<h2 id="the-rete-algorithm-1979">The RETE algorithm (1979)</h2>
+<p>In 1979, Charles L. Forgy, a PhD student at Carnegie Mellon University, solved a problem that would shape the next four decades of enterprise computing. Given a large set of IF-THEN rules and a working memory full of facts, how do you efficiently determine which rules should fire?</p>
+<p>The naive approach — test every rule against every fact on every cycle — is catastrophically slow. Ten thousand rules against a hundred thousand facts is a billion comparisons per cycle. Production systems in the 1970s ground to a halt under realistic workloads.</p>
+<p>Forgy's insight was that working memory changes slowly between cycles. Typically only a few facts are added or removed at each step. Re-evaluating every rule from scratch means repeating vast amounts of work that has not changed. What if you could <em>remember</em> partial matches and only recompute what actually changed?</p>
+<blockquote>
+<p>The RETE algorithm trades memory for speed — and achieves performance theoretically independent of the number of rules.</p>
+</blockquote>
+<p>The result was the RETE algorithm — Latin for &quot;net&quot; — published in Forgy's 1979 PhD thesis and in a landmark 1982 paper in <em>Artificial Intelligence</em>: <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>RETE has two phases. <strong>Compilation:</strong> rules are compiled into a discrimination network — a directed acyclic graph where each node tests a condition. Conditions appearing in multiple rules are compiled once and shared. If twenty rules check <code>customer.tier == &quot;premium&quot;</code>, there is one node, not twenty.</p>
+<p>Consider these three loan underwriting rules:</p>
+<pre><code class="language-python"># Rule 1: High-value loan requires collateral
+if loan.amount &gt; 500_000 and loan.type == &quot;mortgage&quot;:
+    loan.requires_collateral = True
+
+# Rule 2: Premium customers get rate discount
+if customer.tier == &quot;premium&quot; and loan.type == &quot;mortgage&quot;:
+    loan.rate_discount = 0.25
+
+# Rule 3: High-value premium mortgage gets priority review
+if loan.amount &gt; 500_000 and customer.tier == &quot;premium&quot; and loan.type == &quot;mortgage&quot;:
+    loan.review_priority = &quot;high&quot;
+</code></pre>
+<p>A RETE network compiles these into shared condition nodes. The test <code>loan.type == &quot;mortgage&quot;</code> appears in all three rules but exists once in the network. The test <code>loan.amount &gt; 500_000</code> appears in two rules but exists once. When a fact changes — say the loan amount updates — only the branches downstream of the <code>loan.amount</code> node re-evaluate. Rules 1 and 3 might be affected; Rule 2 is untouched.</p>
+<p><strong>Runtime:</strong> facts enter at the root and propagate through the network. Each node caches the facts — or partial matches, at join nodes — that satisfy its condition. When a fact changes, only affected branches re-evaluate. When a fact is removed, its matches are retracted from the caches. The algorithm trades memory for speed — storing partial match state at every node — and achieves performance that is, in Forgy's words, theoretically independent of the number of rules.</p>
+<h3 id="the-lineage">The lineage</h3>
+<p>RETE became the core of <strong>OPS5</strong>, which powered <strong>R1/XCON</strong> — an expert system that configured VAX computer orders for Digital Equipment Corporation, one of the first commercially successful AI systems, reportedly saving DEC millions of dollars per year by catching configuration errors that human order processors missed.</p>
+<p>It went on to become the backbone of production rule systems across the industry: <strong>CLIPS</strong> (NASA's C Language Integrated Production System), <strong>Jess</strong> (the Java Expert System Shell), <strong>Drools</strong> (open-source, now Apache, which evolved RETE into ReteOO and later PHREAK), <strong>IBM Operational Decision Manager</strong> (enterprise-grade decision automation with governance, versioning, and deployment pipelines), <strong>Soar</strong> (the cognitive architecture), <strong>Blaze Advisor</strong>, and <strong>TIBCO BusinessEvents</strong>.</p>
+<blockquote>
+<p>The RETE network was invisible infrastructure, humming inside systems that made consequential decisions about people's money, health, and legal status.</p>
+</blockquote>
+<p>Banks used it for loan origination. Insurers for claims adjudication. Governments for eligibility determination. For four decades, RETE was the silent backbone of automated decision-making.</p>
+<p>And then, around 2022, the world became captivated by a different kind of AI — one that produced fluent text rather than deterministic decisions. The question became: are rule engines obsolete?</p>
+<p>Feillet's 2026 answer is unequivocal: no. They never died. They are running alongside your LLM right now.</p>
+<h3 id="beyond-rete">Beyond RETE</h3>
+<p>Modern rule engines have evolved beyond the discrimination network. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> — an open-source rule engine in Go (Apache 2.0) — uses a Directed Acyclic Graph. Business logic is composed of component nodes wired into rule chains; messages flow along predetermined DAG paths rather than being matched against all rules. A RuleGo rule chain looks like this:</p>
+<pre><code class="language-go">// A RuleGo rule chain for loan application intake
+ruleChain := rulego.NewRuleChain(&quot;loan-intake&quot;,
+    // Node 1: Validate required fields
+    rulego.NewTransformNode(&quot;validate-fields&quot;).
+        WithScript(`msg.Metadata.valid = msg.Data.amount &gt; 0 &amp;&amp; msg.Data.applicantId != &quot;&quot;`),
+    // Node 2: Branch on validation result
+    rulego.NewSwitchNode(&quot;route&quot;).
+        WithCase(&quot;valid&quot;, &quot;extract-intent&quot;).
+        WithCase(&quot;invalid&quot;, &quot;return-error&quot;),
+    // Node 3: LLM intent extraction
+    rulego.NewRestNode(&quot;extract-intent&quot;).
+        WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+        WithBodyTemplate(`Extract intent from: {{.Data.description}}`),
+    // Node 4: Route to decision engine
+    rulego.NewRestNode(&quot;decision-engine&quot;).
+        WithEndpoint(&quot;http://odm.example/decisions/loan-eligibility&quot;),
+)
+</code></pre>
+<p>This trades RETE's expressive forward-chaining for deterministic execution with extremely low resource consumption — ~19 MB of memory under 500 concurrent requests on a Raspberry Pi 2. Both approaches have their place.</p>
+<h2 id="two-ways-to-answer-the-same-question">Two ways to answer the same question</h2>
+<p>Feillet's 2026 article opens with a deceptively simple observation: both rule engines and Large Reasoning Models address the identical problem — <em>given what we know, what should we conclude?</em></p>
+<blockquote>
+<p>The methods differ. The objective is the same. This means they can — and should — be compared, contrasted, and combined.</p>
+</blockquote>
+<h3 id="how-rule-engines-reason">How rule engines reason</h3>
+<p>Rule engines separate knowledge from execution. Business logic is declarative. Facts enter working memory. The inference engine evaluates which rules are satisfied. When multiple rules fire, a conflict resolution mechanism — the <em>agenda</em> — determines firing order.</p>
+<pre><code class="language-python"># Declarative: you say WHAT, not HOW
+rules = [
+    Rule(
+        when=[Fact(&quot;loan.amount&quot;, &quot;&gt;&quot;, 500_000), Fact(&quot;loan.type&quot;, &quot;==&quot;, &quot;mortgage&quot;)],
+        then=[Action(&quot;set&quot;, &quot;loan.requires_collateral&quot;, True)]
+    ),
+    Rule(
+        when=[Fact(&quot;customer.tier&quot;, &quot;==&quot;, &quot;premium&quot;), Fact(&quot;loan.type&quot;, &quot;==&quot;, &quot;mortgage&quot;)],
+        then=[Action(&quot;set&quot;, &quot;loan.rate_discount&quot;, 0.25)]
+    ),
+]
+
+# The engine handles: which rules to evaluate, in what order,
+# what happens when multiple rules fire, how to resolve conflicts.
+engine = RuleEngine(rules)
+engine.insert(loan_facts)
+engine.run()  # produces: {requires_collateral: True, rate_discount: 0.25}
+</code></pre>
+<p>Every inference step is explicit. An auditor can trace precisely which rule fired, what triggered it, and why a decision was reached. Rule engines do not generate post-hoc rationalizations. <strong>They produce proofs.</strong></p>
+<h3 id="how-large-reasoning-models-reason">How Large Reasoning Models reason</h3>
+<p>LRMs store knowledge not as explicit rules but as distributed numerical representations learned across billions of examples. Their reasoning is what Feillet calls &quot;an approximation of modus ponens&quot; executed through statistical pattern completion.</p>
+<pre><code>Prompt: &quot;Should this $600K mortgage for a premium-tier customer require collateral?&quot;
+
+LLM: &quot;Based on the loan amount of $600K exceeding the typical threshold of
+$500K for mortgages, and considering this is a premium-tier customer...&quot;
+</code></pre>
+<p>The power is flexibility — generalization across novel inputs, ambiguity handling, cross-domain reasoning without explicit programming. The fragility is hallucination — producing plausible-sounding but logically invalid conclusions.</p>
+<blockquote>
+<p>Plausibility and logical validity are different things. One yields proofs. The other yields rationales. Both are useful. Confusing them is dangerous.</p>
+</blockquote>
+<h3 id="the-core-distinction">The core distinction</h3>
+<p>Feillet gives a concrete example from the 2023 article: a pizza ordering bot that &quot;depending on the runs, provides the expected outcome or a surprising one.&quot; Wrong pizza toppings are annoying. Wrong loan decisions are lawsuits.</p>
+<pre><code class="language-python"># Rule engine: same input → same output, every time
+result1 = engine.decide(loan_application)  # deny, DTI 47%
+result2 = engine.decide(loan_application)  # deny, DTI 47%
+assert result1 == result2  # always passes
+
+# LLM: same input → statistically similar output, maybe not the same
+response1 = llm.generate(&quot;Review this loan: &quot; + application)  # &quot;I recommend denial...&quot;
+response2 = llm.generate(&quot;Review this loan: &quot; + application)  # &quot;This application should be...&quot;
+# response1 and response2 may differ in wording, tone, or even conclusion
+</code></pre>
+<blockquote>
+<p>The rule engine guarantees correctness relative to its encoded rules. The LRM generates text that sounds like reasoning. In enterprise contexts, you need the first and want the second — which is exactly why you combine them.</p>
+</blockquote>
+<h2 id="the-hybrid-inference-loop">The hybrid inference loop</h2>
+<p>Modern reasoning models have evolved beyond raw token prediction. When a calculation is needed, the model generates and executes code — an exact result fed back into context. This is a pattern: stochastic reasoning delegating to deterministic execution at moments where precision matters.</p>
+<p>The Model Context Protocol formalizes this delegation. An MCP tool definition for a decision service looks like:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;check_loan_eligibility&quot;,
+  &quot;description&quot;: &quot;Evaluate a mortgage application against underwriting rules&quot;,
+  &quot;inputSchema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;loan_amount&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;applicant_income&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;credit_score&quot;: {&quot;type&quot;: &quot;integer&quot;},
+      &quot;property_value&quot;: {&quot;type&quot;: &quot;number&quot;},
+      &quot;loan_type&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;mortgage&quot;, &quot;heloc&quot;, &quot;refinance&quot;]}
+    },
+    &quot;required&quot;: [&quot;loan_amount&quot;, &quot;applicant_income&quot;, &quot;credit_score&quot;, &quot;property_value&quot;]
+  }
+}
+</code></pre>
+<p>The loop is:</p>
+<pre><code>1. Reason with available context
+2. Identify what is uncertain or requires precision
+3. Delegate to a tool (MCP call to the rule engine)
+4. Receive deterministic facts
+5. Continue reasoning with grounded information
+</code></pre>
+<p>Feillet draws a structural parallel to production rule systems invoking external actions — except orchestration is now performed by a neural model rather than a symbolic agenda. IBM ODM and Decision Intelligence expose their decision services via MCP, enabling a reasoning model to invoke a full rule engine at the precise point where governed, deterministic decisions are needed.</p>
+<blockquote>
+<p>The LRM handles interpretation and context. The rule engine handles logic requiring correctness and traceability. Neither is asked to do the other's job.</p>
+</blockquote>
+<h3 id="attention-and-rete-same-purpose-different-mechanism">Attention and RETE: same purpose, different mechanism</h3>
+<p>Feillet is careful not to equate the two, but he notes a shared architectural role. Both answer the question <em>what is relevant right now?</em></p>
+<p>RETE pre-compiles condition tests into a network and caches partial matches. Attention learns to compute relevance scores from data. The mechanisms differ. The function is identical.</p>
+<h3 id="rulego-the-convergence-in-a-go-library">RuleGo: the convergence in a Go library</h3>
+<p>The convergence is not confined to enterprise platforms. <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a></strong> embodies the hybrid architecture in a Go library. An LLM call is just another node in the rule chain:</p>
+<pre><code class="language-go">// RuleGo rule chain: deterministic nodes + LLM nodes, same interface
+chain := rulego.NewRuleChain(&quot;claims-fraud-check&quot;,
+    // Deterministic: validate claim data
+    rulego.NewTransformNode(&quot;validate&quot;).
+        WithScript(`msg.Metadata.skip = msg.Data.claimAmount &lt; 10000`),
+    // Deterministic: branch
+    rulego.NewSwitchNode(&quot;threshold-check&quot;).
+        WithCase(&quot;skip&quot;, &quot;approve&quot;).
+        WithCase(&quot;review&quot;, &quot;llm-analysis&quot;),
+    // LLM call: anomaly detection in claim notes
+    rulego.NewRestNode(&quot;llm-analysis&quot;).
+        WithEndpoint(&quot;https://api.llm.example/v1/chat&quot;).
+        WithBodyTemplate(`Review for anomalies:
+            Claim: {{.Data.description}}
+            History: {{.Data.priorClaims}}
+            Amount: {{.Data.claimAmount}}`),
+    // Deterministic: route based on LLM result
+    rulego.NewSwitchNode(&quot;fraud-route&quot;).
+        WithCase(&quot;clean&quot;, &quot;approve&quot;).
+        WithCase(&quot;suspicious&quot;, &quot;investigate&quot;),
+)
+</code></pre>
+<p>The <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a></strong> extension provides LLM integration and MCP server/client support. A RuleGo instance exposes its rule chains as MCP tools, discoverable by any reasoning model. The hybrid inference loop Feillet describes — reason, identify uncertainty, delegate, receive, continue — is directly implementable.</p>
+<blockquote>
+<p>The 40-year arc from RETE to MCP passes through <code>go get github.com/rulego/rulego</code>.</p>
+</blockquote>
+<h2 id="finite-state-machines-vs-rule-engines">Finite state machines vs. rule engines</h2>
+<p>Before moving to composite AI patterns — the subject of the next essay — there is an architectural distinction worth making explicit.</p>
+<p>A <strong>finite state machine</strong> answers <em>what happens next?</em> It encodes explicit states and transitions. Its logic is procedural.</p>
+<p>A <strong>rule engine</strong> answers <em>what should we conclude?</em> It encodes condition-action pairs against a working memory. Its logic is declarative.</p>
+<pre><code class="language-go">// FSM: procedural — you define the sequence
+type LoanFSM struct { state string }
+func (f *LoanFSM) Transition(event string) error {
+    switch f.state {
+    case &quot;application&quot;:
+        if event == &quot;submit&quot; { f.state = &quot;review&quot; }
+    case &quot;review&quot;:
+        if event == &quot;approve&quot; { f.state = &quot;underwriting&quot; }
+        if event == &quot;reject&quot; { f.state = &quot;closed&quot; }
+    }
+}
+
+// Rule Engine: declarative — you define the conditions
+rules := []Rule{
+    {When: &quot;loan.amount &gt; 500K AND loan.type = mortgage&quot;, Then: &quot;require_collateral&quot;},
+    {When: &quot;customer.tier = premium AND loan.amount &gt; 250K&quot;, Then: &quot;priority_review&quot;},
+}
+</code></pre>
+<blockquote>
+<p>If the problem is procedural — steps, stages, sequences — reach for an FSM. If the problem is decisional — eligibility, pricing, risk, compliance — reach for a rule engine. Most real business processes are both. That is the subject of the fourth and fifth essays.</p>
+</blockquote>
+<p>The full comparison and anti-patterns are explored in Part 4 of this series. The composed architecture — FSM as process skeleton, rule engine as decision muscle — is developed in Part 5.</p>
+<h2 id="the-40-year-arc">The 40-year arc</h2>
+<!-- raw HTML omitted -->
+<p>The story from RETE to MCP is not obsolescence and replacement. It is infrastructure that works being augmented by capabilities that are new. The RETE network matches facts against rules with Boolean precision. The attention mechanism computes relevance over learned representations. Both answer the same question — <em>what is relevant right now?</em> — at different layers of the stack.</p>
+<blockquote>
+<p>A decision system that cannot explain itself is not enterprise-grade. A decision system that cannot handle ambiguity is not useful. The composite approach accepts both constraints and designs for them.</p>
+</blockquote>
+<p>The next essay examines the five composite AI patterns that Feillet and his co-authors proposed in 2023: concrete architectures for combining neuronal and symbolic AI in production systems.</p>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Charles L. Forgy. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>. Artificial Intelligence, 19(1): 17–37, 1982.</p>
+</li>
+<li>
+<p>Pierre Feillet, Allen Chan, Luigi Pichett, Yazan Obeidi. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. Medium, August 4, 2023.</p>
+</li>
+<li>
+<p>Pierre Feillet. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/rule-engines-never-died-theyre-running-alongside-your-lrm-6f39cad6e1d3"><em>Rule Engines Never Died — They're Running Alongside Your Large Reasoning Models</em></a>. Medium, June 4, 2026.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0. Includes <a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego-components-ai">rulego-components-ai</a> for LLM integration and MCP support.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 2: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-five-patterns">On Rule Engines — Five Patterns for Composite AI</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

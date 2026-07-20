@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig&#39;s 80% rule, and the library/restaurant mental models that clarify the boundary.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/search-recommendation-fundamental-distinction/">
+  <title>S&amp;R: Why Do We Keep Confusing Search with Recommendation? — hackspree</title>
+  <meta property="og:title" content="S&amp;R: Why Do We Keep Confusing Search with Recommendation?">
+  <meta property="og:description" content="Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig&#39;s 80% rule, and the library/restaurant mental models that clarify the boundary.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/search-recommendation-fundamental-distinction/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="S&amp;R: Why Do We Keep Confusing Search with Recommendation?">
+  <meta name="twitter:description" content="Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig&#39;s 80% rule, and the library/restaurant mental models that clarify the boundary.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>S&amp;R: Why Do We Keep Confusing Search with Recommendation?</h1><p class="post-summary">Why search and recommendation are different problems — and why conflating them is a costly engineering mistake. Covers the three traps, the user-posture divide, Peter Norvig&#39;s 80% rule, and the library/restaurant mental models that clarify the boundary.</p>
+          <div class="tags"><span class="tag">search</span><span class="tag">recommendation</span><span class="tag">information-retrieval</span><span class="tag">collaborative-filtering</span><span class="tag">architecture</span><span class="tag">series</span></div>
+          
+        </header>
+        <div class="post-body"><p><em>S&amp;R stands for Search &amp; Recommendation — the two fundamental modes of information access. This post defines the distinction that the rest of the series builds on, and explains why conflating them is not merely a terminology error but an engineering one with production consequences.</em></p>
+<p><strong>Search</strong> is what happens when someone types &quot;history of the Byzantine Empire&quot; into a box and hits enter. They know what they want. They told you — explicitly, in words, 500 milliseconds ago. Your job is fidelity to those words. If they typed &quot;Byzantine&quot; and you returned results about the Ottoman Empire because &quot;people who search for Byzantium also search for Ottomans,&quot; you have broken the contract.</p>
+<p><strong>Recommendation</strong> is what happens when someone opens an app and waits. They didn't type anything. They may not know what they want. They may not even know there <em>is</em> something to want. Your job is to infer it from what they did yesterday, last week, and five minutes ago — and to be right often enough that they keep opening the app. If you show them what they already know about, you have broken a different contract.</p>
+<p>Search and recommendation are often described as &quot;two sides of the same coin.&quot; Both match users with items. Both rank results. Both drive discovery. The phrase appears in conference papers and engineering blog posts alike.</p>
+<p>It is also wrong — or at least, incomplete enough to be dangerous.</p>
+<p>Search and recommendation are different problems. They emerged from different research communities, solved different user needs, developed different mathematical frameworks, and measure success differently. Confusing them produces systems that are bad at both: search results that drift into irrelevance under the weight of personalization, and recommendation feeds that fail to respect explicit intent.</p>
+<p>This series traces the history, the mathematics, the architectures, and the convergence — arguing that the best engineering organizations don't collapse search and recommendation into one. They build systems that respect the distinction even as they blur it.</p>
+<p>Let's start with the definitions.</p>
+<h2 id="what-search-is--and-what-it-is-not">What Search Is — And What It Is Not</h2>
+<p><strong>Search is query-driven retrieval.</strong> A user has an information need, formulates it as a query, and expects the system to return items relevant to that query. The contract is: <em>I tell you what I want. You find it.</em></p>
+<pre><code class="language-python"># Search: the user specifies intent explicitly
+def search(query: str, index: InvertedIndex, k: int = 10) -&gt; list[Document]:
+    &quot;&quot;&quot;Return the top-k documents matching the query.&quot;&quot;&quot;
+    query_tokens = tokenize(query)
+    candidates = set()
+    for token in query_tokens:
+        candidates.update(index.postings[token])  # exact or fuzzy match
+
+    scored = [(doc, score(query_tokens, doc)) for doc in candidates]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return [doc for doc, _ in scored[:k]]
+
+# The key: query comes from the user, right now.
+# If the query is wrong, the results are wrong — but that's the user's problem,
+# not the system's. The system's job is fidelity to the query.
+results = search(&quot;history of the Byzantine Empire&quot;, index, k=10)
+</code></pre>
+<p>The critical property: <strong>the user actively formulates their need</strong>. They lean forward. They have a goal. Search is a tool the user <em>operates</em>.</p>
+<h2 id="what-recommendation-is--and-what-it-is-not">What Recommendation Is — And What It Is Not</h2>
+<p><strong>Recommendation is preference-driven filtering.</strong> The system infers what a user might want from their history, behavior, and context, then surfaces items unprompted. The contract is: <em>I know something about you. Let me suggest what you might like.</em></p>
+<pre><code class="language-python"># Recommendation: the system infers intent from behavior
+def recommend(user_id: str, item_sim: dict, ratings: dict, k: int = 10) -&gt; list[Item]:
+    &quot;&quot;&quot;Return top-k items the user might like, based on what they liked before.&quot;&quot;&quot;
+    liked_items = [item for item, rating in ratings[user_id].items() if rating &gt; 3.5]
+
+    candidates = {}
+    for liked in liked_items:
+        for similar_item, sim_score in item_sim[liked].items():
+            if similar_item not in ratings[user_id]:  # don't recommend what they've seen
+                candidates[similar_item] = candidates.get(similar_item, 0) + sim_score
+
+    ranked = sorted(candidates.items(), key=lambda x: x[1], reverse=True)
+    return [item for item, _ in ranked[:k]]
+
+# The key: the user did NOT ask for anything. The system guessed.
+# If the guess is wrong, that's the system's failure.
+suggestions = recommend(&quot;user_42&quot;, item_similarity_matrix, ratings_matrix, k=10)
+</code></pre>
+<p>The critical property: <strong>the system initiates</strong>. The user leans back. They are open to suggestion. Recommendation is an experience the user <em>receives</em>.</p>
+<h2 id="the-difference-in-one-table">The Difference in One Table</h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Search</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>User intent</strong></td>
+<td>Active: user formulates a query</td>
+<td>Passive: system surfaces items unprompted</td>
+</tr>
+<tr>
+<td><strong>Input</strong></td>
+<td>Short, explicit query text</td>
+<td>Implicit user profile (history, behavior, context)</td>
+</tr>
+<tr>
+<td><strong>Core operation</strong></td>
+<td>Query–document matching</td>
+<td>User–item matching</td>
+</tr>
+<tr>
+<td><strong>Information need</strong></td>
+<td>Known: &quot;I want to find X&quot;</td>
+<td>Unknown: &quot;Show me what I might like&quot;</td>
+</tr>
+<tr>
+<td><strong>Evaluation</strong></td>
+<td>Precision, recall, NDCG, MRR</td>
+<td>RMSE, AUC, CTR, retention, discovery</td>
+</tr>
+<tr>
+<td><strong>Serendipity</strong></td>
+<td>Undesirable (should return what was asked for)</td>
+<td>Desirable (should surface unexpected gems)</td>
+</tr>
+<tr>
+<td><strong>Personalization</strong></td>
+<td>Optional; applied sparingly at re-ranking</td>
+<td>Core to the entire pipeline</td>
+</tr>
+<tr>
+<td><strong>Theoretical roots</strong></td>
+<td>Information Retrieval (library science, linguistics)</td>
+<td>Collaborative Filtering (HCI, ML)</td>
+</tr>
+<tr>
+<td><strong>User posture</strong></td>
+<td>Lean forward — goal-directed</td>
+<td>Lean back — open to suggestion</td>
+</tr>
+</tbody>
+</table>
+<p>Manning, Raghavan, and Schütze's canonical IR textbook formalizes this distinction in its opening chapter: information retrieval is query-driven; information filtering is profile-driven [5].</p>
+<h2 id="why-people-confuse-them--the-three-traps">Why People Confuse Them — The Three Traps</h2>
+<p>If the distinction is so clear, why do smart engineers keep conflating them? Three traps account for most of the damage.</p>
+<p><strong>Trap 1: They share the same surface shape.</strong> Both produce a ranked list of items. Type a query into Google, get a list. Open Netflix, get a list. The visual output is identical, so the mental model defaults to &quot;they're the same thing with different inputs.&quot; This is like assuming a taxi and a personal chauffeur are the same because both are cars. The interface is the same; the contract is not.</p>
+<p><strong>Trap 2: They use the same mathematical machinery.</strong> Both problems can be formulated as learning a matching function <code>f(x, y) → relevance_score</code>. Search learns <code>f(query, document)</code>. Recommendation learns <code>f(user, item)</code>. The architectures — two-tower encoders, dot-product scoring, ANN retrieval — are often identical:</p>
+<pre><code class="language-python"># Both problems use the same architecture shape — but the semantics differ
+class TwoTowerModel(nn.Module):
+    &quot;&quot;&quot;A shared architecture. But what the towers encode is completely different.&quot;&quot;&quot;
+    def __init__(self, input_dim: int, hidden_dim: int):
+        super().__init__()
+        self.tower_a = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim // 2)
+        )
+        self.tower_b = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim // 2)
+        )
+
+    def forward(self, x_a, x_b):
+        return torch.cosine_similarity(self.tower_a(x_a), self.tower_b(x_b))
+
+# FOR SEARCH: tower_a encodes QUERY text, tower_b encodes DOCUMENT text
+# The query is an explicit string the user typed 500ms ago.
+
+# FOR RECOMMENDATION: tower_a encodes USER profile, tower_b encodes ITEM features
+# The user profile is a latent representation of years of behavior, updated daily.
+
+# Same architecture. Completely different semantics.
+# When the code looks the same, the problems feel the same. They aren't.
+</code></pre>
+<p>This is the second trap. The math is identical. The semantics are not.</p>
+<p><strong>Trap 3: LLMs make the boundary genuinely fuzzy.</strong> Ask an LLM &quot;What should I watch tonight? I loved <em>Dark</em> and <em>Severance</em>&quot; and it will produce recommendations. Ask the same LLM &quot;Find me mind-bending sci-fi shows like <em>Dark</em>&quot; and it will produce search results. The same model, the same prompt interface, the same output format. The temptation to conclude &quot;search and recommendation are the same now&quot; is powerful — and wrong. The LLM is a substrate, not a solution. It can perform either task, but optimizing for both simultaneously without awareness of which mode is active produces the worst of both worlds.</p>
+<h2 id="peter-norvigs-insight-the-error-bar-is-different">Peter Norvig's Insight: The Error Bar Is Different</h2>
+<p>Peter Norvig, Director of Research at Google, captured the consequence of the search–recommendation distinction with characteristic precision. When asked about the shift from retrieval to proactive assistance, he noted:</p>
+<blockquote>
+<p>&quot;With information retrieval, anything over 80% recall and precision is pretty good — not every suggestion has to be perfect, since the user can ignore the bad suggestions. With assistance, there is a much higher barrier.&quot;</p>
+</blockquote>
+<p>The bar is different because the contract is different. In search, the user is the arbiter — they scan results, skip what's irrelevant, and reformulate if necessary. In recommendation, the system is the arbiter — it decides what the user sees. If it's wrong, the user doesn't skip a result; they lose trust in the system itself.</p>
+<pre><code class="language-python">def measure_search_satisfaction(precision_at_10: float) -&gt; str:
+    &quot;&quot;&quot;Norvig's rule: 80% is good enough for search.&quot;&quot;&quot;
+    if precision_at_10 &gt;= 0.80:
+        return &quot;acceptable — user can scroll past the 20% that's wrong&quot;
+    return &quot;needs improvement — too many irrelevant results visible&quot;
+
+def measure_recommendation_satisfaction(ndcg_at_10: float) -&gt; str:
+    &quot;&quot;&quot;No equivalent 80% rule for recommendations.&quot;&quot;&quot;
+    if ndcg_at_10 &gt;= 0.95:
+        return &quot;acceptable — nearly everything shown is relevant&quot;
+    # A recommendation that misses 20% is showing wrong items to users
+    # who can't scroll past — they just see a bad experience.
+    return &quot;needs improvement — every wrong item erodes trust cumulatively&quot;
+</code></pre>
+<p>Getting search wrong loses a query. Getting recommendation wrong loses a user.</p>
+<p>Herlocker et al. established the standard evaluation framework for collaborative filtering, noting that recommendation metrics must capture user satisfaction in ways that precision and recall alone cannot [6].</p>
+<h2 id="the-library-analogy">The Library Analogy</h2>
+<p>Three scenarios make the distinction concrete:</p>
+<ol>
+<li>
+<p>You walk into a library and ask the librarian, &quot;Where are the books on the history of the Byzantine Empire?&quot; The librarian walks you to a specific shelf. That's <strong>search</strong>.</p>
+</li>
+<li>
+<p>You walk into the same library and the librarian says, &quot;I notice you've been reading a lot about medieval trade routes. We just got a new book on the Silk Road you might enjoy.&quot; That's <strong>recommendation</strong>.</p>
+</li>
+<li>
+<p>You walk into the library, glance around, and say, &quot;I'm not sure what I want. Something historical but not too heavy, maybe with a good story?&quot; The librarian pauses, then suggests three books and asks which one sounds right. That's <strong>the boundary</strong> — where search and recommendation blur into conversation.</p>
+</li>
+</ol>
+<p>These three scenarios feel different. They engage different cognitive postures, demand different system designs, and tolerate different kinds of errors:</p>
+<ul>
+<li>A <strong>search error</strong> is visible and attributable: &quot;This librarian doesn't know where the books are.&quot;</li>
+<li>A <strong>recommendation error</strong> is invisible and cumulative: &quot;This librarian doesn't understand my taste.&quot;</li>
+<li>A <strong>boundary error</strong> is recoverable through conversation: &quot;Not that one — what else do you have?&quot;</li>
+</ul>
+<h2 id="the-restaurant-analogy">The Restaurant Analogy</h2>
+<p>When you sit down at a restaurant and scan the menu, you're doing <strong>search</strong>. You have an intent — &quot;I feel like pasta&quot; — and you're scanning a structured catalog for matches. Your satisfaction depends on whether the menu accurately represents what the kitchen can deliver. A mistake here: &quot;I ordered the carbonara and got the bolognese.&quot;</p>
+<p>When the chef sends out a tasting menu — &quot;trust me, you'll love this&quot; — you're receiving a <strong>recommendation</strong>. The chef has built a model of what you might enjoy and is making predictions. Your satisfaction depends on whether the chef's model of you is accurate, and whether they can surprise you in a good way. A mistake here: &quot;The chef brought me a dish centered on mushrooms, which I hate.&quot;</p>
+<p>The first failure is a retrieval error. The second is a modeling error. Different failures, different fixes, different systems.</p>
+<h2 id="the-surveys-agree-different-fields-different-literatures">The Surveys Agree: Different Fields, Different Literatures</h2>
+<p>The best survey papers in each field make the distinction structurally. The <em>Recommender Systems Handbook</em> (Ricci, Rokach, and Shapira, 3rd edition, 2022) — the canonical 1,060-page reference — organizes recommendation into its own taxonomy: collaborative filtering, content-based, context-aware, session-based, and sequential methods [1]. The parallel information retrieval surveys — Guo et al.'s <em>A Deep Look into Neural Ranking Models for Information Retrieval</em> (2020) and Hambarde and Proença's <em>Information Retrieval: Recent Advances and Beyond</em> (2023) — organize around query-document matching, retrieval stages, and ranking objectives that have no equivalent in the recommendation literature [2][3].</p>
+<p>These surveys do not reference each other much. That is not an accident. It is evidence that the fields have different problem statements, different evaluation cultures, and different assumptions about what &quot;good&quot; means.</p>
+<h2 id="whats-ahead">What's Ahead</h2>
+<p>The remaining posts in this series cover: the fifty-year history of search technology, the thirty-year history of recommendation, the Netflix case study, how Spotify, DoorDash, Airbnb, and Pinterest draw the boundary, what LLMs change — and what they don't, and a practical architecture for building systems that handle both. Each stands alone; read in any order.</p>
+<hr>
+<h2 id="open-questions">Open Questions</h2>
+<ol>
+<li>
+<p><strong>If the distinction is so clear, why do most ML curricula still teach search and recommendation as variants of the same ranking problem?</strong> What would a curriculum look like that treated them as separate disciplines with shared infrastructure?</p>
+</li>
+<li>
+<p><strong>Norvig's 80% rule suggests search tolerates error better than recommendation. But as search engines become answer engines (via RAG), the error bar rises.</strong> At what point does search become assistance — and inherit recommendation's trust problem?</p>
+</li>
+<li>
+<p><strong>The three traps explain why engineers <em>do</em> conflate search and recommendation.</strong> But what incentives — organizational, metric, career — make them <em>want</em> to? Is unification sometimes a political choice rather than a technical one?</p>
+</li>
+<li>
+<p><strong>Belkin and Croft asked in 1992 whether IR and information filtering were two sides of the same coin.</strong> Thirty-four years later, with LLMs in the picture, is the answer different than it was then? Or did they get it right the first time? Jannach et al.'s introductory textbook on recommender systems reinforces the distinction structurally: it treats the search/recommendation boundary as a design choice, not a convergence point — search is about satisfying a stated need, while recommendation is about anticipating an unstated one [8].</p>
+</li>
+</ol>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Francesco Ricci, Lior Rokach, and Bracha Shapira (editors). <a target="_blank" rel="noopener noreferrer" href="https://link.springer.com/book/10.1007/978-1-0716-2197-4"><em>Recommender Systems Handbook</em>, 3rd Edition</a>. Springer, 2022.</p>
+</li>
+<li>
+<p>Jiafeng Guo, Yixing Fan, Liang Pang, Liu Yang, Qingyao Ai, Hamed Zamani, W. Bruce Croft, et al. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.ipm.2019.102067"><em>A Deep Look into Neural Ranking Models for Information Retrieval</em></a>. Information Processing &amp; Management, 57(6), 2020.</p>
+</li>
+<li>
+<p>Kailash Hambarde and Hugo Proença. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2301.08801"><em>Information Retrieval: Recent Advances and Beyond</em></a>. arXiv:2301.08801, 2023.</p>
+</li>
+<li>
+<p>Nicholas J. Belkin and W. Bruce Croft. <a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/10.1145/138859.138861"><em>Information Filtering and Information Retrieval: Two Sides of the Same Coin?</em></a>. Communications of the ACM, 35(12): 29–38, 1992.</p>
+</li>
+<li>
+<p>Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. <a target="_blank" rel="noopener noreferrer" href="https://nlp.stanford.edu/IR-book/"><em>Introduction to Information Retrieval</em></a>. Cambridge University Press, 2008. The canonical IR textbook covering Boolean retrieval, vector space models, probabilistic retrieval, and evaluation.</p>
+</li>
+<li>
+<p>Jonathan L. Herlocker, Joseph A. Konstan, Loren G. Terveen, and John T. Riedl. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/963770.963772"><em>Evaluating Collaborative Filtering Recommender Systems</em></a>. ACM Transactions on Information Systems, 22(1): 5–53, 2004. The definitive paper on recommendation evaluation metrics.</p>
+</li>
+<li>
+<p>Carlos A. Gomez-Uribe and Neil Hunt. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/2843948"><em>The Netflix Recommender System: Algorithms, Business Value, and Innovation</em></a>. ACM Transactions on Management Information Systems, 6(4): 1–19, 2015. Netflix's own description of their recommendation architecture and business impact.</p>
+</li>
+<li>
+<p>Dietmar Jannach, Markus Zanker, Alexander Felfernig, and Gerhard Friedrich. <a target="_blank" rel="noopener noreferrer" href="https://www.cambridge.org/core/books/recommender-systems/"><em>Recommender Systems: An Introduction</em></a>. Cambridge University Press, 2010. A comprehensive introductory textbook.</p>
+</li>
+<li>
+<p>W. Bruce Croft, Donald Metzler, and Trevor Strohman. <a target="_blank" rel="noopener noreferrer" href="https://www.search-engines-book.com/"><em>Search Engines: Information Retrieval in Practice</em></a>. Pearson, 2010. A practical textbook covering search engine architecture, indexing, and ranking.</p>
+</li>
+<li>
+<p>Tefko Saracevic. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1002/asi.20482"><em>Relevance: A Review of the Literature and a Framework for Thinking on the Notion in Information Science, Part II</em></a>. Journal of the American Society for Information Science and Technology, 58(13): 1915–1933, 2007. A comprehensive review of relevance — the central concept in information retrieval.</p>
+</li>
+</ol>
+<hr>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

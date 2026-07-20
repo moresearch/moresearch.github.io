@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Colibri is a pure-C inference engine that runs a 744-billion-parameter Mixture-of-Experts model on 25 GB of consumer RAM. Zero dependencies. No GPU required. One C file. It is the most impressive piece of systems engineering I have seen this year.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/colibri/">
+  <title>Colibri — hackspree</title>
+  <meta property="og:title" content="Colibri">
+  <meta property="og:description" content="Colibri is a pure-C inference engine that runs a 744-billion-parameter Mixture-of-Experts model on 25 GB of consumer RAM. Zero dependencies. No GPU required. One C file. It is the most impressive piece of systems engineering I have seen this year.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/colibri/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Colibri">
+  <meta name="twitter:description" content="Colibri is a pure-C inference engine that runs a 744-billion-parameter Mixture-of-Experts model on 25 GB of consumer RAM. Zero dependencies. No GPU required. One C file. It is the most impressive piece of systems engineering I have seen this year.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Colibri</h1><p class="post-summary">Colibri is a pure-C inference engine that runs a 744-billion-parameter Mixture-of-Experts model on 25 GB of consumer RAM. Zero dependencies. No GPU required. One C file. It is the most impressive piece of systems engineering I have seen this year.</p>
+          <div class="tags"><span class="tag">colibri</span><span class="tag">inference</span><span class="tag">systems</span><span class="tag">c</span><span class="tag">mixture-of-experts</span></div>
+          
+        </header>
+        <div class="post-body"><p>Colibri is a pure-C inference engine. It runs GLM-5.2 — a 744-billion-parameter Mixture-of-Experts language model — on a consumer machine with roughly 25 GB of RAM. It has zero dependencies. No BLAS. No Python at runtime. No GPU required, though an optional CUDA backend exists. The engine is a single C file: <code>c/glm.c</code>, approximately 2,400 lines. The project is a one-person effort, written and tested entirely on a 12-core laptop.</p>
+<p>The name means hummingbird. Tiny creature. Enormous workload.</p>
+<p>The model it runs is GLM-5.2, released by Z.ai under MIT license. 744 billion parameters total. 75 Mixture-of-Experts layers, each with 256 experts. Only about 40 billion parameters activate per token. The challenge: 21,504 routed experts totaling roughly 370 GB at int4 precision. They don't fit in RAM. They barely fit on disk. Colibri makes them work anyway.</p>
+<h2 id="how-it-fits">How it fits</h2>
+<p>The insight is separating what must stay resident from what can be streamed. Dense components — attention layers, shared experts, embeddings — total about 17 billion parameters at int4, occupying roughly 9.9 GB of RAM. They stay resident. Routed experts — all 21,504 of them, about 19 MB each at int4 — sit on disk at 370 GB total. They are streamed on demand with a per-layer LRU cache. The operating system's page cache acts as a free second-level cache. An expert that was recently read stays in RAM because the OS hasn't evicted it yet. The OS doesn't know it's caching model weights. It doesn't need to.</p>
+<p>The cache is adaptive. At startup, Colibri reads <code>MemAvailable</code> and auto-sizes the expert cache to fit within available RAM, projecting the full working set — KV cache, MTP row, reconstruction buffers — so the OOM killer never fires. The cache learns. The engine records expert usage patterns to <code>.coli_usage</code>. At startup, it pre-pins the hottest experts into spare RAM. A live tier adaptation mode swaps cold experts for hot ones at turn boundaries. The cache gets smarter the longer it runs.</p>
+<p>The I/O is async. Expert readahead uses <code>WILLNEED</code> — the kernel reads the next expert block while the CPU computes the current one. An experimental router-lookahead prefetch predicts the next layer's routing from the current layer's post-attention state with 71.6% recall, issuing readahead from a dedicated I/O thread. The disk and the CPU work in parallel. The parallelism is the performance.</p>
+<h2 id="the-attention">The attention</h2>
+<p>GLM-5.2 uses Multi-head Latent Attention (MLA) with compressed key-value cache. Standard attention stores K and V for every head, for every token. At 64 heads, that's a lot of memory. MLA compresses the KV cache to 576 floats per token instead of 32,768 — a 57× reduction. The compression is lossless relative to full attention. Colibri validates token-exact against the reference implementation.</p>
+<p>MLA weight absorption, borrowed from DeepSeek, eliminates per-token key/value reconstruction during decode. The query absorbs the <code>kv_b</code> projection. The reconstruction is skipped. The speedup is significant.</p>
+<p>GLM-5.2 also uses DSA sparse attention — a &quot;lightning indexer&quot; that selects a top-2048 causal key set per layer. Colibri auto-extracts the selection weights from the model files. Dense attention is quadratic in sequence length. Sparse attention is linear in the selected set size. The sparsity is the speed.</p>
+<p>KV-cache persistence: conversations reopen warm across engine restarts via <code>.coli_kv</code> files. The files are approximately 182 KB per token. They are crash-safe. No re-prefill on restart.</p>
+<h2 id="speculative-decoding">Speculative decoding</h2>
+<p>Speculative decoding uses a draft model to predict the next several tokens, then verifies them against the full model. If the draft is correct, you get multiple tokens per forward pass. If it's wrong, you recompute. The technique is standard. The implementation is not.</p>
+<p>Colibri uses GLM-5.2's own MTP (Multi-Token Prediction) head — layer 78 — as the draft model. The head must be int8, not int4. At int4, acceptance collapses below 4%. At int8, acceptance reaches 39-59%, yielding 2.2-2.8 tokens per forward pass. The draft is lossless under sampling via rejection sampling. No separate draft model. No extra memory for draft weights beyond what the inference engine already loads. The MTP head is a few hundred megabytes. The return is a 2-3× speedup.</p>
+<p>Grammar-forced speculative drafts handle constrained outputs — JSON, function calling. When the grammar admits exactly one legal byte, the grammar itself injects a pre-accepted draft. No draft head needed. A wrong grammar cannot change the output. Worst case: rejected drafts, no speedup, no harm.</p>
+<h2 id="the-quantization">The quantization</h2>
+<p>Colibri uses integer-dot kernels. Int8 uses AVX2 <code>maddubs</code> — multiply-add unsigned bytes — achieving approximately 119 GFLOP/s. Int4 uses packed representations with per-row scales and dequant-on-use. The routing between int8, int4, and float32 is decided per shape by measurement. The engine profiles each matrix shape at startup and selects the fastest kernel.</p>
+<p>The offline converter takes the FP8 checkpoint — 756 GB — and converts it to int4. It downloads one shard at a time, approximately 5 GB, converts it, and deletes it. The full 756 GB never exists on disk at once. The converter is resumable.</p>
+<p>The integer-dot approach was chosen over BLAS for two reasons. First, zero dependencies. Second, expert shapes are small — 19 MB each — and BLAS overhead dominates for small matrices. The custom kernels are faster than calling into OpenBLAS for the shapes that matter. The trade-off was measured. The measurement drove the decision.</p>
+<h2 id="the-performance">The performance</h2>
+<p>On the developer's laptop — WSL2, 12 cores, 25 GB RAM, NVMe via VHDX at approximately 1 GB/s random reads — Colibri achieves roughly 0.05-0.1 tokens per second cold, improving as the cache warms. Community benchmarks show what happens with more hardware:</p>
+<table>
+<thead>
+<tr>
+<th>Hardware</th>
+<th>Throughput</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apple M5 Max, 128 GB, Metal backend</td>
+<td>1.83 tok/s</td>
+<td>66% expert hit rate</td>
+</tr>
+<tr>
+<td>Ryzen AI 9 HX 370, 128 GB</td>
+<td>0.37 tok/s</td>
+<td>MTP acceptance 52%</td>
+</tr>
+<tr>
+<td>Ryzen 9 9950X, PCIe 5.0 NVMe</td>
+<td>0.28 tok/s</td>
+<td>Bottleneck flipped to matmul</td>
+</tr>
+<tr>
+<td>Ryzen AI Max+ 395, 128 GB, Optane</td>
+<td>0.40 tok/s</td>
+<td>71% hit rate</td>
+</tr>
+</tbody>
+</table>
+<p>The project estimates that with enough RAM to fully cache hot experts plus AVX-512/VNNI kernels, 5-15 tokens per second is achievable — interactive speeds for a 744-billion-parameter model. The bottleneck moves from disk to compute as RAM increases. The movement is the scaling path.</p>
+<h2 id="what-it-includes">What it includes</h2>
+<p>The engine is a single C file. The CLI provides <code>chat</code>, <code>serve</code>, <code>plan</code>, <code>doctor</code>, <code>convert</code>, and <code>bench</code> subcommands. The HTTP API is OpenAI-compatible — <code>/v1/chat/completions</code>, <code>/v1/models</code>, SSE streaming, usage counts — with a bounded FIFO admission queue and multi-slot KV contexts. The Web UI is a React/TypeScript client, approximately 390 lines. An optional CUDA backend handles resident tensors and hot-expert VRAM tier with multi-GPU support. Windows 11 native build via MinGW-w64 with POSIX-to-Win32 shims. A quality benchmark harness — MMLU, HellaSwag, ARC — exists but is untested at scale.</p>
+<p>The project is Apache 2.0. The model weights are MIT. The entire thing was written by one person on a laptop.</p>
+<h2 id="why-this-matters">Why this matters</h2>
+<p>Colibri matters for the same reason the Unix philosophy matters. One tool, doing one thing well. Zero dependencies. The entire inference engine for a 744B model fits in a single C file shorter than this blog post. The complexity is in the model architecture, the quantization scheme, the cache policy, the I/O strategy. The code is not simple. The system is. The system has conceptual integrity — it feels like one mind designed it, because one mind did.</p>
+<p>It matters because it proves that frontier models don't require frontier hardware. A 744B model runs on a laptop. Slowly, but it runs. The gap between what the cloud provides and what a consumer machine can do is a function of engineering, not physics. The physics says the model must be read from disk. The engineering says: stream it, cache it, prefetch it, quantize it, compress it. The engineering works.</p>
+<p>It matters because it is a one-person project. No team. No funding. No infrastructure beyond a laptop. The output is a competitive inference engine for a model that, six months ago, required a datacenter. The democratization of inference is not a policy objective. It is an engineering achievement. The achievement is public. The code is open. The weights are MIT. Anyone with a laptop and an NVMe drive can run a 744B model. The democratization is complete.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Colibri, <a target="_blank" rel="noopener noreferrer" href="https://github.com/JustVugg/colibri">github.com/JustVugg/colibri</a></li>
+<li>GLM-5.2, Z.ai, MIT License.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#chinese-models-local-first">Chinese models will win the local-first race</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering is art and philosophy</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#unix-philosophy">The Unix philosophy</a></li>
+</ul>
+<p>Engineering is the through-line. Every topic on this blog — version control, networking, philosophy, economics, AI — connects to the discipline of designing and building systems that work within constraints. The constraint may be compute, attention, time, or complexity. The method is the same: understand the problem, design a solution, verify it works, iterate. The domain provides the specifics. The method is engineering.</p>
+<blockquote>
+<p>A 744-billion-parameter model running on 25 GB of RAM is not a curiosity. It is a proof. The proof is that the gap between cloud and consumer is a function of engineering, not physics. Engineering can close the gap.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

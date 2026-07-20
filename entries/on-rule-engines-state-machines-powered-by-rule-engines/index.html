@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The composed architecture — FSM as process skeleton, rule engine as decision muscle. A complete mortgage origination pipeline with Go code, testing strategies, layered audit trails, and LLM composition at the boundaries.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/on-rule-engines-state-machines-powered-by-rule-engines/">
+  <title>On Rule Engines — State Machines Powered by Rule Engines — hackspree</title>
+  <meta property="og:title" content="On Rule Engines — State Machines Powered by Rule Engines">
+  <meta property="og:description" content="The composed architecture — FSM as process skeleton, rule engine as decision muscle. A complete mortgage origination pipeline with Go code, testing strategies, layered audit trails, and LLM composition at the boundaries.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/on-rule-engines-state-machines-powered-by-rule-engines/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="On Rule Engines — State Machines Powered by Rule Engines">
+  <meta name="twitter:description" content="The composed architecture — FSM as process skeleton, rule engine as decision muscle. A complete mortgage origination pipeline with Go code, testing strategies, layered audit trails, and LLM composition at the boundaries.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-15">2026-07-15</time></p>
+          <h1>On Rule Engines — State Machines Powered by Rule Engines</h1><p class="post-summary">The composed architecture — FSM as process skeleton, rule engine as decision muscle. A complete mortgage origination pipeline with Go code, testing strategies, layered audit trails, and LLM composition at the boundaries.</p>
+          <div class="tags"><span class="tag">llm</span><span class="tag">rules</span><span class="tag">fsm</span><span class="tag">state-machines</span><span class="tag">architecture</span><span class="tag">enterprise</span><span class="tag">golang</span><span class="tag">testing</span><span class="tag">audit</span></div>
+          
+        </header>
+        <div class="post-body"><p>Part 4 established the distinction: FSMs handle sequence, rule engines handle decisions. This essay — the final in a five-part series — develops the composed architecture in full. An FSM manages process state and transitions. At each state where a decision is required, the FSM delegates to a rule engine. The LLM handles natural language at the boundaries. Three concerns. Three tools. One system.</p>
+<blockquote>
+<p>The FSM knows where you are. The rule engine knows what to conclude. The LLM knows how to say it. Each does one thing. Together they do everything.</p>
+</blockquote>
+<h2 id="the-mortgage-origination-pipeline">The mortgage origination pipeline</h2>
+<p>A mortgage application moves through five states. At each state gate, a rule engine makes a decision. The decision determines the transition.</p>
+<pre><code>[Intake] ──→ [Review] ──→ [Underwriting] ──→ [Approval] ──→ [Closing]
+   │              │              │                  │              │
+   v              v              v                  v              v
+Rule Engine   Rule Engine   Rule Engine        Rule Engine    Rule Engine
+(completeness (document     (credit risk,       (final         (funding
+ check)        verification) collateral, DTI)    conditions)    verification)
+</code></pre>
+<h3 id="the-domain-types">The domain types</h3>
+<pre><code class="language-go">type LoanApplication struct {
+    ID            string
+    ApplicantID   string
+    Amount        float64
+    PropertyValue float64
+    CreditScore   int
+    AnnualIncome  float64
+    MonthlyDebt   float64
+    LoanType      string // &quot;conventional&quot;, &quot;fha&quot;, &quot;va&quot;, &quot;jumbo&quot;
+    Documents     []Document
+    State         string // mirrors FSM state for persistence
+}
+
+type Decision struct {
+    Outcome   string            // &quot;approve&quot;, &quot;deny&quot;, &quot;need_info&quot;, &quot;escalate&quot;
+    NextState string            // the FSM transition target
+    Data      map[string]any    // structured decision payload
+    Rules     []RuleTrace       // which rules fired and why
+    Timestamp time.Time
+}
+
+type RuleTrace struct {
+    RuleID      string
+    Condition   string
+    MatchedFacts map[string]any
+}
+</code></pre>
+<h3 id="the-fsm">The FSM</h3>
+<pre><code class="language-go">type MortgageFSM struct {
+    state       string
+    transitions map[string]map[string]string
+    onEnter     map[string]func(*LoanApplication) error
+    onExit      map[string]func(*LoanApplication) error
+}
+
+func NewMortgageFSM() *MortgageFSM {
+    return &amp;MortgageFSM{
+        state: &quot;intake&quot;,
+        transitions: map[string]map[string]string{
+            &quot;intake&quot;: {
+                &quot;complete&quot;:   &quot;review&quot;,
+                &quot;incomplete&quot;: &quot;intake&quot;,
+                &quot;withdraw&quot;:   &quot;closed&quot;,
+            },
+            &quot;review&quot;: {
+                &quot;verified&quot;:     &quot;underwriting&quot;,
+                &quot;missing_docs&quot;: &quot;review&quot;,
+                &quot;deny&quot;:         &quot;closed&quot;,
+            },
+            &quot;underwriting&quot;: {
+                &quot;approve&quot;:      &quot;approval&quot;,
+                &quot;deny&quot;:         &quot;closed&quot;,
+                &quot;need_info&quot;:    &quot;review&quot;,
+            },
+            &quot;approval&quot;: {
+                &quot;conditions_met&quot;: &quot;closing&quot;,
+                &quot;conditions_failed&quot;: &quot;underwriting&quot;,
+                &quot;withdraw&quot;: &quot;closed&quot;,
+            },
+        },
+        onEnter: map[string]func(*LoanApplication) error{
+            &quot;intake&quot;:       validateApplication,
+            &quot;underwriting&quot;: lockRate,
+            &quot;closing&quot;:      generateClosingDocs,
+        },
+    }
+}
+
+func (f *MortgageFSM) Transition(app *LoanApplication, event string) error {
+    target, ok := f.transitions[f.state][event]
+    if !ok {
+        return fmt.Errorf(&quot;invalid transition: %s --%s--&gt; ?&quot;, f.state, event)
+    }
+
+    if fn, ok := f.onExit[f.state]; ok {
+        if err := fn(app); err != nil {
+            return fmt.Errorf(&quot;onExit %s: %w&quot;, f.state, err)
+        }
+    }
+
+    f.state = target
+    app.State = target
+
+    if fn, ok := f.onEnter[target]; ok {
+        if err := fn(app); err != nil {
+            return fmt.Errorf(&quot;onEnter %s: %w&quot;, target, err)
+        }
+    }
+
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>The FSM is a library concern — small, testable, and independent of both rule logic and LLM integration.</p>
+</blockquote>
+<h3 id="the-rule-engines">The rule engines</h3>
+<p>Each decision gate has its own rule engine, scoped to the decision at that state:</p>
+<pre><code class="language-go">type MortgagePipeline struct {
+    fsm   *MortgageFSM
+    gates map[string]*RuleEngine // one engine per decision state
+}
+
+func NewMortgagePipeline() *MortgagePipeline {
+    return &amp;MortgagePipeline{
+        fsm: NewMortgageFSM(),
+        gates: map[string]*RuleEngine{
+            &quot;intake&quot;:       NewIntakeRules(),
+            &quot;review&quot;:       NewReviewRules(),
+            &quot;underwriting&quot;: NewUnderwritingRules(),
+            &quot;approval&quot;:     NewApprovalRules(),
+            &quot;closing&quot;:      NewClosingRules(),
+        },
+    }
+}
+
+func NewUnderwritingRules() *RuleEngine {
+    return NewRuleEngine([]Rule{
+        {
+            ID:      &quot;UW-01&quot;,
+            When:    &quot;credit_score &lt; 620&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;credit_score_minimum&quot;},
+        },
+        {
+            ID:      &quot;UW-02&quot;,
+            When:    &quot;dti_ratio &gt; 0.43 AND loan_type != 'va'&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;dti_exceeds_threshold&quot;},
+        },
+        {
+            ID:      &quot;UW-03&quot;,
+            When:    &quot;ltv_ratio &gt; 0.95 AND loan_type = 'conventional'&quot;,
+            Then:    Action{Outcome: &quot;deny&quot;, NextState: &quot;deny&quot;, Reason: &quot;insufficient_equity&quot;},
+        },
+        {
+            ID:      &quot;UW-04&quot;,
+            When:    &quot;credit_score &gt;= 700 AND dti_ratio &lt; 0.36 AND ltv_ratio &lt; 0.80&quot;,
+            Then:    Action{Outcome: &quot;approve&quot;, NextState: &quot;approve&quot;, Rate: &quot;preferred&quot;, Adjustment: -0.25},
+        },
+        {
+            ID:      &quot;UW-05&quot;,
+            When:    &quot;credit_score &gt;= 620 AND dti_ratio &lt; 0.43 AND ltv_ratio &lt; 0.95&quot;,
+            Then:    Action{Outcome: &quot;approve&quot;, NextState: &quot;approve&quot;, Rate: &quot;standard&quot;},
+        },
+        {
+            ID:      &quot;UW-06&quot;,
+            When:    &quot;documents MISSING 'tax_returns' OR documents MISSING 'pay_stubs'&quot;,
+            Then:    Action{Outcome: &quot;need_info&quot;, NextState: &quot;need_info&quot;, MissingDocs: []string{&quot;tax_returns&quot;, &quot;pay_stubs&quot;}},
+        },
+    })
+}
+</code></pre>
+<blockquote>
+<p>Each gate's rule engine knows only its own domain. The intake engine checks completeness. The underwriting engine evaluates credit risk. The approval engine applies final conditions. Changes to one gate's rules never affect another gate.</p>
+</blockquote>
+<h3 id="the-pipeline">The pipeline</h3>
+<pre><code class="language-go">func (p *MortgagePipeline) Process(app *LoanApplication) (*Decision, []AuditEntry, error) {
+    var audit []AuditEntry
+
+    for p.fsm.State() != &quot;closed&quot; &amp;&amp; p.fsm.State() != &quot;deny&quot; {
+        state := p.fsm.State()
+        engine, ok := p.gates[state]
+        if !ok {
+            return nil, audit, fmt.Errorf(&quot;no rule engine for state: %s&quot;, state)
+        }
+
+        // Gather facts accumulated so far
+        facts := app.AccumulatedFacts()
+
+        // Delegate to the rule engine for this state gate
+        decision, err := engine.Decide(facts)
+        if err != nil {
+            return nil, audit, fmt.Errorf(&quot;decision at %s: %w&quot;, state, err)
+        }
+
+        // Record audit entry
+        audit = append(audit, AuditEntry{
+            State:      state,
+            Decision:   decision.Outcome,
+            RulesFired: decision.Rules,
+            Transition: decision.NextState,
+            Timestamp:  decision.Timestamp,
+        })
+
+        // The rule engine's decision drives the FSM transition
+        if err := p.fsm.Transition(app, decision.NextState); err != nil {
+            return nil, audit, fmt.Errorf(&quot;transition from %s: %w&quot;, state, err)
+        }
+
+        // If this was a terminal decision, return it
+        if decision.Outcome == &quot;deny&quot; || decision.Outcome == &quot;approve&quot; {
+            return &amp;decision, audit, nil
+        }
+    }
+
+    return nil, audit, fmt.Errorf(&quot;pipeline exited without terminal decision&quot;)
+}
+</code></pre>
+<blockquote>
+<p>The FSM calls the rule engine. The rule engine returns a decision with a NextState. The FSM transitions. The loop continues until a terminal state. This is the entire architecture.</p>
+</blockquote>
+<h2 id="testing-the-composite">Testing the composite</h2>
+<p>Each component tests independently. The composition tests with mocks.</p>
+<h3 id="testing-the-fsm-in-isolation">Testing the FSM in isolation</h3>
+<pre><code class="language-go">func TestMortgageFSM_Transitions(t *testing.T) {
+    fsm := NewMortgageFSM()
+
+    // Happy path: intake → review → underwriting → approval → closing
+    app := &amp;LoanApplication{ID: &quot;LOAN-001&quot;}
+
+    if err := fsm.Transition(app, &quot;complete&quot;); err != nil {
+        t.Fatal(err)
+    }
+    if fsm.State() != &quot;review&quot; {
+        t.Errorf(&quot;expected review, got %s&quot;, fsm.State())
+    }
+
+    // Invalid transition: can't jump from review to closing
+    if err := fsm.Transition(app, &quot;conditions_met&quot;); err == nil {
+        t.Error(&quot;expected error for invalid transition review → closing&quot;)
+    }
+}
+
+func TestMortgageFSM_InvalidTransitions(t *testing.T) {
+    fsm := NewMortgageFSM()
+    app := &amp;LoanApplication{ID: &quot;LOAN-002&quot;}
+
+    // Cannot approve from intake
+    if err := fsm.Transition(app, &quot;approve&quot;); err == nil {
+        t.Error(&quot;intake --approve--&gt; ? should be invalid&quot;)
+    }
+}
+</code></pre>
+<h3 id="testing-a-rule-engine-in-isolation">Testing a rule engine in isolation</h3>
+<pre><code class="language-go">func TestUnderwritingRules_CreditDenial(t *testing.T) {
+    engine := NewUnderwritingRules()
+
+    decision, err := engine.Decide(map[string]any{
+        &quot;credit_score&quot;: 590,
+        &quot;dti_ratio&quot;:    0.30,
+        &quot;ltv_ratio&quot;:    0.75,
+        &quot;loan_type&quot;:    &quot;conventional&quot;,
+    })
+
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;deny&quot; {
+        t.Errorf(&quot;expected deny for credit_score=590, got %s&quot;, decision.Outcome)
+    }
+    if decision.NextState != &quot;deny&quot; {
+        t.Errorf(&quot;expected next_state=deny, got %s&quot;, decision.NextState)
+    }
+}
+
+func TestUnderwritingRules_PreferredRate(t *testing.T) {
+    engine := NewUnderwritingRules()
+
+    decision, err := engine.Decide(map[string]any{
+        &quot;credit_score&quot;: 720,
+        &quot;dti_ratio&quot;:    0.32,
+        &quot;ltv_ratio&quot;:    0.75,
+        &quot;loan_type&quot;:    &quot;conventional&quot;,
+    })
+
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;approve&quot; {
+        t.Errorf(&quot;expected approve, got %s&quot;, decision.Outcome)
+    }
+    if decision.Rate != &quot;preferred&quot; {
+        t.Errorf(&quot;expected preferred rate for 720 credit, got %s&quot;, decision.Rate)
+    }
+}
+</code></pre>
+<h3 id="testing-the-pipeline-end-to-end">Testing the pipeline end-to-end</h3>
+<pre><code class="language-go">func TestPipeline_HappyPath(t *testing.T) {
+    pipeline := NewMortgagePipeline()
+    app := &amp;LoanApplication{
+        ID:            &quot;LOAN-003&quot;,
+        Amount:        350000,
+        PropertyValue: 450000,
+        CreditScore:   720,
+        AnnualIncome:  120000,
+        MonthlyDebt:   3200,
+        LoanType:      &quot;conventional&quot;,
+        Documents:     []Document{
+            {Type: &quot;tax_returns&quot;, Status: &quot;verified&quot;},
+            {Type: &quot;pay_stubs&quot;, Status: &quot;verified&quot;},
+        },
+    }
+
+    decision, audit, err := pipeline.Process(app)
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;approve&quot; {
+        t.Errorf(&quot;expected approve, got %s&quot;, decision.Outcome)
+    }
+
+    // Verify the process trace
+    expectedStates := []string{&quot;intake&quot;, &quot;review&quot;, &quot;underwriting&quot;, &quot;approval&quot;, &quot;closing&quot;}
+    for i, entry := range audit {
+        if entry.State != expectedStates[i] {
+            t.Errorf(&quot;step %d: expected state %s, got %s&quot;, i, expectedStates[i], entry.State)
+        }
+    }
+}
+
+func TestPipeline_LowCredit(t *testing.T) {
+    pipeline := NewMortgagePipeline()
+    app := &amp;LoanApplication{
+        CreditScore: 580,
+        // ... other fields ...
+    }
+
+    decision, audit, err := pipeline.Process(app)
+    if err != nil {
+        t.Fatal(err)
+    }
+    if decision.Outcome != &quot;deny&quot; {
+        t.Errorf(&quot;expected deny for credit 580, got %s&quot;, decision.Outcome)
+    }
+
+    // Verify the audit trail shows which rule fired
+    lastEntry := audit[len(audit)-1]
+    if lastEntry.State != &quot;underwriting&quot; {
+        t.Errorf(&quot;expected denial at underwriting gate, got %s&quot;, lastEntry.State)
+    }
+}
+</code></pre>
+<blockquote>
+<p>Three layers of testing. FSM in isolation: does it transition correctly? Rule engine in isolation: does it decide correctly? Pipeline end-to-end: does the composition work? Each layer can be tested independently. The combinatorial explosion of testing all state × rule combinations is avoided by testing the FSM with mocked decisions and the rule engine with canned facts.</p>
+</blockquote>
+<h2 id="the-layered-audit-trail">The layered audit trail</h2>
+<p>A regulator asks: &quot;Why was loan LOAN-004 denied?&quot; The composite system produces a layered answer.</p>
+<pre><code class="language-go">type FullAuditReport struct {
+    ApplicationID string
+    ProcessTrace  []ProcessStep    // FSM layer: where were we and when?
+    DecisionTrace []DecisionRecord // Rule engine layer: what did we conclude and why?
+    LLMTrace      []LLMRecord      // LLM layer: what did the model generate?
+}
+
+func (p *MortgagePipeline) FullAudit(app *LoanApplication) (*FullAuditReport, error) {
+    decision, audit, err := p.Process(app)
+    if err != nil {
+        return nil, err
+    }
+
+    report := &amp;FullAuditReport{ApplicationID: app.ID}
+
+    for _, entry := range audit {
+        // Process layer: FSM trace
+        report.ProcessTrace = append(report.ProcessTrace, ProcessStep{
+            State:     entry.State,
+            EnteredAt: entry.Timestamp,
+            Event:     entry.Transition,
+        })
+
+        // Decision layer: rule trace
+        for _, rule := range entry.RulesFired {
+            report.DecisionTrace = append(report.DecisionTrace, DecisionRecord{
+                State:        entry.State,
+                RuleID:       rule.RuleID,
+                Condition:    rule.Condition,
+                MatchedFacts: rule.MatchedFacts,
+            })
+        }
+    }
+
+    return report, nil
+}
+</code></pre>
+<p>The output is a traceable chain: process trace (which states, in which order), decision trace (which rules fired, against which facts), and — when LLMs are composed at the boundaries — generation trace (what was communicated, in which words).</p>
+<pre><code>LOAN-004 Audit Report
+=====================
+Process Trace:
+  intake(09:15) --complete--&gt; review
+  review(09:22) --verified--&gt; underwriting
+  underwriting(09:23) --deny--&gt; closed
+
+Decision Trace:
+  underwriting: UW-01 fired — credit_score=590 &lt; threshold=620
+  underwriting: UW-03 fired — ltv_ratio=0.97 &gt; maximum=0.95
+
+Conclusion: deny. Reasons: [credit_score_minimum, insufficient_equity]
+</code></pre>
+<blockquote>
+<p>The process says where. The rules say why. The audit combines both without conflating them.</p>
+</blockquote>
+<h2 id="composing-with-llms-at-the-boundaries">Composing with LLMs at the boundaries</h2>
+<p>The FSM + rule engine architecture composes naturally with Feillet's five patterns from Part 2. The LLM handles natural language at intake and notification. The FSM and rule engines handle the process and decisions between them.</p>
+<pre><code class="language-go">type MortgageSystem struct {
+    pipeline *MortgagePipeline
+    llm      *LLMClient
+}
+
+func (s *MortgageSystem) HandleInquiry(session ChatSession, message string) (string, error) {
+    // Pattern 1: NLU at intake — LLM extracts structured fields
+    intent, params, err := s.llm.UnderstandIntent(message, MortgageSchema)
+    if err != nil {
+        return s.llm.Generate(&quot;clarify&quot;, nil)
+    }
+
+    if intent == &quot;apply&quot; {
+        app := params.ToLoanApplication()
+
+        // FSM + Rule Engine: deterministic core
+        decision, audit, err := s.pipeline.Process(app)
+        if err != nil {
+            return s.llm.Generate(&quot;error&quot;, map[string]any{&quot;error&quot;: err})
+        }
+
+        // Pattern 2: NLG at notification — LLM communicates the decision
+        return s.llm.Generate(&quot;mortgage_decision&quot;, map[string]any{
+            &quot;decision&quot;: decision,
+            &quot;audit&quot;:    audit,
+            &quot;tone&quot;:     session.UserPreferences.Tone,
+            &quot;language&quot;: session.UserPreferences.Locale,
+        })
+    }
+
+    // Non-decision conversation: LLM handles freely
+    return s.llm.Chat(session.Context, message)
+}
+</code></pre>
+<blockquote>
+<p>The LLM handles the messiness of human language. The FSM handles the discipline of process state. The rule engine handles the precision of business logic. Each does one thing. Each is testable independently. The composition handles everything.</p>
+</blockquote>
+<h2 id="the-design-principles">The design principles</h2>
+<p><strong>1. Separate process from policy.</strong> The FSM encodes the sequence of states. The rule engine encodes the conditions for decisions. Never smuggle process state through working memory facts. Never encode branching policy logic in transition guards.</p>
+<p><strong>2. One rule engine per decision gate.</strong> Each gate's rules are scoped to that decision. Changing underwriting rules never affects intake rules. This is the single-responsibility principle applied to decision automation.</p>
+<p><strong>3. Test in layers.</strong> FSM with mocked decisions. Rule engine with canned facts. Pipeline end-to-end for integration. The combinatorial explosion of testing all state × rule combinations is avoided by layer isolation.</p>
+<p><strong>4. Audit in layers.</strong> Process trace (FSM) + decision trace (rule engine) + communication trace (LLM) = complete auditability. Each layer is independently queryable. Combined, they tell the full story.</p>
+<p><strong>5. The LLM is a boundary component.</strong> It handles natural language at intake and notification. It never makes a business decision. It never manages process state. The deterministic core — FSM + rule engines — is LLM-free at runtime.</p>
+<blockquote>
+<p>The composite architecture is not a compromise. It is the recognition that no single tool handles all three concerns well. Use the FSM for process. Use the rule engine for policy. Use the LLM for language. The system that does all three is the system that survives.</p>
+</blockquote>
+<hr>
+<p><strong>References</strong></p>
+<ol>
+<li>
+<p>Charles L. Forgy. <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/0004-3702(82)90020-0"><em>Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem</em></a>. Artificial Intelligence, 19(1): 17–37, 1982.</p>
+</li>
+<li>
+<p>Pierre Feillet, Allen Chan, Luigi Pichett, Yazan Obeidi. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/@pierrefeillet/approaches-in-using-generative-ai-for-business-automation-the-path-to-comprehensive-decision-3dd91c57e38f"><em>Approaches in Using Generative AI for Business Automation</em></a>. Medium, August 4, 2023.</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/rulego/rulego">RuleGo</a> — Lightweight, component-based rule engine for Go. Apache 2.0.</p>
+</li>
+</ol>
+<blockquote>
+<p><em>Part 1: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-rete-to-mcp">On Rule Engines — From RETE to MCP</a> · Part 4: <a target="_blank" rel="noopener noreferrer" href="#on-rule-engines-state-machines-vs-rule-engines">On Rule Engines — State Machines vs. Rule Engines</a></em></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="RabbitMQ is the most widely deployed message broker, but its exchange/queue/binding topology becomes a maintenance burden at scale. NATS replaces this three-layer routing model with flat subject strings — and the operational difference is dramatic. Sophotech cut p99 latency from ~150ms to ~40ms and ops time from several hours a week to under one by migrating 50 services from RabbitMQ to NATS. This post explains why subject-based routing is not just simpler syntax — it&#39;s a fundamentally different (and cheaper) model for message routing.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/nats-vs-rabbitmq-subject-routing-topology/">
+  <title>NATS vs RabbitMQ: Subject-Based Routing Eliminates Topology Complexity — hackspree</title>
+  <meta property="og:title" content="NATS vs RabbitMQ: Subject-Based Routing Eliminates Topology Complexity">
+  <meta property="og:description" content="RabbitMQ is the most widely deployed message broker, but its exchange/queue/binding topology becomes a maintenance burden at scale. NATS replaces this three-layer routing model with flat subject strings — and the operational difference is dramatic. Sophotech cut p99 latency from ~150ms to ~40ms and ops time from several hours a week to under one by migrating 50 services from RabbitMQ to NATS. This post explains why subject-based routing is not just simpler syntax — it&#39;s a fundamentally different (and cheaper) model for message routing.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/nats-vs-rabbitmq-subject-routing-topology/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NATS vs RabbitMQ: Subject-Based Routing Eliminates Topology Complexity">
+  <meta name="twitter:description" content="RabbitMQ is the most widely deployed message broker, but its exchange/queue/binding topology becomes a maintenance burden at scale. NATS replaces this three-layer routing model with flat subject strings — and the operational difference is dramatic. Sophotech cut p99 latency from ~150ms to ~40ms and ops time from several hours a week to under one by migrating 50 services from RabbitMQ to NATS. This post explains why subject-based routing is not just simpler syntax — it&#39;s a fundamentally different (and cheaper) model for message routing.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-16">2026-07-16</time></p>
+          <h1>NATS vs RabbitMQ: Subject-Based Routing Eliminates Topology Complexity</h1><p class="post-summary">RabbitMQ is the most widely deployed message broker, but its exchange/queue/binding topology becomes a maintenance burden at scale. NATS replaces this three-layer routing model with flat subject strings — and the operational difference is dramatic. Sophotech cut p99 latency from ~150ms to ~40ms and ops time from several hours a week to under one by migrating 50 services from RabbitMQ to NATS. This post explains why subject-based routing is not just simpler syntax — it&#39;s a fundamentally different (and cheaper) model for message routing.</p>
+          <div class="tags"><span class="tag">nats</span><span class="tag">rabbitmq</span><span class="tag">messaging</span><span class="tag">pubsub</span><span class="tag">microservices</span><span class="tag">migration</span><span class="tag">topology</span></div>
+          
+        </header>
+        <div class="post-body"><p>RabbitMQ is everywhere. It ships with apt-get. It runs in every cloud. It's the default answer when someone says &quot;we need a message queue.&quot; And for many teams, it works — until it doesn't.</p>
+<p>The Sophotech case study on the <a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/sophotech-rabbitmq-to-nats/">NATS blog</a> is a clean before-and-after. A single Kubernetes cluster running roughly 50 microservices on RabbitMQ. Three messaging patterns: task queues, pub/sub events, and service-to-service RPC. All standard. All within RabbitMQ's design envelope. And yet the team was spending &quot;several hours a week&quot; on operations, hitting p99 latencies of ~150ms, and dealing with queue backlogs that reached minutes under burst load.</p>
+<p>After migrating to NATS: p99 dropped to ~40ms (a 3.75x improvement). Ops time fell to under an hour per week. Burst backlogs that previously caused minutes of lag were processed within seconds.</p>
+<p>What changed? The topology disappeared.</p>
+<h2 id="the-rabbitmq-topology-problem">The RabbitMQ topology problem</h2>
+<p>In RabbitMQ, sending a message from Service A to Service B requires three layers of configuration:</p>
+<ol>
+<li>
+<p><strong>Exchange</strong> — the routing target. Is it <code>direct</code>, <code>topic</code>, <code>fanout</code>, or <code>headers</code>? Each type routes differently. Each has its own configuration schema. The exchange type is a design decision that propagates to every publisher and consumer.</p>
+</li>
+<li>
+<p><strong>Queue</strong> — the storage. Is it durable, exclusive, or auto-delete? What's the TTL? The max length? The dead-letter exchange? The queue is where messages wait, and its configuration determines reliability, performance, and behavior under backpressure. Each queue must be declared before use.</p>
+</li>
+<li>
+<p><strong>Binding</strong> — the connection between exchange and queue. The binding key pattern determines which messages from the exchange land in which queue. A <code>topic</code> exchange with binding key <code>order.#</code> routes all messages with routing keys starting with <code>order.</code> to the bound queue. Change the binding key and you change what the consumer receives — without touching the consumer's code.</p>
+</li>
+</ol>
+<p>For a single pub/sub pattern, you need: an exchange declaration, a queue declaration, and a binding declaration. For 50 services with an average of 3 message types each, you have at minimum 150 exchanges, 150 queues, and 150 bindings. In practice it's more — queues get sharded for parallelism, dead-letter exchanges get created for error handling, mirroring gets configured for HA.</p>
+<p>This topology is not visible in your application code. It lives in RabbitMQ's configuration, in deployment scripts, in infrastructure-as-code, and in tribal knowledge. When a new developer joins and asks &quot;how does the order service get order events?&quot;, the answer involves three different UI screens or CLI commands. The routing logic is distributed across the application (which declares the routing key) and the infrastructure (which configures bindings). Neither side fully owns the behavior.</p>
+<p>RabbitMQ's own clustering compounds this. For high availability, you need mirrored queues or quorum queues. Mirrored queues replicate every message to every mirror — reliable but expensive. Quorum queues use Raft — more efficient but sensitive to network partitions and requiring careful tuning. Add shovels for cross-datacenter and federations for cross-region, and the topology graph becomes a full-time job.</p>
+<h2 id="the-nats-alternative-subjects-are-the-topology">The NATS alternative: subjects are the topology</h2>
+<p>NATS eliminates all of this. There are no exchanges. No queues. No bindings. There are only <strong>subjects</strong> and <strong>subscriptions</strong>.</p>
+<p>A subject is a string: <code>orders.created</code>, <code>payment.processed</code>, <code>inventory.updated.us-east</code>. It is a hierarchical, dot-separated token sequence. A subscription matches subjects with wildcards: <code>orders.*</code> matches one additional token, <code>orders.&gt;</code> matches any number of additional tokens.</p>
+<p>That's the entire routing model. Here is the equivalent of a fanout exchange with multiple bound queues in NATS:</p>
+<pre><code class="language-go">// Service A publishes
+nc.Publish(&quot;orders.created&quot;, eventData)
+
+// Service B subscribes — no exchange, queue, or binding required
+nc.Subscribe(&quot;orders.created&quot;, func(m *nats.Msg) {
+    processEvent(m)
+})
+
+// Service C also subscribes — independently
+nc.Subscribe(&quot;orders.created&quot;, func(m *nats.Msg) {
+    auditEvent(m)
+})
+</code></pre>
+<p>Every subscriber on <code>orders.created</code> receives the message. No exchange to declare. No queue to configure. No binding to maintain. The subject <em>is</em> the routing. The subscription <em>is</em> the delivery. The code <em>is</em> the topology.</p>
+<p>This inversion eliminates the infrastructure drift that plagues RabbitMQ deployments. In RabbitMQ, the exchange, queue, and binding must exist before the publisher publishes. If the queue declaration is removed from the infrastructure config but the publisher still publishes to the exchange, messages black-hole silently (or end up in an alternate exchange, if configured). In NATS, if nobody is subscribed to <code>orders.created</code>, the message is simply not delivered — and that's correct behavior. When a subscriber subscribes, it starts receiving from that point forward. No missing topology. No silent message loss. No drift between infrastructure and application.</p>
+<h2 id="migration-in-three-phases">Migration in three phases</h2>
+<p>The Sophotech team migrated progressively, which is worth studying as a pattern:</p>
+<p><strong>Phase 1: Dual publishing.</strong> Every service that published to RabbitMQ was modified to also publish to NATS. The RabbitMQ path remained primary. The NATS path was fire-and-forget — if publishing to NATS failed, the service logged a warning and continued. This phase established that the NATS subject namespace worked correctly without risking production traffic.</p>
+<p><strong>Phase 2: Canary consumers.</strong> Select services began consuming from NATS instead of RabbitMQ. The RabbitMQ consumer ran alongside — both processed the same logical messages, and their outputs were compared. If the NATS consumer produced different results, the canary was rolled back. If it produced identical results for a sustained period, confidence increased.</p>
+<p><strong>Phase 3: Full cutover.</strong> Once all consumers had been canaried and verified, dual publishing was removed. Services published only to NATS. Services consumed only from NATS. RabbitMQ was decommissioned.</p>
+<p>The key to this working is that the migration was at the messaging layer, not the application layer. Services didn't change their business logic. They changed the transport — from <code>amqp.Dial</code> to <code>nats.Connect</code>, from exchange declaration to subject subscription. The business logic stayed the same. The transport got simpler.</p>
+<h2 id="the-topology-comparison-side-by-side">The topology comparison, side by side</h2>
+<p>Here's what a simple pub/sub workflow looks like in both systems.</p>
+<p><strong>RabbitMQ — fanout of an order event to three consumers:</strong></p>
+<pre><code class="language-python"># Publisher
+channel.exchange_declare(exchange='orders', exchange_type='topic')
+channel.basic_publish(exchange='orders', routing_key='order.created', body=json.dumps(event))
+
+# Consumer A: fulfillment
+channel.queue_declare(queue='fulfillment_orders')
+channel.queue_bind(exchange='orders', queue='fulfillment_orders', routing_key='order.created')
+channel.basic_consume(queue='fulfillment_orders', on_message_callback=process)
+
+# Consumer B: notification
+channel.queue_declare(queue='notification_orders')
+channel.queue_bind(exchange='orders', queue='notification_orders', routing_key='order.*')
+channel.basic_consume(queue='notification_orders', on_message_callback=send_email)
+
+# Consumer C: analytics
+channel.queue_declare(queue='analytics_orders', durable=True)
+channel.queue_bind(exchange='orders', queue='analytics_orders', routing_key='order.#')
+channel.basic_consume(queue='analytics_orders', on_message_callback=track)
+</code></pre>
+<p>That's 9 infrastructure declarations for one event type across three consumers. Add a fourth consumer, and you add two more declarations. The infrastructure grows linearly with the number of consumers. Every queue is a named resource that must be managed, monitored, and cleaned up if the consumer is decommissioned.</p>
+<p><strong>NATS — same workflow:</strong></p>
+<pre><code class="language-go">// Publisher
+nc.Publish(&quot;order.created&quot;, event)
+
+// Consumer A: fulfillment
+nc.Subscribe(&quot;order.created&quot;, process)
+
+// Consumer B: notification
+nc.Subscribe(&quot;order.*&quot;, sendEmail)
+
+// Consumer C: analytics
+nc.Subscribe(&quot;order.&gt;&quot;, track)
+</code></pre>
+<p>Four lines of application code. No infrastructure declarations. No named resources to manage. The routing is implicit in the subjects. If Consumer B goes away, nothing needs to be cleaned up — the subscription disappears when the connection closes. If Consumer D joins, it subscribes to the subjects it cares about. No configuration changes. No topology updates.</p>
+<p>This is not just syntactic convenience. It's a fundamentally different ownership model. In RabbitMQ, the infrastructure owns the topology. In NATS, the application owns the routing. The infrastructure team doesn't need to know which services subscribe to which subjects. The subject namespace is self-documenting — <code>order.created</code> means what it says. Routing changes are code changes, not config changes. They go through the same review, test, and deploy pipeline as any other application change.</p>
+<h2 id="queue-groups-scale-without-configuration">Queue groups: scale without configuration</h2>
+<p>RabbitMQ's primary scaling mechanism is the <strong>competing consumers</strong> pattern: multiple consumers on the same queue, with RabbitMQ distributing messages round-robin. This requires declaring the queue as shared and ensuring all consumers connect with the same queue name and configuration.</p>
+<p>NATS provides the same pattern through <strong>queue groups</strong> — with even less ceremony:</p>
+<pre><code class="language-go">// Three instances of the same service, one queue group
+nc.QueueSubscribe(&quot;orders.process&quot;, &quot;order-workers&quot;, func(m *nats.Msg) {
+    processOrder(m)
+})
+</code></pre>
+<p>The queue group name (<code>order-workers</code>) is the only shared knowledge. No queue declaration. No binding. No durable/exclusive/auto-delete decision. NATS distributes messages across connected queue group members. When an instance disconnects (crashes, scales down, deploys), NATS removes it from the distribution. When a new instance connects, NATS adds it.</p>
+<p>There is no load balancer. No health check endpoint. No instance registry. The NATS server knows which clients are connected to which subjects. The protocol handles distribution. The application code is identical whether there's one instance or a hundred.</p>
+<h2 id="persistence-without-the-ceremony">Persistence without the ceremony</h2>
+<p>RabbitMQ queues are persistent by configuration. You declare <code>durable=True</code> and messages are written to disk. If the broker restarts, durable queues and persistent messages survive. Non-durable queues and transient messages don't. The configuration determines the guarantee.</p>
+<p>NATS separates persistence into JetStream, which is opt-in. You create a stream to capture subjects, and consumers read from the stream:</p>
+<pre><code class="language-go">// Create a stream that captures order subjects
+js.AddStream(&amp;nats.StreamConfig{
+    Name:     &quot;ORDERS&quot;,
+    Subjects: []string{&quot;order.&gt;&quot;},
+    Storage:  nats.FileStorage,
+})
+
+// Publish to the subject — persisted automatically
+js.Publish(&quot;order.created&quot;, event)
+
+// Create a consumer to read persisted messages
+js.AddConsumer(&quot;ORDERS&quot;, &amp;nats.ConsumerConfig{
+    Durable:       &quot;order-processor&quot;,
+    FilterSubject: &quot;order.created&quot;,
+    AckPolicy:     nats.AckExplicitPolicy,
+})
+</code></pre>
+<p>This separation — streams for storage, consumers for reading — is the key architectural difference. In RabbitMQ, you get persistence by configuring a queue as durable. In NATS, you get persistence by creating a stream. The stream captures messages on subjects. Consumers are independent views into the stream, each with their own cursor, filter, and acknowledgement state. Multiple consumers can read the same stream at different paces, with different filters, starting from different positions. One stream. Many consumers. No queue per consumer.</p>
+<p>This pattern eliminates RabbitMQ's fanout tax. To get a message to three services in RabbitMQ with persistence, you need a topic exchange, three durable queues, and three bindings. In NATS, you need one stream and three consumers. The stream captures once. The consumers read independently. The infrastructure is proportional to the number of message categories, not the number of consumers — which is usually the smaller number.</p>
+<h2 id="what-the-numbers-say">What the numbers say</h2>
+<p>Sophotech's 3.75x latency improvement isn't magic. It's the combination of:</p>
+<ul>
+<li>
+<p><strong>No exchange routing overhead.</strong> A NATS subject match is a trie lookup against a subscription table. RabbitMQ's topic exchange is a state machine matching the routing key against all binding patterns. For a routing key with 4 tokens and 100 binding patterns, the NATS match is O(4) — walk the trie 4 levels. The RabbitMQ match is O(100 × 4) — test each binding pattern against the 4-token key.</p>
+</li>
+<li>
+<p><strong>No persistence double-write.</strong> RabbitMQ durable queues write to disk. For mirrored queues, the write is replicated. For quorum queues, the write goes through Raft. NATS JetStream writes to file storage with optional Raft replication. But here's the difference: RabbitMQ writes the message to the queue's storage and the queue's index. JetStream writes to an append-only log. Append-only is faster. No index update. No queue-level bookkeeping per consumer.</p>
+</li>
+<li>
+<p><strong>No queue-level congestion.</strong> In RabbitMQ, a slow consumer creates a queue backlog. The queue grows. Other consumers on different queues are unaffected by the backlog, but they're affected by the broker's overall resource pressure (memory, file descriptors, disk I/O) caused by the growing queue. In NATS, a slow consumer creates consumer-level lag. The stream keeps appending. Other consumers keep consuming. The slow consumer's lag doesn't affect other consumers' throughput. The stream is shared. The consumption is isolated.</p>
+</li>
+</ul>
+<p>The operational improvement — from several hours a week to under one — comes from what was removed. No queue mirroring to configure. No dead-letter exchanges to maintain. No federation links to troubleshoot. No shovel to restart. The infrastructure surface area shrinks because the infrastructure model is simpler.</p>
+<h2 id="when-rabbitmq-still-makes-sense">When RabbitMQ still makes sense</h2>
+<p>RabbitMQ is not universally wrong. If you already run it and it works at your scale, the migration cost may not be worth the latency improvement. If your messaging volume is low (hundreds per second, not thousands or millions), the latency difference will be invisible. If you use AMQP 1.0 features that NATS doesn't replicate (message annotations, complex routing headers, fine-grained delivery annotations), the protocol matters more than the performance.</p>
+<p>And perhaps most importantly: if your team deeply understands RabbitMQ operations — if you've invested years in tuning, monitoring, and troubleshooting RabbitMQ — that operational knowledge is real. Switching to NATS means rebuilding that knowledge. The operational improvement may be worth it, but it's not free.</p>
+<p>For greenfield systems, however, the question is not &quot;NATS or RabbitMQ?&quot; It's &quot;why would you choose the system with more moving parts?&quot; RabbitMQ requires you to design, implement, and maintain a routing topology. NATS requires you to define a subject namespace. One is infrastructure. The other is naming. Naming is easier than infrastructure. Naming is easier to change. Naming is easier to debug. When the simpler system is also faster and more operationally efficient, the burden of proof shifts to the more complex one.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/sophotech-rabbitmq-to-nats/">How Sophotech Cut Latency by 3x Migrating from RabbitMQ to NATS</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://nats.io/blog/building-scalable-microservices-with-nats/">Building Scalable Microservices with NATS</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://docs.nats.io/nats-concepts/jetstream">NATS Documentation — JetStream</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.rabbitmq.com/tutorials/amqp-concepts">RabbitMQ — Exchanges and Bindings</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

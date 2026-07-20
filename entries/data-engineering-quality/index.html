@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Data quality is the hardest problem in data engineering because it is not purely technical. Bad data looks like good data. Errors propagate silently. The people who know the data is wrong are not the people who can fix it. The discipline of data quality is the discipline of making wrongness visible before anyone makes a decision based on it.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/data-engineering-quality/">
+  <title>Data quality and the problem of truth — hackspree</title>
+  <meta property="og:title" content="Data quality and the problem of truth">
+  <meta property="og:description" content="Data quality is the hardest problem in data engineering because it is not purely technical. Bad data looks like good data. Errors propagate silently. The people who know the data is wrong are not the people who can fix it. The discipline of data quality is the discipline of making wrongness visible before anyone makes a decision based on it.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/data-engineering-quality/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Data quality and the problem of truth">
+  <meta name="twitter:description" content="Data quality is the hardest problem in data engineering because it is not purely technical. Bad data looks like good data. Errors propagate silently. The people who know the data is wrong are not the people who can fix it. The discipline of data quality is the discipline of making wrongness visible before anyone makes a decision based on it.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-12">2026-07-12</time></p>
+          <h1>Data quality and the problem of truth</h1><p class="post-summary">Data quality is the hardest problem in data engineering because it is not purely technical. Bad data looks like good data. Errors propagate silently. The people who know the data is wrong are not the people who can fix it. The discipline of data quality is the discipline of making wrongness visible before anyone makes a decision based on it.</p>
+          <div class="tags"><span class="tag">data-engineering</span><span class="tag">data-quality</span><span class="tag">governance</span><span class="tag">testing</span><span class="tag">lineage</span></div>
+          
+        </header>
+        <div class="post-body"><p>Data quality is the problem of ensuring that data is correct, complete, consistent, and timely. It is the hardest problem in data engineering because it is not purely technical. A pipeline can run successfully and produce garbage. The tests can pass and the data can still be wrong — the tests test what you thought to test, and you didn't think of everything. The consumers of the data — the analysts, the dashboard viewers, the ML models — trust the data until they don't. The moment they stop trusting it, every number produced by the data platform becomes suspect. Restoring trust is harder than maintaining it. Most organizations never fully restore it.</p>
+<h2 id="the-dimensions-of-quality">The dimensions of quality</h2>
+<p>Data quality has multiple dimensions. Each is necessary. None is sufficient.</p>
+<p><strong>Accuracy.</strong> The data reflects reality. The sales amount in the warehouse matches the sales amount in the source system. The match should be exact. Approximate is not good enough — a 1% error on revenue, compounded across months, produces financial statements that don't reconcile. Accuracy is verified by reconciliation: comparing warehouse aggregates to source system aggregates. The reconciliation should be automated. It rarely is.</p>
+<p><strong>Completeness.</strong> All the expected data is present. No missing rows, no missing columns, no missing values where values should exist. Completeness is verified by volume checks: does today's row count fall within the historical range? Completeness failures are the most common data quality issue and the most embarrassing — &quot;the dashboard shows zero revenue because the pipeline didn't run.&quot;</p>
+<p><strong>Consistency.</strong> The same data has the same meaning across tables. Customer ID 123 in the orders table refers to the same customer as Customer ID 123 in the customers table. Consistency is verified by referential integrity checks: do all foreign keys resolve to existing primary keys? Consistency failures produce silent errors — queries that return wrong results without complaining.</p>
+<p><strong>Timeliness.</strong> The data is available when it is needed. A dashboard that shows yesterday's data at 9 AM is useful. A dashboard that shows yesterday's data at 4 PM is not — the decisions were already made. Timeliness is verified by freshness checks: did the pipeline run within its SLA window? Timeliness failures are operations failures dressed as data failures.</p>
+<p><strong>Uniqueness.</strong> No duplicate records. The same event should not appear twice in the same table. Uniqueness is verified by primary key checks. Duplication failures are insidious — they inflate counts, double revenue, and are invisible to checks that only verify that values are within expected ranges.</p>
+<h2 id="why-data-rots">Why data rots</h2>
+<p>Data rots because the world changes and the data model doesn't. A source system is upgraded. A column is renamed. A new product category is added. A business rule changes — &quot;we now count subscriptions as revenue when billed, not when collected.&quot; The pipeline wasn't updated. The data in the warehouse no longer matches the data in the source or the expectations of the business. The rot is gradual. The rot is invisible until someone compares two numbers that should match and finds they don't.</p>
+<p>Data rots because humans make errors and the errors accumulate. An analyst writes a SQL query with a join condition that accidentally drops rows. The query becomes a view. The view becomes a dashboard. Six months later, someone notices the numbers are low. The error was in the original query. The query was never tested. The test would have caught the error. The test didn't exist.</p>
+<p>Data rots because documentation drifts from reality. The data dictionary says the <code>status</code> column contains 'active', 'inactive', and 'pending'. The application added 'suspended' six months ago. The documentation wasn't updated. The analyst's query filters to <code>status IN ('active', 'inactive', 'pending')</code>. Suspended customers are invisible. The invisibility is a data quality failure caused by a documentation failure.</p>
+<h2 id="the-testing-pyramid-for-data">The testing pyramid for data</h2>
+<p>Software engineering has the testing pyramid: unit tests at the bottom, integration tests in the middle, end-to-end tests at the top. Data engineering needs its own pyramid.</p>
+<p><strong>Column-level tests.</strong> Does this column contain nulls? Are values within expected ranges? Are all values from the expected set? Column-level tests catch the most common failures: missing data, out-of-range data, unexpected values. They are cheap to write and fast to run. Every column that matters should have at least one test.</p>
+<p><strong>Table-level tests.</strong> Is the primary key unique? Are there more rows than the minimum expected? Fewer rows than the maximum expected? Do foreign keys resolve? Table-level tests catch structural failures: duplicates, missing data, referential integrity violations.</p>
+<p><strong>Cross-table tests.</strong> Does the revenue in the orders table match the revenue in the payments table? Does the customer count in the warehouse match the customer count in the source? Cross-table tests catch reconciliation failures. They are the most valuable tests and the least common because they require understanding the relationships between systems.</p>
+<p><strong>Business logic tests.</strong> Does the total revenue for March 2026 match the known value from the audited financial statements? Business logic tests catch semantic errors — the data is structurally correct but wrong. They require known reference values. The reference values must come from outside the data platform — from the accounting system, from the source application, from manual audit. The independence of the reference value is what makes the test valid.</p>
+<h2 id="governance">Governance</h2>
+<p>Data governance is the set of policies and processes that ensure data quality at scale. Governance answers: who owns this data? Who can access it? What does it mean? How long is it retained? What are the quality standards?</p>
+<p>Governance fails when it is imposed by a central team without the authority to enforce it. The central team writes policies. The domain teams ignore them. The policies are documents. The documents are unread. Governance succeeds when it is embedded in the platform. Access controls are enforced by the warehouse, not by policy. Data classification is enforced by automated scanning, not by manual tagging. Quality standards are enforced by automated testing, not by review checklists. The platform is the enforcement mechanism. The mechanism is the governance.</p>
+<p>The modern approach to governance is the data catalog. A catalog — Alation, Atlan, DataHub, Amundsen — indexes all data assets across the organization. It shows lineage — where data came from and where it goes. It shows ownership — who is responsible for this dataset. It shows quality metrics — when was this dataset last validated, what tests does it pass. It shows usage — who queries this dataset, how often. The catalog makes data discoverable. Discoverability is the first step toward quality. You cannot improve what you cannot find.</p>
+<h2 id="the-principle">The principle</h2>
+<p>Data quality is not a project. It is a practice. There is no point at which you are &quot;done&quot; with data quality. The sources change. The business changes. The consumers' expectations rise. The practice must be continuous: test, monitor, fix, repeat. The practice must be owned by the people closest to the data. The platform must make the practice easy. The alternative is a data platform that produces numbers nobody trusts. A platform that produces untrusted numbers is a platform that has failed. The failure is not technical. It is organizational. The fix is not a tool. It is a commitment.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Barr Moses, &quot;The Data Quality Hierarchy of Needs,&quot; Monte Carlo Blog, 2021.</li>
+<li>dbt Labs, &quot;Testing,&quot; dbt Documentation.</li>
+<li>DataHub, &quot;Data Catalog,&quot; DataHub Documentation.</li>
+<li>Related posts: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#no-solutions-only-tradeoffs">No solutions, only trade-offs</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#scarcity-in-practice">Scarcity in Practice</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

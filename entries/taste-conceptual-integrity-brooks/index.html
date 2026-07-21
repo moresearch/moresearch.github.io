@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Ray Myers is right that &#34;taste&#34; belittles engineering judgment. Fred Brooks had a better word: conceptual integrity. The difference matters more in the agent era than ever.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/taste-conceptual-integrity-brooks/">
+  <title>&#34;Taste&#34; Is a Terrible Word for What We Mean — hackspree</title>
+  <meta property="og:title" content="&#34;Taste&#34; Is a Terrible Word for What We Mean">
+  <meta property="og:description" content="Ray Myers is right that &#34;taste&#34; belittles engineering judgment. Fred Brooks had a better word: conceptual integrity. The difference matters more in the agent era than ever.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/taste-conceptual-integrity-brooks/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="&#34;Taste&#34; Is a Terrible Word for What We Mean">
+  <meta name="twitter:description" content="Ray Myers is right that &#34;taste&#34; belittles engineering judgment. Fred Brooks had a better word: conceptual integrity. The difference matters more in the agent era than ever.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-21">2026-07-21</time></p>
+          <h1>&#34;Taste&#34; Is a Terrible Word for What We Mean</h1><p class="post-summary">Ray Myers is right that &#34;taste&#34; belittles engineering judgment. Fred Brooks had a better word: conceptual integrity. The difference matters more in the agent era than ever.</p>
+          <div class="tags"><span class="tag">design</span><span class="tag">fred-brooks</span><span class="tag">conceptual-integrity</span><span class="tag">taste</span><span class="tag">engineering-judgment</span><span class="tag">agents</span></div>
+          
+        </header>
+        <div class="post-body"><p>Ray Myers posted a thought experiment on LinkedIn this week:</p>
+<blockquote>
+<p>&quot;Imagine a phrase like 'The building fell down after the inspector's taste was ignored.' Is there any situation where you would feel accountable to heed someone's taste?&quot;</p>
+</blockquote>
+<p>He's right. &quot;Taste&quot; is a terrible word for what we mean. It belongs to wine, to font choices, to whether a photograph looks good in black and white. It does not belong to engineering judgment that determines whether a system stands or falls.</p>
+<p>But Ray's experiment also reveals something deeper. The fact that &quot;taste&quot; can't carry the weight of engineering accountability doesn't mean the thing people are reaching for doesn't exist. It means we've been using the wrong word.</p>
+<p>Fred Brooks had the right word.</p>
+<h2 id="the-thing-people-mean-when-they-say-taste">The thing people mean when they say &quot;taste&quot;</h2>
+<p>In <em>The Design of Design</em>, Brooks called it <strong>conceptual integrity</strong>: &quot;the system feels like one mind designed it.&quot; It is the most important property of any designed system. Everything else serves it.</p>
+<p>Conceptual integrity is not personal preference. It is not aesthetics. It is the structural property that makes a system coherent rather than assembled — where every interface reflects the same design philosophy, every component uses the same idioms, and every decision is consistent with every other decision because one mind (or one team acting as one mind) had authority over the whole.</p>
+<blockquote>
+<p>&quot;It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas.&quot; — Fred Brooks, <em>The Mythical Man-Month</em>, 1975</p>
+</blockquote>
+<p>That is not taste. That is design discipline.</p>
+<p>Brooks's proof is Reims Cathedral. Built over eight generations of architects, each stuck to the original plan. The result: a unified work, coherent in every detail, as if one mind designed it. Most cathedrals are not like this. Gothic nave, Renaissance facade, Baroque chapel on Romanesque transept — each generation had a vision, nobody had authority, and the result was chaos.</p>
+<p>Software systems are cathedrals built over decades. The ones that last — Unix under Thompson and Ritchie, Go under Thompson, Pike, and Griesemer, the Macintosh under Jobs — have conceptual integrity. One mind, or one resonant pair, had the authority to say no. The ones that don't have conceptual integrity are Linux distributions assembled from a hundred projects with a hundred design philosophies — functional, full of life, and impossible to understand as a whole.</p>
+<h2 id="why-the-word-matters">Why the word matters</h2>
+<p>Ray's concern is not semantic. It's about power.</p>
+<p>When you call engineering judgment &quot;taste,&quot; you make it sound like preference. And preference is easy to dismiss. &quot;That's just your taste&quot; is a conversation-ender. It requires no rebuttal because it treats the objection as a matter of opinion rather than evidence.</p>
+<p>This is dangerous in any engineering context. It's lethal in the context Ray is responding to: an industry where some voices argue that the human contribution to AI-assisted development is &quot;taste&quot; — as if the human's role is to look at the agent's output and decide whether they like it.</p>
+<blockquote>
+<p>&quot;The building fell down after the inspector's taste was ignored&quot; sounds absurd because it is absurd. The inspector doesn't have taste. The inspector has expertise, heuristics, evidence, and the authority to say no. So does the senior engineer reviewing agent-generated code.</p>
+</blockquote>
+<p>Brooks understood this distinction. Conceptual integrity is not asserted. It is enforced. The designer must have the authority to say no — &quot;repeatedly, to smart people with good arguments&quot; — and make it stick. That authority is not granted by having better taste. It is granted by having a coherent design vision and the track record to justify it.</p>
+<h2 id="what-sean-cooper-got-right">What Sean Cooper got right</h2>
+<p>In the comments on Ray's post, Sean Cooper offered a nuanced take: taste is real but insufficient. It's &quot;fast orientation&quot; — the senior engineer's &quot;this feels wrong&quot; that compresses decades of pattern recognition into a single moment. But taste must be converted into evidence. Name the odor. Articulate the heuristic. Demonstrate the risk.</p>
+<p>This is exactly the bridge between Brooks's conceptual integrity and Ray's accountability.</p>
+<p>The senior engineer who says &quot;this feels wrong&quot; is drawing on the same pattern-matching system that Brooks described as the designer's essential skill: the ability to see the whole and detect when a part doesn't fit. But the feeling is not the argument. The feeling is the starting point for the argument. The argument must be: this breaks coherence in this specific way, with these specific consequences.</p>
+<blockquote>
+<p>Taste is fast orientation. Conceptual integrity is the slow, structural work of making the system coherent. You need both. You can only be held accountable for the second.</p>
+</blockquote>
+<h2 id="the-agent-era-makes-this-urgent">The agent era makes this urgent</h2>
+<p>Agents have no conceptual integrity. Zero. They generate tokens statistically, not coherently. An agent can write a function that compiles and passes tests and violates every design principle the rest of the codebase follows — not because it's malicious, but because it has no model of the whole.</p>
+<p>The human's role is not to apply &quot;taste&quot; to the agent's output. The human's role is to be the one mind that maintains conceptual integrity — to enforce the design philosophy the agent can't see, to reject code that works but doesn't fit, to say no to good ideas that would break coherence.</p>
+<blockquote>
+<p>Calling that role &quot;taste&quot; doesn't just undersell it. It makes it sound optional. Conceptual integrity is not optional. Systems without it accumulate complexity until they cannot be changed. The agent era accelerates that accumulation because agents produce code faster than humans can review it for coherence.</p>
+</blockquote>
+<p>If we call it taste, we lose. If we call it conceptual integrity, we have a framework, a tradition, and a standard of accountability that stretches from Reims Cathedral to the Unix kernel.</p>
+<h2 id="the-right-word">The right word</h2>
+<p>Ray's experiment proves his point. Nobody would feel accountable to heed someone's taste. The word doesn't carry the weight. It can't.</p>
+<p>But the thing the industry is fumbling toward — the human contribution that survives when code generation is commoditized — is real. It's the ability to see the whole, to enforce coherence, to say no to features that don't fit, and to be held accountable when the system fails because those decisions were wrong.</p>
+<p>Brooks called it conceptual integrity. The word is five syllables and not catchy. It will never trend on LinkedIn. But it has the property that matters most: it can carry the weight of accountability that &quot;taste&quot; cannot.</p>
+<blockquote>
+<p>&quot;The system collapsed because the engineer with conceptual integrity was ignored.&quot; That sentence works. It names a role, a skillset, and a failure mode. It is a sentence an engineer can be held accountable for. &quot;Taste&quot; can't do that work. Conceptual integrity can.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Myers, R. (2026). <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/posts/cadrlife_lets-try-an-experiment-to-see-if-we-want-share-7485045944925720576-WlW5">&quot;Let's try an experiment to see if we want to embrace 'taste' as the term for engineering judgment.&quot;</a> LinkedIn. — The post this essay responds to.</li>
+<li>Brooks, F. P. (2010). <em>The Design of Design.</em> — The source of &quot;conceptual integrity&quot; as the most important property of any designed system.</li>
+<li>Brooks, F. P. (1975). <em>The Mythical Man-Month.</em> — Where Brooks first articulated the argument: it is better to omit features and preserve coherence than to include many good but uncoordinated ideas.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Brooks on Software Design: conceptual integrity</a> — This blog's earlier treatment of Brooks's framework and Reims Cathedral as proof.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#correctness-first">Correctness First</a> — What OpenBSD teaches about coherence, discipline, and the authority to say no.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

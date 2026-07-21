@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Bacalhau inverts the cloud model: instead of moving petabytes to a central cluster, it sends compute to where data lives. That inversion is the foundation of data sovereignty — and the architecture the agent era needs.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/compute-travels-data-stays/">
+  <title>Compute Travels. Data Stays. — hackspree</title>
+  <meta property="og:title" content="Compute Travels. Data Stays.">
+  <meta property="og:description" content="Bacalhau inverts the cloud model: instead of moving petabytes to a central cluster, it sends compute to where data lives. That inversion is the foundation of data sovereignty — and the architecture the agent era needs.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/compute-travels-data-stays/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Compute Travels. Data Stays.">
+  <meta name="twitter:description" content="Bacalhau inverts the cloud model: instead of moving petabytes to a central cluster, it sends compute to where data lives. That inversion is the foundation of data sovereignty — and the architecture the agent era needs.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-20">2026-07-20</time></p>
+          <h1>Compute Travels. Data Stays.</h1><p class="post-summary">Bacalhau inverts the cloud model: instead of moving petabytes to a central cluster, it sends compute to where data lives. That inversion is the foundation of data sovereignty — and the architecture the agent era needs.</p>
+          <div class="tags"><span class="tag">data-sovereignty</span><span class="tag">bacalhau</span><span class="tag">distributed-compute</span><span class="tag">agents</span><span class="tag">edge</span><span class="tag">privacy</span></div>
+          
+        </header>
+        <div class="post-body"><p>The cloud won. For two decades, the answer to &quot;where should compute happen?&quot; was &quot;ship the data to us.&quot; Centralize. Aggregate. Process. The result: petabytes of data flowing into a handful of regions, owned by a handful of companies, governed by laws that don't match the topology.</p>
+<p>The cloud won, but the cloud model is breaking. Not technically — the hyperscalers work fine. But legally, economically, and architecturally, the assumption that data should move to compute is no longer true.</p>
+<blockquote>
+<p>GDPR requires data residency. The EU AI Act layers new constraints. Countries from Brazil to India to Indonesia are writing sovereignty into law. The pipe dream of &quot;store everything in us-east-1&quot; is dead. The cloud didn't account for borders.</p>
+</blockquote>
+<p>This is where Bacalhau enters. Not as a replacement for the cloud. As an inversion of its founding assumption.</p>
+<h2 id="what-bacalhau-does">What Bacalhau does</h2>
+<p>Bacalhau is an open-source distributed compute orchestrator. The idea is simple: instead of moving data across the network to a central compute cluster, you send a small job description — a Docker container, a Wasm binary, a shell script — to wherever the data already lives. The job runs next to the data. Only the results come back.</p>
+<p><img src="/images/bacalhau-logo.svg" alt="Bacalhau logo — the cod fish, Portuguese &quot;bacalhau,&quot; a metaphor for preservation without centralization"></p>
+<blockquote>
+<p>Compute travels. Data stays. That's the whole architecture.</p>
+</blockquote>
+<p>It's released under Apache 2.0, built by Expanso, a company founded in 2023 by David Aronchick — previously co-founder of Kubeflow at Google, head of open-source ML strategy at Microsoft Azure. The project won the Data Breakthrough Award in 2024, raised $7.5M in seed funding led by General Catalyst, and landed a strategic investment from Samsung Next. It's available on the Google Cloud Marketplace. It's a single Go binary — no cluster to bootstrap, no control plane to subscribe to.</p>
+<p>The architecture is an orchestrator-compute model. You label nodes by region (<code>region=eu</code>, <code>region=us</code>). You submit a job with constraints. The orchestrator routes work to nodes near the data. Jobs are parallel by default — split into partitions that run independently, with isolated failure handling. If a partition fails, it retries. If the network between the orchestrator and a compute node drops, the node keeps working.</p>
+<h2 id="the-name-matters">The name matters</h2>
+<p>Bacalhau is Portuguese for dried salted cod. Before refrigeration, cod was preserved by salting and drying — it could travel long distances without spoiling, sustaining entire maritime economies for centuries. The metaphor is deliberate: preserve the data where it originates. Compute can travel. Data doesn't need to.</p>
+<p>This matters because data is heavy and data is governed. Moving a petabyte of logs to a central warehouse is expensive. Moving genomic data across national borders is illegal in an increasing number of jurisdictions. Moving medical records, financial transactions, or personally identifiable information into a third-party cloud triggers compliance obligations that most teams underestimate until an auditor shows up.</p>
+<p>Bacalhau's answer: don't move it. Send the analysis to the data.</p>
+<h2 id="how-it-actually-works">How it actually works</h2>
+<p>A Bacalhau deployment runs a single binary in different modes: orchestrator nodes manage job lifecycles, compute nodes execute workloads. Both can be the same machine. At the edge, a compute node might be a Raspberry Pi on a factory floor. In the cloud, it might be a VM in a specific AWS region.</p>
+<p>Jobs are submitted declaratively or via CLI. They target data in S3, IPFS, HTTP endpoints, or local storage. The orchestrator schedules work based on node labels — <code>region=eu</code>, <code>gpu=true</code>, <code>tier=production</code>. The workload runs inside a Docker container or a Wasm sandbox. Output lands wherever you configure: local disk, S3 bucket, the next pipeline stage.</p>
+<p>A partitioned job splits across N nodes. Each partition gets an index, a count, and its own slice of the data. Failures are per-partition, not per-job. A node in Frankfurt might process EU customer records while a node in São Paulo processes Brazilian records and a node in Mumbai handles Indian data — all from the same job submission, with constraints that ensure compliance.</p>
+<h2 id="the-genomic-data-proof-point">The Genomic Data Proof Point</h2>
+<p>A 2025 academic study tested Bacalhau with IPFS Cluster and AES-256 encryption for decentralized genomic computation. The distributed architecture achieved <strong>100% job completion under network chaos</strong> — nodes disconnecting, links dropping, partitions reforming. The centralized baseline fell apart under the same conditions.</p>
+<p>Under ideal network conditions, the distributed setup added about 30% overhead (49 seconds vs. 37 seconds). That 12-second difference is the price of sovereignty. In the centralized case, you also move the data first — a cost the study's baseline conveniently excluded.</p>
+<blockquote>
+<p>The paper's conclusion: a proven model for privacy-critical decentralized science collaborations, prioritizing data sovereignty and high availability over raw throughput. Twelve seconds to keep genomic data inside hospital walls.</p>
+</blockquote>
+<h2 id="why-the-agent-era-needs-this">Why the agent era needs this</h2>
+<p>Software engineering agents generate code. That's the story everyone tells. The less-told story is where they run.</p>
+<p>An agent debugging a production issue needs access to logs. Those logs live in a specific region, governed by specific laws. An agent analyzing customer behavior needs to read data that cannot legally leave the country. An agent optimizing a factory floor needs to process sensor data at millisecond latency — waiting for a round-trip to the cloud is not an option.</p>
+<p>The default architecture for agent platforms today is: ship everything to a central LLM provider. Your code, your logs, your database schema, your customer PII — all of it crosses the wire to a model endpoint in a jurisdiction you didn't choose.</p>
+<p>Bacalhau suggests a different architecture: ship the agent to the data. Run the model where the data lives. The agent is a job. The data is stationary. The compliance boundary is the node label, not a legal review of every prompt.</p>
+<h2 id="the-broader-lesson">The broader lesson</h2>
+<p>Data sovereignty sounds like a legal problem. It becomes an architectural problem the moment you try to build a real system. If your architecture requires data to move to a central location before anything useful can happen, you have already lost the sovereignty argument — all that remains is how many exceptions you'll need and how much the fines will cost.</p>
+<p>The alternative is compute over data. It's not a new idea. MapReduce did it. Edge computing does it. Bacalhau makes it general — any workload, any data source, any execution engine, one binary, open source.</p>
+<blockquote>
+<p>The cloud taught us to centralize. The law is teaching us to distribute. Bacalhau is infrastructure for that transition.</p>
+</blockquote>
+<p>It's not that central compute will disappear. It's that centralization stops being the default. When data must stay where it is, the architecture follows. Compute travels. Data stays. That inversion is the foundation of sovereignty — and the infrastructure the next decade of software will be built on.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

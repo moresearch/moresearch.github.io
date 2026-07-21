@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/data-driven-design-swe-agents/">
+  <title>Agents Are Too Stochastic for Intuition — hackspree</title>
+  <meta property="og:title" content="Agents Are Too Stochastic for Intuition">
+  <meta property="og:description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/data-driven-design-swe-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Agents Are Too Stochastic for Intuition">
+  <meta name="twitter:description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-21">2026-07-21</time></p>
+          <h1>Agents Are Too Stochastic for Intuition</h1><p class="post-summary">You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.</p>
+          <div class="tags"><span class="tag">data-driven-design</span><span class="tag">agents</span><span class="tag">evaluation</span><span class="tag">harness</span><span class="tag">software-engineering</span><span class="tag">metrics</span></div>
+          
+        </header>
+        <div class="post-body"><p>Databases used to be black boxes. You wrote a query, waited, and hoped the optimizer did something reasonable. When it didn't, you tried a different index and hoped again. The expertise was real but the method was folk — passed from senior to junior as rules of thumb: &quot;always index foreign keys,&quot; &quot;avoid <code>SELECT *</code>,&quot; &quot;<code>EXPLAIN</code> will tell you what's wrong.&quot;</p>
+<p>That era ended when database teams started treating query performance as a measurement problem. Instrument the optimizer. Collect query plans. Compare actual vs. estimated row counts. Build dashboards. The output of all that instrumentation is a design loop: you don't guess why a query is slow. You look at the data. The data tells you.</p>
+<p>We are at the beginning of the same transition for software engineering agents. Right now, most agent design is folk expertise: &quot;be specific in your prompts,&quot; &quot;few-shot examples help,&quot; &quot;chain-of-thought improves reasoning.&quot; These are all true, sometimes, for some models, on some tasks. The problem is that nobody knows which ones.</p>
+<blockquote>
+<p>The defining quality of an LLM is that it is stochastic. Given the same input, you get different outputs. Given slightly different inputs, you get very different outputs. The only way to reason about a stochastic system at scale is with data.</p>
+</blockquote>
+<h2 id="why-intuition-fails">Why intuition fails</h2>
+<p>Your intuition about what makes a good agent prompt is shaped by a few dozen interactions. You try a prompt, it works, you generalize. You try another, it fails, you adjust. This is the scientific method at N=1 — useful for generating hypotheses, useless for drawing conclusions.</p>
+<p>The problem compounds because agents are not just stochastic — they are <em>stateful, tool-using, multi-turn stochastic systems</em>. An agent that picks the wrong tool on step 2 fails on step 7 in a way that looks unrelated to the original mistake. Intuition attributes the failure to the step-7 behavior. The data would tell you to fix step 2.</p>
+<blockquote>
+<p>Debugging agents by reading transcripts is like debugging a database by reading query text. You might spot the obvious problems. You will miss everything that matters at scale.</p>
+</blockquote>
+<h2 id="what-data-driven-design-looks-like-for-agents">What data-driven design looks like for agents</h2>
+<p>The method is straightforward, even if the infrastructure isn't:</p>
+<p><strong>One: Instrument every decision.</strong> The agent chose a tool. Was it the right tool? The agent produced a diff. Did it compile? Did the tests pass? Did it introduce a vulnerability? The agent looped. How many iterations? When did it converge — or fail to? Every one of these is a data point. Collect them.</p>
+<p><strong>Two: Define success numerically, not narratively.</strong> &quot;The agent handled the task well&quot; is a narrative. &quot;The agent solved 73% of tasks in the benchmark, with a median of 4 tool calls per task and a 6% hallucinated-tool-call rate&quot; is data. Narratives are for demos. Data is for design.</p>
+<p><strong>Three: Compare at scale.</strong> You changed the prompt. Did the solve rate go up? By how much? Across how many tasks? With what variance? A single run of a stochastic system is a data point. A thousand runs is a distribution. Design decisions should be made on distributions, not data points.</p>
+<p><strong>Four: Close the loop.</strong> The best agent systems — like the best database administrators — don't make one-off optimizations. They build pipelines. Deploy. Observe. Compare. Improve. Deploy again. The loop is the design process. Speed of iteration matters more than brilliance of a single change.</p>
+<h2 id="the-harness-is-your-measurement-instrument">The harness is your measurement instrument</h2>
+<p>A theme that runs through this blog is that the harness is the most under-invested part of an agent system. Data-driven design makes it concrete why: the harness is your measurement instrument. If your harness can't produce reliable, comparable metrics at scale, you cannot do data-driven design. You are back to intuition and anecdotes.</p>
+<blockquote>
+<p>A harness that can only tell you &quot;pass&quot; or &quot;fail&quot; is a thermometer with one marking. You need to know what happened, where it went wrong, and whether this run was better than the last run in a way that generalizes.</p>
+</blockquote>
+<p>The harness engineering practices that matter for data-driven design:</p>
+<ul>
+<li><strong>Deterministic replay</strong> — if you can't reproduce a run, you can't measure a change.</li>
+<li><strong>Layered observability</strong> — prompt selection, tool choice, state transitions, final outcome. Each layer produces its own metrics.</li>
+<li><strong>Statistical rigor</strong> — a 2% improvement on 10 tasks is noise. A 2% improvement on 1,000 tasks might be real. The harness needs to support sample sizes that make signals distinguishable from noise.</li>
+</ul>
+<h2 id="why-this-matters-more-for-agents-than-for-any-previous-software">Why this matters more for agents than for any previous software</h2>
+<p>Traditional software is deterministic. You change the code, you run the tests, you observe a binary outcome. The design loop is: implement, test, fix, repeat. Data helps, but the feedback signal is strong enough that intuition often suffices.</p>
+<p>Agents are fundamentally different. The same agent, on the same task, with the same prompt, will produce different results on different runs. The space of possible behaviors is too large to explore by reasoning alone. The only way to understand an agent is to observe it across many runs and let the patterns emerge from the data.</p>
+<p>This is uncomfortable. It means admitting that you cannot fully understand the system you are building by reading the code and the prompts. It means ceding authority to measurement. It means designing experiments instead of designing solutions — because the solution emerges from the experimental data, not from your head.</p>
+<blockquote>
+<p>The transition from folk expertise to data-driven design is the transition from craftsmanship to engineering. Both produce good outcomes. Only one scales.</p>
+</blockquote>
+<h2 id="the-cost-of-not-doing-it">The cost of not doing it</h2>
+<p>The alternative to data-driven design is design by anecdote. Someone runs the agent on a task they care about. It works. They ship. Someone else runs it on a different task. It fails. Nobody knows why. The team debates prompts instead of looking at data. Decisions are made by the most senior person in the room, not by the person with the best evidence.</p>
+<p>This is how most teams work today. It is also how most teams will fail at building agents, because the complexity of stochastic, tool-using, multi-turn systems exceeds what any individual's intuition can model.</p>
+<blockquote>
+<p>Data-driven design is not about having data. It's about making decisions as if the data matters more than your opinion.</p>
+</blockquote>
+<p>Databases went through this transition. So did compilers. So did networking. Every infrastructure layer that we now treat as predictable, measurable, and engineer-able went through a phase where the experts relied on intuition and the results were inconsistent. Agents are in that phase now. The teams that instrument, measure, and close the loop will build infrastructure. The teams that rely on folk wisdom and anecdote will build demos that don't survive contact with real workloads.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Kaggle spent 15 years building the infrastructure AI agents need: leaderboards, reproducible evaluations, curated datasets, and a community that knows how to measure what works. The agent era makes Kaggle more relevant, not less.">
+  <meta name="description" content="Sonar&#39;s Agent-Centric Development Cycle codifies what the best teams already discovered the hard way: without verification at every stage, AI-generated code is a productivity trap.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="Kaggle spent 15 years building the infrastructure AI agents need: leaderboards, reproducible evaluations, curated datasets, and a community that knows how to measure what works. The agent era makes Kaggle more relevant, not less.">
+  <meta property="og:description" content="Sonar&#39;s Agent-Centric Development Cycle codifies what the best teams already discovered the hard way: without verification at every stage, AI-generated code is a productivity trap.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="Kaggle spent 15 years building the infrastructure AI agents need: leaderboards, reproducible evaluations, curated datasets, and a community that knows how to measure what works. The agent era makes Kaggle more relevant, not less.">
+  <meta name="twitter:description" content="Sonar&#39;s Agent-Centric Development Cycle codifies what the best teams already discovered the hard way: without verification at every stage, AI-generated code is a productivity trap.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,6 +664,213 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="verifiers-are-king-sonar-acdc">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/verifiers-are-king-sonar-acdc/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-21" data-utc="Jul 21, 2026 UTC" aria-label="Jul 21, 2026 UTC" tabindex="0">1784592000</time></p>
+          <h2><a href="#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a></h2><p class="post-summary">Sonar&#39;s Agent-Centric Development Cycle codifies what the best teams already discovered the hard way: without verification at every stage, AI-generated code is a productivity trap.</p>
+          <div class="tags"><span class="tag">verification</span><span class="tag">agents</span><span class="tag">sonar</span><span class="tag">software-engineering</span><span class="tag">correctness</span><span class="tag">harness</span>
+          </div>
+        </header>
+        <div class="post-body"><p>At the AI Engineer World's Fair in July 2026, Sonar CEO Tariq Shaukat gave a talk with a title that could serve as the thesis for this entire blog: <em>&quot;In the Land of AI Agents, the Verifiers Are King.&quot;</em></p>
+<p>The argument is simple and devastating. AI coding agents deliver an initial 3-5x velocity boost. Within three months, that gain begins to evaporate. Security vulnerabilities accumulate. Bugs multiply. Code complexity rises. Technical debt compounds at machine speed. The boost was real, but the rot was faster.</p>
+<blockquote>
+<p>The productivity paradox of AI agents: they make you faster in week one and slower in month three, because every line they wrote is a line nobody reviewed.</p>
+</blockquote>
+<p>Shaukat's answer is a framework Sonar calls the Agent-Centric Development Cycle, or AC/DC — Guide, Verify, Solve. Three stages, each producing feedback that feeds the others, forming a continuous loop around every AI-assisted code change. The framework is partly a product pitch for Sonar's tooling. It is also, independent of the product, the right way to think about building software with agents.</p>
+<h2 id="guide-context-before-code">Guide: context before code</h2>
+<p>The Guide phase gives agents information they wouldn't otherwise have — coding standards, architectural constraints, dependency health, semantic navigation of the existing codebase.</p>
+<p>This sounds like prompt engineering. It's not. It's preemptive verification. Before the agent writes a line, the system has already said: these are the rules, this is the architecture, these dependencies are approved, this is how the code is structured. The agent can't violate constraints it doesn't know about. Most violations in agent-generated code aren't malice or even incompetence — they're ignorance. Guide eliminates the ignorance.</p>
+<blockquote>
+<p>Sonar claims a 30% reduction in token consumption from context augmentation alone. The agent writes less code that needs rewriting, because it knows what correct looks like before it starts.</p>
+</blockquote>
+<h2 id="verify-trust-nothing-check-everything">Verify: trust nothing, check everything</h2>
+<p>This is the center of the framework and the center of Shaukat's argument. Verification must be zero-trust — no model is inherently trustworthy, and every model has different biases and blind spots. Verification must be multi-layered — combining algorithmic analysis (data flows, control flows, known vulnerability patterns, secrets detection) with agentic analysis (intent, business logic, the &quot;unknown unknowns&quot; that rules-based tools miss).</p>
+<p>The algorithmic layer catches the deterministic problems: this data flow leaks sensitive information, this control path doesn't handle the error case, this pattern matches a known CVE. The agentic layer catches the semantic problems: this function doesn't do what the comment says it does, this PR changes behavior the ticket didn't ask for, this logic contradicts the architectural decision made last sprint.</p>
+<blockquote>
+<p>Neither layer alone is sufficient. Algorithmic verification misses context. Agentic verification hallucinates. Together, they catch what each misses.</p>
+</blockquote>
+<p>The results Sonar cites are significant: a <strong>44% reduction in AI-derived production outages</strong> among organizations with disciplined verification, and up to a <strong>92% reduction in AI-induced issues</strong> at large financial institutions. One project timeline went from 10 days to 4 days — not by generating faster, but by generating fewer things that needed fixing.</p>
+<h2 id="solve-fix-it-then-verify-the-fix">Solve: fix it, then verify the fix</h2>
+<p>The Solve phase addresses what verification finds — automatically. A remediation agent generates fix suggestions in an isolated sandbox. The fix is re-analyzed. If it passes, it merges. If it doesn't, it loops back.</p>
+<p>This closes the cycle. Guide gave the agent context to write correct code. Verify caught what slipped through. Solve fixed it and fed back into verification. The next Guide phase has better information because the system now knows what kinds of mistakes the agent tends to make on this codebase.</p>
+<h2 id="the-three-loops">The three loops</h2>
+<p>What makes AC/DC more than a marketing diagram is that it operates across three nested timescales:</p>
+<ul>
+<li><strong>The agentic loop</strong> (inner): context → generation → analysis → refinement → re-analysis. Runs in real time, inside the agent's workflow, before anything reaches a human.</li>
+<li><strong>The CI verification loop</strong> (middle): multi-layered PR review combining algorithmic and agentic analysis with inline comments, change summaries, and architecture walkthroughs.</li>
+<li><strong>The code maintenance loop</strong> (outer): quality gates, technical debt management, and continuous remediation across the entire codebase. Keeps the codebase clean so agents operate efficiently on future changes.</li>
+</ul>
+<blockquote>
+<p>The inner loop catches mistakes in seconds. The middle loop catches them in minutes. The outer loop prevents them from becoming systemic.</p>
+</blockquote>
+<h2 id="why-this-matters-beyond-sonar">Why this matters beyond Sonar</h2>
+<p>AC/DC is a Sonar product framework, but the underlying idea is independent of any vendor. It's a recognition that the software development lifecycle needs to be redesigned around the agent, not the other way around.</p>
+<p>The traditional SDLC assumes a human writes the code, a human reviews the code, and a human fixes the bugs. The agent-era SDLC assumes an agent writes the code, a verifier checks the code, and a remediation agent fixes the issues — all before a human sees it. The human's role shifts from author to governor. The human sets the constraints, defines the quality gates, and intervenes when the automated loop can't resolve something.</p>
+<p>This is not a downgrade of the human role. It's an upgrade. It replaces &quot;did I write this correctly?&quot; with &quot;is my verification infrastructure catching what matters?&quot; The first question doesn't scale. The second one does.</p>
+<h2 id="the-connection-to-harness-engineering">The connection to harness engineering</h2>
+<p>If you've been following this blog's thread on harness engineering, you'll recognize AC/DC as a harness architecture in product form. The Guide phase is feedforward. The Verify phase is feedback. The Solve phase closes the loop. The three nested timescales map directly to the layered checks I've argued for: tool-selection, state-transition, and final-outcome evaluation.</p>
+<blockquote>
+<p>Sonar didn't invent the idea that verification is central to agent development. They productized it, named it, and backed it with numbers. The underlying principle — that the verifier matters more than the generator — is something every agent team discovers the hard way if they don't learn it the easy way.</p>
+</blockquote>
+<p>The numbers tell the story: without verification, 3-5x initial gains that rot. With verification, 44% fewer outages, 92% fewer issues, faster net delivery. The gap isn't about model quality. It's about whether verification is a first-class part of your development process or an afterthought.</p>
+<p>Shaukat's title was right. In the land of AI agents, the verifiers are king. Build your verification infrastructure accordingly.</p>
+</div>
+      </article>
+      <article class="post" id="data-driven-design-swe-agents">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/data-driven-design-swe-agents/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-21" data-utc="Jul 21, 2026 UTC" aria-label="Jul 21, 2026 UTC" tabindex="0">1784592000</time></p>
+          <h2><a href="#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a></h2><p class="post-summary">You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.</p>
+          <div class="tags"><span class="tag">data-driven-design</span><span class="tag">agents</span><span class="tag">evaluation</span><span class="tag">harness</span><span class="tag">software-engineering</span><span class="tag">metrics</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Databases used to be black boxes. You wrote a query, waited, and hoped the optimizer did something reasonable. When it didn't, you tried a different index and hoped again. The expertise was real but the method was folk — passed from senior to junior as rules of thumb: &quot;always index foreign keys,&quot; &quot;avoid <code>SELECT *</code>,&quot; &quot;<code>EXPLAIN</code> will tell you what's wrong.&quot;</p>
+<p>That era ended when database teams started treating query performance as a measurement problem. Instrument the optimizer. Collect query plans. Compare actual vs. estimated row counts. Build dashboards. The output of all that instrumentation is a design loop: you don't guess why a query is slow. You look at the data. The data tells you.</p>
+<p>We are at the beginning of the same transition for software engineering agents. Right now, most agent design is folk expertise: &quot;be specific in your prompts,&quot; &quot;few-shot examples help,&quot; &quot;chain-of-thought improves reasoning.&quot; These are all true, sometimes, for some models, on some tasks. The problem is that nobody knows which ones.</p>
+<blockquote>
+<p>The defining quality of an LLM is that it is stochastic. Given the same input, you get different outputs. Given slightly different inputs, you get very different outputs. The only way to reason about a stochastic system at scale is with data.</p>
+</blockquote>
+<h2 id="why-intuition-fails">Why intuition fails</h2>
+<p>Your intuition about what makes a good agent prompt is shaped by a few dozen interactions. You try a prompt, it works, you generalize. You try another, it fails, you adjust. This is the scientific method at N=1 — useful for generating hypotheses, useless for drawing conclusions.</p>
+<p>The problem compounds because agents are not just stochastic — they are <em>stateful, tool-using, multi-turn stochastic systems</em>. An agent that picks the wrong tool on step 2 fails on step 7 in a way that looks unrelated to the original mistake. Intuition attributes the failure to the step-7 behavior. The data would tell you to fix step 2.</p>
+<blockquote>
+<p>Debugging agents by reading transcripts is like debugging a database by reading query text. You might spot the obvious problems. You will miss everything that matters at scale.</p>
+</blockquote>
+<h2 id="what-data-driven-design-looks-like-for-agents">What data-driven design looks like for agents</h2>
+<p>The method is straightforward, even if the infrastructure isn't:</p>
+<p><strong>One: Instrument every decision.</strong> The agent chose a tool. Was it the right tool? The agent produced a diff. Did it compile? Did the tests pass? Did it introduce a vulnerability? The agent looped. How many iterations? When did it converge — or fail to? Every one of these is a data point. Collect them.</p>
+<p><strong>Two: Define success numerically, not narratively.</strong> &quot;The agent handled the task well&quot; is a narrative. &quot;The agent solved 73% of tasks in the benchmark, with a median of 4 tool calls per task and a 6% hallucinated-tool-call rate&quot; is data. Narratives are for demos. Data is for design.</p>
+<p><strong>Three: Compare at scale.</strong> You changed the prompt. Did the solve rate go up? By how much? Across how many tasks? With what variance? A single run of a stochastic system is a data point. A thousand runs is a distribution. Design decisions should be made on distributions, not data points.</p>
+<p><strong>Four: Close the loop.</strong> The best agent systems — like the best database administrators — don't make one-off optimizations. They build pipelines. Deploy. Observe. Compare. Improve. Deploy again. The loop is the design process. Speed of iteration matters more than brilliance of a single change.</p>
+<h2 id="the-harness-is-your-measurement-instrument">The harness is your measurement instrument</h2>
+<p>A theme that runs through this blog is that the harness is the most under-invested part of an agent system. Data-driven design makes it concrete why: the harness is your measurement instrument. If your harness can't produce reliable, comparable metrics at scale, you cannot do data-driven design. You are back to intuition and anecdotes.</p>
+<blockquote>
+<p>A harness that can only tell you &quot;pass&quot; or &quot;fail&quot; is a thermometer with one marking. You need to know what happened, where it went wrong, and whether this run was better than the last run in a way that generalizes.</p>
+</blockquote>
+<p>The harness engineering practices that matter for data-driven design:</p>
+<ul>
+<li><strong>Deterministic replay</strong> — if you can't reproduce a run, you can't measure a change.</li>
+<li><strong>Layered observability</strong> — prompt selection, tool choice, state transitions, final outcome. Each layer produces its own metrics.</li>
+<li><strong>Statistical rigor</strong> — a 2% improvement on 10 tasks is noise. A 2% improvement on 1,000 tasks might be real. The harness needs to support sample sizes that make signals distinguishable from noise.</li>
+</ul>
+<h2 id="why-this-matters-more-for-agents-than-for-any-previous-software">Why this matters more for agents than for any previous software</h2>
+<p>Traditional software is deterministic. You change the code, you run the tests, you observe a binary outcome. The design loop is: implement, test, fix, repeat. Data helps, but the feedback signal is strong enough that intuition often suffices.</p>
+<p>Agents are fundamentally different. The same agent, on the same task, with the same prompt, will produce different results on different runs. The space of possible behaviors is too large to explore by reasoning alone. The only way to understand an agent is to observe it across many runs and let the patterns emerge from the data.</p>
+<p>This is uncomfortable. It means admitting that you cannot fully understand the system you are building by reading the code and the prompts. It means ceding authority to measurement. It means designing experiments instead of designing solutions — because the solution emerges from the experimental data, not from your head.</p>
+<blockquote>
+<p>The transition from folk expertise to data-driven design is the transition from craftsmanship to engineering. Both produce good outcomes. Only one scales.</p>
+</blockquote>
+<h2 id="the-cost-of-not-doing-it">The cost of not doing it</h2>
+<p>The alternative to data-driven design is design by anecdote. Someone runs the agent on a task they care about. It works. They ship. Someone else runs it on a different task. It fails. Nobody knows why. The team debates prompts instead of looking at data. Decisions are made by the most senior person in the room, not by the person with the best evidence.</p>
+<p>This is how most teams work today. It is also how most teams will fail at building agents, because the complexity of stochastic, tool-using, multi-turn systems exceeds what any individual's intuition can model.</p>
+<blockquote>
+<p>Data-driven design is not about having data. It's about making decisions as if the data matters more than your opinion.</p>
+</blockquote>
+<p>Databases went through this transition. So did compilers. So did networking. Every infrastructure layer that we now treat as predictable, measurable, and engineer-able went through a phase where the experts relied on intuition and the results were inconsistent. Agents are in that phase now. The teams that instrument, measure, and close the loop will build infrastructure. The teams that rely on folk wisdom and anecdote will build demos that don't survive contact with real workloads.</p>
+</div>
+      </article>
+      <article class="post" id="compute-travels-data-stays">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/compute-travels-data-stays/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-20" data-utc="Jul 20, 2026 UTC" aria-label="Jul 20, 2026 UTC" tabindex="0">1784505600</time></p>
+          <h2><a href="#compute-travels-data-stays">Compute Travels. Data Stays.</a></h2><p class="post-summary">Bacalhau inverts the cloud model: instead of moving petabytes to a central cluster, it sends compute to where data lives. That inversion is the foundation of data sovereignty — and the architecture the agent era needs.</p>
+          <div class="tags"><span class="tag">data-sovereignty</span><span class="tag">bacalhau</span><span class="tag">distributed-compute</span><span class="tag">agents</span><span class="tag">edge</span><span class="tag">privacy</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The cloud won. For two decades, the answer to &quot;where should compute happen?&quot; was &quot;ship the data to us.&quot; Centralize. Aggregate. Process. The result: petabytes of data flowing into a handful of regions, owned by a handful of companies, governed by laws that don't match the topology.</p>
+<p>The cloud won, but the cloud model is breaking. Not technically — the hyperscalers work fine. But legally, economically, and architecturally, the assumption that data should move to compute is no longer true.</p>
+<blockquote>
+<p>GDPR requires data residency. The EU AI Act layers new constraints. Countries from Brazil to India to Indonesia are writing sovereignty into law. The pipe dream of &quot;store everything in us-east-1&quot; is dead. The cloud didn't account for borders.</p>
+</blockquote>
+<p>This is where Bacalhau enters. Not as a replacement for the cloud. As an inversion of its founding assumption.</p>
+<h2 id="what-bacalhau-does">What Bacalhau does</h2>
+<p>Bacalhau is an open-source distributed compute orchestrator. The idea is simple: instead of moving data across the network to a central compute cluster, you send a small job description — a Docker container, a Wasm binary, a shell script — to wherever the data already lives. The job runs next to the data. Only the results come back.</p>
+<p><img src="/images/bacalhau-logo.svg" alt="Bacalhau logo — the cod fish, Portuguese &quot;bacalhau,&quot; a metaphor for preservation without centralization"></p>
+<blockquote>
+<p>Compute travels. Data stays. That's the whole architecture.</p>
+</blockquote>
+<p>It's released under Apache 2.0, built by Expanso, a company founded in 2023 by David Aronchick — previously co-founder of Kubeflow at Google, head of open-source ML strategy at Microsoft Azure. The project won the Data Breakthrough Award in 2024, raised $7.5M in seed funding led by General Catalyst, and landed a strategic investment from Samsung Next. It's available on the Google Cloud Marketplace. It's a single Go binary — no cluster to bootstrap, no control plane to subscribe to.</p>
+<p>The architecture is an orchestrator-compute model. You label nodes by region (<code>region=eu</code>, <code>region=us</code>). You submit a job with constraints. The orchestrator routes work to nodes near the data. Jobs are parallel by default — split into partitions that run independently, with isolated failure handling. If a partition fails, it retries. If the network between the orchestrator and a compute node drops, the node keeps working.</p>
+<h2 id="the-name-matters">The name matters</h2>
+<p>Bacalhau is Portuguese for dried salted cod. Before refrigeration, cod was preserved by salting and drying — it could travel long distances without spoiling, sustaining entire maritime economies for centuries. The metaphor is deliberate: preserve the data where it originates. Compute can travel. Data doesn't need to.</p>
+<p>This matters because data is heavy and data is governed. Moving a petabyte of logs to a central warehouse is expensive. Moving genomic data across national borders is illegal in an increasing number of jurisdictions. Moving medical records, financial transactions, or personally identifiable information into a third-party cloud triggers compliance obligations that most teams underestimate until an auditor shows up.</p>
+<p>Bacalhau's answer: don't move it. Send the analysis to the data.</p>
+<h2 id="how-it-actually-works">How it actually works</h2>
+<p>A Bacalhau deployment runs a single binary in different modes: orchestrator nodes manage job lifecycles, compute nodes execute workloads. Both can be the same machine. At the edge, a compute node might be a Raspberry Pi on a factory floor. In the cloud, it might be a VM in a specific AWS region.</p>
+<p>Jobs are submitted declaratively or via CLI. They target data in S3, IPFS, HTTP endpoints, or local storage. The orchestrator schedules work based on node labels — <code>region=eu</code>, <code>gpu=true</code>, <code>tier=production</code>. The workload runs inside a Docker container or a Wasm sandbox. Output lands wherever you configure: local disk, S3 bucket, the next pipeline stage.</p>
+<p>A partitioned job splits across N nodes. Each partition gets an index, a count, and its own slice of the data. Failures are per-partition, not per-job. A node in Frankfurt might process EU customer records while a node in São Paulo processes Brazilian records and a node in Mumbai handles Indian data — all from the same job submission, with constraints that ensure compliance.</p>
+<h2 id="the-genomic-data-proof-point">The Genomic Data Proof Point</h2>
+<p>A 2025 academic study tested Bacalhau with IPFS Cluster and AES-256 encryption for decentralized genomic computation. The distributed architecture achieved <strong>100% job completion under network chaos</strong> — nodes disconnecting, links dropping, partitions reforming. The centralized baseline fell apart under the same conditions.</p>
+<p>Under ideal network conditions, the distributed setup added about 30% overhead (49 seconds vs. 37 seconds). That 12-second difference is the price of sovereignty. In the centralized case, you also move the data first — a cost the study's baseline conveniently excluded.</p>
+<blockquote>
+<p>The paper's conclusion: a proven model for privacy-critical decentralized science collaborations, prioritizing data sovereignty and high availability over raw throughput. Twelve seconds to keep genomic data inside hospital walls.</p>
+</blockquote>
+<h2 id="why-the-agent-era-needs-this">Why the agent era needs this</h2>
+<p>Software engineering agents generate code. That's the story everyone tells. The less-told story is where they run.</p>
+<p>An agent debugging a production issue needs access to logs. Those logs live in a specific region, governed by specific laws. An agent analyzing customer behavior needs to read data that cannot legally leave the country. An agent optimizing a factory floor needs to process sensor data at millisecond latency — waiting for a round-trip to the cloud is not an option.</p>
+<p>The default architecture for agent platforms today is: ship everything to a central LLM provider. Your code, your logs, your database schema, your customer PII — all of it crosses the wire to a model endpoint in a jurisdiction you didn't choose.</p>
+<p>Bacalhau suggests a different architecture: ship the agent to the data. Run the model where the data lives. The agent is a job. The data is stationary. The compliance boundary is the node label, not a legal review of every prompt.</p>
+<h2 id="the-broader-lesson">The broader lesson</h2>
+<p>Data sovereignty sounds like a legal problem. It becomes an architectural problem the moment you try to build a real system. If your architecture requires data to move to a central location before anything useful can happen, you have already lost the sovereignty argument — all that remains is how many exceptions you'll need and how much the fines will cost.</p>
+<p>The alternative is compute over data. It's not a new idea. MapReduce did it. Edge computing does it. Bacalhau makes it general — any workload, any data source, any execution engine, one binary, open source.</p>
+<blockquote>
+<p>The cloud taught us to centralize. The law is teaching us to distribute. Bacalhau is infrastructure for that transition.</p>
+</blockquote>
+<p>It's not that central compute will disappear. It's that centralization stops being the default. When data must stay where it is, the architecture follows. Compute travels. Data stays. That inversion is the foundation of sovereignty — and the infrastructure the next decade of software will be built on.</p>
+</div>
+      </article>
+      <article class="post" id="correctness-first">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/correctness-first/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-20" data-utc="Jul 20, 2026 UTC" aria-label="Jul 20, 2026 UTC" tabindex="0">1784505600</time></p>
+          <h2><a href="#correctness-first">Correctness First</a></h2><p class="post-summary">Linux won the world because a lawsuit froze BSD at the wrong moment. OpenBSD is what the world lost — and what agent builders most need to understand.</p>
+          <div class="tags"><span class="tag">openbsd</span><span class="tag">linux</span><span class="tag">correctness</span><span class="tag">security</span><span class="tag">agents</span><span class="tag">software-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 1991, Linus Torvalds wanted a Unix-like system for his 386. BSD Net/2 had been released, but he didn't know about it. He wrote his own kernel. The next year, AT&amp;T sued BSDi, alleging BSD contained proprietary Unix code. BSD development froze for two years. Linux, written from scratch with no legal baggage, absorbed the energy. By the time the lawsuit settled in 1994, Linux had won.</p>
+<p>Linus later said: &quot;If 386BSD had been available when I started on Linux, Linux would probably never have happened.&quot;</p>
+<p>The world runs on Linux not because it was better designed, but because it was available. The cathedral lost to the bazaar by accident.</p>
+<p><img src="/images/beastie.png" alt="The BSD Daemon — mascot of BSD since 1976, drawn by John Lasseter before Pixar"></p>
+<h2 id="two-architectures-two-theories-of-quality">Two architectures, two theories of quality</h2>
+<p>BSD is an operating system. One source tree. One team. The kernel, libc, core utilities, daemons, manual pages — written, reviewed, and shipped by the same people. When a kernel interface changes, every userland tool that depends on it is updated in the same commit. Configuration syntax is consistent because the same hands that wrote the daemon wrote its parser.</p>
+<p>Linux is a kernel assembled into an operating system by distributions. The kernel comes from Linus. The C library from GNU. Userspace from a hundred independent projects. Each has its own maintainers, release schedule, coding style, and idea of what &quot;good&quot; means. The distribution's job is integration, not design. The result works. It is not clean. Everyone who has debugged a Linux system at 3am knows the feeling of crossing a component boundary and discovering the assumptions changed.</p>
+<blockquote>
+<p>Linux is dirty in the way a city is dirty — it works, it's full of life, but nobody designed it from scratch. BSD is clean in the way a well-designed building is clean — the structure is visible, the materials are consistent, the wiring is labeled.</p>
+</blockquote>
+<h2 id="openbsd-correctness-as-the-only-feature">OpenBSD: correctness as the only feature</h2>
+<p><img src="/images/puffy.gif" alt="Puffy, the OpenBSD mascot — a pufferfish. Defensive, uncompromising, hard to swallow."></p>
+<p>If BSD represents the cathedral, OpenBSD is the cathedral with the strictest building code. Theo de Raadt forked it from NetBSD in 1995 with an uncompromising thesis: correctness over features, every time.</p>
+<blockquote>
+<p>&quot;We are non-stop trying to find ways across our entire source tree that small little programmer errors result in problems. At some point, we have to start asking ourselves whether features are the thing, or whether quality is the issue.&quot; — Theo de Raadt</p>
+</blockquote>
+<p>The project has audited its entire source tree — millions of lines — line by line. Multiple times. Not primarily with tools. With humans reading code, asking &quot;what happens when this fails?&quot; The result: an operating system with only two remote holes in the default install across nearly three decades.</p>
+<p>This is not a security achievement. It is a correctness achievement that makes security possible.</p>
+<p>OpenBSD's innovations read like a list of things every other OS later adopted: W^X memory (2003, now universal), <code>pledge(2)</code> (process-level system call restrictions), <code>unveil(2)</code> (filesystem sandboxing), LibreSSL (forked OpenSSL, removed half the code, broke nothing). Each was born from asking: <em>how do we make the wrong thing impossible, not just harder?</em></p>
+<blockquote>
+<p>Most projects respond to security by adding layers — a firewall, a sandbox, a scanner. OpenBSD responds by removing the bug. The difference is the difference between a house with a reinforced door and a house with no structural flaws.</p>
+</blockquote>
+<h2 id="the-collision-with-the-agent-era">The collision with the agent era</h2>
+<p>We are now deploying software that writes software — agents that generate, edit, and ship code at scale. These agents do not understand correctness. They produce tokens statistically likely to satisfy a prompt. They don't know that this return value needs checking, that this buffer needs bounds, that this error path leaks a descriptor. They pattern-match from training data that, statistically, also doesn't know these things.</p>
+<blockquote>
+<p>Generated code is code nobody has read. Tests cover what you thought to test. Vulnerabilities live in what you didn't think of.</p>
+</blockquote>
+<p>The agent era promises speed. OpenBSD proves that correctness at speed is an oxymoron. Shipping code faster than anyone can review it is not automation — it's an attack surface factory.</p>
+<p>The resolution is not to reject agents. It is to demand of agent output what OpenBSD demands of human output: adversarial review, minimal diffs, restricted capabilities, and a culture that refuses to ship code that hasn't been read.</p>
+<h2 id="what-agent-builders-should-steal">What agent builders should steal</h2>
+<p><strong>Audit the diff, not the demo.</strong> OpenBSD doesn't audit the running kernel. It audits the source. Evaluate what the agent changed, not just whether tests pass. The diff is where bugs live.</p>
+<p><strong>Restrict by default.</strong> OpenBSD ships with almost nothing running. Agent platforms should ship with almost no capabilities. Every new tool is attack surface — for bugs, prompt injection, unintended behavior. An agent that can rewrite any file has maximum blast radius. An agent restricted to specific files and specific side effects can fail without destroying things.</p>
+<p><strong>The harness is your code review.</strong> The agent has no concept of correctness. The harness has to. If your evaluation scores &quot;did it compile?&quot; and &quot;did the test pass?&quot; and &quot;did the reviewer LLM nod?&quot; — you are not asking enough. Write criteria as specific as an OpenBSD code review: &quot;this error must propagate,&quot; &quot;this resource must be freed.&quot;</p>
+<p><strong>Remove generated code aggressively.</strong> A 500-line generated function that works is worse than a 30-line one that works. Every line the agent wrote is a line someone needs to read. Prefer agents that produce minimal diffs.</p>
+<p><strong>Culture scales. Checklists don't.</strong> OpenBSD's real innovation is cultural: correctness is everyone's job, speed is never an excuse, shipped bugs are taken personally. Agent teams need the same culture. If your team treats agent output as &quot;good enough if the tests pass,&quot; you will ship vulnerabilities at agent speed — faster than anyone can review.</p>
+<hr>
+<p>OpenBSD has been building secure software for over two decades with a team that fits in a single room. They do it by being slower, more careful, and more uncompromising than almost any other project.</p>
+<blockquote>
+<p>Reliability was always the prerequisite for security. OpenBSD proved it with decades of results.</p>
+</blockquote>
+<p>The agent era will prove it again — either by adopting that lesson, or by suffering what happens when you don't.</p>
+</div>
+      </article>
       <article class="post" id="kaggle-and-ai-agents">
         <link rel="canonical" href="https://blog.hackspree.com/entries/kaggle-and-ai-agents/">
         <header class="post-header">
@@ -13732,6 +13939,10 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a>
+              <a href="#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a>
+              <a href="#compute-travels-data-stays">Compute Travels. Data Stays.</a>
+              <a href="#correctness-first">Correctness First</a>
               <a href="#kaggle-and-ai-agents">Kaggle Was Built for the Agent Era</a>
               <a href="#rays-rant-why-ai-isnt-enough">Ray&#39;s Rant: Why AI Isn&#39;t Enough</a>
               <a href="#empirical-se-how-to-think">Empirical Software Engineering: How to Think Empirically</a>

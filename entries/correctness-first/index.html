@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Linux won the world because a lawsuit froze BSD at the wrong moment. OpenBSD is what the world lost — and what agent builders most need to understand.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/correctness-first/">
+  <title>Correctness First — hackspree</title>
+  <meta property="og:title" content="Correctness First">
+  <meta property="og:description" content="Linux won the world because a lawsuit froze BSD at the wrong moment. OpenBSD is what the world lost — and what agent builders most need to understand.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/correctness-first/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Correctness First">
+  <meta name="twitter:description" content="Linux won the world because a lawsuit froze BSD at the wrong moment. OpenBSD is what the world lost — and what agent builders most need to understand.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-20">2026-07-20</time></p>
+          <h1>Correctness First</h1><p class="post-summary">Linux won the world because a lawsuit froze BSD at the wrong moment. OpenBSD is what the world lost — and what agent builders most need to understand.</p>
+          <div class="tags"><span class="tag">openbsd</span><span class="tag">linux</span><span class="tag">correctness</span><span class="tag">security</span><span class="tag">agents</span><span class="tag">software-engineering</span></div>
+          
+        </header>
+        <div class="post-body"><p>In 1991, Linus Torvalds wanted a Unix-like system for his 386. BSD Net/2 had been released, but he didn't know about it. He wrote his own kernel. The next year, AT&amp;T sued BSDi, alleging BSD contained proprietary Unix code. BSD development froze for two years. Linux, written from scratch with no legal baggage, absorbed the energy. By the time the lawsuit settled in 1994, Linux had won.</p>
+<p>Linus later said: &quot;If 386BSD had been available when I started on Linux, Linux would probably never have happened.&quot;</p>
+<p>The world runs on Linux not because it was better designed, but because it was available. The cathedral lost to the bazaar by accident.</p>
+<p><img src="/images/beastie.png" alt="The BSD Daemon — mascot of BSD since 1976, drawn by John Lasseter before Pixar"></p>
+<h2 id="two-architectures-two-theories-of-quality">Two architectures, two theories of quality</h2>
+<p>BSD is an operating system. One source tree. One team. The kernel, libc, core utilities, daemons, manual pages — written, reviewed, and shipped by the same people. When a kernel interface changes, every userland tool that depends on it is updated in the same commit. Configuration syntax is consistent because the same hands that wrote the daemon wrote its parser.</p>
+<p>Linux is a kernel assembled into an operating system by distributions. The kernel comes from Linus. The C library from GNU. Userspace from a hundred independent projects. Each has its own maintainers, release schedule, coding style, and idea of what &quot;good&quot; means. The distribution's job is integration, not design. The result works. It is not clean. Everyone who has debugged a Linux system at 3am knows the feeling of crossing a component boundary and discovering the assumptions changed.</p>
+<blockquote>
+<p>Linux is dirty in the way a city is dirty — it works, it's full of life, but nobody designed it from scratch. BSD is clean in the way a well-designed building is clean — the structure is visible, the materials are consistent, the wiring is labeled.</p>
+</blockquote>
+<h2 id="openbsd-correctness-as-the-only-feature">OpenBSD: correctness as the only feature</h2>
+<p><img src="/images/puffy.gif" alt="Puffy, the OpenBSD mascot — a pufferfish. Defensive, uncompromising, hard to swallow."></p>
+<p>If BSD represents the cathedral, OpenBSD is the cathedral with the strictest building code. Theo de Raadt forked it from NetBSD in 1995 with an uncompromising thesis: correctness over features, every time.</p>
+<blockquote>
+<p>&quot;We are non-stop trying to find ways across our entire source tree that small little programmer errors result in problems. At some point, we have to start asking ourselves whether features are the thing, or whether quality is the issue.&quot; — Theo de Raadt</p>
+</blockquote>
+<p>The project has audited its entire source tree — millions of lines — line by line. Multiple times. Not primarily with tools. With humans reading code, asking &quot;what happens when this fails?&quot; The result: an operating system with only two remote holes in the default install across nearly three decades.</p>
+<p>This is not a security achievement. It is a correctness achievement that makes security possible.</p>
+<p>OpenBSD's innovations read like a list of things every other OS later adopted: W^X memory (2003, now universal), <code>pledge(2)</code> (process-level system call restrictions), <code>unveil(2)</code> (filesystem sandboxing), LibreSSL (forked OpenSSL, removed half the code, broke nothing). Each was born from asking: <em>how do we make the wrong thing impossible, not just harder?</em></p>
+<blockquote>
+<p>Most projects respond to security by adding layers — a firewall, a sandbox, a scanner. OpenBSD responds by removing the bug. The difference is the difference between a house with a reinforced door and a house with no structural flaws.</p>
+</blockquote>
+<h2 id="the-collision-with-the-agent-era">The collision with the agent era</h2>
+<p>We are now deploying software that writes software — agents that generate, edit, and ship code at scale. These agents do not understand correctness. They produce tokens statistically likely to satisfy a prompt. They don't know that this return value needs checking, that this buffer needs bounds, that this error path leaks a descriptor. They pattern-match from training data that, statistically, also doesn't know these things.</p>
+<blockquote>
+<p>Generated code is code nobody has read. Tests cover what you thought to test. Vulnerabilities live in what you didn't think of.</p>
+</blockquote>
+<p>The agent era promises speed. OpenBSD proves that correctness at speed is an oxymoron. Shipping code faster than anyone can review it is not automation — it's an attack surface factory.</p>
+<p>The resolution is not to reject agents. It is to demand of agent output what OpenBSD demands of human output: adversarial review, minimal diffs, restricted capabilities, and a culture that refuses to ship code that hasn't been read.</p>
+<h2 id="what-agent-builders-should-steal">What agent builders should steal</h2>
+<p><strong>Audit the diff, not the demo.</strong> OpenBSD doesn't audit the running kernel. It audits the source. Evaluate what the agent changed, not just whether tests pass. The diff is where bugs live.</p>
+<p><strong>Restrict by default.</strong> OpenBSD ships with almost nothing running. Agent platforms should ship with almost no capabilities. Every new tool is attack surface — for bugs, prompt injection, unintended behavior. An agent that can rewrite any file has maximum blast radius. An agent restricted to specific files and specific side effects can fail without destroying things.</p>
+<p><strong>The harness is your code review.</strong> The agent has no concept of correctness. The harness has to. If your evaluation scores &quot;did it compile?&quot; and &quot;did the test pass?&quot; and &quot;did the reviewer LLM nod?&quot; — you are not asking enough. Write criteria as specific as an OpenBSD code review: &quot;this error must propagate,&quot; &quot;this resource must be freed.&quot;</p>
+<p><strong>Remove generated code aggressively.</strong> A 500-line generated function that works is worse than a 30-line one that works. Every line the agent wrote is a line someone needs to read. Prefer agents that produce minimal diffs.</p>
+<p><strong>Culture scales. Checklists don't.</strong> OpenBSD's real innovation is cultural: correctness is everyone's job, speed is never an excuse, shipped bugs are taken personally. Agent teams need the same culture. If your team treats agent output as &quot;good enough if the tests pass,&quot; you will ship vulnerabilities at agent speed — faster than anyone can review.</p>
+<hr>
+<p>OpenBSD has been building secure software for over two decades with a team that fits in a single room. They do it by being slower, more careful, and more uncompromising than almost any other project.</p>
+<blockquote>
+<p>Reliability was always the prerequisite for security. OpenBSD proved it with decades of results.</p>
+</blockquote>
+<p>The agent era will prove it again — either by adopting that lesson, or by suffering what happens when you don't.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

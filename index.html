@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Quantitative finance spent decades pretending markets are in equilibrium with Gaussian returns. Dynamical systems and complexity theory explain why that&#39;s wrong — and what to do instead.">
+  <meta name="description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="Quantitative finance spent decades pretending markets are in equilibrium with Gaussian returns. Dynamical systems and complexity theory explain why that&#39;s wrong — and what to do instead.">
+  <meta property="og:description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="Quantitative finance spent decades pretending markets are in equilibrium with Gaussian returns. Dynamical systems and complexity theory explain why that&#39;s wrong — and what to do instead.">
+  <meta name="twitter:description" content="You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,58 +664,68 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="dynamical-systems-complexity-quant-trading">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/dynamical-systems-complexity-quant-trading/">
+      <article class="post" id="data-driven-design-swe-agents">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/data-driven-design-swe-agents/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-21" data-utc="Jul 21, 2026 UTC" aria-label="Jul 21, 2026 UTC" tabindex="0">1784592000</time></p>
-          <h2><a href="#dynamical-systems-complexity-quant-trading">Markets Are Dynamical Systems. Most Quants Forgot.</a></h2><p class="post-summary">Quantitative finance spent decades pretending markets are in equilibrium with Gaussian returns. Dynamical systems and complexity theory explain why that&#39;s wrong — and what to do instead.</p>
-          <div class="tags"><span class="tag">quantitative-trading</span><span class="tag">dynamical-systems</span><span class="tag">complexity-theory</span><span class="tag">finance</span><span class="tag">non-linear</span><span class="tag">risk</span>
+          <h2><a href="#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a></h2><p class="post-summary">You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.</p>
+          <div class="tags"><span class="tag">data-driven-design</span><span class="tag">agents</span><span class="tag">evaluation</span><span class="tag">harness</span><span class="tag">software-engineering</span><span class="tag">metrics</span>
           </div>
         </header>
-        <div class="post-body"><p>Most quantitative trading is built on a lie. The lie is that markets are in equilibrium, that returns are normally distributed, and that linear models capture enough of the structure to be useful. These assumptions are mathematically convenient and empirically false. They hold in the middle of the distribution, where nobody makes or loses serious money. They break at the tails, which is where everything interesting happens.</p>
+        <div class="post-body"><p>Databases used to be black boxes. You wrote a query, waited, and hoped the optimizer did something reasonable. When it didn't, you tried a different index and hoped again. The expertise was real but the method was folk — passed from senior to junior as rules of thumb: &quot;always index foreign keys,&quot; &quot;avoid <code>SELECT *</code>,&quot; &quot;<code>EXPLAIN</code> will tell you what's wrong.&quot;</p>
+<p>That era ended when database teams started treating query performance as a measurement problem. Instrument the optimizer. Collect query plans. Compare actual vs. estimated row counts. Build dashboards. The output of all that instrumentation is a design loop: you don't guess why a query is slow. You look at the data. The data tells you.</p>
+<p>We are at the beginning of the same transition for software engineering agents. Right now, most agent design is folk expertise: &quot;be specific in your prompts,&quot; &quot;few-shot examples help,&quot; &quot;chain-of-thought improves reasoning.&quot; These are all true, sometimes, for some models, on some tasks. The problem is that nobody knows which ones.</p>
 <blockquote>
-<p>The efficient market hypothesis is not wrong because markets are irrational. It's wrong because markets are complex adaptive systems. Rational agents interacting under imperfect information produce emergent dynamics that no individual agent intended or can predict.</p>
+<p>The defining quality of an LLM is that it is stochastic. Given the same input, you get different outputs. Given slightly different inputs, you get very different outputs. The only way to reason about a stochastic system at scale is with data.</p>
 </blockquote>
-<p>Dynamical systems theory and complexity science offer a better description of what markets actually are. If you trade systematically, you need to understand why.</p>
-<h2 id="markets-as-dynamical-systems">Markets as dynamical systems</h2>
-<p>A dynamical system is a system whose state evolves over time according to a fixed rule. The weather is a dynamical system. So is a pendulum. So is an ecosystem. So is a market.</p>
-<p>Prices are not independent draws from a distribution. They are the output of a coupled, non-linear, feedback-driven process. Buyers and sellers observe prices, update beliefs, place orders, change prices, which causes other participants to update beliefs and place different orders. The output of the system at time <em>t</em> becomes an input at time <em>t+1</em>.</p>
+<h2 id="why-intuition-fails">Why intuition fails</h2>
+<p>Your intuition about what makes a good agent prompt is shaped by a few dozen interactions. You try a prompt, it works, you generalize. You try another, it fails, you adjust. This is the scientific method at N=1 — useful for generating hypotheses, useless for drawing conclusions.</p>
+<p>The problem compounds because agents are not just stochastic — they are <em>stateful, tool-using, multi-turn stochastic systems</em>. An agent that picks the wrong tool on step 2 fails on step 7 in a way that looks unrelated to the original mistake. Intuition attributes the failure to the step-7 behavior. The data would tell you to fix step 2.</p>
 <blockquote>
-<p>This is a feedback loop. In linear systems, feedback is well-behaved. In non-linear systems, feedback produces regimes, bifurcations, and chaos. Markets are non-linear systems with feedback. The math follows.</p>
+<p>Debugging agents by reading transcripts is like debugging a database by reading query text. You might spot the obvious problems. You will miss everything that matters at scale.</p>
 </blockquote>
-<p>The key properties of a market treated as a dynamical system:</p>
-<p><strong>State dependence.</strong> Where the market is determines where it can go. A stock at $100 in a low-volatility regime has a different future distribution than the same stock at $100 after a 20% drawdown. The price is the same. The state is different. Linear models miss this.</p>
-<p><strong>Non-linearity.</strong> Small causes can produce large effects. A marginal change in liquidity can trigger a flash crash. A whisper of a rate change can reprice an entire sector. The relationship between input and output is not proportional. This breaks every linear model ever built.</p>
-<p><strong>Attractors and regimes.</strong> Markets don't wander randomly. They settle into regimes — low-vol bull trends, high-vol mean-reverting chop, panic liquidation cascades. Each regime is an attractor: a region of state space the system gravitates toward and stays in until some perturbation knocks it into a different basin of attraction. Regime detection is attractor detection.</p>
-<p><strong>Phase transitions.</strong> The shift from one regime to another is not gradual. It is a phase transition — sudden, discontinuous, and preceded by specific signals (rising correlation, thinning liquidity, increasing skew). The same math that describes water freezing describes a market crash. In both cases, the system reaches a critical point and reorganizes.</p>
-<h2 id="complexity-theory-why-gaussian-finance-is-dangerous">Complexity theory: why Gaussian finance is dangerous</h2>
-<p>Markets are not just dynamical systems. They are <em>complex</em> dynamical systems — systems with many interacting components whose collective behavior cannot be reduced to the behavior of any individual component.</p>
-<p>The defining characteristics of complex systems all appear in markets:</p>
-<p><strong>Emergence.</strong> No trader intends to produce a bubble or a crash. Bubbles and crashes emerge from the interaction of thousands of individually rational decisions. The macro pattern is real. It has no author. You cannot understand it by interviewing participants.</p>
-<p><strong>Self-organized criticality.</strong> Complex systems naturally evolve toward a critical state where small perturbations can trigger avalanches of any size. The classic model is a sandpile: add grains one at a time, and most cause nothing. Occasionally one grain triggers a cascade that reshapes the entire pile. The size distribution of avalanches follows a power law. So do market returns. The system organizes itself into a state where extreme events are not anomalies — they are the same dynamics as everyday moves, just at a different scale.</p>
+<h2 id="what-data-driven-design-looks-like-for-agents">What data-driven design looks like for agents</h2>
+<p>The method is straightforward, even if the infrastructure isn't:</p>
+<p><strong>One: Instrument every decision.</strong> The agent chose a tool. Was it the right tool? The agent produced a diff. Did it compile? Did the tests pass? Did it introduce a vulnerability? The agent looped. How many iterations? When did it converge — or fail to? Every one of these is a data point. Collect them.</p>
+<p><strong>Two: Define success numerically, not narratively.</strong> &quot;The agent handled the task well&quot; is a narrative. &quot;The agent solved 73% of tasks in the benchmark, with a median of 4 tool calls per task and a 6% hallucinated-tool-call rate&quot; is data. Narratives are for demos. Data is for design.</p>
+<p><strong>Three: Compare at scale.</strong> You changed the prompt. Did the solve rate go up? By how much? Across how many tasks? With what variance? A single run of a stochastic system is a data point. A thousand runs is a distribution. Design decisions should be made on distributions, not data points.</p>
+<p><strong>Four: Close the loop.</strong> The best agent systems — like the best database administrators — don't make one-off optimizations. They build pipelines. Deploy. Observe. Compare. Improve. Deploy again. The loop is the design process. Speed of iteration matters more than brilliance of a single change.</p>
+<h2 id="the-harness-is-your-measurement-instrument">The harness is your measurement instrument</h2>
+<p>A theme that runs through this blog is that the harness is the most under-invested part of an agent system. Data-driven design makes it concrete why: the harness is your measurement instrument. If your harness can't produce reliable, comparable metrics at scale, you cannot do data-driven design. You are back to intuition and anecdotes.</p>
 <blockquote>
-<p>The power-law structure of financial returns means that 5-sigma events are not once-in-a-lifetime flukes. They are the natural output of the system. Gaussian Value at Risk is a calculation that assumes the system is a different kind of system than it actually is.</p>
+<p>A harness that can only tell you &quot;pass&quot; or &quot;fail&quot; is a thermometer with one marking. You need to know what happened, where it went wrong, and whether this run was better than the last run in a way that generalizes.</p>
 </blockquote>
-<p><strong>Adaptation.</strong> Participants in a market adapt to each other. When enough traders adopt a strategy, the strategy changes the market dynamics in a way that reduces the strategy's edge. Alpha decay is not a mysterious force. It is the market adapting to its participants. In complexity terms, it is co-evolution: the predator (strategy) and prey (inefficiency) evolve together, and what worked yesterday stops working tomorrow not because it was wrong, but because it was right enough to change the environment.</p>
-<p><strong>Non-ergodicity.</strong> The time average of a trading strategy is not the same as its ensemble average. A strategy with a positive expected return can ruin you if the path matters and you don't survive the drawdowns. Most of quantitative finance assumes ergodicity implicitly — it treats the distribution of possible outcomes as identical to the distribution of outcomes over time. In a complex adaptive system, this is wrong. The path you take determines the distribution you sample.</p>
-<h2 id="what-this-means-for-systematic-trading">What this means for systematic trading</h2>
-<p>If you accept that markets are non-linear complex dynamical systems, the implications for how you build trading systems are significant:</p>
-<p><strong>One: regime detection is the most important problem.</strong> If the market is always in some attractor basin, identifying the current regime — and, more importantly, detecting when it's about to change — is more valuable than predicting the next tick. A mediocre signal in the right regime regime beats a great signal in the wrong one.</p>
-<p><strong>Two: linear models are building blocks, not answers.</strong> Linear regression, PCA, and Kalman filters have their place. But they should be components inside a system that models non-linearity explicitly — through regime-switching models, neural ODEs, recurrent architectures, or kernel methods. The linear model tells you what's happening inside a regime. The non-linear wrapper tells you which regime you're in.</p>
-<p><strong>Three: risk management must assume non-normality.</strong> Stop using Gaussian VaR. Use extreme value theory. Model tails with generalized Pareto distributions. Stress-test against power-law cascades, not historical scenarios. The next crash will not look like the last crash. It will look like a phase transition in a complex system you didn't fully model.</p>
-<p><strong>Four: alpha decay is a dynamical phenomenon.</strong> Instead of treating alpha decay as a gradual erosion, model it as a dynamical system: the strategy extracts inefficiency, the inefficiency shrinks, participants adapt, the strategy's edge decays according to a curve that depends on market impact, capacity, and the rate at which other participants copy or front-run the strategy. This is a predator-prey model. It has equilibria, cycles, and extinction regimes. Treat it like one.</p>
-<p><strong>Five: backtests are samples from a non-stationary process.</strong> A backtest shows you one path through a system that is constantly changing. The market of 2018 is not the market of 2024. The participants are different. The regimes are different. The attractor basins may have shifted. A backtest is evidence, not proof. In a complex system, the past is a single draw from a distribution whose parameters have since changed.</p>
-<h2 id="the-broader-point">The broader point</h2>
-<p>Quantitative finance borrowed its mathematical toolkit from physics: equilibrium thermodynamics, linear differential equations, Gaussian statistics. These tools were chosen because they produce closed-form solutions, not because they describe markets accurately.</p>
-<p>Complexity science and dynamical systems theory offer a more accurate description, but at a cost: fewer closed-form solutions, more simulation, more computational burden, and results that are distributions rather than point estimates. The cost is worth paying.</p>
+<p>The harness engineering practices that matter for data-driven design:</p>
+<ul>
+<li><strong>Deterministic replay</strong> — if you can't reproduce a run, you can't measure a change.</li>
+<li><strong>Layered observability</strong> — prompt selection, tool choice, state transitions, final outcome. Each layer produces its own metrics.</li>
+<li><strong>Statistical rigor</strong> — a 2% improvement on 10 tasks is noise. A 2% improvement on 1,000 tasks might be real. The harness needs to support sample sizes that make signals distinguishable from noise.</li>
+</ul>
+<h2 id="why-this-matters-more-for-agents-than-for-any-previous-software">Why this matters more for agents than for any previous software</h2>
+<p>Traditional software is deterministic. You change the code, you run the tests, you observe a binary outcome. The design loop is: implement, test, fix, repeat. Data helps, but the feedback signal is strong enough that intuition often suffices.</p>
+<p>Agents are fundamentally different. The same agent, on the same task, with the same prompt, will produce different results on different runs. The space of possible behaviors is too large to explore by reasoning alone. The only way to understand an agent is to observe it across many runs and let the patterns emerge from the data.</p>
+<p>This is uncomfortable. It means admitting that you cannot fully understand the system you are building by reading the code and the prompts. It means ceding authority to measurement. It means designing experiments instead of designing solutions — because the solution emerges from the experimental data, not from your head.</p>
 <blockquote>
-<p>Markets are not physical systems with fixed laws. They are complex adaptive systems with emergent dynamics. The math that describes them is not the math of equilibrium. It is the math of feedback, non-linearity, phase transitions, and self-organized criticality. If your trading system doesn't account for this, you are not modeling markets. You are modeling a simplified version of markets that exists only in textbooks.</p>
+<p>The transition from folk expertise to data-driven design is the transition from craftsmanship to engineering. Both produce good outcomes. Only one scales.</p>
 </blockquote>
-<p>The quants who understand this build systems that survive regime changes, manage tail risk honestly, and treat alpha as a dynamical phenomenon to be modeled rather than a constant to be harvested. The quants who don't are one phase transition away from discovering the difference.</p>
-<h2 id="where-to-learn-this">Where to learn this</h2>
-<p>If this post reads like a curriculum you wish existed — it does. EACH-USP (the School of Arts, Sciences and Humanities at the University of São Paulo) offers a graduate program in <strong>Complex Systems Modeling</strong> (<em>Modelagem de Sistemas Complexos</em>) that covers exactly this ground: dynamical systems, agent-based modeling, network theory, and applications to finance, economics, and social systems.</p>
-<p>The program treats markets as what they are — complex adaptive systems — rather than what textbook finance wishes they were. If you trade systematically and want the mathematical foundations this post argues for, it's worth a look.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=8p5rGie81JI"><img src="https://img.youtube.com/vi/8p5rGie81JI/hqdefault.jpg" alt="Modelagem de Sistemas Complexos — EACH-USP"></a></p>
+<h2 id="the-cost-of-not-doing-it">The cost of not doing it</h2>
+<p>The alternative to data-driven design is design by anecdote. Someone runs the agent on a task they care about. It works. They ship. Someone else runs it on a different task. It fails. Nobody knows why. The team debates prompts instead of looking at data. Decisions are made by the most senior person in the room, not by the person with the best evidence.</p>
+<p>This is how most teams work today. It is also how most teams will fail at building agents, because the complexity of stochastic, tool-using, multi-turn systems exceeds what any individual's intuition can model.</p>
+<blockquote>
+<p>Data-driven design is not about having data. It's about making decisions as if the data matters more than your opinion.</p>
+</blockquote>
+<p>Databases went through this transition. So did compilers. So did networking. Every infrastructure layer that we now treat as predictable, measurable, and engineer-able went through a phase where the experts relied on intuition and the results were inconsistent. Agents are in that phase now. The teams that instrument, measure, and close the loop will build infrastructure. The teams that rely on folk wisdom and anecdote will build demos that don't survive contact with real workloads.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Selinger, P. G. et al. (1979). <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1145/582095.582099">&quot;Access Path Selection in a Relational Database Management System.&quot;</a> <em>ACM SIGMOD.</em> — The paper that made query optimization a measurement problem: cost-based plan selection using catalog statistics instead of heuristics. The origin of <code>EXPLAIN</code>.</li>
+<li>Kohavi, R., Tang, D. &amp; Xu, Y. (2020). <em>Trustworthy Online Controlled Experiments: A Practical Guide to A/B Testing.</em> — The modern methodology for data-driven design decisions at scale, from the team that built Microsoft and Google's experimentation platforms.</li>
+<li>Sigelman, B. H. et al. (2010). <a target="_blank" rel="noopener noreferrer" href="https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">&quot;Dapper, a Large-Scale Distributed Systems Tracing Infrastructure.&quot;</a> <em>Google Technical Report.</em> — The paper that established distributed tracing as a measurement primitive, now industry standard (OpenTelemetry).</li>
+<li>Kleppmann, M. (2017). <em>Designing Data-Intensive Applications.</em> — Chapters on observability, metrics, and the shift from intuition to measurement in distributed systems design.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a> — This blog's framework for building evaluation harnesses that produce the reliable, comparable metrics data-driven design requires.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#correctness-first">Correctness First: What OpenBSD Teaches Agent Builders</a> — The argument that correctness can't be eyeballed — it must be verified systematically, which requires measurement.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a> — Sonar's AC/DC framework as a productization of the same principle: verification infrastructure is the measurement layer for agent quality.</li>
+</ul>
 </div>
       </article>
       <article class="post" id="verifiers-are-king-sonar-acdc">
@@ -769,59 +779,82 @@
 </blockquote>
 <p>The numbers tell the story: without verification, 3-5x initial gains that rot. With verification, 44% fewer outages, 92% fewer issues, faster net delivery. The gap isn't about model quality. It's about whether verification is a first-class part of your development process or an afterthought.</p>
 <p>Shaukat's title was right. In the land of AI agents, the verifiers are king. Build your verification infrastructure accordingly.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Sonar. <a target="_blank" rel="noopener noreferrer" href="https://docs.sonarsource.com/agent-centric-development-cycle">Agent-Centric Development Cycle</a> — Official documentation for the AC/DC framework: Guide, Verify, Solve.</li>
+<li>Shaukat, T. (2026). <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=VrpEyglYgeU">&quot;In the Land of AI Agents, the Verifiers Are King&quot;</a> — Keynote at AI Engineer World's Fair, San Francisco, July 2026.</li>
+<li>Sonar. (2026). <a target="_blank" rel="noopener noreferrer" href="https://www.sonarsource.com/company/press-releases/sonar-introduces-the-agent-centric-development-cycle/">&quot;Sonar Introduces the Agent Centric Development Cycle.&quot;</a> — Press release announcing the AC/DC framework and the productivity paradox findings.</li>
+<li>Sonar. (2026). <a target="_blank" rel="noopener noreferrer" href="https://www.sonarsource.com/company/press-releases/sonar-launches-sonar-vortex-and-sonarqube-remediation-agent/">&quot;Sonar Launches Sonar Vortex and SonarQube Remediation Agent.&quot;</a> — Product launch details for the context augmentation and remediation components.</li>
+<li>Sonar. (2026). <a target="_blank" rel="noopener noreferrer" href="https://www.sonarsource.com/company/press-releases/sonar-named-a-leader-in-the-2026-gartner-magic-quadrant/">&quot;Sonar Named a Leader in the 2026 Gartner Magic Quadrant for Technical Debt Management Tools.&quot;</a> — Gartner recognition and market context.</li>
+<li>Sonar Summit 2026. <a target="_blank" rel="noopener noreferrer" href="https://securityboulevard.com/2026/03/top-6-takeaways-on-the-future-of-coding-from-sonar-summit-2026-7/">&quot;Top 6 Takeaways on the Future of Coding.&quot;</a> <em>Security Boulevard.</em> — Industry coverage of the verification-centric strategy.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a> — This blog's framework for evaluation harnesses that do the verification work AC/DC requires.</li>
+</ul>
 </div>
       </article>
-      <article class="post" id="data-driven-design-swe-agents">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/data-driven-design-swe-agents/">
+      <article class="post" id="dynamical-systems-complexity-quant-trading">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/dynamical-systems-complexity-quant-trading/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-21" data-utc="Jul 21, 2026 UTC" aria-label="Jul 21, 2026 UTC" tabindex="0">1784592000</time></p>
-          <h2><a href="#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a></h2><p class="post-summary">You can&#39;t think your way to a better agent prompt. The only reliable design method for stochastic systems is measurement, experimentation, and data — the same method that turned databases from black boxes into predictable infrastructure.</p>
-          <div class="tags"><span class="tag">data-driven-design</span><span class="tag">agents</span><span class="tag">evaluation</span><span class="tag">harness</span><span class="tag">software-engineering</span><span class="tag">metrics</span>
+          <h2><a href="#dynamical-systems-complexity-quant-trading">Markets Are Dynamical Systems. Most Quants Forgot.</a></h2><p class="post-summary">Quantitative finance spent decades pretending markets are in equilibrium with Gaussian returns. Dynamical systems and complexity theory explain why that&#39;s wrong — and what to do instead.</p>
+          <div class="tags"><span class="tag">quantitative-trading</span><span class="tag">dynamical-systems</span><span class="tag">complexity-theory</span><span class="tag">finance</span><span class="tag">non-linear</span><span class="tag">risk</span>
           </div>
         </header>
-        <div class="post-body"><p>Databases used to be black boxes. You wrote a query, waited, and hoped the optimizer did something reasonable. When it didn't, you tried a different index and hoped again. The expertise was real but the method was folk — passed from senior to junior as rules of thumb: &quot;always index foreign keys,&quot; &quot;avoid <code>SELECT *</code>,&quot; &quot;<code>EXPLAIN</code> will tell you what's wrong.&quot;</p>
-<p>That era ended when database teams started treating query performance as a measurement problem. Instrument the optimizer. Collect query plans. Compare actual vs. estimated row counts. Build dashboards. The output of all that instrumentation is a design loop: you don't guess why a query is slow. You look at the data. The data tells you.</p>
-<p>We are at the beginning of the same transition for software engineering agents. Right now, most agent design is folk expertise: &quot;be specific in your prompts,&quot; &quot;few-shot examples help,&quot; &quot;chain-of-thought improves reasoning.&quot; These are all true, sometimes, for some models, on some tasks. The problem is that nobody knows which ones.</p>
+        <div class="post-body"><p>Most quantitative trading is built on a lie. The lie is that markets are in equilibrium, that returns are normally distributed, and that linear models capture enough of the structure to be useful. These assumptions are mathematically convenient and empirically false. They hold in the middle of the distribution, where nobody makes or loses serious money. They break at the tails, which is where everything interesting happens.</p>
 <blockquote>
-<p>The defining quality of an LLM is that it is stochastic. Given the same input, you get different outputs. Given slightly different inputs, you get very different outputs. The only way to reason about a stochastic system at scale is with data.</p>
+<p>The efficient market hypothesis is not wrong because markets are irrational. It's wrong because markets are complex adaptive systems. Rational agents interacting under imperfect information produce emergent dynamics that no individual agent intended or can predict.</p>
 </blockquote>
-<h2 id="why-intuition-fails">Why intuition fails</h2>
-<p>Your intuition about what makes a good agent prompt is shaped by a few dozen interactions. You try a prompt, it works, you generalize. You try another, it fails, you adjust. This is the scientific method at N=1 — useful for generating hypotheses, useless for drawing conclusions.</p>
-<p>The problem compounds because agents are not just stochastic — they are <em>stateful, tool-using, multi-turn stochastic systems</em>. An agent that picks the wrong tool on step 2 fails on step 7 in a way that looks unrelated to the original mistake. Intuition attributes the failure to the step-7 behavior. The data would tell you to fix step 2.</p>
+<p>Dynamical systems theory and complexity science offer a better description of what markets actually are. If you trade systematically, you need to understand why.</p>
+<h2 id="markets-as-dynamical-systems">Markets as dynamical systems</h2>
+<p>A dynamical system is a system whose state evolves over time according to a fixed rule. The weather is a dynamical system. So is a pendulum. So is an ecosystem. So is a market.</p>
+<p>Prices are not independent draws from a distribution. They are the output of a coupled, non-linear, feedback-driven process. Buyers and sellers observe prices, update beliefs, place orders, change prices, which causes other participants to update beliefs and place different orders. The output of the system at time <em>t</em> becomes an input at time <em>t+1</em>.</p>
 <blockquote>
-<p>Debugging agents by reading transcripts is like debugging a database by reading query text. You might spot the obvious problems. You will miss everything that matters at scale.</p>
+<p>This is a feedback loop. In linear systems, feedback is well-behaved. In non-linear systems, feedback produces regimes, bifurcations, and chaos. Markets are non-linear systems with feedback. The math follows.</p>
 </blockquote>
-<h2 id="what-data-driven-design-looks-like-for-agents">What data-driven design looks like for agents</h2>
-<p>The method is straightforward, even if the infrastructure isn't:</p>
-<p><strong>One: Instrument every decision.</strong> The agent chose a tool. Was it the right tool? The agent produced a diff. Did it compile? Did the tests pass? Did it introduce a vulnerability? The agent looped. How many iterations? When did it converge — or fail to? Every one of these is a data point. Collect them.</p>
-<p><strong>Two: Define success numerically, not narratively.</strong> &quot;The agent handled the task well&quot; is a narrative. &quot;The agent solved 73% of tasks in the benchmark, with a median of 4 tool calls per task and a 6% hallucinated-tool-call rate&quot; is data. Narratives are for demos. Data is for design.</p>
-<p><strong>Three: Compare at scale.</strong> You changed the prompt. Did the solve rate go up? By how much? Across how many tasks? With what variance? A single run of a stochastic system is a data point. A thousand runs is a distribution. Design decisions should be made on distributions, not data points.</p>
-<p><strong>Four: Close the loop.</strong> The best agent systems — like the best database administrators — don't make one-off optimizations. They build pipelines. Deploy. Observe. Compare. Improve. Deploy again. The loop is the design process. Speed of iteration matters more than brilliance of a single change.</p>
-<h2 id="the-harness-is-your-measurement-instrument">The harness is your measurement instrument</h2>
-<p>A theme that runs through this blog is that the harness is the most under-invested part of an agent system. Data-driven design makes it concrete why: the harness is your measurement instrument. If your harness can't produce reliable, comparable metrics at scale, you cannot do data-driven design. You are back to intuition and anecdotes.</p>
+<p>The key properties of a market treated as a dynamical system:</p>
+<p><strong>State dependence.</strong> Where the market is determines where it can go. A stock at $100 in a low-volatility regime has a different future distribution than the same stock at $100 after a 20% drawdown. The price is the same. The state is different. Linear models miss this.</p>
+<p><strong>Non-linearity.</strong> Small causes can produce large effects. A marginal change in liquidity can trigger a flash crash. A whisper of a rate change can reprice an entire sector. The relationship between input and output is not proportional. This breaks every linear model ever built.</p>
+<p><strong>Attractors and regimes.</strong> Markets don't wander randomly. They settle into regimes — low-vol bull trends, high-vol mean-reverting chop, panic liquidation cascades. Each regime is an attractor: a region of state space the system gravitates toward and stays in until some perturbation knocks it into a different basin of attraction. Regime detection is attractor detection.</p>
+<p><strong>Phase transitions.</strong> The shift from one regime to another is not gradual. It is a phase transition — sudden, discontinuous, and preceded by specific signals (rising correlation, thinning liquidity, increasing skew). The same math that describes water freezing describes a market crash. In both cases, the system reaches a critical point and reorganizes.</p>
+<h2 id="complexity-theory-why-gaussian-finance-is-dangerous">Complexity theory: why Gaussian finance is dangerous</h2>
+<p>Markets are not just dynamical systems. They are <em>complex</em> dynamical systems — systems with many interacting components whose collective behavior cannot be reduced to the behavior of any individual component.</p>
+<p>The defining characteristics of complex systems all appear in markets:</p>
+<p><strong>Emergence.</strong> No trader intends to produce a bubble or a crash. Bubbles and crashes emerge from the interaction of thousands of individually rational decisions. The macro pattern is real. It has no author. You cannot understand it by interviewing participants.</p>
+<p><strong>Self-organized criticality.</strong> Complex systems naturally evolve toward a critical state where small perturbations can trigger avalanches of any size. The classic model is a sandpile: add grains one at a time, and most cause nothing. Occasionally one grain triggers a cascade that reshapes the entire pile. The size distribution of avalanches follows a power law. So do market returns. The system organizes itself into a state where extreme events are not anomalies — they are the same dynamics as everyday moves, just at a different scale.</p>
 <blockquote>
-<p>A harness that can only tell you &quot;pass&quot; or &quot;fail&quot; is a thermometer with one marking. You need to know what happened, where it went wrong, and whether this run was better than the last run in a way that generalizes.</p>
+<p>The power-law structure of financial returns means that 5-sigma events are not once-in-a-lifetime flukes. They are the natural output of the system. Gaussian Value at Risk is a calculation that assumes the system is a different kind of system than it actually is.</p>
 </blockquote>
-<p>The harness engineering practices that matter for data-driven design:</p>
+<p><strong>Adaptation.</strong> Participants in a market adapt to each other. When enough traders adopt a strategy, the strategy changes the market dynamics in a way that reduces the strategy's edge. Alpha decay is not a mysterious force. It is the market adapting to its participants. In complexity terms, it is co-evolution: the predator (strategy) and prey (inefficiency) evolve together, and what worked yesterday stops working tomorrow not because it was wrong, but because it was right enough to change the environment.</p>
+<p><strong>Non-ergodicity.</strong> The time average of a trading strategy is not the same as its ensemble average. A strategy with a positive expected return can ruin you if the path matters and you don't survive the drawdowns. Most of quantitative finance assumes ergodicity implicitly — it treats the distribution of possible outcomes as identical to the distribution of outcomes over time. In a complex adaptive system, this is wrong. The path you take determines the distribution you sample.</p>
+<h2 id="what-this-means-for-systematic-trading">What this means for systematic trading</h2>
+<p>If you accept that markets are non-linear complex dynamical systems, the implications for how you build trading systems are significant:</p>
+<p><strong>One: regime detection is the most important problem.</strong> If the market is always in some attractor basin, identifying the current regime — and, more importantly, detecting when it's about to change — is more valuable than predicting the next tick. A mediocre signal in the right regime regime beats a great signal in the wrong one.</p>
+<p><strong>Two: linear models are building blocks, not answers.</strong> Linear regression, PCA, and Kalman filters have their place. But they should be components inside a system that models non-linearity explicitly — through regime-switching models, neural ODEs, recurrent architectures, or kernel methods. The linear model tells you what's happening inside a regime. The non-linear wrapper tells you which regime you're in.</p>
+<p><strong>Three: risk management must assume non-normality.</strong> Stop using Gaussian VaR. Use extreme value theory. Model tails with generalized Pareto distributions. Stress-test against power-law cascades, not historical scenarios. The next crash will not look like the last crash. It will look like a phase transition in a complex system you didn't fully model.</p>
+<p><strong>Four: alpha decay is a dynamical phenomenon.</strong> Instead of treating alpha decay as a gradual erosion, model it as a dynamical system: the strategy extracts inefficiency, the inefficiency shrinks, participants adapt, the strategy's edge decays according to a curve that depends on market impact, capacity, and the rate at which other participants copy or front-run the strategy. This is a predator-prey model. It has equilibria, cycles, and extinction regimes. Treat it like one.</p>
+<p><strong>Five: backtests are samples from a non-stationary process.</strong> A backtest shows you one path through a system that is constantly changing. The market of 2018 is not the market of 2024. The participants are different. The regimes are different. The attractor basins may have shifted. A backtest is evidence, not proof. In a complex system, the past is a single draw from a distribution whose parameters have since changed.</p>
+<h2 id="the-broader-point">The broader point</h2>
+<p>Quantitative finance borrowed its mathematical toolkit from physics: equilibrium thermodynamics, linear differential equations, Gaussian statistics. These tools were chosen because they produce closed-form solutions, not because they describe markets accurately.</p>
+<p>Complexity science and dynamical systems theory offer a more accurate description, but at a cost: fewer closed-form solutions, more simulation, more computational burden, and results that are distributions rather than point estimates. The cost is worth paying.</p>
+<blockquote>
+<p>Markets are not physical systems with fixed laws. They are complex adaptive systems with emergent dynamics. The math that describes them is not the math of equilibrium. It is the math of feedback, non-linearity, phase transitions, and self-organized criticality. If your trading system doesn't account for this, you are not modeling markets. You are modeling a simplified version of markets that exists only in textbooks.</p>
+</blockquote>
+<p>The quants who understand this build systems that survive regime changes, manage tail risk honestly, and treat alpha as a dynamical phenomenon to be modeled rather than a constant to be harvested. The quants who don't are one phase transition away from discovering the difference.</p>
+<h2 id="where-to-learn-this">Where to learn this</h2>
+<p>If this post reads like a curriculum you wish existed — it does. EACH-USP (the School of Arts, Sciences and Humanities at the University of São Paulo) offers a graduate program in <strong>Complex Systems Modeling</strong> (<em>Modelagem de Sistemas Complexos</em>) that covers exactly this ground: dynamical systems, agent-based modeling, network theory, and applications to finance, economics, and social systems.</p>
+<p>The program treats markets as what they are — complex adaptive systems — rather than what textbook finance wishes they were. If you trade systematically and want the mathematical foundations this post argues for, it's worth a look.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=8p5rGie81JI"><img src="https://img.youtube.com/vi/8p5rGie81JI/hqdefault.jpg" alt="Modelagem de Sistemas Complexos — EACH-USP"></a></p>
+<hr>
+<p><strong>References:</strong></p>
 <ul>
-<li><strong>Deterministic replay</strong> — if you can't reproduce a run, you can't measure a change.</li>
-<li><strong>Layered observability</strong> — prompt selection, tool choice, state transitions, final outcome. Each layer produces its own metrics.</li>
-<li><strong>Statistical rigor</strong> — a 2% improvement on 10 tasks is noise. A 2% improvement on 1,000 tasks might be real. The harness needs to support sample sizes that make signals distinguishable from noise.</li>
+<li>Mandelbrot, B. &amp; Hudson, R. (2004). <em>The (Mis)Behavior of Markets: A Fractal View of Financial Turbulence.</em> — The foundational argument that financial markets follow fractal geometry and power laws, not Gaussian random walks.</li>
+<li>Bak, P., Tang, C. &amp; Wiesenfeld, K. (1987). <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1103/PhysRevLett.59.381">&quot;Self-Organized Criticality: An Explanation of 1/f Noise.&quot;</a> <em>Physical Review Letters.</em> — The sandpile model: how complex systems self-organize into critical states where avalanches of any size are the natural output.</li>
+<li>Arthur, W. B. (2014). <em>Complexity and the Economy.</em> — The Santa Fe Institute economist on markets as complex adaptive systems: emergence, non-equilibrium, and why rational agents don't produce equilibrium.</li>
+<li>Peters, O. (2019). <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1038/s41567-019-0732-0">&quot;The Ergodiity Problem in Economics.&quot;</a> <em>Nature Physics.</em> — Why the time average and ensemble average are not the same, and why that matters for every risk model ever built.</li>
+<li>Taleb, N. N. (2007). <em>The Black Swan: The Impact of the Highly Improbable.</em> — The practical consequences of assuming Gaussian distributions in a fat-tailed world.</li>
+<li>Hamilton, J. D. (1989). <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.2307/1912559">&quot;A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle.&quot;</a> <em>Econometrica.</em> — The Markov-switching model that introduced formal regime detection to economics.</li>
+<li>EACH-USP. <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=8p5rGie81JI">Modelagem de Sistemas Complexos</a> — Graduate program in Complex Systems Modeling at the University of São Paulo, covering the mathematical foundations this post argues every quant should have.</li>
 </ul>
-<h2 id="why-this-matters-more-for-agents-than-for-any-previous-software">Why this matters more for agents than for any previous software</h2>
-<p>Traditional software is deterministic. You change the code, you run the tests, you observe a binary outcome. The design loop is: implement, test, fix, repeat. Data helps, but the feedback signal is strong enough that intuition often suffices.</p>
-<p>Agents are fundamentally different. The same agent, on the same task, with the same prompt, will produce different results on different runs. The space of possible behaviors is too large to explore by reasoning alone. The only way to understand an agent is to observe it across many runs and let the patterns emerge from the data.</p>
-<p>This is uncomfortable. It means admitting that you cannot fully understand the system you are building by reading the code and the prompts. It means ceding authority to measurement. It means designing experiments instead of designing solutions — because the solution emerges from the experimental data, not from your head.</p>
-<blockquote>
-<p>The transition from folk expertise to data-driven design is the transition from craftsmanship to engineering. Both produce good outcomes. Only one scales.</p>
-</blockquote>
-<h2 id="the-cost-of-not-doing-it">The cost of not doing it</h2>
-<p>The alternative to data-driven design is design by anecdote. Someone runs the agent on a task they care about. It works. They ship. Someone else runs it on a different task. It fails. Nobody knows why. The team debates prompts instead of looking at data. Decisions are made by the most senior person in the room, not by the person with the best evidence.</p>
-<p>This is how most teams work today. It is also how most teams will fail at building agents, because the complexity of stochastic, tool-using, multi-turn systems exceeds what any individual's intuition can model.</p>
-<blockquote>
-<p>Data-driven design is not about having data. It's about making decisions as if the data matters more than your opinion.</p>
-</blockquote>
-<p>Databases went through this transition. So did compilers. So did networking. Every infrastructure layer that we now treat as predictable, measurable, and engineer-able went through a phase where the experts relied on intuition and the results were inconsistent. Agents are in that phase now. The teams that instrument, measure, and close the loop will build infrastructure. The teams that rely on folk wisdom and anecdote will build demos that don't survive contact with real workloads.</p>
 </div>
       </article>
       <article class="post" id="compute-travels-data-stays">
@@ -13993,9 +14026,9 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#dynamical-systems-complexity-quant-trading">Markets Are Dynamical Systems. Most Quants Forgot.</a>
-              <a href="#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a>
               <a href="#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a>
+              <a href="#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a>
+              <a href="#dynamical-systems-complexity-quant-trading">Markets Are Dynamical Systems. Most Quants Forgot.</a>
               <a href="#compute-travels-data-stays">Compute Travels. Data Stays.</a>
               <a href="#correctness-first">Correctness First</a>
               <a href="#kaggle-and-ai-agents">Kaggle Was Built for the Agent Era</a>

@@ -65,3 +65,15 @@ This is how most teams work today. It is also how most teams will fail at buildi
 > Data-driven design is not about having data. It's about making decisions as if the data matters more than your opinion.
 
 Databases went through this transition. So did compilers. So did networking. Every infrastructure layer that we now treat as predictable, measurable, and engineer-able went through a phase where the experts relied on intuition and the results were inconsistent. Agents are in that phase now. The teams that instrument, measure, and close the loop will build infrastructure. The teams that rely on folk wisdom and anecdote will build demos that don't survive contact with real workloads.
+
+---
+
+**References:**
+
+- Selinger, P. G. et al. (1979). ["Access Path Selection in a Relational Database Management System."](https://doi.org/10.1145/582095.582099) *ACM SIGMOD.* — The paper that made query optimization a measurement problem: cost-based plan selection using catalog statistics instead of heuristics. The origin of `EXPLAIN`.
+- Kohavi, R., Tang, D. & Xu, Y. (2020). *Trustworthy Online Controlled Experiments: A Practical Guide to A/B Testing.* — The modern methodology for data-driven design decisions at scale, from the team that built Microsoft and Google's experimentation platforms.
+- Sigelman, B. H. et al. (2010). ["Dapper, a Large-Scale Distributed Systems Tracing Infrastructure."](https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/) *Google Technical Report.* — The paper that established distributed tracing as a measurement primitive, now industry standard (OpenTelemetry).
+- Kleppmann, M. (2017). *Designing Data-Intensive Applications.* — Chapters on observability, metrics, and the shift from intuition to measurement in distributed systems design.
+- Related: [Harness Engineering: Best Practices for Reliable Agent Systems](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — This blog's framework for building evaluation harnesses that produce the reliable, comparable metrics data-driven design requires.
+- Related: [Correctness First: What OpenBSD Teaches Agent Builders](https://blog.hackspree.com/#correctness-first) — The argument that correctness can't be eyeballed — it must be verified systematically, which requires measurement.
+- Related: [In the Land of AI Agents, the Verifiers Are King](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc) — Sonar's AC/DC framework as a productization of the same principle: verification infrastructure is the measurement layer for agent quality.

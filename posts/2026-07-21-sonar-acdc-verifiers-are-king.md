@@ -65,3 +65,15 @@ If you've been following this blog's thread on harness engineering, you'll recog
 The numbers tell the story: without verification, 3-5x initial gains that rot. With verification, 44% fewer outages, 92% fewer issues, faster net delivery. The gap isn't about model quality. It's about whether verification is a first-class part of your development process or an afterthought.
 
 Shaukat's title was right. In the land of AI agents, the verifiers are king. Build your verification infrastructure accordingly.
+
+---
+
+**References:**
+
+- Sonar. [Agent-Centric Development Cycle](https://docs.sonarsource.com/agent-centric-development-cycle) — Official documentation for the AC/DC framework: Guide, Verify, Solve.
+- Shaukat, T. (2026). ["In the Land of AI Agents, the Verifiers Are King"](https://www.youtube.com/watch?v=VrpEyglYgeU) — Keynote at AI Engineer World's Fair, San Francisco, July 2026.
+- Sonar. (2026). ["Sonar Introduces the Agent Centric Development Cycle."](https://www.sonarsource.com/company/press-releases/sonar-introduces-the-agent-centric-development-cycle/) — Press release announcing the AC/DC framework and the productivity paradox findings.
+- Sonar. (2026). ["Sonar Launches Sonar Vortex and SonarQube Remediation Agent."](https://www.sonarsource.com/company/press-releases/sonar-launches-sonar-vortex-and-sonarqube-remediation-agent/) — Product launch details for the context augmentation and remediation components.
+- Sonar. (2026). ["Sonar Named a Leader in the 2026 Gartner Magic Quadrant for Technical Debt Management Tools."](https://www.sonarsource.com/company/press-releases/sonar-named-a-leader-in-the-2026-gartner-magic-quadrant/) — Gartner recognition and market context.
+- Sonar Summit 2026. ["Top 6 Takeaways on the Future of Coding."](https://securityboulevard.com/2026/03/top-6-takeaways-on-the-future-of-coding-from-sonar-summit-2026-7/) *Security Boulevard.* — Industry coverage of the verification-centric strategy.
+- Related: [Harness Engineering: Best Practices for Reliable Agent Systems](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — This blog's framework for evaluation harnesses that do the verification work AC/DC requires.

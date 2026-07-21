@@ -77,3 +77,15 @@ If this post reads like a curriculum you wish existed — it does. EACH-USP (the
 The program treats markets as what they are — complex adaptive systems — rather than what textbook finance wishes they were. If you trade systematically and want the mathematical foundations this post argues for, it's worth a look.
 
 [![Modelagem de Sistemas Complexos — EACH-USP](https://img.youtube.com/vi/8p5rGie81JI/hqdefault.jpg)](https://www.youtube.com/watch?v=8p5rGie81JI)
+
+---
+
+**References:**
+
+- Mandelbrot, B. & Hudson, R. (2004). *The (Mis)Behavior of Markets: A Fractal View of Financial Turbulence.* — The foundational argument that financial markets follow fractal geometry and power laws, not Gaussian random walks.
+- Bak, P., Tang, C. & Wiesenfeld, K. (1987). ["Self-Organized Criticality: An Explanation of 1/f Noise."](https://doi.org/10.1103/PhysRevLett.59.381) *Physical Review Letters.* — The sandpile model: how complex systems self-organize into critical states where avalanches of any size are the natural output.
+- Arthur, W. B. (2014). *Complexity and the Economy.* — The Santa Fe Institute economist on markets as complex adaptive systems: emergence, non-equilibrium, and why rational agents don't produce equilibrium.
+- Peters, O. (2019). ["The Ergodiity Problem in Economics."](https://doi.org/10.1038/s41567-019-0732-0) *Nature Physics.* — Why the time average and ensemble average are not the same, and why that matters for every risk model ever built.
+- Taleb, N. N. (2007). *The Black Swan: The Impact of the Highly Improbable.* — The practical consequences of assuming Gaussian distributions in a fat-tailed world.
+- Hamilton, J. D. (1989). ["A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle."](https://doi.org/10.2307/1912559) *Econometrica.* — The Markov-switching model that introduced formal regime detection to economics.
+- EACH-USP. [Modelagem de Sistemas Complexos](https://www.youtube.com/watch?v=8p5rGie81JI) — Graduate program in Complex Systems Modeling at the University of São Paulo, covering the mathematical foundations this post argues every quant should have.

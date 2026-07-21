@@ -1,5 +1,5 @@
 ---
-title: Martin Fowler's Retreat Confirmed What This Blog Has Been Saying
+title: Verification Is the Bottleneck
 date: 2026-07-21
 slug: fowler-retreat-verification-harness-engineering
 summary: The headline finding from Martin Fowler's Future of Software Development Retreat: "Code generation is no longer the bottleneck — verification is." The industry's most respected voice just validated the thesis.

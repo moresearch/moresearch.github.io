@@ -10,13 +10,11 @@ Ray Myers posted a thought experiment on LinkedIn this week:
 
 > "Imagine a phrase like 'The building fell down after the inspector's taste was ignored.' Is there any situation where you would feel accountable to heed someone's taste?"
 
-The sentence does not work, and it does not work for a precise reason. "Taste" belongs to the domain of aesthetics and personal preference. An inspector who makes structural judgments based on taste is not being overruled — they are being negligent. The category error is built into the word. When you call engineering judgment "taste," you reframe a question of correctness as a question of opinion, and opinions require no rebuttal. "That's just your taste" is a conversation-ender.
+The sentence doesn't work, for a precise reason. "Taste" belongs to the domain of aesthetics and personal preference. An inspector who makes structural judgments based on taste is not being overruled — they are being negligent. The category error is built into the word. When you call engineering judgment "taste," you reframe a question of correctness as a question of opinion, and opinions require no rebuttal. "That's just your taste" is a conversation-ender.
 
-But the thing people are reaching for when they use the word is not imaginary. There is a real capacity involved in looking at a system and recognizing that something is wrong — that the parts no longer compose, that the design has accumulated contradictions, that the whole has lost its voice. Fred Brooks gave this property a name.
+But the thing people are groping toward when they invoke the word is not imaginary. There is a real capacity involved in looking at a system and recognizing that something is wrong beneath the surface — that the parts no longer compose, that the design has accumulated contradictions, that the whole has lost its voice. Fred Brooks spent a career giving this property a name.
 
-## The name
-
-![The Design of Design — Fred Brooks's last book, his best, and his least read](/images/design-of-design.jpg)
+![The Design of Design — Fred Brooks's final book, and his least read](/images/design-of-design.jpg)
 
 Brooks called it **conceptual integrity**. He first articulated it in *The Mythical Man-Month* in 1975:
 
@@ -38,9 +36,11 @@ The result is a building where you cannot identify the seams between architects.
 
 ## The counter-example
 
+If Reims is what happens when the principle holds, the Bradley Fighting Vehicle is what happens when it doesn't.
+
 ![The Pentagon Wars (1998) — the Bradley Fighting Vehicle: 17 years, $14 billion, and a machine that did nothing well](/images/pentagon-wars.jpg)
 
-The Bradley Fighting Vehicle began as a light troop carrier. Over 17 years and $14 billion, successive stakeholders added requirements: more armor, more firepower, more troop capacity, larger contracts. Each request was defensible in isolation. The accumulation produced a vehicle that Sergeant Fanning, a character in the 1998 HBO film *The Pentagon Wars*, describes with the clarity of someone who has stopped being polite:
+The Bradley began as a light troop carrier. Over 17 years and $14 billion, successive stakeholders added requirements: more armor, more firepower, more troop capacity, larger contracts. Each request was defensible in isolation. The accumulation produced a vehicle that Sergeant Fanning, a character in the 1998 HBO film *The Pentagon Wars*, describes with the clarity of someone who has stopped being polite:
 
 > "A troop transport that can't carry troops, a reconnaissance vehicle that's too conspicuous to do reconnaissance, and a quasi-tank that has less armor than a snowblower, but has enough ammo to take out half of D.C."
 
@@ -48,7 +48,7 @@ Every clause names a stakeholder requirement that was reasonable on its own. Tog
 
 The Bradley is the limiting case of "many good but independent and uncoordinated ideas." It was not a failure of intentions or competence. It was the structural consequence of a system in which nobody had the authority to say no — every stakeholder could add a requirement, and no single mind could reject one. The output was not a design. It was a negotiated settlement between competing interests.
 
-## The structural cure
+## The organizational conditions
 
 Brooks did not merely name the property. On IBM System/360, he, Gene Amdahl, and Gerrit Blaauw built the organizational structures that preserve it. The principles run through both books.
 
@@ -60,15 +60,13 @@ Brooks did not merely name the property. On IBM System/360, he, Gene Amdahl, and
 
 **Protection from organizational forces.** The architecture team was deliberately shielded from field sales, engineering, and customers — all of whom had legitimate demands that would have been reasonable to accommodate individually and fatal to accommodate collectively. The shielding was not a matter of status. It was a structural precondition for coherent design.
 
-**Career paths that reward refusal.** Brooks implied this principle throughout both books but never stated it as bluntly as the evidence warrants. In most organizations, agreement builds political capital and refusal spends it. If the incentive structure penalizes the person who protects coherence, coherence will not be protected regardless of what the documentation claims. The Bradley program is the proof at the limit: the saboteurs were promoted. The honest officer was removed.
+**Career paths that reward refusal.** Brooks implied this principle throughout both books but never stated it as bluntly as the evidence warrants. In most organizations, agreement builds political capital and refusal spends it. If the incentive structure penalizes the person who protects coherence, coherence will not be protected regardless of what the documentation claims. The Bradley program is the proof at the limit: the officers who rigged the tests were promoted. The officer who forced an honest evaluation was removed.
 
 ---
 
-Ray's thought experiment succeeds because it exposes the gap between what "taste" can carry and what the role demands. "The building fell down after the inspector's taste was ignored" describes a negligent inspector, not an overruled professional. That is the problem with the word.
+Ray's experiment works because it exposes the gap. "The building fell down after the inspector's taste was ignored" describes a negligent inspector, not an overruled professional. Reformulate with the right term: the Bradley became a death trap because no single mind had the authority to enforce the vehicle's conceptual integrity. That sentence names a role, a property, and a failure mode. An engineer can be held accountable for it.
 
-Reformulate with the right term: the Bradley became a death trap because no single mind had the authority to enforce the vehicle's conceptual integrity. That sentence names a role, a property, and a failure mode. An engineer can be held accountable for it.
-
-What engineers call taste is conceptual integrity. Brooks gave us the term, the evidence, and the organizational principles. The remaining question is whether we have the nerve.
+What engineers are reaching for when they say "taste" is what Brooks called conceptual integrity. He gave us the term, the evidence, the organizational principles. The remaining question is whether we have the nerve to use them.
 
 ---
 

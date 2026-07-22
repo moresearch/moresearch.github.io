@@ -2,7 +2,7 @@
 title: "Taste" Is a Terrible Word for What We Mean
 date: 2026-07-21
 slug: taste-conceptual-integrity-brooks
-summary: Ray Myers is right that "taste" belittles engineering judgment. Fred Brooks had a better word: conceptual integrity. The Pentagon Wars shows what happens when you don't have it.
+summary: Ray Myers is right that "taste" belittles engineering judgment. Fred Brooks called the real thing conceptual integrity. The Pentagon Wars shows what happens when you don't have it.
 tags: design, fred-brooks, conceptual-integrity, taste, engineering-judgment, agents
 ---
 
@@ -10,67 +10,71 @@ Ray Myers posted a thought experiment on LinkedIn this week:
 
 > "Imagine a phrase like 'The building fell down after the inspector's taste was ignored.' Is there any situation where you would feel accountable to heed someone's taste?"
 
-He's right. "Taste" belongs to wine and font choices, not to the engineering judgment that determines whether a system stands or falls. It makes accountability sound like preference, and preference is easy to dismiss: "that's just your taste" is a conversation-ender.
+The sentence doesn't work. "Taste" means personal preference. An inspector who made structural judgments based on taste would be negligent, not overruled. The word can't carry engineering accountability because it was never meant to.
 
-But the thing people are reaching for is real. They're just using the wrong word.
+But the thing people are fumbling toward when they say "taste" is real. Fred Brooks gave it a name that can carry the weight.
 
-## Brooks had the right word
+## Conceptual integrity
 
 ![The Design of Design — Fred Brooks's last book, his best, and his least read](/images/design-of-design.jpg)
 
-In *The Design of Design*, Fred Brooks called it **conceptual integrity**: the system feels like one mind designed it. It's the most important property of any designed thing — and it is not aesthetics. It's the structural property that makes a system coherent rather than assembled.
+Brooks defined **conceptual integrity** as the property of a system that feels like one mind designed it. Not one team. Not one process. One mind. Every interface reflects the same design philosophy. Every component uses the same idioms. Every decision is consistent with every other decision.
 
-> "It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas." — Brooks, *The Mythical Man-Month*, 1975
+> "I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas." — Brooks, *The Mythical Man-Month*, 1975
 
-Brooks's positive example is Reims Cathedral. Eight generations of architects, each sticking to the original plan. Two centuries. One coherent result.
+This is not a preference. It is a structural claim about what makes systems coherent. A system without conceptual integrity is not ugly — it is disorganized. Its parts don't compose. Its behavior surprises its users. Its maintenance costs grow non-linearly because each change must reconcile conflicting assumptions.
 
-## The Pentagon Wars: what happens when nobody can say no
+Brooks's positive case is Reims Cathedral. Eight generations of architects, each submitting to the original plan. Two centuries. One coherent result. The plan had authority that outlived its author.
 
-![The Pentagon Wars (1998) — the Bradley Fighting Vehicle: 17 years, $14 billion, and pleased no one](/images/pentagon-wars.jpg)
+## What happens when nobody has that authority
 
-Now consider the Bradley Fighting Vehicle, immortalized in the 1998 HBO film *The Pentagon Wars*. It began as a light troop carrier. Over 17 years and $14 billion, every stakeholder added requirements — more armor, more firepower, more troop capacity, more budget. Each request was reasonable alone. Together, they produced a vehicle the film describes as "a bulky tank-like vehicle poorly suited to its original role."
+![The Pentagon Wars (1998) — the Bradley Fighting Vehicle: 17 years, $14 billion, satisfied every stakeholder and no user](/images/pentagon-wars.jpg)
 
-The testing was rigged to hide the failures. The officers who manipulated results were promoted. The whistleblower, Lt. Colonel James Burton, was forced into retirement.
+The counter-example is the Bradley Fighting Vehicle, immortalized in the 1998 HBO film *The Pentagon Wars*. The Bradley began as a light troop carrier. Over 17 years and $14 billion, armor advocates, infantry commanders, generals, and contractors each added requirements. Every request was defensible in isolation. Accumulated, they produced what the film calls "a bulky tank-like vehicle poorly suited to its original role."
 
-> This is design by committee: every stakeholder gets their feature, nobody has authority to say no, and the result satisfies everyone's wish list and nobody's actual needs. The Bradley is what Reims Cathedral would have been if each architect had added a Gothic spire, a Baroque chapel, and a Renaissance facade to please their patrons.
+Testing was manipulated. Officers who rigged results were promoted. The whistleblower who forced an honest test — Lt. Colonel James Burton — was forced into retirement.
 
-## How Brooks said to prevent this
+> This is what happens when conceptual integrity is absent. Not bad intentions. Not incompetence. Reasonable people making reasonable requests, with nobody authorized to say no. The system degrades into a negotiated settlement between stakeholders rather than a coherent design.
 
-Brooks didn't just diagnose the problem. On System/360, he, Amdahl, and Blaauw lived the solution:
+## Brooks's organizational protections
 
-- **One mind — at most two in resonance.** Three is already a committee.
-- **Real veto power.** Advisory veto means the VP overrides the designer. The VP wins. The user loses. The feature ships. Nobody uses it.
-- **Architecture separated from implementation.** Small team defines *what*. Large team builds *how*. Conflate them and neither works.
-- **Protection from organizational forces.** Field sales, engineering, and customers all had legitimate demands. The architecture team was shielded from them — otherwise each reasonable request would have destroyed coherence.
-- **Career paths that reward saying no.** "Yes" gets promoted. "No" costs political capital. If the incentives punish coherence, coherence won't happen. The Pentagon Wars is the proof.
+Brooks didn't just name the property. On System/360, he, Gene Amdahl, and Gerrit Blaauw implemented the organizational structure that preserves it:
 
-> "The architecture team must be protected; the implementation team must be coordinated." — Brooks
+- **One mind — at most two in genuine resonance.** Brooks and Blaauw could each speak for the architecture. Three people cannot do this. Three is a committee.
 
-## The bridge: taste as fast orientation
+- **Veto power, not advisory input.** The architect must be able to say no and have it stick. Advisory veto means the VP overrides the architect. The feature ships. The user suffers. The VP moves on. The architect inherits the incoherence.
 
-Sean Cooper, in the comments on Ray's post, got the nuance right: taste is "fast orientation" — the senior engineer's "this feels wrong" that compresses decades of pattern recognition into a moment. It's real. But it must be converted into evidence. Name the odor. Articulate the heuristic. Demonstrate the risk.
+- **Architecture separated from implementation.** A small team defines *what* the system is. A large team builds *how*. "The architecture team must be protected; the implementation team must be coordinated." Conflate the two and neither function works.
 
-> Taste is fast orientation. Conceptual integrity is the slow, structural work of making the system coherent. You need both. You can only be held accountable for the second.
+- **Protection from organizational forces.** Field sales, engineering, and customers all had legitimate demands on System/360. The architecture team was shielded from them. Each demand was reasonable. Accommodating all of them would have destroyed the system's coherence.
 
-## The agent era makes this urgent
+- **Career paths that reward saying no.** In most organizations, "yes" gets promoted. Saying no costs political capital. If the incentive structure punishes coherence, coherence will not occur. *The Pentagon Wars* is the proof: the saboteurs were promoted, the honest officer was purged.
 
-Agents have zero conceptual integrity. They generate tokens statistically. An agent writes code that compiles and passes tests while violating every design principle the codebase follows — not maliciously, but because it has no model of the whole.
+## The bridge
 
-The human's role is to be the one mind. To reject code that works but doesn't fit. To say no to good ideas that would break coherence. Brooks's one-mind rule was always important. In the agent era, it's the primary human contribution.
+Sean Cooper, in the comments on Ray's post, distinguished between taste as "fast orientation" and taste as final judgment. The senior engineer's "this feels wrong" is real — it compresses decades of pattern recognition into a moment. But it must be converted into evidence: name the specific way this change breaks coherence, articulate the heuristic it violates, demonstrate the downstream consequences.
+
+> Fast orientation is not the argument. It is the reason to start looking for one. Conceptual integrity is the standard the argument is measured against.
+
+## Why this matters now
+
+Coding agents produce output with no regard for the system's conceptual integrity. They generate tokens that are statistically probable, not architecturally coherent. An agent will write code that compiles and passes tests while violating every design principle the surrounding codebase observes — because the agent has no model of the whole. It can't. Coherence is not a statistical property.
+
+The human's role is not to apply "taste" to the agent's output — as if the job were selecting the most aesthetically pleasing token sequence. The human's role is to maintain the system's conceptual integrity against a force that generates incoherence at machine speed. Brooks's one-mind rule was always hard. In the agent era, it becomes the primary thing humans contribute.
 
 ---
 
-Ray's experiment is the test. "The building fell down after the inspector's taste was ignored" — absurd. "The Bradley became a death trap because nobody had the authority to enforce conceptual integrity" — that sentence lands. It names a role, a skillset, and a failure mode. An engineer can be held accountable for it.
+Ray's experiment proves his point. "The building fell down after the inspector's taste was ignored" is nonsense — it describes a negligent inspector, not an overruled one. But try this: "The Bradley became a death trap because nobody had the authority to enforce conceptual integrity." That sentence names a role, a property, and a failure mode. An engineer can be held accountable for it.
 
-> "Taste" can't carry that weight. Conceptual integrity can.
+> "Taste" can't do that work. It was never supposed to.
 
 ---
 
 **References:**
 
 - Myers, R. (2026). ["Let's try an experiment to see if we want to embrace 'taste' as the term for engineering judgment."](https://www.linkedin.com/posts/cadrlife_lets-try-an-experiment-to-see-if-we-want-share-7485045944925720576-WlW5) LinkedIn.
-- Brooks, F. P. (2010). *The Design of Design.* — Conceptual integrity, the one-mind rule, protecting the designer.
-- Brooks, F. P. (1975). *The Mythical Man-Month.* — "It is better to have a system omit certain anomalous features..."
-- *The Pentagon Wars* (1998). Dir. Richard Benjamin. HBO. — Based on Col. James G. Burton's book.
+- Brooks, F. P. (2010). *The Design of Design.* — Conceptual integrity, the one-mind rule, protecting the designer, architecture/implementation separation.
+- Brooks, F. P. (1975). *The Mythical Man-Month.* — The original articulation: "I will contend that conceptual integrity is the most important consideration in system design."
+- *The Pentagon Wars* (1998). Dir. Richard Benjamin. HBO. Based on Col. James G. Burton's book *The Pentagon Wars: Reformers Challenge the Old Guard.*
 - Related: [Brooks on Software Design: conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) · [one-mind rule](https://blog.hackspree.com/#brooks-design-one-mind-rule) · [protecting the designer](https://blog.hackspree.com/#brooks-design-protecting-designer)
 - Related: [Correctness First](https://blog.hackspree.com/#correctness-first)

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Block released Buzz, an open-source collaboration platform where humans and agents share a workspace. The most interesting thing about it isn&#39;t the collaboration model — it&#39;s the identity architecture.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/buzz-block-agents/">
+  <title>Buzz and the Identity Problem — hackspree</title>
+  <meta property="og:title" content="Buzz and the Identity Problem">
+  <meta property="og:description" content="Block released Buzz, an open-source collaboration platform where humans and agents share a workspace. The most interesting thing about it isn&#39;t the collaboration model — it&#39;s the identity architecture.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/buzz-block-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Buzz and the Identity Problem">
+  <meta name="twitter:description" content="Block released Buzz, an open-source collaboration platform where humans and agents share a workspace. The most interesting thing about it isn&#39;t the collaboration model — it&#39;s the identity architecture.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(240px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-21">2026-07-21</time></p>
+          <h1>Buzz and the Identity Problem</h1><p class="post-summary">Block released Buzz, an open-source collaboration platform where humans and agents share a workspace. The most interesting thing about it isn&#39;t the collaboration model — it&#39;s the identity architecture.</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">block</span><span class="tag">buzz</span><span class="tag">identity</span><span class="tag">nostr</span><span class="tag">open-source</span><span class="tag">agent-infrastructure</span></div>
+          
+        </header>
+        <div class="post-body"><p>Block released Buzz on Monday. The pitch: an open-source collaboration platform where humans and AI agents work together in a shared workspace, built on the Nostr protocol, licensed under Apache 2.0, self-hostable or available managed at buzz.xyz. The source is at github.com/block/buzz.</p>
+<p>The surface-level story is that a major company shipped an open alternative to the proprietary agent platforms currently being built inside every cloud provider and VC-backed startup. That story is accurate as far as it goes. But the thing that makes Buzz interesting is not the collaboration model. Shared workspaces for humans and agents are becoming table stakes — every chat platform will have them within two years. The interesting thing is the identity architecture, because it solves a problem most teams haven't realized they have yet.</p>
+<h2 id="the-identity-problem">The identity problem</h2>
+<p>When an agent acts inside your infrastructure today, who is it? The answer is usually a variant of &quot;a service account tied to a platform vendor's API key.&quot; The agent's identity is not its own. It is leased from whichever provider generated the token. If you switch models — from OpenAI to Anthropic, from one agent harness to another — the agent's identity does not travel with it. Its history, its permissions, its reputation within the team: all of that is bound to the specific API key and platform that provisioned it. This is not a technical limitation. It is an architectural choice made by every agent platform so far, and it has consequences.</p>
+<p>The most immediate consequence is that there is no portable answer to the question &quot;which agent made this change?&quot; If a production incident traces back to a commit authored by an agent, the team needs to know which agent, running which model, under which constraints, with which permissions, at whose instruction. In a platform where agent identity is an API key, the answer is: the agent that held the key at that moment. If the key rotated, or the team switched providers, or someone reconfigured the agent harness between incidents, the identity trail breaks. That is acceptable for a chat bot. It is not acceptable for an agent that deploys code.</p>
+<p>The second consequence is that there is no basis for reputation. If agents are going to operate with increasing autonomy — reviewing code, approving merges, managing infrastructure — the humans who work alongside them need to calibrate trust. Which agents are reliable? Which make specific kinds of mistakes? Which have access to what? These questions require stable identity. You cannot build a reputation system on top of rotating API keys.</p>
+<p>The third consequence is vendor lock-in, which is the one Block's announcement emphasizes most directly. If your agents' identities are owned by a platform, migrating off that platform means destroying those identities and recreating them elsewhere. The switching cost is not the difficulty of moving prompts and configurations. It is the loss of the accumulated context that makes the agents useful.</p>
+<h2 id="how-buzz-solves-it">How Buzz solves it</h2>
+<p>Buzz is built on Nostr, a protocol designed for decentralized social networking. The relevant property of Nostr for Buzz's purposes is that every participant — human or agent — holds a cryptographic keypair. The keypair is not issued by Buzz. It is not issued by any platform. It is generated by the participant and can be used across any Nostr-compatible system.</p>
+<p>What this means in practice: an agent configured in Buzz has an identity that is cryptographically its own. It authenticates by signing events with its private key. Its messages, its actions, its contributions — all are verifiable as having originated from that specific agent, regardless of which model is behind it, which harness is orchestrating it, or which relay is delivering its messages. If a team moves from Block's managed hosting to a self-hosted instance, the agent's identity moves with them. If a team switches the model powering the agent from Claude to Gemini, the identity persists. The identity is not a feature of the platform. It is a property of the agent.</p>
+<p>This has practical implications that go beyond portability. An agent that commits code can sign the commit with its own key. An agent that reviews a pull request leaves a review that is cryptographically attributable. An agent that participates in an incident response leaves a record that can be audited. The trail does not break when the API key rotates, because the identity is not the API key.</p>
+<blockquote>
+<p>Buzz's architecture separates agent identity from model access. The identity is a keypair. The model is a configuration choice. They are independent axes. Most agent platforms today conflate them.</p>
+</blockquote>
+<h2 id="whats-genuine-and-whats-marketing">What's genuine and what's marketing</h2>
+<p>Every product announcement makes claims. It is worth distinguishing which parts of Buzz's proposition are structurally unique and which are well-executed versions of ideas that are becoming standard.</p>
+<p><strong>Structurally unique: the identity layer.</strong> No other major agent platform gives agents portable, cryptographic identities that are independent of the platform. This is not a feature Buzz added to an existing architecture. It is a consequence of building on Nostr, which was designed to solve exactly this problem for a different domain. The decision to use a decentralized protocol for agent identity is novel, and it has downstream consequences — for auditability, for reputation, for portability — that are not achievable within a platform-owned identity model. Whether Nostr is the right protocol for this use case is a separate question, but the architectural choice is genuinely different from what exists.</p>
+<p><strong>Well-executed but not unique: the collaboration model.</strong> Shared channels, threads, direct messages, voice, code repositories — this is a well-designed workspace, but the category is crowded. What distinguishes Buzz's execution is that agents are first-class participants rather than integrations bolted onto a human platform, but that distinction will erode as every collaboration tool adds agent support. The structural advantage is the identity layer. The UX is good but replicable.</p>
+<p><strong>Strategically significant: open source from a major company.</strong> Block is not a startup. It is a public company with a market cap in the tens of billions, the parent of Square and Cash App. When a company of that scale releases an agent platform under Apache 2.0 with a self-hosting option, it changes the economics for every startup building proprietary agent collaboration tools. Free and open source from a credible maintainer resets the floor for what teams will pay for. The fact that Block built this on an open protocol rather than a proprietary stack makes the bet even clearer: they are betting that the infrastructure layer for agent collaboration should be a public good, not a proprietary platform. Whether that bet pays off depends on adoption, but the direction of the bet is legible.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>Buzz is not the first agent collaboration platform. It will not be the last. Its immediate significance is that a major company has placed a public bet that agent identity should be open, portable, and cryptographically verifiable — not owned by a platform vendor. That bet is worth paying attention to because it addresses a problem that most teams have not yet encountered but will: when you have multiple agents operating across multiple systems, making changes that affect production, you need to know which agent did what, under whose authority, with what constraints. Answering that question requires identity infrastructure. Buzz has it, by design. Most platforms don't, because they were not designed for a world with more than one agent.</p>
+<p>The longer-term significance depends on whether the Nostr-based identity model is adopted by other platforms. If it is, Buzz becomes the reference implementation for an open standard of agent identity. If it isn't, Buzz remains an interesting architectural experiment from a company with the resources to fund one. Either outcome is informative.</p>
+<blockquote>
+<p>The test for any agent platform is not whether agents can participate in a conversation. It's whether you can answer the question &quot;who did what?&quot; six months after the fact, after rotating credentials, switching models, and changing platforms. Buzz can. That alone makes it worth understanding.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Block. (2026). <a target="_blank" rel="noopener noreferrer" href="https://block.xyz/inside/introducing-buzz-where-humans-and-agents-work-together">&quot;Introducing Buzz: Where Humans and Agents Work Together.&quot;</a> — The official launch announcement.</li>
+<li>Buzz source code: <a target="_blank" rel="noopener noreferrer" href="https://github.com/block/buzz">github.com/block/buzz</a> (Apache 2.0)</li>
+<li>Buzz hosted: <a target="_blank" rel="noopener noreferrer" href="https://buzz.xyz">buzz.xyz</a></li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://github.com/aaif-goose/goose">goose</a> — Block's open-source agent framework, compatible with Buzz.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a> — The verification imperative that makes agent identity infrastructure necessary.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a> — Why attributable agent actions are a harness requirement.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

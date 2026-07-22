@@ -28,7 +28,13 @@ Thirty-five years later, in *The Design of Design*, he sharpened the claim to it
 
 This is not an argument against collaboration in implementation. It is an observation about how coherence enters a designed thing. Design does not parallelize. Every additional mind introduces new assumptions. Assumptions must be reconciled. Reconciliation produces compromise. Each compromise chips at coherence. "Many hands make light work — Often. But many hands make more work — Always." You can divide the labor of building. You cannot divide the labor of deciding what the thing is.
 
-Brooks's positive case is Reims Cathedral. Eight generations of architects — roughly two centuries — each submitting to the constraints of the original plan. The first architect's design had authority that outlived him. Hundreds of hands working across eight lifetimes produced a building that feels as though a single mind designed it. Reims should not exist. That it does is the evidence that the principle holds.
+Brooks's positive case is Reims Cathedral. Ground was broken in 1211. Structural work was completed by 1275, with decorative work continuing into the 1460s. Across those two and a half centuries, four master masons directed the construction: Jean d'Orbais, Jean-le-Loup, Gaucher of Reims, and Bernard de Soissons. Their names were inscribed in a labyrinth set into the nave floor — not merely as a signature, but as a public oath to a design larger than any single lifetime.
+
+![Reims Cathedral — four architects, two and a half centuries, one coherent result](/images/reims-cathedral.jpg)
+
+The coherence was not accidental. Reims was among the first buildings to use stones and materials of standardized sizes, which accelerated construction and reduced the opportunity for deviation between architects. The structural system — four-part rib vaults producing arcades of identical pillars rather than alternating designs — made the architectural rhythm self-enforcing. Once the pillar spacing and vault geometry were locked in, they dictated what followed. The original plan had mechanical authority, not just symbolic authority. Later architects could elaborate on the scheme. They could not alter it without breaking the structural logic.
+
+The result is a building where you cannot identify the seams between architects. The west façade exhibits what architectural historians describe as "an unusual unity of style." The transept roses and the façade roses show evolving Gothic fashion across the centuries — bar tracery giving way to full Rayonnant — but the evolution reads as variation within a theme, not competing visions. The whole speaks with one voice. The first architect's plan had authority that outlived him. His successors submitted to it. Reims should not exist. That it does is the evidence.
 
 ## The counter-example
 

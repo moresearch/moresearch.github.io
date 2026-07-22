@@ -30,7 +30,11 @@ Brooks's positive case is Reims Cathedral. Eight generations of architects, each
 
 ![The Pentagon Wars (1998) — the Bradley Fighting Vehicle: 17 years, $14 billion, satisfied every stakeholder and no user](/images/pentagon-wars.jpg)
 
-The counter-example is the Bradley Fighting Vehicle, immortalized in the 1998 HBO film *The Pentagon Wars*. The Bradley began as a light troop carrier. Over 17 years and $14 billion, armor advocates, infantry commanders, generals, and contractors each added requirements. Every request was defensible in isolation. Accumulated, they produced what the film calls "a bulky tank-like vehicle poorly suited to its original role."
+The counter-example is the Bradley Fighting Vehicle, immortalized in the 1998 HBO film *The Pentagon Wars*. The Bradley began as a light troop carrier. Over 17 years and $14 billion, armor advocates, infantry commanders, generals, and contractors each added requirements. Every request was defensible in isolation. Accumulated, they produced a vehicle that the film's Sergeant Fanning describes with the precision of a man who has spent years watching the disaster unfold:
+
+> "A troop transport that can't carry troops, a reconnaissance vehicle that's too conspicuous to do reconnaissance, and a quasi-tank that has less armor than a snowblower, but has enough ammo to take out half of D.C."
+
+Each clause in that sentence is a stakeholder requirement that was reasonable on its own. Together they describe a machine that does nothing well because it was asked to do everything.
 
 Testing was manipulated. Officers who rigged results were promoted. The whistleblower who forced an honest test — Lt. Colonel James Burton — was forced into retirement.
 
@@ -49,12 +53,6 @@ Brooks didn't just name the property. On System/360, he, Gene Amdahl, and Gerrit
 - **Protection from organizational forces.** Field sales, engineering, and customers all had legitimate demands on System/360. The architecture team was shielded from them. Each demand was reasonable. Accommodating all of them would have destroyed the system's coherence.
 
 - **Career paths that reward saying no.** In most organizations, "yes" gets promoted. Saying no costs political capital. If the incentive structure punishes coherence, coherence will not occur. *The Pentagon Wars* is the proof: the saboteurs were promoted, the honest officer was purged.
-
-## The bridge
-
-Sean Cooper, in the comments on Ray's post, distinguished between taste as "fast orientation" and taste as final judgment. The senior engineer's "this feels wrong" is real — it compresses decades of pattern recognition into a moment. But it must be converted into evidence: name the specific way this change breaks coherence, articulate the heuristic it violates, demonstrate the downstream consequences.
-
-> Fast orientation is not the argument. It is the reason to start looking for one. Conceptual integrity is the standard the argument is measured against.
 
 ## Why this matters now
 

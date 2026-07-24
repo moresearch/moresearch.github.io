@@ -10,6 +10,8 @@ In January 2026, Anthropic shipped Claude Cowork — a desktop AI agent that cou
 
 Six months later, Andrew Ng released OpenWorker. It is not a weekend clone. It is a fully architected open-source desktop agent, MIT-licensed, with twenty-five tool integrations, four pre-built personas, a local Python agent engine, a Tauri desktop shell, and a unified LLM library called aisuite underneath. It runs on macOS and Windows. It ships as a signed, notarized DMG with auto-update. It is free. You bring your own API keys. Your data stays on your machine.
 
+![OpenWorker — open-source desktop AI agent by Andrew Ng. MIT licensed. Local-first. Model-agnostic.](/images/openworker-og.png)
+
 > OpenWorker is not an answer to Claude Cowork. It is an answer to the question of whether the desktop agent layer will be owned by model providers or by users. The question is not settled. OpenWorker is the strongest argument yet for the user's side.
 
 ## What it is
@@ -18,9 +20,13 @@ OpenWorker is a desktop application that takes a desired outcome — "prepare a 
 
 The workflow has four steps: the user states an outcome; the system decomposes the request into steps and works across the user's files, terminal, and connected tools; it pauses for approval before any consequential action (sending, writing, shell execution); and it delivers finished work.
 
+![How OpenWorker works — from outcome to deliverable, with approval gates before any consequential action](/images/openworker-how-it-works.png)
+
 The architecture is layered. At the top, a Tauri shell wraps a React interface — a native desktop application with local state. In the middle, a Python agent server handles the agent loop, tool execution, model dispatch, and MCP connections. At the bottom are the local resources: the user's files, terminal, model API keys, and OAuth tokens for twenty-five external services, all stored in the local secret store.
 
-The engine is built on **aisuite**, Ng's open-source Python library that provides a unified chat-completions API across every major LLM provider — OpenAI, Anthropic, Google, DeepSeek, Mistral, Grok, and more — plus fully local models through Ollama. aisuite is twelve thousand lines of the kind of unglamorous infrastructure code that makes everything else possible. It normalizes provider differences, handles tool calling with automatic schema generation, supports MCP servers natively, and provides agent toolkits for files, git, and shell. OpenWorker inherits all of this. The provider string `anthropic:claude-sonnet-4-6` works the same as `openai:gpt-4o` works the same as `ollama:llama3`. The user switches models mid-conversation if they want. The agent does not care.
+The engine is built on [**aisuite**](https://github.com/andrewyng/aisuite), Ng's open-source Python library that provides a unified chat-completions API across every major LLM provider — OpenAI, Anthropic, Google, DeepSeek, Mistral, Grok, and more — plus fully local models through [Ollama](https://ollama.com/). aisuite is twelve thousand lines of the kind of unglamorous infrastructure code that makes everything else possible. It normalizes provider differences, handles tool calling with automatic schema generation, supports [MCP](https://modelcontextprotocol.io/) servers natively, and provides agent toolkits for files, git, and shell. OpenWorker inherits all of this. The provider string `anthropic:claude-sonnet-4-6` works the same as `openai:gpt-4o` works the same as `ollama:llama3`. The user switches models mid-conversation if they want. The agent does not care.
+
+![OpenWorker desktop — model settings panel showing provider selection and configuration](/images/openworker-ui-4.png)
 
 ## The personas
 
@@ -31,7 +37,11 @@ OpenWorker ships with four pre-configured personas, each with specific tool conn
 - **Marketing**: Connected to HubSpot, GA4, and Slack. Tracks campaign performance, attributes spend, produces structured reports. The analytics assembly work that marketing teams either do poorly or pay consultants to do adequately.
 - **Ops On-call**: Connected to Slack, PagerDuty, and GitHub. Inspects recent deploys, cross-references runbooks, drafts incident timelines, proposes rollback actions. The first fifteen minutes of incident response, automated.
 
+![OpenWorker persona selection — four pre-configured coworker roles with specific tool connections](/images/openworker-ui-2.png)
+
 Each persona is a configuration, not a separate product. The persona system is extensible — users define their own with the same skill and tool definitions the built-in personas use. The personas are interesting not because they are good but because they are explicit. They name the domains where an AI agent operating across tools produces more value than an AI chatbot operating in a text window. Sales, scheduling, marketing analytics, incident response. The common thread is cross-tool synthesis. Each persona's value comes from the fact that the information needed to do the job lives in three different applications, and a human currently does the integration manually.
+
+![OpenWorker connectors — 25+ integrations spanning email, calendar, CRM, project management, and development tools](/images/openworker-ui-3.png)
 
 > The personas are not the product. They are demonstrations of the thesis. The thesis is that work which requires integrating information across tools — Slack plus calendar plus email plus CRM — is work an agent can do faster than a human, provided the agent can reach the tools. The open question is whether the integration surface stays open.
 
@@ -45,17 +55,19 @@ OpenWorker's architecture encodes decisions that are easy to get wrong. Each is 
 
 **Approval-gated.** Any action that writes, sends, or executes requires explicit user approval. The agent checks in before sending an email, posting to Slack, modifying a calendar, or running a shell command. For scheduled automations that run unattended, approval requests are parked in an inbox rather than executed autonomously. The approval gate is a design pattern, not a feature. It separates the agent into two modes: research and drafting (autonomous, safe) and execution (gated, human-in-the-loop). The pattern is not novel — it is the architecture every production agent system converges on — but shipping it as a default rather than an afterthought is a statement about what kind of agent this is.
 
-**MCP-native.** Any tool reachable via the Model Context Protocol can be plugged into OpenWorker with per-tool access control. This means the integration surface is not limited to the twenty-five connectors Ng's team built. Any MCP server — filesystem, database, API wrapper, proprietary internal tool — becomes an OpenWorker tool. MCP is the USB-C of agent-tool interfaces. OpenWorker treats it as a first-class citizen because the bet is that the tool ecosystem will grow faster than any single team can integrate, and the agent that can reach the most tools wins.
+**MCP-native.** Any tool reachable via the [Model Context Protocol](https://modelcontextprotocol.io/) can be plugged into OpenWorker with per-tool access control. This means the integration surface is not limited to the twenty-five connectors Ng's team built. Any MCP server — filesystem, database, API wrapper, proprietary internal tool — becomes an OpenWorker tool. MCP is the USB-C of agent-tool interfaces. OpenWorker treats it as a first-class citizen because the bet is that the tool ecosystem will grow faster than any single team can integrate, and the agent that can reach the most tools wins.
+
+![OpenWorker full desktop view — chat-driven outcome delivery with multi-tool context](/images/openworker-ui-5.png)
 
 ## The competitive landscape
 
 OpenWorker enters a field that has been forming rapidly since the beginning of 2026. Three positions are now visible:
 
-**Claude Cowork** (Anthropic, January 2026): The first mover. A desktop agent wrapped around Claude Code, aimed at non-technical knowledge workers. $100 per month, tied to Anthropic's models. The simplest experience. The most constrained: no model choice, no Slack integration, no scheduled automations. Activity is excluded from Anthropic's Compliance API, which makes it problematic for regulated organizations. The bet is that most users want the simplest thing and will pay for it.
+**Claude Cowork** (Anthropic, January 2026): The first mover. A desktop agent wrapped around Claude Code, aimed at non-technical knowledge workers. $100 per month as part of the [Max subscription](https://www.anthropic.com/pricing), tied to Anthropic's models. The simplest experience. The most constrained: no model choice, no Slack integration, no scheduled automations. Activity is excluded from Anthropic's [Compliance API](https://docs.anthropic.com/en/docs/build-with-claude/audit-logs), which makes it problematic for regulated organizations. The bet is that most users want the simplest thing and will pay for it.
 
-**Codex Desktop** (OpenAI, February 2026): The enterprise play. Multi-agent orchestration with sandboxed parallel execution, an in-app browser, and admin-enforced policies that users cannot weaken. Covered by OpenAI's Compliance API. Tied to OpenAI models. The bet is that organizations with compliance requirements will pay a premium for auditability and centralized control.
+**Codex Desktop** (OpenAI, February 2026): The enterprise play. Multi-agent orchestration with sandboxed parallel execution, an in-app browser, and admin-enforced policies that users cannot weaken. Covered by OpenAI's [Compliance API](https://platform.openai.com/docs/guides/compliance). Built on the open-source [Codex CLI](https://github.com/openai/codex) (Apache 2.0). Tied to OpenAI models. The bet is that organizations with compliance requirements will pay a premium for auditability and centralized control.
 
-**OpenWorker** (Andrew Ng, July 2026): The open play. Free, MIT-licensed, model-agnostic, local-first. Adds capabilities neither proprietary option offers: Slack triggers, scheduled automations, cross-tool personas. The bet is that a sufficient number of users and organizations want an agent they control, running on their machines, with their keys, connected to their tools, and modifiable at the source level.
+**OpenWorker** (Andrew Ng, July 2026): The open play. Free, MIT-licensed, model-agnostic, local-first. Adds capabilities neither proprietary option offers: Slack triggers, scheduled automations, cross-tool personas, full MCP extensibility. Available on [GitHub](https://github.com/andrewyng/openworker), [openworker.com](https://openworker.com/), and [Product Hunt](https://www.producthunt.com/products/openworker). The bet is that a sufficient number of users and organizations want an agent they control, running on their machines, with their keys, connected to their tools, and modifiable at the source level.
 
 > The fork is between the platform model and the tool model. In the platform model, the agent is a service you subscribe to. The provider chooses the model, stores the state, and sets the terms. In the tool model, the agent is software you run. You choose the model, you store the state, and the terms are the MIT license. OpenWorker is the tool model's most serious entry.
 
@@ -63,9 +75,9 @@ The fork is not hypothetical. It is the same fork that played out between Google
 
 ## The Ng variable
 
-Andrew Ng's involvement changes the dynamics. Ng co-founded Coursera, founded Google Brain, was chief scientist at Baidu, and now runs DeepLearning.AI. He is the most effective educator in the history of machine learning. His courses have trained more AI practitioners than any other resource. When Ng releases an open-source project, it gets distribution through his network in a way that a random GitHub repo does not. aisuite has twelve thousand stars. OpenWorker will likely surpass that.
+Andrew Ng's involvement changes the dynamics. Ng co-founded Coursera, founded Google Brain, was chief scientist at Baidu, and now runs [DeepLearning.AI](https://www.deeplearning.ai/). He is the most effective educator in the history of machine learning. His courses have trained more AI practitioners than any other resource. When Ng releases an open-source project, it gets distribution through his network in a way that a random GitHub repo does not. [aisuite](https://github.com/andrewyng/aisuite) has twelve thousand stars. OpenWorker will likely surpass that.
 
-Ng's strategic pattern is visible: build infrastructure (aisuite), then build applications on top of it (OpenWorker). The infrastructure is a unified LLM interface that abstracts providers. The application is a desktop agent that uses the infrastructure. Both are MIT-licensed. Both are model-agnostic. Both are designed to be forked, modified, and embedded. The pattern is not "build a product and charge for it." The pattern is "build a commons and let an ecosystem form around it."
+Ng's strategic pattern is visible: build infrastructure ([aisuite](https://github.com/andrewyng/aisuite)), then build applications on top of it (OpenWorker). The infrastructure is a unified LLM interface that abstracts providers. The application is a desktop agent that uses the infrastructure. Both are MIT-licensed. Both are model-agnostic. Both are designed to be forked, modified, and embedded. The pattern is not "build a product and charge for it." The pattern is "build a commons and let an ecosystem form around it."
 
 > Ng's bet is that the desktop agent layer will be won by the most open option, not the most polished one. It is the same bet he made with Coursera — that open access beats gated access over a long enough time horizon. The bet has paid out before. It may again.
 
@@ -87,9 +99,12 @@ OpenWorker matters for four reasons, none of which depend on whether it succeeds
 
 **References:**
 
-- Ng, A., & Prasad, R. (2026). [OpenWorker](https://openworker.com/) — open-source desktop AI agent, MIT license. GitHub: [github.com/andrewyng/openworker](https://github.com/andrewyng/openworker)
-- Ng, A. (2025). [aisuite](https://github.com/andrewyng/aisuite) — Simple, unified interface to multiple Generative AI providers. MIT license. The infrastructure layer under OpenWorker, providing unified chat-completions, agent toolkits, and MCP support across all major LLM providers.
-- Anthropic (2026). Claude Cowork — proprietary desktop AI agent, included in Max subscription at $100/month. The first mover in the category.
-- OpenAI (2026). Codex Desktop — proprietary desktop agent with sandboxed multi-agent orchestration and enterprise compliance controls. Built on the open-source Codex CLI (Apache 2.0).
-- different-ai (2026). [OpenWork](https://github.com/different-ai/openwork) — an earlier open-source Cowork alternative, built in 48 hours, later developed into a full product. YC-backed. MIT license. Distinct from Ng's OpenWorker.
-- Model Context Protocol (MCP). Anthropic's open standard for connecting AI agents to external tools and data sources. OpenWorker, aisuite, Claude Code, and Codex all support it. The convergence on MCP as the agent-tool interface is one of the underappreciated developments of 2025–2026.
+- Ng, A., & Prasad, R. (2026). [OpenWorker](https://openworker.com/) — open-source desktop AI agent, MIT license. [GitHub: andrewyng/openworker](https://github.com/andrewyng/openworker). [Product Hunt](https://www.producthunt.com/products/openworker). [Downloads](https://download.openworker.com/mac) (macOS Apple Silicon) and [Windows](https://download.openworker.com/windows).
+- Ng, A. (2025). [aisuite](https://github.com/andrewyng/aisuite) — Simple, unified interface to multiple Generative AI providers. MIT license. 12,000+ GitHub stars. The infrastructure layer under OpenWorker: unified chat-completions API, agent toolkits (files, git, shell), native MCP support, provider abstraction across OpenAI, Anthropic, Google, AWS Bedrock, Mistral, DeepSeek, Ollama, and more.
+- Anthropic (2026). [Claude Cowork](https://www.anthropic.com/) — proprietary desktop AI agent, included in [Max subscription](https://www.anthropic.com/pricing) at $100/month. The first mover in the category. Note: Cowork activity is not covered by the [Anthropic Compliance API](https://docs.anthropic.com/en/docs/build-with-claude/audit-logs).
+- OpenAI (2026). [Codex Desktop](https://openai.com/) — proprietary desktop agent with sandboxed multi-agent orchestration, enterprise compliance controls, and in-app browser. Built on the open-source [Codex CLI](https://github.com/openai/codex) (Apache 2.0). Covered by [OpenAI Compliance API](https://platform.openai.com/docs/guides/compliance).
+- different-ai (2026). [OpenWork](https://github.com/different-ai/openwork) — open-source Cowork alternative, originally built in 48 hours after Cowork's launch, later developed as a full product. [YC-backed](https://www.ycombinator.com/companies/openwork). MIT license. Distinct from Ng's OpenWorker — note the spelling.
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — Anthropic's open standard for connecting AI agents to external tools and data sources. [Specification](https://spec.modelcontextprotocol.io/). OpenWorker, aisuite, Claude Code, and Codex CLI all support it natively.
+- [Ollama](https://ollama.com/) — run LLMs locally. OpenWorker supports fully local operation via Ollama, with no API keys or network calls required for inference.
+- Jamilxt (2026). ["Andrew Ng's OpenWorker: An Open-Source Desktop AI Agent."](https://dev.to/jamilxt/andrew-ngs-openworker-an-open-source-desktop-ai-agent-3bnk) dev.to. Early community coverage with architecture breakdown.
+- [OpenWorker localization (zh-CN)](https://github.com/simonlin000/openworker-zh-CN) — community Chinese translation, with additional UI screenshots.

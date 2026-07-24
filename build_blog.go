@@ -463,7 +463,7 @@ var (
     }
 
     .post-body img {
-      width: min(240px, 100%);
+      width: min(720px, 100%);
       margin: 28px 0 10px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;

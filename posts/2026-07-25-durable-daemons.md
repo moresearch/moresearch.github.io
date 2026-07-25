@@ -2,19 +2,36 @@
 title: Durable Daemons
 date: 2026-07-25
 slug: durable-daemons
-summary: The daemon is the natural form factor for AI agents — persistent, stateful, autonomous. We have the BSD tradition, the survey paper, and the durable execution runtimes. What we don't have yet is the discipline to build daemons that survive crashes, remember their commitments, and earn their keep. The economic case is not subtle: an AI daemon that forgets costs more than one that doesn't.
-tags: daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
+summary: This post coins the term "durable daemons" — AI agents that persist across sessions, accumulate state, act autonomously, and survive process boundaries. We define the term, trace its lineage from Maxwell's demon through BSD's Beastie to the always-on agent literature, and argue that durable execution runtimes (DBOS, Temporal) are the missing infrastructure layer. The economic case is not subtle: a daemon that forgets its commitments costs more than one that doesn't.
+tags: daemons, durable-daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
 ---
 
 In 1976, Richard Stallman's ITS operating system at MIT had a program called DAEMON — a background process that watched for new files, woke up when it found them, and performed an action. The name came from Maxwell's demon, a thought experiment in thermodynamics: an imaginary being that sits between two chambers, observes molecules, and selectively opens a gate. The demon does not create energy. It uses information to direct it. The operating system daemon operates the same way. It waits. It observes. It acts on what it observes. It is persistent, stateful, and autonomous within its narrow domain.
 
 John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you `ps aux | grep`. The AI era fills your workflow with daemons you delegate to.
 
+## Coining the term: what is a durable daemon?
+
+We are introducing the term **durable daemon** in this post. It needs a precise definition, because without one the phrase is just vibe. Here it is.
+
+> A **durable daemon** is an AI agent that satisfies four conditions:
+>
+> 1. **Persistence.** It runs across sessions, not as a one-shot request-response loop. Its process may restart, but its identity and accumulated state survive.
+> 2. **Stateful memory.** Its future behavior depends on durable state accumulated across earlier interactions — not just a vector database of past chats, but task ledgers, commitments, permissions, provenance records, and trigger conditions.
+> 3. **Autonomous action.** It acts on its state without being prompted. It maintains queues, watches conditions, fires triggers, makes commitments, and discharges them. It is not a tool the user invokes. It is a process that invokes itself when its state crosses a threshold.
+> 4. **Crash-proof execution.** Its workflows survive process death, machine reboot, and database failover. Completed steps are never re-executed. In-flight steps resume from the last checkpoint. Its decisions leave an audit trail by construction.
+>
+> Conditions 1–3 describe what a daemon *is*. Condition 4 is what makes it *durable*. An AI agent that satisfies 1–3 but not 4 is an always-on agent. An AI agent that satisfies all four is a durable daemon.
+
+Why coin a new term? Because the thing we are building does not have a name. "Always-on agent" (from Ding et al.) captures persistence and state but says nothing about crash recovery or auditability. "AI agent" is too broad — it includes stateless chatbots. "Daemon" alone is too narrow — it means a Unix background process with a PID file and a config in `/etc`. We need a term that captures the synthesis: the Unix daemon's persistence and autonomy, married to the AI agent's learned state and reasoning, grounded on the durable execution runtime that keeps it alive. That term is *durable daemon*.
+
+The rest of this post justifies the definition. We trace the lineage — Maxwell's demon, BSD's Beastie, the always-on agent survey — and then we argue that durable execution is the missing layer that turns an always-on agent into a durable daemon.
+
 Almost fifty years later, the daemon metaphor is re-emerging in a new substrate. In June 2026, a survey by Ding, Nannapaneni, Liu, and Zhang — [*Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents*](https://arxiv.org/abs/2606.30306) — mapped 435 papers into the first systematic taxonomy of what happens when LLM-based agents stop being one-shot tools and become persistent, stateful processes. The paper does not use the word *daemon*. It does not need to. The thing it describes is a daemon. (I covered the paper's framework in detail [here](https://blog.hackspree.com/#always-on-agents).)
 
 ![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for the cover of The Design and Implementation of the 4.3BSD Operating System. The trident symbolizes the fork(2) system call. The tennis shoes are unexplained but perfect.](/images/bsd-daemon-medium.gif)
 
-> Always-on agents are AI daemons with memory. The memory is the difference. A traditional daemon's state is configuration and connection state — small, explicit, bounded. An AI daemon's state is everything it has ever seen, inferred, decided, or been told. The surface area for error expands with the state. The economic consequences expand with it.
+> An always-on agent is a daemon with memory. A durable daemon is an always-on agent that cannot be killed by a deploy. The memory is the difference between a daemon and a service. The durability is the difference between a daemon and a reliable one.
 
 ## The BSD daemon as cultural artifact
 
@@ -44,15 +61,15 @@ The reason FreeBSD kept the daemon is not nostalgia. It is that the daemon captu
 
 This is also the paper's definition of an always-on agent: a system "whose future behavior depends on durable state accumulated across earlier interactions." An AI daemon is an always-on agent. Not a chatbot. Not a tool you invoke. A process that persists, remembers, and acts.
 
-## The paper, briefly
+## The paper, briefly: conditions 1–3 are mapped
 
 I wrote about the Ding et al. survey [at length in July](https://blog.hackspree.com/#always-on-agents). The short version: across 435 papers, the research concentrates on accumulating and retrieving state. Governance, recovery, and forgetting are neglected. The authors provide six diagnostic axes for reasoning about agent state — Authority, Scope, Mutability, Provenance, Recoverability, Actionability — and a lifecycle (write, validate, organize, retrieve, act, update, forget, audit, rollback). The headline finding is that we are good at making agents remember and bad at governing what they remember. The governance gap is where the risk lives.
 
-For this post, the point is simpler. The paper describes AI daemons without using the word. The diagnostic axes are a daemon design checklist. The lifecycle is what every daemon must do with its state. And the governance gap — the neglected work of auditing, recovering, and forgetting — is exactly the work that durable execution runtimes are built to handle.
+For this post, the point is simpler. The paper maps conditions 1–3 without using the word *daemon*. The six diagnostic axes are a daemon design checklist. The state lifecycle is what every daemon must do with its memory. And the governance gap — the neglected work of auditing, recovering, and forgetting — is exactly the work that condition 4 exists to handle. The paper describes what must be governed. Durable execution provides the substrate on which governance can be built.
 
-## Durable execution: what AI daemons actually need
+## Durable execution: condition 4, the missing layer
 
-The paper identifies the problems. It does not prescribe the runtime. But there is an emerging class of infrastructure that directly addresses the durability requirements the paper lays out — not from the AI research community, but from the database and distributed systems community. It is called *durable execution*.
+The paper identifies the problems — it maps conditions 1–3 thoroughly. It does not prescribe the runtime for condition 4. But there is an emerging class of infrastructure that directly provides it — not from the AI research community, but from the database and distributed systems community. It is called *durable execution*.
 
 The idea is simple. When a function executes as a durable workflow, every step is checkpointed to a durable store — typically Postgres. If the process crashes mid-workflow, the system recovers by reading the last successful checkpoint and resuming from that point. Completed steps are never re-executed. The workflow survives process death, machine reboot, and database failover.
 
@@ -76,17 +93,19 @@ The second economic advantage is less obvious but potentially larger: auditabili
 
 ### Which one?
 
-DBOS is the library answer: add a dependency, annotate your functions, own your data by default. Temporal is the platform answer: polyglot workers, massive fan-outs, month-long workflows, Stripe-scale maturity. Both are better than the status quo — agents running as stateless request-response loops with ad-hoc persistence bolted on. The choice between them matters less than the choice to use durable execution at all.
+DBOS is the library answer: add a dependency, annotate your functions, own your data by default. Temporal is the platform answer: polyglot workers, massive fan-outs, month-long workflows, Stripe-scale maturity. Both are better than the status quo — agents running as stateless request-response loops with ad-hoc persistence bolted on. The choice between them matters less than the choice to satisfy condition 4 at all. Without it, you have an always-on agent. With it, you have a durable daemon.
 
-> An AI daemon that forgets its commitments is worse than no daemon at all. The user who cannot trust the daemon to remember what it promised will stop delegating to it. Unreliable memory is a negative feature — it creates work rather than removing it.
+> A durable daemon that forgets its commitments is worse than no daemon at all. The user who cannot trust the daemon to remember what it promised will stop delegating to it. Condition 4 — crash-proof execution — is not a luxury. It is what separates a daemon you can rely on from one you cannot.
 
-## The daemon layer
+## The durable daemon layer
 
-The first generation of AI agents were stateless: prompt in, response out, no memory between calls. The second generation added retrieval: find relevant documents, ground responses in provided context. The third generation — the one the Ding et al. survey maps — adds persistence: the agent maintains state across interactions, learns from it, acts on it. The fourth generation will add durability: state that survives process boundaries, decisions that leave audit trails, commitments that are recoverable, failures that are compensatable.
+The first generation of AI agents were stateless: prompt in, response out, no memory between calls. The second generation added retrieval: find relevant documents, ground responses in provided context. The third generation — the one the Ding et al. survey maps — added persistence: the agent maintains state across interactions, learns from it, acts on it. Those are conditions 1–3. They describe an always-on agent. They do not describe a durable daemon.
 
-Each generation reduces the distance between what an agent is and what a daemon has always been. The AI daemon is persistent, watchful, autonomous — just like Beastie. But unlike Beastie, whose state was a configuration file and a connection table, the AI daemon's state is everything it has ever seen. The durability problem is qualitatively different. Durable execution is the first infrastructure layer built to handle it.
+The fourth generation adds condition 4: durability. State survives process boundaries. Decisions leave audit trails. Commitments are recoverable. Failures are compensatable. The agent does not just persist — it cannot be killed by a deploy, a crash, or an autoscaling event. It is crash-proof. When all four conditions hold, we have a durable daemon.
 
-Beastie, in his tennis shoes and grin, has been running in the background since 1976. The new daemons are larger, smarter, and stranger. They need better foundations. DBOS and Temporal are the beginning of those foundations — not the whole answer, but the part that ships.
+Each generation reduces the distance between what an agent is and what a Unix daemon has always been. Beastie was persistent, watchful, autonomous. But his state was a configuration file and a connection table. The durable daemon's state is everything it has ever seen, inferred, committed to, or been told. The durability problem is qualitatively different. Durable execution — DBOS, Temporal, and whatever comes next — is the first infrastructure layer built to handle it. It is condition 4, made real.
+
+Beastie, in his tennis shoes and grin, has been running in the background since 1976. The durable daemons are larger, smarter, and stranger. They need the definition. They need the foundations. This post gives them the first. DBOS and Temporal give them the second.
 
 ---
 

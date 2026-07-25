@@ -12,7 +12,7 @@ John Carmack filled DOOM with daemons you shoot. Unix filled the background with
 
 Almost fifty years later, the daemon metaphor is re-emerging in a new substrate. In June 2026, a survey by Ding, Nannapaneni, Liu, and Zhang — [*Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents*](https://arxiv.org/abs/2606.30306) — mapped 435 papers into the first systematic taxonomy of what happens when LLM-based agents stop being one-shot tools and become persistent, stateful processes. The paper does not use the word *daemon*. It does not need to. The thing it describes is a daemon. (I covered the paper's framework in detail [here](https://blog.hackspree.com/#always-on-agents).)
 
-![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for the cover of The Design and Implementation of the 4.3BSD Operating System. The trident symbolizes the fork(2) system call — the daemon's essential act of creation. The tennis shoes are unexplained but perfect.](/images/beastie.png)
+![FreeBSD logo — the operating system that kept the daemon tradition alive. Beastie, the BSD Daemon drawn by John Lasseter in 1988, remained the official project mascot even after this modern wordmark was introduced in 2005.](/images/freebsd-logo.svg)
 
 > Always-on agents are AI daemons with memory. The memory is the difference. A traditional daemon's state is configuration and connection state — small, explicit, bounded. An AI daemon's state is everything it has ever seen, inferred, decided, or been told. The surface area for error expands with the state. The economic consequences expand with it.
 

@@ -2,7 +2,7 @@
 title: Durable Daemons
 date: 2026-07-25
 slug: durable-daemons
-summary: The daemon is the natural form factor for AI agents — persistent, stateful, autonomous. I have the BSD tradition, the survey paper, and the durable execution runtimes. What we don't have yet is the discipline to build daemons that survive crashes, remember their commitments, and earn their keep. The economic case is not subtle: an AI daemon that forgets costs more than one that doesn't.
+summary: The daemon is the natural form factor for AI agents — persistent, stateful, autonomous. We have the BSD tradition, the survey paper, and the durable execution runtimes. What we don't have yet is the discipline to build daemons that survive crashes, remember their commitments, and earn their keep. The economic case is not subtle: an AI daemon that forgets costs more than one that doesn't.
 tags: daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
 ---
 
@@ -20,7 +20,7 @@ Almost fifty years later, the daemon metaphor is re-emerging in a new substrate.
 
 The daemon concept acquired its cultural form through BSD Unix, but the story is weirder and better than most people know. It involves a locksmith, a Pixar founder, and a near-loss of the intellectual property to "a certain large company."
 
-I love BSD over Linux for one reason that matters here: BSD is designed as a whole system — one source tree, one team, one coherent design — and its daemons are first-class citizens of that design, not afterthoughts assembled from separate projects by a distribution maintainer.
+We love BSD over Linux for one reason that matters here — we being the hackers, the daemon-writers, the ones who still read man pages: BSD is designed as a whole system, one source tree, one team, one coherent design, and its daemons are first-class citizens of that design, not afterthoughts assembled from separate projects by a distribution maintainer.
 
 ### The etymology
 

@@ -32,7 +32,13 @@ That term is *durable daemon*.
 
 ## The stairway
 
-Fred Brooks: the most important quality of a system is *conceptual integrity*. One design voice. Every part consistent with every other. A **durable daemon** has that integrity. Four conditions. Each necessary. Together sufficient. Each is a step up from the trap.
+First, a distinction. *Agent* is the broad category: any AI system that perceives and acts. A chatbot is an agent. A tool-calling LLM is an agent. A daemon is an agent. A durable daemon is an agent. The word is a superset, not a synonym.
+
+*Daemon* is the subset. Not all agents are daemons. A daemon satisfies three conditions: it persists across sessions, its future behavior depends on accumulated state, and it acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them — always-on agents are daemons by our definition, whether the paper uses the word or not.
+
+*Durable daemon* is the subset of daemon that also satisfies condition 4. Agent ⊃ Daemon ⊃ Durable Daemon.
+
+Now the conditions. Fred Brooks: the most important quality of a system is *conceptual integrity*. One design voice. Every part consistent with every other. A **durable daemon** has that integrity. Four conditions. Each necessary. Together sufficient. Each is a step up from the trap.
 
 **Step 1: Persistence.** Identity and state survive restarts. The agent is a process, not a function call. This escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.
 
@@ -44,7 +50,9 @@ Fred Brooks: the most important quality of a system is *conceptual integrity*. O
 
 Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has had agency since 1975: perceive, decide, act, repeat. A durable daemon inherits that loop. Adds learned state. Probabilistic reasoning. Higher-level actions. Same structure. Agency is not discovered. It is designed. The four conditions are the design.
 
-> Steps 1–3 = a daemon. Step 4 = durable. Three steps give you an agent that persists, remembers, acts. The fourth gives you an agent that cannot be killed by a deploy.
+Does this thesis hold? Each condition removes a specific class of failure that the problem section described. Step 1 removes stateless amnesia. Step 2 removes shallow memory — the agent knows what it promised and why. Step 3 removes inertness — the agent acts before you ask. Step 4 removes fragility — the agent survives the deploy. Without any one condition, the stairway collapses. A daemon without step 4 wakes up amnesiac after a crash. An agent without step 3 is a knowledgeable tool, not a daemon. An agent without step 2 is a persistent chatbot. An agent without step 1 is not an agent at all in any meaningful sense — it is a function call. The conditions are individually necessary and jointly sufficient. That is what conceptual integrity means. And that is why the stairway holds.
+
+> Agent ⊃ Daemon ⊃ Durable Daemon. Three steps give you a daemon. The fourth gives you a durable one — an agent that cannot be killed by a deploy.
 
 ## Durable execution: step 4 in practice
 

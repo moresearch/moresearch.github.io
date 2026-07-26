@@ -67,6 +67,20 @@ Both Temporal and DBOS beat the status quo: stateless request-response loops wit
 
 > A durable daemon that forgets its commitments is worse than no daemon. Condition 4 is not a luxury. It's what separates a daemon you can rely on from one you cannot.
 
+### The quant trading case
+
+Quantitative trading is the stress-test for all four conditions simultaneously. A trading daemon runs 24/7 across market sessions, accumulating state that cannot be lost: open positions, pending orders, realized P&L, risk exposure, strategy parameters that drift-adapt to regime change. It acts autonomously — firing orders when a signal crosses a threshold, with no human in the loop. The latency budget is measured in microseconds for some strategies, seconds for others. And the failure modes are denominated in dollars.
+
+A trading daemon that crashes between deciding to place an order and confirming it was placed has an unknown position. Did the order reach the exchange? Is the daemon flat or exposed? The only safe recovery is to query the exchange, reconcile positions, and resume — a manual process that takes minutes in a domain where minutes cost money. A durable trading daemon checkpoints the decision *before* placing the order and checkpoints the exchange confirmation *after*. On recovery, it replays the last checkpoint and knows exactly where it stands. No reconciliation needed. No unknown exposure.
+
+The exactly-once requirement is existential. Double-sending an order is not a duplicate email — it's a position error that can lose real capital. All durable execution systems guarantee exactly-once within their control boundary. External calls (to exchange APIs) still require idempotency keys — if the daemon checkpoints after deciding to place an order, sends it, and crashes before checkpointing the confirmation, the order fires again on recovery. The exchange's idempotency key deduplicates it. This combination — durable execution for internal state, idempotency keys for external effects — is the standard pattern. It works. Almost no AI agent deployments use it.
+
+The audit requirement is inescapable. Every order, every position change, every risk limit breach must be traceable to a decision, which must be traceable to the state the daemon held at the time. Regulators (SEC, CFTC, FCA, ESMA) do not accept "the model decided" as an explanation. They accept checkpointed state, provenance chains, and deterministic replay. Durable execution produces all three as a byproduct of normal operation. A trading daemon running on DBOS or Temporal is pre-audited by construction. Building that audit trail by hand, across a distributed system with hundreds of concurrent strategies, is not merely expensive — it is operationally impossible at the latency budget trading requires.
+
+The economic case is the sharpest of any domain. A trading operation running fifty strategies as durable daemons, each managing a book, is running fifty concurrent stateful workflows that must never drop a step. The cost of a single duplicated order in a mid-frequency strategy can exceed the annual infrastructure budget for the entire daemon fleet. Condition 4 is not a nice-to-have. It is a precondition for turning on the daemon at all.
+
+> Quant trading is the domain where durable daemons earn their definition. You cannot run a trading strategy as a stateless request-response loop. You cannot run it as an always-on agent that forgets its positions on restart. You can only run it as a durable daemon — or not at all.
+
 ## The four generations
 
 Generation 1: stateless — prompt in, response out. Generation 2: retrieval — find documents, ground responses. Generation 3 (the Ding et al. survey): persistence — conditions 1–3, an always-on agent. Generation 4: durability — condition 4, state that survives process boundaries, decisions with audit trails, recoverable commitments, compensatable failures. A durable daemon.

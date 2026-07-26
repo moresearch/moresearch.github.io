@@ -90,6 +90,14 @@ Persistence is scoped agency. Stateful memory is grounded agency. Autonomous act
 
 Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`. The tennis shoes stay the same.
 
+> Why are durable daemons portable and composable?
+
+> A static binary ships the daemon. A Postgres checkpoint ships the state. A container ships both. Daemons compose like Unix pipes — one daemon's output is another daemon's trigger.
+
+The four conditions are platform-agnostic. They don't care about your OS, your cloud, or your container runtime. A durable daemon compiled with Go is a single static binary — copy it to a machine, point it at Postgres, run it. The state lives in the database. The daemon is just a process with continuity. Ship the binary. Ship the state. Ship the container that wraps both. The daemon runs anywhere Postgres runs. That's portability.
+
+Composability follows from the same design. A durable daemon has a clean interface: accumulated state in, decisions and actions out, audit trail recorded. Two daemons with different scopes — sales and support, trading and risk, on-call and ops — share a Postgres cluster but own separate state ledgers. They don't call each other's APIs. They observe each other's outputs through the database. A support daemon sees the sales daemon's "Acme stalls Q4" inference and adjusts its own priority. No RPC. No message bus. No coordination server. Just state, observed by daemons with different triggers, producing a composite intelligence greater than any single daemon. This is the Unix pipe model applied to agents: `sales-daemon | support-daemon | ops-daemon`. Each step is a durable daemon with its own scope. The composition is the shared state.
+
 > How does step 4 actually work?
 
 > Checkpoint to Postgres. Crash. Read checkpoint. Resume. The workflow survives.

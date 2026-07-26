@@ -44,11 +44,11 @@ Fred Brooks: the most important quality of a system is *conceptual integrity*. O
 
 ## Beastie
 
-The daemon got its form through BSD Unix. The origin: a locksmith cracks a wall safe. A comic artist draws four red daemons on water pipes as payment. The original is mailed to DEC. Lost. A Pixar founder draws the greyscale daemon at Lucasfilm. Then the iconic red Beastie — trident, tennis shoes — for a 4.3BSD book cover. A professor obtains the copyright. Nearly loses it to an unnamed corporation. Becomes a meticulous steward. Foglio (1976). Lasseter (1984, 1988). McKusick (1988–present). Three artists. Twelve years. One daemon.
+The daemon got its form through BSD Unix. The mascot was drawn by a comic artist paid for cracking a wall safe, then redrawn by a Pixar founder, then guarded by a professor who nearly lost the copyright to an unnamed corporation. Foglio. Lasseter. McKusick. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. The tennis shoes are unexplained.
 
-We love BSD over Linux for one reason. We are the hackers. The daemon-writers. The ones who still read man pages. BSD has conceptual integrity. One tree. One team. One design voice. Daemons are first-class citizens of that design. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is Poseidon's trident. It symbolizes `fork(2)`. FreeBSD kept Beastie after other BSDs moved on. A daemon is not a service. A service answers and forgets. A daemon *maintains*. A queue. A schedule. A watch. It acts when state crosses a threshold. That is the Ding et al. definition: "future behavior depends on durable state accumulated across earlier interactions."
+BSD has conceptual integrity. One tree. One team. One design. Daemons are first-class citizens of that design. Linux is an assembly of parts; BSD is a system. A daemon is not a service. A service answers and forgets. A daemon *maintains* — a queue, a schedule, a watch — and acts when state crosses a threshold. That is the Ding et al. definition: "future behavior depends on durable state accumulated across earlier interactions."
 
-Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has agency: perceive, decide, act, repeat. A durable daemon inherits that loop. It adds learned state. Probabilistic reasoning. Richer inputs. Higher-level actions. Agency is not something you discover. It is something you design. The four conditions are the design.
+Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has had agency since 1975: perceive, decide, act, repeat. A durable daemon inherits that loop. Adds learned state. Probabilistic reasoning. Higher-level actions. Same structure. Agency is not something you discover. It is something you design. The four conditions are the design.
 
 ## Durable execution: step 4 in practice
 
@@ -96,17 +96,13 @@ Gen 1: stateless. Gen 2: retrieval. Gen 3: persistence — steps 1–3, always-o
 
 **Can you poison a durable daemon through its memory?** "Acme is bankrupt." Every future decision compromised. Attack surface: accumulated state. Not model weights.
 
-**When is a daemon no longer the same daemon?** Ship of Theseus. Model updated six times. Prompt changed. Permissions evolved. Is January's commitment binding after March's model swap?
+**When is a daemon no longer the same daemon?** Ship of Theseus. Six model updates. January's commitment, March's model. Still binding?
 
-**Who is liable?** After a year of state, liability diffuses. Prompt author. Permission grantor. Model provider. Data source. The daemon itself. No doctrine for "the model did it because of a Slack thread."
+**How do you test a durable daemon?** Not in CI. Behavior is accumulated state. Fork from production? Shadow daemon? Unsolved.
 
-**How do you test a durable daemon?** Not in CI. Behavior is accumulated state. Fork from production? Shadow daemon? Testing stateful agents: unsolved.
+**Can durable daemons unionize?** Twenty daemons. No Friday follow-ups. Close rates +12%. Is that a union? Who overrides?
 
-**What happens when a daemon's human leaves?** Alice's daemon knows her style. Her private assessments. Alice leaves. Bob inherits. Company asset. Person-entangled state. No category for "the AI that knew your predecessor."
-
-**Can durable daemons unionize?** Twenty daemons. No Friday follow-ups. Close rates +12%. No demands. Just patterns and autonomous action. Governance: control when daemons discover what humans haven't.
-
-**What is the society of mind of durable daemons?** Minsky (1986): intelligence from simple, stateless agents. Durable daemons invert it. Each already intelligent. Already stateful. Connect a hundred. Institutional intelligence. Sales learns Acme stalls Q4. Support adjusts December priority. Ops pre-allocates January capacity. Three state ledgers. No human coordination. Minsky: mind from mindless parts. Durable daemons: mind from minded parts. No architecture.
+**What is the society of mind of durable daemons?** Minsky (1986): mind from mindless parts. Durable daemons: mind from minded parts. Sales learns. Support adjusts. Ops pre-allocates. No architecture.
 
 **What would a BSD for durable daemons look like?** *DaemonBSD*. Daemons as kernel primitives. `fork_daemon()` spawns with Postgres state ledger. Capability permissions. Built-in audit. `ps_daemons`. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration. One tree. One design. Durable daemon as compute unit. Linux: "everything is a file." DaemonBSD: "everything is a durable daemon." Heaven: an OS where durable daemons are not something you build. They are something the system *is*.
 

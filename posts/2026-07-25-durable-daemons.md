@@ -10,6 +10,10 @@ In 1976, Stallman's ITS at MIT had DAEMON — a background process. It watched f
 
 John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you `ps aux | grep`. The AI era fills your workflow with daemons you delegate to.
 
+![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for The Design and Implementation of the 4.3BSD Operating System. The trident is fork(2). The tennis shoes are unexplained.](/images/bsd-daemon-medium.gif)
+
+A daemon is not a service. A service answers and forgets. A daemon *maintains* — a queue, a schedule, a watch — and acts when state crosses a threshold. The mascot was drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, guarded by a professor who nearly lost the copyright to an unnamed corporation. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. The tennis shoes are unexplained. BSD gave daemons conceptual integrity — one tree, one team, one design. Daemons are first-class citizens of that design. Beastie earned it.
+
 ## The problem
 
 Run an AI agent for a month. It learns your preferences. It makes commitments on your behalf. It accumulates permissions. It builds inferences. It develops trigger conditions.
@@ -30,47 +34,25 @@ That term is *durable daemon*.
 
 Fred Brooks: the most important quality of a system is *conceptual integrity*. One design voice. Every part consistent with every other. A **durable daemon** has that integrity. Four conditions. Each necessary. Together sufficient. Each is a step up from the trap.
 
-**Step 1: Persistence.** Identity and state survive restarts. The agent is a process, not a function call. It has continuity. This escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.
+**Step 1: Persistence.** Identity and state survive restarts. The agent is a process, not a function call. This escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.
 
 **Step 2: Stateful memory.** Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance. Triggers. Not chat logs. This escapes shallow memory — the agent that recalls what you said but not what it promised or why.
 
-**Step 3: Autonomous action.** The agent watches conditions. It fires triggers. It makes and discharges commitments. It invokes itself. No prompt required. This escapes the inert tool — all the context, sitting idle, waiting. `cron` has done this since 1975: check time, decide, fork and exec. Repeat. Step 3 is `cron` with an LLM.
+**Step 3: Autonomous action.** The agent watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. No prompt required. This escapes the inert tool — all the context, sitting idle, waiting. `cron` has done this since 1975: check time, decide, fork and exec. Repeat. Step 3 is `cron` with an LLM.
 
 **Step 4: Crash-proof execution.** Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from checkpoint. Audit trail by construction. This escapes the fragile runtime — perfect until a deploy wipes the state. DBOS checkpoints to Postgres in 1–2 ms. Temporal runs at Stripe scale. The primitives exist. AI agents don't use them.
 
+Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has had agency since 1975: perceive, decide, act, repeat. A durable daemon inherits that loop. Adds learned state. Probabilistic reasoning. Higher-level actions. Same structure. Agency is not discovered. It is designed. The four conditions are the design.
+
 > Steps 1–3 = a daemon. Step 4 = durable. Three steps give you an agent that persists, remembers, acts. The fourth gives you an agent that cannot be killed by a deploy.
-
-![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for The Design and Implementation of the 4.3BSD Operating System. The trident is fork(2). The tennis shoes are unexplained.](/images/bsd-daemon-medium.gif)
-
-## Beastie
-
-The daemon got its form through BSD Unix. The mascot was drawn by a comic artist paid for cracking a wall safe, then redrawn by a Pixar founder, then guarded by a professor who nearly lost the copyright to an unnamed corporation. Foglio. Lasseter. McKusick. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. The tennis shoes are unexplained.
-
-BSD has conceptual integrity. One tree. One team. One design. Daemons are first-class citizens of that design. Linux is an assembly of parts; BSD is a system. A daemon is not a service. A service answers and forgets. A daemon *maintains* — a queue, a schedule, a watch — and acts when state crosses a threshold. That is the Ding et al. definition: "future behavior depends on durable state accumulated across earlier interactions."
-
-Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has had agency since 1975: perceive, decide, act, repeat. A durable daemon inherits that loop. Adds learned state. Probabilistic reasoning. Higher-level actions. Same structure. Agency is not something you discover. It is something you design. The four conditions are the design.
 
 ## Durable execution: step 4 in practice
 
-Durable execution: every step checkpointed to Postgres. Crash. Read last checkpoint. Resume. Survives death. Reboot. Failover.
+Durable execution: every step checkpointed to Postgres. Crash. Read last checkpoint. Resume. Survives death. Reboot. Failover. Two systems. **Temporal** (2019): centralized server. DoorDash, Snap, Stripe, Uber scale. Polyglot SDKs. Month-long workflows. **DBOS** (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms per step. Philosophy: "Postgres is the operating system."
 
-Two systems. **Temporal** (2019): centralized server. DoorDash, Snap, Stripe, Uber scale. Polyglot SDKs. Month-long workflows. Trade-off: operate a Temporal cluster. **DBOS** (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms per step. Philosophy: "Postgres is the operating system."
+A daemon books a meeting. Sends email. Updates CRM. Files Jira. Multi-step. External side effects. Crash after step two. Double email? Meeting booked, CRM not updated? Databases solved this with transactions. Workflow engines with checkpoint-and-compensate. AI agents, mid-2026: neither. Onboarding: verify identity → create account → provision access → send welcome email → schedule call. Crash after step 3. Access granted. No follow-up. Cost: churned customer. Or two engineer-hours. Durable execution pays for itself on the first prevented drop. At scale: 200 deals. 200 natural-language promises. 200 workflows surviving deploys. Without step 4, the daemon is unreliable. Not because the model is bad. Because the runtime is fragile.
 
-### The economics
-
-A daemon books a meeting. Sends email. Updates CRM. Files Jira. Multi-step. External side effects. Crash after step two. Double email? Meeting booked, CRM not updated? Databases solved this with transactions. Workflow engines with checkpoint-and-compensate. AI agents, mid-2026: neither.
-
-Onboarding: verify identity → create account → provision access → send welcome email → schedule call. Crash after step 3. Access granted. No follow-up. Cost: churned customer. Or two engineer-hours. Durable execution pays for itself on the first prevented drop. At scale: 200 deals. 200 natural-language promises. 200 workflows surviving deploys. Without step 4, the daemon is unreliable. Not because the model is bad. Because the runtime is fragile.
-
-### Quant trading
-
-Quant trading stress-tests all four conditions. A trading daemon runs 24/7. State cannot be lost: positions, orders, P&L, risk exposure, regime parameters. It fires orders autonomously. Latency: microseconds to seconds. Failures: dollars.
-
-Crash between deciding and confirming an order. Unknown position. Flat or exposed? Recovery: query exchange. Reconcile. Resume. Manual minutes. Costly minutes. A durable daemon checkpoints *before* and *after*. Recovery: replay checkpoint. Know your position. No reconciliation.
-
-Exactly-once is existential. A duplicate order loses capital. Durable execution: exactly-once internally. Exchange APIs: idempotency keys. Pattern: checkpoint → send → crash before checkpointing confirmation → order fires again → exchange deduplicates. This works. Almost no AI agent uses it.
-
-Audit: every order traceable to a decision. Every decision traceable to state. SEC, CFTC, FCA, ESMA don't accept "the model decided." They accept checkpoints. Provenance. Deterministic replay. Durable execution produces all three. For free. Economics: one duplicated order can exceed the annual infrastructure budget. Step 4 is the prerequisite.
+Quant trading is the stress-test. A trading daemon runs 24/7. State cannot be lost: positions, orders, P&L, risk exposure, regime parameters. It fires orders autonomously. Latency: microseconds to seconds. Failures: dollars. Crash between deciding and confirming an order. Unknown position. Flat or exposed? Recovery: query exchange. Reconcile. Resume. Manual minutes. Costly minutes. A durable daemon checkpoints *before* and *after*. Recovery: replay checkpoint. Know your position. No reconciliation. Exactly-once is existential. A duplicate order loses capital. Durable execution: exactly-once internally. Exchange APIs: idempotency keys. Pattern: checkpoint → send → crash before checkpointing confirmation → order fires again → exchange deduplicates. This works. Almost no AI agent uses it. Audit: every order traceable to a decision traceable to state. SEC, CFTC, FCA, ESMA don't accept "the model decided." They accept checkpoints. Provenance. Deterministic replay. Durable execution produces all three. For free. One duplicated order can exceed the annual infrastructure budget. Step 4 is the prerequisite.
 
 > You can't run a trading strategy as a stateless loop. You can't run it as an always-on agent. Durable daemon or nothing.
 
@@ -90,7 +72,7 @@ Gen 1: stateless. Gen 2: retrieval. Gen 3: persistence — steps 1–3, always-o
 
 **Do durable daemons need a `ps`?** Twenty daemons across the org. Who sees them? Active workflows. Pending commitments. Accumulated permissions. No SQL required.
 
-**What happens when two daemons deadlock?** Sales: Thursday 2pm. EA: focus time. Both valid. Both checkpointed. Semantic conflict. Resolution: priority? Negotiation? "Your daemons are fighting."
+**What happens when two daemons deadlock?** Sales: Thursday 2pm. EA: focus time. Both valid. Semantic conflict. Resolution: priority? Negotiation? "Your daemons are fighting."
 
 **What is the economic unit of daemon reliability?** Databases: nines, RPO, RTO. Daemons: probability of dropped commitment? $500/month daemon. $5k/month saved. What does the next nine cost?
 

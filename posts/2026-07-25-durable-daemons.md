@@ -1,5 +1,5 @@
 ---
-title: Durable Daemons — Stairway to Heaven
+title: Durable Daemons — The Stairway to Heaven
 date: 2026-07-25
 slug: durable-daemons
 summary: Durable daemons have conceptual integrity — AI agents that persist, remember, act autonomously, and survive crashes. Four conditions. Four steps up from chaos. Without them, a chatbot that forgets. With them, an agent that earns its keep.

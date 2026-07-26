@@ -20,7 +20,7 @@ John Carmack filled DOOM with daemons you shoot. Unix filled the background with
 
 > A service answers and forgets. A daemon maintains. It acts when state crosses a threshold.
 
-This is the Unix inheritance. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. BSD gave daemons conceptual integrity — one tree, one team, one design — and Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.
+This is the Unix inheritance. Go is the natural language for it: compile to a single static binary, no runtime to install, no `libc` dance, no virtual environment. Just a file you ship. Goroutines give you lightweight concurrency — one per workflow, cheap as a function call. The standard library handles signals, file descriptors, and process management out of the box. Go was built for daemons. It just didn't know it yet. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. BSD gave daemons conceptual integrity — one tree, one team, one design — and Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.
 
 > What happens when an AI agent runs for a month?
 

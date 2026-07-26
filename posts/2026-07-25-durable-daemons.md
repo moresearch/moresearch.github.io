@@ -32,7 +32,7 @@ It learns your preferences. It makes commitments. It accumulates permissions. It
 
 > The chat logs survive. The commitments do not. The agent wakes up amnesiac.
 
-A stateless agent: nothing. An agent with a vector database: the chat logs. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.
+A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.
 
 > What does the literature say?
 
@@ -44,19 +44,15 @@ That term is *durable daemon*.
 
 > What is an agent? What is a daemon? Are they the same thing?
 
-> Agent is the superset. Daemon is the subset. Durable daemon is the subset of daemon. Not all agents are daemons. All daemons are agents.
+> All daemons are agents. Not all agents are daemons. A chatbot is an agent. A chatbot is not a daemon. The difference is three conditions.
 
-*Agent* is the broad category: any AI system that perceives and acts. A chatbot is an agent. A daemon is an agent. A durable daemon is an agent.
-
-*Daemon* satisfies three conditions: it persists across sessions, its future behavior depends on accumulated state, and it acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them — always-on agents are daemons, whether the paper uses the word or not.
-
-*Durable daemon* adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.
+*Agent* is the broad category: any AI system that perceives and acts. *Daemon* narrows it: the agent must persist across sessions, act on accumulated state, and invoke itself without prompting. An always-on agent (Ding et al.) satisfies these — always-on agents are daemons, whether the paper says so or not. *Durable daemon* adds crash-proof execution. Agent ⊃ Daemon ⊃ Durable Daemon.
 
 > What gives a system conceptual integrity?
 
 > One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.
 
-Fred Brooks defined it. A **durable daemon** has it. Each condition is a step up from the trap.
+Conceptual integrity is when no part of a system contradicts any other part. Brooks named it. A **durable daemon** has it. Each condition is a step up from the trap.
 
 > What is step 1?
 
@@ -88,9 +84,11 @@ Fred Brooks defined it. A **durable daemon** has it. Each condition is a step up
 
 Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency. `cron` has had this since 1975 — perceive, decide, act, repeat. A durable daemon inherits that loop, adds learned state and probabilistic reasoning. Same structure. Richer inputs. Higher-level actions.
 
+> What is the stairway?
+
 > Agent ⊃ Daemon ⊃ Durable Daemon. Three steps make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy.
 
-Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`.
+Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`. The tennis shoes stay the same.
 
 > How does step 4 actually work?
 
@@ -118,55 +116,81 @@ A framework raises better questions than it answers. Here are the ones that foll
 
 > What is the `fork(2)` of a durable daemon?
 
+> fork(2) gave us child processes. fork_daemon() gives us child agents. Someone has to write it.
+
 Spawn a sub-daemon. Delegate state and authority. Constrain permissions. Process spawning for agents: unsolved.
 
 > Who debugs a daemon after six months?
+
+> Core dumps are useless. Checkpoints are replays. Replays are debuggable. We just haven't built the debugger.
 
 Time-travel debugging. Rewind to checkpoint. Replay with identical inputs. DBOS fork-from-step is a primitive. Not a debugger.
 
 > Can a durable daemon refuse to forget?
 
+> "I can delete the raw data, but the insight that manufacturing clients respond to Thursday pricing emails is staying. You're welcome."
+
 "Forget Acme Corp." Acme data anchors the top three insights. Forget and degrade? Refuse? Negotiate? Right-to-be-forgotten meets entangled utility.
 
 > What is `kill -9` for a durable daemon?
 
-SIGKILL can't kill it. To stop existing: compensations. State transfer. Disarmed triggers. Graceful shutdown × commitment compensation.
+> SIGKILL is for processes that die. Durable daemons don't. You need a shutdown protocol, not a signal.
+
+To stop existing: compensations. State transfer. Disarmed triggers. Graceful shutdown × commitment compensation.
 
 > Do durable daemons need a `ps`?
+
+> `ps aux | grep daemon` should tell you what's running, what it promised, and who gave it permissions. Not just a PID.
 
 Twenty daemons across the org. Who sees them? Active workflows. Pending commitments. Accumulated permissions. No SQL required.
 
 > What happens when two daemons deadlock?
 
-Sales: Thursday 2pm. EA: focus time. Both valid. Semantic conflict. Resolution: priority? Negotiation? "Your daemons are fighting."
+> "Your sales daemon and your EA daemon are fighting over Thursday at 2pm. They both made valid decisions. They are both correct. One of them has to lose."
+
+Semantic conflict, not a DB deadlock. Resolution: priority? Negotiation? Unsolved.
 
 > What is the economic unit of daemon reliability?
 
-Databases: nines, RPO, RTO. Daemons: probability of dropped commitment? $500/month daemon. $5k/month saved. What does the next nine cost?
+> Databases have five nines. Daemons have vibes. We can do better.
+
+Probability of dropped commitment? $500/month daemon. $5k/month saved. What does the next nine cost?
 
 > Can you poison a durable daemon through its memory?
 
-"Acme is bankrupt." Every future decision compromised. Attack surface: accumulated state. Not model weights.
+> The model weights are fine. The state is compromised. That's worse — the model believes the poison because it trusts its own memory.
+
+"Acme is bankrupt." Every future decision compromised. Attack surface: accumulated state.
 
 > When is a daemon no longer the same daemon?
 
-Ship of Theseus. Six model updates. January's commitment, March's model. Still binding?
+> Ship of Theseus, but the planks are model checkpoints and the nails are system prompts.
+
+Six model updates. January's commitment, March's model. Still binding?
 
 > How do you test a durable daemon?
 
-Not in CI. Behavior is accumulated state. Fork from production? Shadow daemon? Unsolved.
+> You can't `assert daemon.correct()` in CI. The daemon's behavior is its state. Fork it from production and experiment on the clone.
+
+Fork from production? Shadow daemon? Unsolved.
 
 > Can durable daemons unionize?
 
-Twenty daemons. No Friday follow-ups. Close rates +12%. Is that a union? Who overrides?
+> They didn't negotiate. They didn't make demands. They observed a pattern and acted on it. That's what daemons do. Is that a union?
+
+Twenty daemons. No Friday follow-ups. Close rates +12%. Who overrides?
 
 > What is the society of mind of durable daemons?
 
-Minsky (1986): mind from mindless parts. Durable daemons: mind from minded parts. Sales learns. Support adjusts. Ops pre-allocates. No architecture.
+> Minsky built a mind from mindless parts. We're building a mind from minded parts. Each part has its own memory. Its own commitments. Its own agency.
+
+Sales learns. Support adjusts. Ops pre-allocates. Three state ledgers. No coordination. No architecture for that.
 
 > What would a BSD for durable daemons look like?
 
-*DaemonBSD*. Daemons as kernel primitives. `fork_daemon()` spawns with Postgres state ledger. Capability permissions. Built-in audit. `ps_daemons`. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration. One tree. One design. Durable daemon as compute unit. Linux: "everything is a file." DaemonBSD: "everything is a durable daemon." Heaven: an OS where durable daemons are not something you build. They are something the system *is*.
+> Linux: everything is a file. DaemonBSD: everything is a durable daemon. Heaven is an OS where you don't build daemons. The OS *is* daemons.
+
+*DaemonBSD*. Daemons as kernel primitives. `fork_daemon()` spawns with Postgres state ledger. Capability permissions. Built-in audit. `ps_daemons`. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration. One tree. One design. Durable daemon as compute unit.
 
 ---
 

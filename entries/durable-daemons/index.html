@@ -109,7 +109,7 @@
 <blockquote>
 <p>The chat logs survive. The commitments do not. The agent wakes up amnesiac.</p>
 </blockquote>
-<p>A stateless agent: nothing. An agent with a vector database: the chat logs. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
+<p>A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
 <blockquote>
 <p>What does the literature say?</p>
 </blockquote>
@@ -122,18 +122,16 @@
 <p>What is an agent? What is a daemon? Are they the same thing?</p>
 </blockquote>
 <blockquote>
-<p>Agent is the superset. Daemon is the subset. Durable daemon is the subset of daemon. Not all agents are daemons. All daemons are agents.</p>
+<p>All daemons are agents. Not all agents are daemons. A chatbot is an agent. A chatbot is not a daemon. The difference is three conditions.</p>
 </blockquote>
-<p><em>Agent</em> is the broad category: any AI system that perceives and acts. A chatbot is an agent. A daemon is an agent. A durable daemon is an agent.</p>
-<p><em>Daemon</em> satisfies three conditions: it persists across sessions, its future behavior depends on accumulated state, and it acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them — always-on agents are daemons, whether the paper uses the word or not.</p>
-<p><em>Durable daemon</em> adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
+<p><em>Agent</em> is the broad category: any AI system that perceives and acts. <em>Daemon</em> narrows it: the agent must persist across sessions, act on accumulated state, and invoke itself without prompting. An always-on agent (Ding et al.) satisfies these — always-on agents are daemons, whether the paper says so or not. <em>Durable daemon</em> adds crash-proof execution. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
 <blockquote>
 <p>What gives a system conceptual integrity?</p>
 </blockquote>
 <blockquote>
 <p>One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.</p>
 </blockquote>
-<p>Fred Brooks defined it. A <strong>durable daemon</strong> has it. Each condition is a step up from the trap.</p>
+<p>Conceptual integrity is when no part of a system contradicts any other part. Brooks named it. A <strong>durable daemon</strong> has it. Each condition is a step up from the trap.</p>
 <blockquote>
 <p>What is step 1?</p>
 </blockquote>
@@ -170,9 +168,12 @@
 </blockquote>
 <p>Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency. <code>cron</code> has had this since 1975 — perceive, decide, act, repeat. A durable daemon inherits that loop, adds learned state and probabilistic reasoning. Same structure. Richer inputs. Higher-level actions.</p>
 <blockquote>
+<p>What is the stairway?</p>
+</blockquote>
+<blockquote>
 <p>Agent ⊃ Daemon ⊃ Durable Daemon. Three steps make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy.</p>
 </blockquote>
-<p>Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>.</p>
+<p>Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
 <blockquote>
 <p>How does step 4 actually work?</p>
 </blockquote>
@@ -202,55 +203,94 @@
 <blockquote>
 <p>What is the <code>fork(2)</code> of a durable daemon?</p>
 </blockquote>
+<blockquote>
+<p>fork(2) gave us child processes. fork_daemon() gives us child agents. Someone has to write it.</p>
+</blockquote>
 <p>Spawn a sub-daemon. Delegate state and authority. Constrain permissions. Process spawning for agents: unsolved.</p>
 <blockquote>
 <p>Who debugs a daemon after six months?</p>
+</blockquote>
+<blockquote>
+<p>Core dumps are useless. Checkpoints are replays. Replays are debuggable. We just haven't built the debugger.</p>
 </blockquote>
 <p>Time-travel debugging. Rewind to checkpoint. Replay with identical inputs. DBOS fork-from-step is a primitive. Not a debugger.</p>
 <blockquote>
 <p>Can a durable daemon refuse to forget?</p>
 </blockquote>
+<blockquote>
+<p>&quot;I can delete the raw data, but the insight that manufacturing clients respond to Thursday pricing emails is staying. You're welcome.&quot;</p>
+</blockquote>
 <p>&quot;Forget Acme Corp.&quot; Acme data anchors the top three insights. Forget and degrade? Refuse? Negotiate? Right-to-be-forgotten meets entangled utility.</p>
 <blockquote>
 <p>What is <code>kill -9</code> for a durable daemon?</p>
 </blockquote>
-<p>SIGKILL can't kill it. To stop existing: compensations. State transfer. Disarmed triggers. Graceful shutdown × commitment compensation.</p>
+<blockquote>
+<p>SIGKILL is for processes that die. Durable daemons don't. You need a shutdown protocol, not a signal.</p>
+</blockquote>
+<p>To stop existing: compensations. State transfer. Disarmed triggers. Graceful shutdown × commitment compensation.</p>
 <blockquote>
 <p>Do durable daemons need a <code>ps</code>?</p>
+</blockquote>
+<blockquote>
+<p><code>ps aux | grep daemon</code> should tell you what's running, what it promised, and who gave it permissions. Not just a PID.</p>
 </blockquote>
 <p>Twenty daemons across the org. Who sees them? Active workflows. Pending commitments. Accumulated permissions. No SQL required.</p>
 <blockquote>
 <p>What happens when two daemons deadlock?</p>
 </blockquote>
-<p>Sales: Thursday 2pm. EA: focus time. Both valid. Semantic conflict. Resolution: priority? Negotiation? &quot;Your daemons are fighting.&quot;</p>
+<blockquote>
+<p>&quot;Your sales daemon and your EA daemon are fighting over Thursday at 2pm. They both made valid decisions. They are both correct. One of them has to lose.&quot;</p>
+</blockquote>
+<p>Semantic conflict, not a DB deadlock. Resolution: priority? Negotiation? Unsolved.</p>
 <blockquote>
 <p>What is the economic unit of daemon reliability?</p>
 </blockquote>
-<p>Databases: nines, RPO, RTO. Daemons: probability of dropped commitment? $500/month daemon. $5k/month saved. What does the next nine cost?</p>
+<blockquote>
+<p>Databases have five nines. Daemons have vibes. We can do better.</p>
+</blockquote>
+<p>Probability of dropped commitment? $500/month daemon. $5k/month saved. What does the next nine cost?</p>
 <blockquote>
 <p>Can you poison a durable daemon through its memory?</p>
 </blockquote>
-<p>&quot;Acme is bankrupt.&quot; Every future decision compromised. Attack surface: accumulated state. Not model weights.</p>
+<blockquote>
+<p>The model weights are fine. The state is compromised. That's worse — the model believes the poison because it trusts its own memory.</p>
+</blockquote>
+<p>&quot;Acme is bankrupt.&quot; Every future decision compromised. Attack surface: accumulated state.</p>
 <blockquote>
 <p>When is a daemon no longer the same daemon?</p>
 </blockquote>
-<p>Ship of Theseus. Six model updates. January's commitment, March's model. Still binding?</p>
+<blockquote>
+<p>Ship of Theseus, but the planks are model checkpoints and the nails are system prompts.</p>
+</blockquote>
+<p>Six model updates. January's commitment, March's model. Still binding?</p>
 <blockquote>
 <p>How do you test a durable daemon?</p>
 </blockquote>
-<p>Not in CI. Behavior is accumulated state. Fork from production? Shadow daemon? Unsolved.</p>
+<blockquote>
+<p>You can't <code>assert daemon.correct()</code> in CI. The daemon's behavior is its state. Fork it from production and experiment on the clone.</p>
+</blockquote>
+<p>Fork from production? Shadow daemon? Unsolved.</p>
 <blockquote>
 <p>Can durable daemons unionize?</p>
 </blockquote>
-<p>Twenty daemons. No Friday follow-ups. Close rates +12%. Is that a union? Who overrides?</p>
+<blockquote>
+<p>They didn't negotiate. They didn't make demands. They observed a pattern and acted on it. That's what daemons do. Is that a union?</p>
+</blockquote>
+<p>Twenty daemons. No Friday follow-ups. Close rates +12%. Who overrides?</p>
 <blockquote>
 <p>What is the society of mind of durable daemons?</p>
 </blockquote>
-<p>Minsky (1986): mind from mindless parts. Durable daemons: mind from minded parts. Sales learns. Support adjusts. Ops pre-allocates. No architecture.</p>
+<blockquote>
+<p>Minsky built a mind from mindless parts. We're building a mind from minded parts. Each part has its own memory. Its own commitments. Its own agency.</p>
+</blockquote>
+<p>Sales learns. Support adjusts. Ops pre-allocates. Three state ledgers. No coordination. No architecture for that.</p>
 <blockquote>
 <p>What would a BSD for durable daemons look like?</p>
 </blockquote>
-<p><em>DaemonBSD</em>. Daemons as kernel primitives. <code>fork_daemon()</code> spawns with Postgres state ledger. Capability permissions. Built-in audit. <code>ps_daemons</code>. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration. One tree. One design. Durable daemon as compute unit. Linux: &quot;everything is a file.&quot; DaemonBSD: &quot;everything is a durable daemon.&quot; Heaven: an OS where durable daemons are not something you build. They are something the system <em>is</em>.</p>
+<blockquote>
+<p>Linux: everything is a file. DaemonBSD: everything is a durable daemon. Heaven is an OS where you don't build daemons. The OS <em>is</em> daemons.</p>
+</blockquote>
+<p><em>DaemonBSD</em>. Daemons as kernel primitives. <code>fork_daemon()</code> spawns with Postgres state ledger. Capability permissions. Built-in audit. <code>ps_daemons</code>. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration. One tree. One design. Durable daemon as compute unit.</p>
 <hr>
 <p><strong>References:</strong></p>
 <ul>

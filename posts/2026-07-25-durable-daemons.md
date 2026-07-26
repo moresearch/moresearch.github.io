@@ -12,7 +12,7 @@ John Carmack filled DOOM with daemons you shoot. Unix filled the background with
 
 ![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for The Design and Implementation of the 4.3BSD Operating System. The trident is fork(2). The tennis shoes are unexplained.](/images/bsd-daemon-medium.gif)
 
-A daemon is not a service. A service answers and forgets. A daemon *maintains* — a queue, a schedule, a watch — and acts when state crosses a threshold. The mascot was drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, guarded by a professor who nearly lost the copyright to an unnamed corporation. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. The tennis shoes are unexplained. BSD gave daemons conceptual integrity — one tree, one team, one design. Daemons are first-class citizens of that design. Beastie earned it.
+A daemon is not a service. A service answers and forgets. A daemon *maintains* — a queue, a schedule, a watch — and acts when state crosses a threshold. This is the Unix inheritance. *Daemon* is Greek δαίμων — guardian spirit. The pitchfork is `fork(2)`. BSD gave daemons conceptual integrity — one tree, one team, one design — and Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.
 
 ## The problem
 
@@ -24,7 +24,7 @@ Now crash the process. What survives?
 
 A stateless agent: nothing. An agent with a vector database: the chat logs. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. The agent wakes up amnesiac. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.
 
-Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. [*Always-On Agents*](https://arxiv.org/abs/2606.30306) (June 2026). Their finding: the field accumulates and retrieves well. It neglects governance. It neglects recovery. It neglects forgetting. That gap is what happens when state outruns the runtime. The survey gives us six diagnostic axes and a nine-stage lifecycle. It does not give us a term for the thing that closes the gap.
+Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. [*Always-On Agents*](https://arxiv.org/abs/2606.30306) (June 2026). Their finding: the field accumulates and retrieves well. It neglects governance. It neglects recovery. It neglects forgetting. That gap is what happens when state outruns the runtime. The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability — and a nine-stage state lifecycle. The axes are orthogonal to our four conditions: they are questions you ask *about* the state (who controls it? how does it change? does it drive behavior?), while the conditions are guarantees you *provide* at the architectural level. Both lenses are necessary. The paper provides one. We provide the other.
 
 That term is *durable daemon*.
 
@@ -48,11 +48,11 @@ Now the conditions. Fred Brooks: the most important quality of a system is *conc
 
 **Step 4: Crash-proof execution.** Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from checkpoint. Audit trail by construction. This escapes the fragile runtime — perfect until a deploy wipes the state. DBOS checkpoints to Postgres in 1–2 ms. Temporal runs at Stripe scale. The primitives exist. AI agents don't use them.
 
-Agency is a spectrum. Chatbot: zero. AGI: unbounded. The durable daemon is the designed point in between. Scoped. State-bound. Triggered. Auditable. Interruptible. `cron` has had agency since 1975: perceive, decide, act, repeat. A durable daemon inherits that loop. Adds learned state. Probabilistic reasoning. Higher-level actions. Same structure. Agency is not discovered. It is designed. The four conditions are the design.
+Agency is not discovered. It is designed. The four conditions are the design: persistence is scoped agency, stateful memory is grounded agency, autonomous action is triggered agency, crash-proof execution is auditable agency. `cron` has had this since 1975 — perceive, decide, act, repeat. A durable daemon inherits that loop, adds learned state and probabilistic reasoning. Same structure. Richer inputs. Higher-level actions.
 
-Does this thesis hold? Each condition removes a specific class of failure that the problem section described. Step 1 removes stateless amnesia. Step 2 removes shallow memory — the agent knows what it promised and why. Step 3 removes inertness — the agent acts before you ask. Step 4 removes fragility — the agent survives the deploy. Without any one condition, the stairway collapses. A daemon without step 4 wakes up amnesiac after a crash. An agent without step 3 is a knowledgeable tool, not a daemon. An agent without step 2 is a persistent chatbot. An agent without step 1 is not an agent at all in any meaningful sense — it is a function call. The conditions are individually necessary and jointly sufficient. That is what conceptual integrity means. And that is why the stairway holds.
+> Agent ⊃ Daemon ⊃ Durable Daemon. Three steps make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy.
 
-> Agent ⊃ Daemon ⊃ Durable Daemon. Three steps give you a daemon. The fourth gives you a durable one — an agent that cannot be killed by a deploy.
+Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`.
 
 ## Durable execution: step 4 in practice
 
@@ -64,11 +64,9 @@ Quant trading is the stress-test. A trading daemon runs 24/7. State cannot be lo
 
 > You can't run a trading strategy as a stateless loop. You can't run it as an always-on agent. Durable daemon or nothing.
 
-## The ascent
-
-Gen 1: stateless. Gen 2: retrieval. Gen 3: persistence — steps 1–3, always-on agent. Gen 4: durability — step 4, durable daemon. Each step kills a failure class: "Who are you?" "What did I promise?" "Why didn't you act?" "Where did my state go?" At the top: an agent you trust with real work and real money. Beastie's pitchfork: `fork(2)` → `fork_daemon()`.
-
 ## Open questions
+
+A framework raises better questions than it answers. Here are the ones that follow from the four conditions.
 
 **What is the `fork(2)` of a durable daemon?** Spawn a sub-daemon. Delegate state and authority. Constrain permissions. Process spawning for agents: unsolved.
 

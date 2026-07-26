@@ -1,8 +1,8 @@
 ---
-title: Durable Daemons — The Stairway to Heaven
+title: Durable Daemon Pattern — The Stairway to Heaven
 date: 2026-07-25
 slug: durable-daemons
-summary: What makes an AI agent trustworthy with real work and real money? Four conditions. Four steps up from chaos. Without them, a chatbot that forgets. With them, an agent that earns its keep. This is the conceptual integrity of durable daemons.
+summary: The durable daemon is a design pattern, not a feature list. Four conditions. Four steps up from chaos. Each necessary. Together sufficient. Without them, a chatbot that forgets. With them, an agent that earns its keep. This is the conceptual integrity of the durable daemon pattern.
 tags: daemons, durable-daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
 ---
 
@@ -38,9 +38,9 @@ A stateless agent: nothing of the state survives — the binary is fine, the con
 
 > The field accumulates and retrieves well. It neglects governance, recovery, and forgetting. That gap is what happens when state outruns the runtime.
 
-Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. [*Always-On Agents*](https://arxiv.org/abs/2606.30306) (June 2026). The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask *about* state. We need answers you *provide* at the architectural level. The paper gives us the questions. It does not give us the term for the thing that closes the gap.
+Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. [*Always-On Agents*](https://arxiv.org/abs/2606.30306) (June 2026). The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask *about* state. We need answers you *provide* at the architectural level. The paper gives us the questions. It does not give us the pattern that closes the gap.
 
-That term is *durable daemon*.
+That pattern is the *durable daemon*.
 
 > What is an agent? What is a daemon? Are they the same thing?
 
@@ -52,7 +52,7 @@ That term is *durable daemon*.
 
 > One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.
 
-Conceptual integrity means the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. A **durable daemon** has it. Each condition is a step up from the trap.
+Conceptual integrity means the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The **durable daemon pattern** has it. Four conditions. Each necessary. Together sufficient. Each is a step up from the trap.
 
 > What is step 1?
 
@@ -86,11 +86,11 @@ Persistence is scoped agency. Stateful memory is grounded agency. Autonomous act
 
 > What is the stairway?
 
-> Agent ⊃ Daemon ⊃ Durable Daemon. Three steps make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy.
+> Agent ⊃ Daemon ⊃ Durable Daemon. Three conditions make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. That is the pattern.
 
 Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`. The tennis shoes stay the same.
 
-> Why are durable daemons portable and composable?
+> Why is the durable daemon pattern portable and composable?
 
 > A static binary ships the daemon. A Postgres checkpoint ships the state. A container ships both. Daemons compose like Unix pipes — one daemon's output is another daemon's trigger.
 

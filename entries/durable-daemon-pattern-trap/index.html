@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
+  <meta name="description" content="Run an AI agent for a month. It learns, commits, infers, triggers. Then crash it. The chat logs survive. The commitments do not. State is not a database — it is a web. Delete one node. The web frays.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-problem/">
-  <title>Durable Daemon Pattern — The Problem — hackspree</title>
-  <meta property="og:title" content="Durable Daemon Pattern — The Problem">
-  <meta property="og:description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-problem/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-trap/">
+  <title>Durable Daemon Pattern — The Trap — hackspree</title>
+  <meta property="og:title" content="Durable Daemon Pattern — The Trap">
+  <meta property="og:description" content="Run an AI agent for a month. It learns, commits, infers, triggers. Then crash it. The chat logs survive. The commitments do not. State is not a database — it is a web. Delete one node. The web frays.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-trap/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Durable Daemon Pattern — The Problem">
-  <meta name="twitter:description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
+  <meta name="twitter:title" content="Durable Daemon Pattern — The Trap">
+  <meta name="twitter:description" content="Run an AI agent for a month. It learns, commits, infers, triggers. Then crash it. The chat logs survive. The commitments do not. State is not a database — it is a web. Delete one node. The web frays.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,37 +76,25 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-07-26">2026-07-26</time></p>
-          <h1>Durable Daemon Pattern — The Problem</h1><p class="post-summary">AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.</p>
+          <h1>Durable Daemon Pattern — The Trap</h1><p class="post-summary">Run an AI agent for a month. It learns, commits, infers, triggers. Then crash it. The chat logs survive. The commitments do not. State is not a database — it is a web. Delete one node. The web frays.</p>
           <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span></div>
           
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-genealogy">Previously: where daemons come from.</a></p>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">Previously: the genealogy of daemons.</a></p>
+<p>Run an AI agent for a month. It learns that you prefer soft follow-ups with manufacturing clients. It commits on your behalf — &quot;I'll send the deck by Tuesday.&quot; It accumulates permissions — read access to your calendar, send access to your email, API keys to your CRM. It builds inferences — Acme Corp stalls deals in Q4, the VP of Engineering responds faster on Signal than email. It develops trigger conditions — if a deal goes three days without activity, flag it. It is now more attentive than you are.</p>
+<p>Now crash the process. Deploy new code. Rotate the API keys.</p>
 <blockquote>
-<p>What happens when an AI agent runs for a month?</p>
+<p>State is not a database. It is a web. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. Delete one node. The web frays in directions you cannot predict.</p>
 </blockquote>
+<p>A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain that connects &quot;Acme stalls Q4&quot; to &quot;don't send the pricing sheet until January.&quot; The agent wakes up amnesiac. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
 <blockquote>
-<p>State is not a database. It is a web. Delete one node. The web frays.</p>
+<p>The chat logs survive. The commitments do not. The agent wakes up amnesiac. This is not a bug. It is a category error. We built memory for conversations. We needed memory for obligations.</p>
 </blockquote>
-<p>It learns your preferences — which prospects need soft follow-ups, which Slack channels are noise, which meetings you always skip. It makes commitments on your behalf. It accumulates permissions. It builds inferences. It develops trigger conditions — if a deal goes three days without activity, flag it. It is now more attentive than you are. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. You cannot wipe and rebuild this. It is entangled.</p>
+<p>Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306"><em>Always-On Agents</em></a> (June 2026). Their finding: the field accumulates and retrieves well. It neglects governance. It neglects recovery. It neglects forgetting. The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask <em>about</em> state: who controls it? what does it cover? how does it change? where did it come from? can it be restored? does it drive behavior? These are necessary questions. They are not sufficient answers.</p>
 <blockquote>
-<p>What survives a crash?</p>
+<p>The paper gives us the diagnostic questions. It does not give us the architectural guarantees. The gap between question and guarantee is where the trap lives.</p>
 </blockquote>
-<blockquote>
-<p>The chat logs survive. The commitments do not. The agent wakes up amnesiac.</p>
-</blockquote>
-<p>A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
-<blockquote>
-<p>What does the literature say?</p>
-</blockquote>
-<blockquote>
-<p>The field accumulates and retrieves well. It neglects governance, recovery, and forgetting. That gap is what happens when state outruns the runtime.</p>
-</blockquote>
-<p>Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306"><em>Always-On Agents</em></a> (June 2026). The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask <em>about</em> state: who controls it? what does it cover? how does it change? where did it come from? can it be restored? does it drive behavior?</p>
-<p>These are diagnostic questions. They tell you whether your state is well-governed. They do not give you the architectural guarantees that make it well-governed. The paper gives us the questions. It does not give us the pattern that closes the gap.</p>
-<blockquote>
-<p>State without durability is a liability. Every piece of knowledge is a piece of the system a crash can destroy.</p>
-</blockquote>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">Next: the four conditions of the pattern.</a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">Next: the pattern — four conditions that close the gap.</a></p>
 <hr>
 <p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
 </div>

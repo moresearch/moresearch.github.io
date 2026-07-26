@@ -1,26 +1,32 @@
 ---
-title: Durable Daemon Pattern — The Stairway to Heaven
+title: Durable Daemon Pattern — The Genealogy
 date: 2026-07-25
 slug: durable-daemons
-summary: A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.
-tags: daemons, durable-daemon-pattern, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
+summary: Daemons are not services. They maintain. They act when state crosses a threshold. This Unix inheritance — from Maxwell's demon to Beastie to Go — is the foundation of the durable daemon pattern.
+tags: daemons, durable-daemon-pattern, bsd, unix, go, systems
 series: durable-daemon-pattern
 ---
 
-The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Each is a step up from the chaos of long-running AI state.
+Imagine a being that sits between two chambers. It observes molecules. When a fast one approaches the gate, it opens. When a slow one approaches, it closes. It uses no energy. Only information. It sorts order from chaos without touching either. This is Maxwell's demon. This is a daemon.
 
-This series defines the pattern across five posts. Each is self-contained. Together they form the stairway.
+> A daemon observes. A daemon decides. A daemon acts. It uses information, not energy. It runs forever.
 
-1. **[The Genealogy](https://blog.hackspree.com/#durable-daemon-pattern-genealogy)** — Where daemons come from. Maxwell's demon, Beastie, BSD, and why Go is the natural language for daemons.
+In 1976, Stallman's ITS at MIT had DAEMON — a background process that watched for new files, woke up, and acted. John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you `ps aux | grep`. The AI era fills your workflow with daemons you delegate to. Three eras. Three kinds of daemon. One pattern.
 
-2. **[The Problem](https://blog.hackspree.com/#durable-daemon-pattern-problem)** — AI agent state is a web, not a database. Crash it and the commitments die. The Ding et al. survey of 435 papers shows we're good at accumulating, bad at governing.
+![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988. The trident is fork(2). The tennis shoes are unexplained.](/images/bsd-daemon-medium.gif)
 
-3. **[The Definition](https://blog.hackspree.com/#durable-daemon-pattern-definition)** — Agent ⊃ Daemon ⊃ Durable Daemon. Four conditions. Conceptual integrity. Agency is not discovered — it is designed.
+Imagine a service. It receives a request. It produces a response. It forgets. Now imagine a daemon. It maintains a queue. A schedule. A watch on a directory. It acts when its internal state crosses a threshold — not when it is asked, but when conditions are met. A service is reactive. A daemon is autonomous. `cron` has watched the clock since 1975: check time, decide, fork and exec, repeat. No one asked `cron` to do anything. It asked itself.
 
-4. **[The Execution](https://blog.hackspree.com/#durable-daemon-pattern-execution)** — Step 4 in practice. DBOS, Temporal, the economics of crash-proof execution, and why quant trading is the stress-test that proves the pattern.
+> A service answers and forgets. A daemon maintains and acts. The difference is persistence.
 
-5. **[The Thought Experiments](https://blog.hackspree.com/#durable-daemon-pattern-experiments)** — Thirteen scenarios that test the limits of the pattern. The fork, the debug, the forget, the shutdown, the deadlock, the poison, the Theseus, the union, the society, and the operating system where daemons are primitives.
+This is the Unix inheritance. *Daemon* is Greek δαίμων — guardian spirit, intermediary between mortals and gods. The pitchfork is `fork(2)`, the system call that spawns a child process to do the daemon's work. BSD gave daemons conceptual integrity — one source tree, one team, one design voice. Daemons are first-class citizens of that design. Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.
+
+Go is the natural language for this inheritance. Compile to a single static binary. No runtime to install. No `libc` dance. Goroutines give you lightweight concurrency — one per workflow, cheap as a function call. The standard library handles signals, file descriptors, and process management. Go was built for daemons. It just didn't know it yet.
+
+> The genealogy is not an analogy. It is the architecture. AI agents that persist, remember, and act are daemons. The pattern starts here.
+
+[Next: the trap — what happens when an AI agent's state outruns its runtime.](https://blog.hackspree.com/#durable-daemon-pattern-trap)
 
 ---
 
-*This is the [Durable Daemon Pattern](/tags/durable-daemon-pattern) series.*
+*Part of the [Durable Daemon Pattern](/tags/durable-daemon-pattern) series.*

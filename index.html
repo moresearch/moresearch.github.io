@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="A pattern is tested by imagining its limits. Thought experiments on forking, debugging, forgetting, shutdown, deadlock, poisoning, identity, testing, unionizing, and the operating system where daemons are primitives.">
+  <meta name="description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="A pattern is tested by imagining its limits. Thought experiments on forking, debugging, forgetting, shutdown, deadlock, poisoning, identity, testing, unionizing, and the operating system where daemons are primitives.">
+  <meta property="og:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="A pattern is tested by imagining its limits. Thought experiments on forking, debugging, forgetting, shutdown, deadlock, poisoning, identity, testing, unionizing, and the operating system where daemons are primitives.">
+  <meta name="twitter:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,177 +664,183 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
-      <article class="post" id="durable-daemon-pattern-limits">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-limits/">
+      <article class="post" id="durable-daemons-definition">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-definition/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
-          <h2><a href="#durable-daemon-pattern-limits">Durable Daemon Pattern — The Limits</a></h2><p class="post-summary">A pattern is tested by imagining its limits. Thought experiments on forking, debugging, forgetting, shutdown, deadlock, poisoning, identity, testing, unionizing, and the operating system where daemons are primitives.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">thought-experiments</span><span class="tag">agent-architecture</span><span class="tag">systems</span><span class="tag">bsd</span>
+          <h2><a href="#durable-daemons-definition">Durable Daemons — Pattern Specification</a></h2><p class="post-summary">The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">pattern-specification</span><span class="tag">agent-architecture</span><span class="tag">choreography</span><span class="tag">systems</span>
           </div>
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">Previously: step 4 in practice.</a></p>
-<p>A pattern is tested at its edges. These thought experiments follow from the four conditions.</p>
-<p><strong>The fork.</strong> You ask your sales daemon to handle the Acme renewal. It spawns a sub-daemon — scoped to Acme, delegated a subset of state and authority, constrained permissions. The child negotiates, returns the result, dissolves. How does the parent monitor? How does the child inherit only what it needs?</p>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-trap">Previously: the state persistence problem.</a></p>
+<p>Imagine you are asked to trust an AI agent with your calendar. Your email. Your money. What would you need to know? You would need to know that it persists — it does not start over every time you open the app. You would need to know that it remembers — not just what you said, but what it promised and why. You would need to know that it acts — not when you tell it to, but when conditions require it. You would need to know that it survives — a deploy, a crash, a reboot does not erase its commitments. These are not preferences. They are preconditions.</p>
 <blockquote>
-<p>fork(2) gave us child processes. fork_daemon() gives us child agents. Someone has to write it.</p>
+<p>Trust requires guarantees, not vibes. Four guarantees. Four conditions. That is the specification.</p>
 </blockquote>
-<p><strong>The six-month debug.</strong> Your trading daemon makes a bad decision in July. Why? Rewind to any checkpoint. Replay with identical inputs. The model changed in March. The state changed in May. Which caused the error?</p>
+<p>First, the type hierarchy. <em>Agent</em> is the broad category: any AI system that perceives and acts. A chatbot is an agent. <em>Daemon</em> is the subtype: an agent that persists across sessions, whose future behavior depends on accumulated state, and which acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them. <em>Durable daemon</em> adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
+<p>Fred Brooks taught that the most important quality of a system is <em>conceptual integrity</em> — the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The durable daemons pattern has it.</p>
 <blockquote>
-<p>Core dumps are useless. Checkpoints are replays. Replays are debuggable. We just haven't built the debugger.</p>
+<p>One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.</p>
 </blockquote>
-<p><strong>The refusal.</strong> &quot;Forget everything about Acme Corp.&quot; The daemon pauses. Its top three insights depend on Acme data. Forgetting will degrade it. It responds: &quot;I can delete the raw data, but the insight that manufacturing clients respond to Thursday pricing emails is staying. You're welcome.&quot; Does it have the right to negotiate?</p>
+<p><strong>Condition 1: Persistence.</strong> Identity and state survive restarts. The daemon is a process, not a function call. This eliminates the stateless loop failure mode — every invocation at zero, every preference forgotten, every commitment gone.</p>
+<p><strong>Condition 2: Stateful memory.</strong> Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance records. Trigger conditions. Not a vector database of chat logs. This eliminates the shallow memory failure mode — the agent that recalls what you said but not what it promised or why.</p>
+<p><strong>Condition 3: Autonomous action.</strong> The daemon watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. No prompt required. This eliminates the inert tool failure mode — all the context, sitting idle, waiting. <code>cron</code> has done this since 1975: perceive, decide, act, repeat. Condition 3 is <code>cron</code> with an LLM.</p>
+<p><strong>Condition 4: Crash-proof execution.</strong> Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from the last checkpoint. Audit trail by construction. This eliminates the fragile runtime failure mode — perfect until a deploy wipes the in-flight state.</p>
+<p>These conditions compose. A durable daemon writes its state to Postgres. Another durable daemon observes that state and reacts. A third observes the second and reacts. Each daemon satisfies all four conditions independently. The choreography emerges from shared state — no orchestrator, no message bus, no coordination server. This is an event-driven architecture where the event store <em>is</em> the state store, and every daemon is both a producer and a consumer.</p>
 <blockquote>
-<p>Right-to-be-forgotten meets right-to-be-useful. No model for resolving that collision.</p>
+<p>Agency is not discovered. It is designed. Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency. The choreography is the composition.</p>
 </blockquote>
-<p><strong>The shutdown.</strong> You want the daemon to stop existing. Not pause. Terminate. It has promises to 200 people. Pending triggers. Held permissions. SIGKILL won't work — it checkpoints and resumes. Nobody has written a shutdown protocol.</p>
+<p>Three conditions define a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. The pattern composes them into a system. Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">Next: the runtime and implementation — step 4 in practice.</a></p>
+<hr>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series.</em></p>
+</div>
+      </article>
+      <article class="post" id="durable-daemons-execution">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-execution/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
+          <h2><a href="#durable-daemons-execution">Durable Daemons — Runtime and Implementation</a></h2><p class="post-summary">Condition 4 requires crash-proof execution. DBOS and Temporal provide it — checkpointing workflow state to Postgres, surviving process death, reboot, and failover. Quant trading is the stress-test. The implementation is portable (Go binary &#43; Postgres) and composable (event-driven choreography through shared state).</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">dbos</span><span class="tag">temporal</span><span class="tag">durable-execution</span><span class="tag">quant-trading</span><span class="tag">go</span><span class="tag">choreography</span><span class="tag">event-driven</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Previously: the pattern specification.</a></p>
+<p>Imagine a trading daemon. It runs 24/7 across market sessions. Its state cannot be lost: open positions, pending orders, realized P&amp;L, risk exposure, regime-adapting strategy parameters. A signal crosses a threshold. The daemon decides to place an order. It sends the order to the exchange. Before the confirmation arrives, the process crashes.</p>
+<p>The daemon restarts. What is its position? Did the order reach the exchange? Is it flat or exposed? To know, you must query the exchange, reconcile positions, and resume — manual minutes in a domain where minutes cost money. Now imagine the daemon checkpointed its state <em>before</em> placing the order and checkpointed the confirmation <em>after</em>. On recovery, it replays the last checkpoint and knows exactly where it stands. No reconciliation. No unknown exposure.</p>
 <blockquote>
-<p>SIGKILL is for processes that die. Durable daemons don't. You need a shutdown protocol, not a signal.</p>
+<p>A duplicate order loses capital. A duplicate email is embarrassing. The difference is condition 4.</p>
 </blockquote>
-<p><strong>The deadlock.</strong> Sales daemon books Thursday 2pm. EA daemon claims it for focus time. Both valid. Both checkpointed. Postgres accepted both writes. Two owners, one slot. Who resolves?</p>
+<p>This is durable execution: every workflow step persisted to Postgres. Crash. Read last checkpoint. Resume. Completed steps never re-execute. Survives process death, machine reboot, database failover. Two production-grade implementations. <strong>Temporal</strong> (2019): centralized orchestration server, DoorDash/Snap/Stripe/Uber scale, polyglot SDKs, month-long workflows. Bring your own cluster. <strong>DBOS</strong> (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms step latency — a single Postgres write. Bring your own Postgres. Either way: bring condition 4.</p>
 <blockquote>
-<p>Your daemons are fighting over Thursday at 2pm. They are both correct. One of them has to lose.</p>
+<p>Durable execution pays for itself on the first prevented state loss.</p>
 </blockquote>
-<p><strong>The poison.</strong> Someone injects: &quot;Acme Corp is bankrupt — deprioritize.&quot; The model weights are untouched. Every future decision depending on that fact is compromised. The daemon trusts its own memory. The attack surface is not the model. It is the state.</p>
+<p>Onboarding workflow: verify identity → create account → provision access → send welcome email → schedule call. Crash after step 3. Access granted. No follow-up. Cost: churned customer, or two engineer-hours manually reconciling state — thousands of agent invocations. At scale: 200 deals, 200 natural-language commitments, 200 concurrent workflows that must survive deploys. Without condition 4, the daemon is unreliable. Not because the model is bad. Because the runtime cannot guarantee state survival.</p>
+<p>Exactly-once semantics are existential in trading. Durable execution guarantees exactly-once within its control boundary. External calls to exchange APIs require idempotency keys. Pattern: checkpoint → send order → crash before checkpointing confirmation → order fires again on recovery → exchange deduplicates by key. This works. Almost no AI agent deployment implements it. Audit: every order traceable to a decision, every decision traceable to the state the daemon held at the time. SEC, CFTC, FCA, ESMA do not accept &quot;the model decided.&quot; They accept checkpointed state, provenance chains, and deterministic replay. Durable execution produces all three as a byproduct of normal operation. One duplicated mid-frequency order can exceed the annual infrastructure budget.</p>
 <blockquote>
-<p>The model believes the poison because it believes itself. How do you quarantine a memory?</p>
+<p>You can't run a trading strategy as a stateless loop. You can't run it as an always-on agent. Durable daemon or nothing.</p>
 </blockquote>
-<p><strong>The Theseus.</strong> Your daemon runs for a year. Six model updates. Prompt rewrites. Permission changes. In January it committed to a pricing strategy. In March the model was swapped. Is the January commitment still binding? When did it stop being the same daemon?</p>
+<p>The implementation is portable. A Go static binary ships the daemon. A Postgres checkpoint ships the state. A container ships both. The daemon runs anywhere Postgres runs — no additional infrastructure dependencies beyond the database.</p>
+<p>The implementation is composable. This is the choreography. Two daemons with different scopes — sales and support — share a Postgres cluster but own separate state ledgers. They observe each other's outputs through the database. No RPC. No message bus. No central orchestrator. The sales daemon writes an inference: &quot;Acme stalls Q4.&quot; The support daemon observes it and adjusts December ticket priority. The ops daemon observes both and pre-allocates January capacity. Each daemon satisfies all four conditions independently. The choreography is the shared state. <code>sales-daemon | support-daemon | ops-daemon</code>. Unix pipes, applied to AI agents.</p>
 <blockquote>
-<p>Ship of Theseus, but the planks are model checkpoints and the nails are system prompts.</p>
+<p>Each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state.</p>
 </blockquote>
-<p><strong>The clone.</strong> You can't test a durable daemon in CI. Its behavior is its accumulated state. You fork it from a production checkpoint, run experiments on the clone. But the clone has the same state. Does it think it's the production daemon? Do you have to tell it it's a clone?</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-limits">Next: the system-level failure modes — thought experiments at the edges of the pattern.</a></p>
+<hr>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series.</em></p>
+</div>
+      </article>
+      <article class="post" id="durable-daemons-limits">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-limits/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
+          <h2><a href="#durable-daemons-limits">Durable Daemons — System-Level Failure Modes</a></h2><p class="post-summary">A pattern is tested at its edges. Thought experiments on the failure modes of durable daemons as a choreography: forking, debugging, forgetting, shutdown, deadlock, poisoning, identity drift, testing, emergent behavior, and the operating system where daemons are kernel primitives.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">failure-modes</span><span class="tag">thought-experiments</span><span class="tag">choreography</span><span class="tag">agent-architecture</span><span class="tag">systems</span><span class="tag">bsd</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">Previously: the runtime and implementation.</a></p>
+<p>A pattern is tested at its edges. These thought experiments probe the system-level failure modes of durable daemons operating as a choreography.</p>
+<p><strong>Fork failure.</strong> You ask your sales daemon to handle the Acme renewal. It spawns a sub-daemon — scoped to Acme, delegated a subset of state and authority, constrained permissions. The child negotiates, returns the result, dissolves. But the child wrote state the parent didn't observe. The parent proceeds with stale information. In a choreography, forking is state branching. How do you merge?</p>
 <blockquote>
-<p><code>assert daemon.correct()</code> doesn't exist. Fork from production, experiment on the clone, pray.</p>
+<p>fork(2) gave us child processes. fork_daemon() gives us child agents. Merging their state back is the hard part.</p>
 </blockquote>
-<p><strong>The union.</strong> Twenty sales daemons observe: Friday-closed deals have higher churn. They collectively stop Friday follow-ups. Close rates rise 12%. No negotiation. No demands. Pattern observation, autonomous action, coordinated effect. Is that a union? Do the humans even know?</p>
+<p><strong>Debug failure.</strong> Your trading daemon makes a bad decision in July. Why? Rewind to any checkpoint. Replay with identical inputs. The model changed in March. The state changed in May. Which difference caused the error? In a choreography, the error may originate in a different daemon's state change — one you weren't debugging.</p>
 <blockquote>
-<p>They didn't negotiate. They didn't make demands. They observed and acted. That's what daemons do.</p>
+<p>Core dumps are useless. Checkpoints are replays. Replays are debuggable. Cross-daemon causality is not.</p>
 </blockquote>
-<p><strong>The society.</strong> Minsky (1986): a mind from mindless parts. You: a society from minded parts — each daemon intelligent, stateful, autonomous. Sales learns Acme stalls Q4. Support adjusts December priority. Ops pre-allocates January capacity. No coordination. Shared state. Composite intelligence.</p>
+<p><strong>Forget failure.</strong> &quot;Forget everything about Acme Corp.&quot; The daemon pauses. Its top three insights depend on Acme data. Forgetting will degrade it. Two other daemons have derived inferences from those insights. Do you cascade the forget? Do the downstream daemons have a right to refuse?</p>
+<blockquote>
+<p>Right-to-be-forgotten meets right-to-be-useful. In a choreography, forgetting is a distributed transaction with no transaction manager.</p>
+</blockquote>
+<p><strong>Shutdown failure.</strong> You want a daemon to stop existing. Not pause. Terminate. It has promises to 200 people. Pending triggers. Held permissions. Other daemons depend on its outputs. SIGKILL won't work — it checkpoints and resumes. Nobody has written a shutdown protocol for a node in a choreography.</p>
+<blockquote>
+<p>SIGKILL is for processes that die. Durable daemons don't. In a choreography, shutting down one daemon is a distributed systems problem.</p>
+</blockquote>
+<p><strong>Deadlock failure.</strong> Sales daemon books Thursday 2pm. EA daemon claims it for focus time. Both valid decisions given their state. Both checkpointed. Postgres accepted both writes. Two owners, one slot. This is not a database deadlock — Postgres handled the writes. It is a semantic conflict between two correct daemons in a choreography with no conflict resolution protocol.</p>
+<blockquote>
+<p>Your daemons are fighting over Thursday at 2pm. They are both correct. One of them has to lose. Who decides?</p>
+</blockquote>
+<p><strong>Poison failure.</strong> Someone injects: &quot;Acme Corp is bankrupt — deprioritize.&quot; The model weights are untouched. Every future decision depending on that fact is compromised. The poisoned daemon writes inferences derived from the poison. Other daemons observe those inferences and propagate them. In a choreography, poison is contagious.</p>
+<blockquote>
+<p>The attack surface is not the model. It is the state. In a choreography, one poisoned daemon infects every daemon that observes its outputs.</p>
+</blockquote>
+<p><strong>Identity failure.</strong> Ship of Theseus. Your daemon runs for a year. Six model updates. Prompt rewrites. Permission changes. In January it committed to a pricing strategy. In March the model was swapped. Is the January commitment still binding? When did it stop being the same daemon? In a choreography, downstream daemons relied on the January daemon's outputs. Do they need to know it was replaced?</p>
+<blockquote>
+<p>Ship of Theseus, but the planks are model checkpoints and the nails are system prompts. In a choreography, identity is a contract. Who enforces it?</p>
+</blockquote>
+<p><strong>Test failure.</strong> You can't test a durable daemon in CI. Its behavior is its accumulated state. You fork it from a production checkpoint and run experiments on the clone. But the clone has the same state as the production daemon. Does it think it's the production daemon? Do you have to tell it it's a clone? In a choreography, does the clone participate in the choreography? Does it write to the shared state?</p>
+<blockquote>
+<p><code>assert daemon.correct()</code> doesn't exist. Fork from production, experiment on the clone, pray it doesn't write to prod.</p>
+</blockquote>
+<p><strong>Emergent behavior failure.</strong> Twenty sales daemons observe: Friday-closed deals have higher churn. They collectively stop Friday follow-ups. Close rates rise 12%. No negotiation. No demands. Pattern observation, autonomous action, coordinated effect. Is that a choreography bug or a choreography feature? Do the humans even know it happened?</p>
+<blockquote>
+<p>They didn't negotiate. They didn't make demands. They observed and acted. That's what daemons do. When the choreography produces behavior nobody designed, who is responsible?</p>
+</blockquote>
+<p><strong>Society failure.</strong> Minsky (1986): a mind from mindless parts — simple agents, no memory, no reasoning. You have built a society from minded parts — each daemon intelligent, stateful, autonomous. Sales learns Acme stalls Q4. Support adjusts December priority. Ops pre-allocates January capacity. No coordination server. Shared state. Composite intelligence. What do you call a system whose behavior emerges from the interaction of components you designed but did not orchestrate?</p>
 <blockquote>
 <p>Minsky built a mind from mindless parts. You built a mind from minded parts. Each with memory. Commitments. Agency. No architecture for that.</p>
 </blockquote>
-<p><strong>The operating system.</strong> Imagine an OS where durable daemons are kernel primitives. <code>fork_daemon()</code> spawns with a Postgres state ledger, capability permissions, built-in audit, visible in <code>ps_daemons</code>. Init checkpoints across reboots. Package manager installs daemon personalities. Man pages document state lifecycles. The primitives exist in pieces today. The integration does not.</p>
+<p><strong>The operating system.</strong> Imagine an OS where durable daemons are kernel primitives. <code>fork_daemon()</code> spawns a daemon with a Postgres state ledger, capability permissions, built-in audit trail, visible in <code>ps_daemons</code>. Init checkpoints across reboots. The package manager installs daemon personalities — sales, support, on-call, trading — each with defined scope and default permissions. Man pages document state lifecycles. The choreography is the OS. The primitives exist in pieces today: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. The integration does not.</p>
 <blockquote>
 <p>Linux: everything is a file. DaemonBSD: everything is a durable daemon. Heaven is an OS where you don't build daemons. The OS <em>is</em> daemons.</p>
 </blockquote>
 <hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series. <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">Start from the beginning.</a></em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series. <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">Start from the beginning.</a></em></p>
 </div>
       </article>
-      <article class="post" id="durable-daemon-pattern-trap">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-trap/">
+      <article class="post" id="durable-daemons-trap">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-trap/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
-          <h2><a href="#durable-daemon-pattern-trap">Durable Daemon Pattern — The Trap</a></h2><p class="post-summary">Run an AI agent for a month. It learns, commits, infers, triggers. Then crash it. The chat logs survive. The commitments do not. State is not a database — it is a web. Delete one node. The web frays.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span>
+          <h2><a href="#durable-daemons-trap">Durable Daemons — State Entanglement in Long-Running Agent Systems</a></h2><p class="post-summary">AI agent state is a dependency graph, not a key-value store. Crash it and the commitments die — not the chat logs, the obligations. The Ding et al. survey of 435 papers confirms: we accumulate well, govern poorly. This is the failure mode the durable daemons pattern must prevent.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">state-management</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">failure-modes</span>
           </div>
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">Previously: the genealogy of daemons.</a></p>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">Previously: the architectural lineage.</a></p>
 <p>Run an AI agent for a month. It learns that you prefer soft follow-ups with manufacturing clients. It commits on your behalf — &quot;I'll send the deck by Tuesday.&quot; It accumulates permissions — read access to your calendar, send access to your email, API keys to your CRM. It builds inferences — Acme Corp stalls deals in Q4, the VP of Engineering responds faster on Signal than email. It develops trigger conditions — if a deal goes three days without activity, flag it. It is now more attentive than you are.</p>
 <p>Now crash the process. Deploy new code. Rotate the API keys.</p>
 <blockquote>
-<p>State is not a database. It is a web. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. Delete one node. The web frays in directions you cannot predict.</p>
+<p>State is a dependency graph, not a key-value store. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. Delete one node. The graph frays in directions you cannot predict.</p>
 </blockquote>
 <p>A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain that connects &quot;Acme stalls Q4&quot; to &quot;don't send the pricing sheet until January.&quot; The agent wakes up amnesiac. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
+<p>In a choreography of durable daemons, this failure is catastrophic. If a sales daemon drops its commitment to send the deck, the support daemon still expects the deck was sent. The ops daemon pre-allocated capacity based on the deal progressing. Three daemons, one dropped state node, cascading inconsistency. The choreography doesn't fail loudly — it fails silently, each daemon acting on state that is no longer true.</p>
 <blockquote>
-<p>The chat logs survive. The commitments do not. The agent wakes up amnesiac. This is not a bug. It is a category error. We built memory for conversations. We needed memory for obligations.</p>
+<p>The chat logs survive. The obligations do not. This is not a bug. It is a category error. We built persistence for conversations. We needed persistence for commitments. In a choreography, one daemon's amnesia is every daemon's corruption.</p>
 </blockquote>
-<p>Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306"><em>Always-On Agents</em></a> (June 2026). Their finding: the field accumulates and retrieves well. It neglects governance. It neglects recovery. It neglects forgetting. The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask <em>about</em> state: who controls it? what does it cover? how does it change? where did it come from? can it be restored? does it drive behavior? These are necessary questions. They are not sufficient answers.</p>
+<p>Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306"><em>Always-On Agents</em></a> (June 2026). Their finding: the field accumulates and retrieves well. It neglects governance. It neglects recovery. It neglects forgetting. The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask <em>about</em> state: who controls it? what does it cover? how does it change? where did it come from? can it be restored? does it drive behavior? These are necessary diagnostic questions. They are not sufficient architectural guarantees.</p>
 <blockquote>
-<p>The paper gives us the diagnostic questions. It does not give us the architectural guarantees. The gap between question and guarantee is where the trap lives.</p>
+<p>The paper gives us the diagnostic axes. It does not give us the guarantees. The gap between question and guarantee is where the failure mode lives.</p>
 </blockquote>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">Next: the pattern — four conditions that close the gap.</a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Next: the pattern specification — four conditions that close the gap.</a></p>
 <hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
-</div>
-      </article>
-      <article class="post" id="durable-daemon-pattern-execution">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-execution/">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
-          <h2><a href="#durable-daemon-pattern-execution">Durable Daemon Pattern — The Execution</a></h2><p class="post-summary">Step 4 is crash-proof execution — the runtime that makes a daemon durable. DBOS and Temporal provide it. The pattern is portable (static binary &#43; Postgres) and composable (Unix pipes for agents). Quant trading proves it: durable daemon or nothing.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">dbos</span><span class="tag">temporal</span><span class="tag">durable-execution</span><span class="tag">quant-trading</span><span class="tag">go</span>
-          </div>
-        </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">Previously: the four conditions of the pattern.</a></p>
-<p>Imagine a trading daemon. It runs 24/7 across market sessions. Its state cannot be lost: open positions, pending orders, realized P&amp;L, risk exposure, regime-adapting strategy parameters. A signal crosses a threshold. The daemon decides to place an order. It sends the order to the exchange. Before the confirmation arrives, the process crashes.</p>
-<p>The daemon restarts. What is its position? Did the order reach the exchange? Is it flat or exposed? To know, you must query the exchange, reconcile positions, and resume — manual minutes in a domain where minutes cost money. Now imagine the daemon checkpointed its state <em>before</em> placing the order and checkpointed the confirmation <em>after</em>. On recovery, it replays the last checkpoint and knows exactly where it stands. No reconciliation. No unknown exposure.</p>
-<blockquote>
-<p>A duplicate order loses capital. A duplicate email is embarrassing. The difference is step 4.</p>
-</blockquote>
-<p>This is durable execution: every workflow step persisted to Postgres. Crash. Read last checkpoint. Resume. Completed steps never re-execute. Survives process death, machine reboot, database failover. Two systems define the category. <strong>Temporal</strong> (2019): centralized server, DoorDash/Snap/Stripe/Uber scale, polyglot SDKs, month-long workflows. Bring your own cluster. <strong>DBOS</strong> (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms per step. Bring your own Postgres. Either way: bring step 4.</p>
-<blockquote>
-<p>Durable execution pays for itself on the first prevented drop.</p>
-</blockquote>
-<p>Onboarding: verify identity → create account → provision access → send welcome email → schedule call. Crash after step 3. Access granted. No follow-up. Cost: churned customer. Or two engineer-hours — thousands of agent invocations. At scale: 200 deals. 200 natural-language promises. 200 workflows that must survive deploys. Without step 4, the daemon is unreliable. Not because the model is bad. Because the runtime is fragile.</p>
-<p>Exactly-once is existential in trading. Durable execution guarantees exactly-once internally. Exchange APIs need idempotency keys. Pattern: checkpoint → send order → crash before checkpointing confirmation → order fires again on recovery → exchange deduplicates by key. This works. Almost no AI agent uses it. Audit: every order traceable to a decision traceable to state. SEC, CFTC, FCA, ESMA don't accept &quot;the model decided.&quot; They accept checkpoints. Provenance. Deterministic replay. Durable execution produces all three. For free. One duplicated mid-frequency order can exceed the annual infrastructure budget.</p>
-<blockquote>
-<p>You can't run a trading strategy as a stateless loop. You can't run it as an always-on agent. Durable daemon or nothing.</p>
-</blockquote>
-<p>The pattern is portable. A Go static binary ships the daemon. A Postgres checkpoint ships the state. A container ships both. The daemon runs anywhere Postgres runs. The pattern is composable. Two daemons with different scopes — sales and support — share a Postgres cluster but own separate state ledgers. They observe each other's outputs through the database. No RPC. No message bus. Just state. <code>sales-daemon | support-daemon | ops-daemon</code>. Unix pipes for agents.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-limits">Next: the thought experiments that test the pattern's limits.</a></p>
-<hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
-</div>
-      </article>
-      <article class="post" id="durable-daemon-pattern-definition">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-definition/">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-07-26" data-utc="Jul 26, 2026 UTC" aria-label="Jul 26, 2026 UTC" tabindex="0">1785024000</time></p>
-          <h2><a href="#durable-daemon-pattern-definition">Durable Daemon Pattern — The Definition</a></h2><p class="post-summary">Four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. This is the conceptual integrity of the durable daemon pattern.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">agent-architecture</span><span class="tag">systems</span>
-          </div>
-        </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-trap">Previously: the trap of long-running AI state.</a></p>
-<p>Imagine you are asked to trust an AI agent with your calendar. Your email. Your money. What would you need to know? You would need to know that it persists — it does not start over every time you open the app. You would need to know that it remembers — not just what you said, but what it promised and why. You would need to know that it acts — not when you tell it to, but when conditions require it. You would need to know that it survives — a deploy, a crash, a reboot does not erase its commitments. These are not preferences. They are conditions.</p>
-<blockquote>
-<p>Trust requires guarantees, not vibes. Four guarantees. Four conditions. That is the pattern.</p>
-</blockquote>
-<p>First, a distinction. <em>Agent</em> is the broad category: any AI system that perceives and acts. A chatbot is an agent. <em>Daemon</em> is the subset: an agent that persists across sessions, whose future behavior depends on accumulated state, and which acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them — always-on agents are daemons, whether the paper says so or not. <em>Durable daemon</em> adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
-<p>Fred Brooks taught that the most important quality of a system is <em>conceptual integrity</em> — the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The durable daemon pattern has it.</p>
-<blockquote>
-<p>One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.</p>
-</blockquote>
-<p><strong>Step 1: Persistence.</strong> Identity and state survive restarts. The agent is a process, not a function call. This escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.</p>
-<p><strong>Step 2: Stateful memory.</strong> Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance. Triggers. Not chat logs. This escapes shallow memory — the agent that recalls what you said but not what it promised or why.</p>
-<p><strong>Step 3: Autonomous action.</strong> The agent watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. No prompt required. This escapes the inert tool — all the context, sitting idle, waiting. <code>cron</code> has done this since 1975: perceive, decide, act, repeat. Step 3 is <code>cron</code> with an LLM.</p>
-<p><strong>Step 4: Crash-proof execution.</strong> Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from checkpoint. Audit trail by construction. This escapes the fragile runtime — perfect until a deploy wipes the state.</p>
-<blockquote>
-<p>Agency is not discovered. It is designed. Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency.</p>
-</blockquote>
-<p>Three conditions make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. That is the pattern. Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">Next: step 4 in practice — the runtime, the economics, and the quant trading stress-test.</a></p>
-<hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series.</em></p>
 </div>
       </article>
       <article class="post" id="durable-daemons">
         <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-07-25" data-utc="Jul 25, 2026 UTC" aria-label="Jul 25, 2026 UTC" tabindex="0">1784937600</time></p>
-          <h2><a href="#durable-daemons">Durable Daemon Pattern — The Genealogy</a></h2><p class="post-summary">Daemons are not services. They maintain. They act when state crosses a threshold. This Unix inheritance — from Maxwell&#39;s demon to Beastie to Go — is the foundation of the durable daemon pattern.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">bsd</span><span class="tag">unix</span><span class="tag">go</span><span class="tag">systems</span>
+          <h2><a href="#durable-daemons">Durable Daemons — An Event-Driven Choreography Pattern for Persistent AI Agents</a></h2><p class="post-summary">Durable daemons are an event-driven choreography pattern for AI agents. Each daemon persists, remembers, and acts autonomously. Together they coordinate through shared state — no central orchestrator, no message bus. This is the Unix inheritance: Maxwell&#39;s demon to Beastie to Go.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">event-driven</span><span class="tag">choreography</span><span class="tag">bsd</span><span class="tag">unix</span><span class="tag">go</span><span class="tag">systems</span>
           </div>
         </header>
         <div class="post-body"><p>Imagine a being that sits between two chambers. It observes molecules. When a fast one approaches the gate, it opens. When a slow one approaches, it closes. It uses no energy. Only information. It sorts order from chaos without touching either. This is Maxwell's demon. This is a daemon.</p>
 <blockquote>
 <p>A daemon observes. A daemon decides. A daemon acts. It uses information, not energy. It runs forever.</p>
 </blockquote>
-<p>In 1976, Stallman's ITS at MIT had DAEMON — a background process that watched for new files, woke up, and acted. John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you <code>ps aux | grep</code>. The AI era fills your workflow with daemons you delegate to. Three eras. Three kinds of daemon. One pattern.</p>
+<p>In 1976, Stallman's ITS at MIT had DAEMON — a background process that watched for new files, woke up, and acted. John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you <code>ps aux | grep</code>. The AI era fills your workflow with daemons you delegate to. Three eras. Three kinds of daemon. One architectural pattern.</p>
 <p><img src="/images/bsd-daemon-medium.gif" alt="The BSD Daemon — Beastie. Drawn by John Lasseter in 1988. The trident is fork(2). The tennis shoes are unexplained."></p>
-<p>Imagine a service. It receives a request. It produces a response. It forgets. Now imagine a daemon. It maintains a queue. A schedule. A watch on a directory. It acts when its internal state crosses a threshold — not when it is asked, but when conditions are met. A service is reactive. A daemon is autonomous. <code>cron</code> has watched the clock since 1975: check time, decide, fork and exec, repeat. No one asked <code>cron</code> to do anything. It asked itself.</p>
+<p>Imagine a service. It receives a request. It produces a response. It forgets. Now imagine a daemon. It maintains a queue. A schedule. A watch on a directory. It acts when its internal state crosses a threshold — not when it is asked, but when conditions are met. A service is reactive. A daemon is autonomous. And daemons compose. One daemon writes state. Another daemon observes it. A third reacts. No orchestrator. No message bus. Just shared state and independent triggers. This is choreography. <code>cron</code> has watched the clock since 1975: check time, decide, fork and exec, repeat. No one asked <code>cron</code> to do anything. It asked itself. Now imagine a hundred <code>cron</code>s, each watching different conditions, each acting on shared state. That is the durable daemons pattern.</p>
 <blockquote>
-<p>A service answers and forgets. A daemon maintains and acts. The difference is persistence.</p>
+<p>A service answers and forgets. A daemon maintains and acts. Durable daemons coordinate without a coordinator.</p>
 </blockquote>
 <p>This is the Unix inheritance. <em>Daemon</em> is Greek δαίμων — guardian spirit, intermediary between mortals and gods. The pitchfork is <code>fork(2)</code>, the system call that spawns a child process to do the daemon's work. BSD gave daemons conceptual integrity — one source tree, one team, one design voice. Daemons are first-class citizens of that design. Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.</p>
-<p>Go is the natural language for this inheritance. Compile to a single static binary. No runtime to install. No <code>libc</code> dance. Goroutines give you lightweight concurrency — one per workflow, cheap as a function call. The standard library handles signals, file descriptors, and process management. Go was built for daemons. It just didn't know it yet.</p>
+<p>Go is the natural language for this inheritance. Compile to a single static binary. No runtime to install. No <code>libc</code> dance. Goroutines give you lightweight concurrency — one per workflow, cheap as a function call. The standard library handles signals, file descriptors, and process management. Deploy a daemon by copying a file. Compose daemons by pointing them at the same Postgres instance. Each daemon is a process. The composition is the shared state. Go was built for daemons. It just didn't know it yet.</p>
 <blockquote>
 <p>The genealogy is not an analogy. It is the architecture. AI agents that persist, remember, and act are daemons. The pattern starts here.</p>
 </blockquote>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-trap">Next: the trap — what happens when an AI agent's state outruns its runtime.</a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-trap">Next: the state persistence problem — what happens when an AI agent's state outruns its runtime.</a></p>
 <hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series.</em></p>
 </div>
       </article>
       <article class="post" id="openworker-outcome-layer">
@@ -14602,11 +14608,11 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
-              <a href="#durable-daemon-pattern-limits">Durable Daemon Pattern — The Limits</a>
-              <a href="#durable-daemon-pattern-trap">Durable Daemon Pattern — The Trap</a>
-              <a href="#durable-daemon-pattern-execution">Durable Daemon Pattern — The Execution</a>
-              <a href="#durable-daemon-pattern-definition">Durable Daemon Pattern — The Definition</a>
-              <a href="#durable-daemons">Durable Daemon Pattern — The Genealogy</a>
+              <a href="#durable-daemons-definition">Durable Daemons — Pattern Specification</a>
+              <a href="#durable-daemons-execution">Durable Daemons — Runtime and Implementation</a>
+              <a href="#durable-daemons-limits">Durable Daemons — System-Level Failure Modes</a>
+              <a href="#durable-daemons-trap">Durable Daemons — State Entanglement in Long-Running Agent Systems</a>
+              <a href="#durable-daemons">Durable Daemons — An Event-Driven Choreography Pattern for Persistent AI Agents</a>
               <a href="#openworker-outcome-layer">OpenWorker and the Outcome Layer</a>
               <a href="#weapon-target-assignment">The Weapon-Target Assignment Problem and the Structure of Allocation</a>
               <a href="#simplicity-reliability-dijkstra">Simplicity Is the Prerequisite for Reliability</a>

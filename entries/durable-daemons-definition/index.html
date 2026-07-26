@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. This is the conceptual integrity of the durable daemon pattern.">
+  <meta name="description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-definition/">
-  <title>Durable Daemon Pattern — The Definition — hackspree</title>
-  <meta property="og:title" content="Durable Daemon Pattern — The Definition">
-  <meta property="og:description" content="Four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. This is the conceptual integrity of the durable daemon pattern.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-definition/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-definition/">
+  <title>Durable Daemons — Pattern Specification — hackspree</title>
+  <meta property="og:title" content="Durable Daemons — Pattern Specification">
+  <meta property="og:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemons-definition/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Durable Daemon Pattern — The Definition">
-  <meta name="twitter:description" content="Four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. This is the conceptual integrity of the durable daemon pattern.">
+  <meta name="twitter:title" content="Durable Daemons — Pattern Specification">
+  <meta name="twitter:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,31 +76,32 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-07-26">2026-07-26</time></p>
-          <h1>Durable Daemon Pattern — The Definition</h1><p class="post-summary">Four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. This is the conceptual integrity of the durable daemon pattern.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">agent-architecture</span><span class="tag">systems</span></div>
+          <h1>Durable Daemons — Pattern Specification</h1><p class="post-summary">The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemons-pattern</span><span class="tag">pattern-specification</span><span class="tag">agent-architecture</span><span class="tag">choreography</span><span class="tag">systems</span></div>
           
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-trap">Previously: the trap of long-running AI state.</a></p>
-<p>Imagine you are asked to trust an AI agent with your calendar. Your email. Your money. What would you need to know? You would need to know that it persists — it does not start over every time you open the app. You would need to know that it remembers — not just what you said, but what it promised and why. You would need to know that it acts — not when you tell it to, but when conditions require it. You would need to know that it survives — a deploy, a crash, a reboot does not erase its commitments. These are not preferences. They are conditions.</p>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-trap">Previously: the state persistence problem.</a></p>
+<p>Imagine you are asked to trust an AI agent with your calendar. Your email. Your money. What would you need to know? You would need to know that it persists — it does not start over every time you open the app. You would need to know that it remembers — not just what you said, but what it promised and why. You would need to know that it acts — not when you tell it to, but when conditions require it. You would need to know that it survives — a deploy, a crash, a reboot does not erase its commitments. These are not preferences. They are preconditions.</p>
 <blockquote>
-<p>Trust requires guarantees, not vibes. Four guarantees. Four conditions. That is the pattern.</p>
+<p>Trust requires guarantees, not vibes. Four guarantees. Four conditions. That is the specification.</p>
 </blockquote>
-<p>First, a distinction. <em>Agent</em> is the broad category: any AI system that perceives and acts. A chatbot is an agent. <em>Daemon</em> is the subset: an agent that persists across sessions, whose future behavior depends on accumulated state, and which acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them — always-on agents are daemons, whether the paper says so or not. <em>Durable daemon</em> adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
-<p>Fred Brooks taught that the most important quality of a system is <em>conceptual integrity</em> — the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The durable daemon pattern has it.</p>
+<p>First, the type hierarchy. <em>Agent</em> is the broad category: any AI system that perceives and acts. A chatbot is an agent. <em>Daemon</em> is the subtype: an agent that persists across sessions, whose future behavior depends on accumulated state, and which acts without being prompted. A chatbot fails all three. An always-on agent (Ding et al.) satisfies them. <em>Durable daemon</em> adds a fourth condition. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
+<p>Fred Brooks taught that the most important quality of a system is <em>conceptual integrity</em> — the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The durable daemons pattern has it.</p>
 <blockquote>
 <p>One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.</p>
 </blockquote>
-<p><strong>Step 1: Persistence.</strong> Identity and state survive restarts. The agent is a process, not a function call. This escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.</p>
-<p><strong>Step 2: Stateful memory.</strong> Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance. Triggers. Not chat logs. This escapes shallow memory — the agent that recalls what you said but not what it promised or why.</p>
-<p><strong>Step 3: Autonomous action.</strong> The agent watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. No prompt required. This escapes the inert tool — all the context, sitting idle, waiting. <code>cron</code> has done this since 1975: perceive, decide, act, repeat. Step 3 is <code>cron</code> with an LLM.</p>
-<p><strong>Step 4: Crash-proof execution.</strong> Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from checkpoint. Audit trail by construction. This escapes the fragile runtime — perfect until a deploy wipes the state.</p>
+<p><strong>Condition 1: Persistence.</strong> Identity and state survive restarts. The daemon is a process, not a function call. This eliminates the stateless loop failure mode — every invocation at zero, every preference forgotten, every commitment gone.</p>
+<p><strong>Condition 2: Stateful memory.</strong> Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance records. Trigger conditions. Not a vector database of chat logs. This eliminates the shallow memory failure mode — the agent that recalls what you said but not what it promised or why.</p>
+<p><strong>Condition 3: Autonomous action.</strong> The daemon watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. No prompt required. This eliminates the inert tool failure mode — all the context, sitting idle, waiting. <code>cron</code> has done this since 1975: perceive, decide, act, repeat. Condition 3 is <code>cron</code> with an LLM.</p>
+<p><strong>Condition 4: Crash-proof execution.</strong> Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from the last checkpoint. Audit trail by construction. This eliminates the fragile runtime failure mode — perfect until a deploy wipes the in-flight state.</p>
+<p>These conditions compose. A durable daemon writes its state to Postgres. Another durable daemon observes that state and reacts. A third observes the second and reacts. Each daemon satisfies all four conditions independently. The choreography emerges from shared state — no orchestrator, no message bus, no coordination server. This is an event-driven architecture where the event store <em>is</em> the state store, and every daemon is both a producer and a consumer.</p>
 <blockquote>
-<p>Agency is not discovered. It is designed. Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency.</p>
+<p>Agency is not discovered. It is designed. Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency. The choreography is the composition.</p>
 </blockquote>
-<p>Three conditions make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. That is the pattern. Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">Next: step 4 in practice — the runtime, the economics, and the quant trading stress-test.</a></p>
+<p>Three conditions define a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. The pattern composes them into a system. Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">Next: the runtime and implementation — step 4 in practice.</a></p>
 <hr>
-<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemons-pattern">Durable Daemons</a> series.</em></p>
 </div>
       </article>
     </div>

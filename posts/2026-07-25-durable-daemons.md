@@ -6,13 +6,13 @@ summary: What makes an AI agent trustworthy with real work and real money? Four 
 tags: daemons, durable-daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
 ---
 
-> What is a daemon?
+> Where do daemons come from?
 
 > Maxwell's demon: a being that observes and opens a gate. It uses information, not energy. The daemon does the same.
 
 In 1976, Stallman's ITS at MIT had DAEMON — a background process. It watched for new files. It woke up. It acted. Persistent. Stateful. Autonomous.
 
-John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you `ps aux | grep`. The AI era fills your workflow with daemons you delegate to.
+John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you `ps aux | grep`. The AI era fills your workflow with daemons you delegate to. Three eras. Three kinds of daemon. One pattern.
 
 ![The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for The Design and Implementation of the 4.3BSD Operating System. The trident is fork(2). The tennis shoes are unexplained.](/images/bsd-daemon-medium.gif)
 
@@ -26,7 +26,7 @@ This is the Unix inheritance. *Daemon* is Greek δαίμων — guardian spirit
 
 > State is not a database. It is a web. Delete one node. The web frays.
 
-It learns your preferences. It makes commitments. It accumulates permissions. It builds inferences. It develops trigger conditions. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. You cannot wipe and rebuild this. It is entangled.
+It learns your preferences — which prospects need soft follow-ups, which Slack channels are noise, which meetings you always skip. It makes commitments on your behalf. It accumulates permissions. It builds inferences. It develops trigger conditions — if a deal goes three days without activity, flag it. It is now more attentive than you are. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. You cannot wipe and rebuild this. It is entangled.
 
 > What survives a crash?
 
@@ -52,7 +52,7 @@ That term is *durable daemon*.
 
 > One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.
 
-Conceptual integrity is when no part of a system contradicts any other part. Brooks named it. A **durable daemon** has it. Each condition is a step up from the trap.
+Conceptual integrity means the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. A **durable daemon** has it. Each condition is a step up from the trap.
 
 > What is step 1?
 
@@ -94,7 +94,7 @@ Beastie's pitchfork gets an upgrade: `fork(2)` → `fork_daemon()`. The tennis s
 
 > Checkpoint to Postgres. Crash. Read checkpoint. Resume. The workflow survives.
 
-Durable execution: every step persisted. Two systems. **Temporal** (2019): centralized server. DoorDash, Snap, Stripe, Uber scale. Polyglot SDKs. Month-long workflows. **DBOS** (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms per step. Philosophy: "Postgres is the operating system."
+Durable execution: every step persisted. Two systems. **Temporal** (2019): centralized server. DoorDash, Snap, Stripe, Uber scale. Polyglot SDKs. Month-long workflows. Bring your own cluster. **DBOS** (2023): Mike Stonebraker's library. No server. No queue. No sidecar. 1–2 ms per step. Bring your own Postgres. Either way: bring step 4.
 
 > What does this cost?
 
@@ -106,7 +106,7 @@ A daemon books a meeting. Sends email. Updates CRM. Files Jira. Multi-step. Exte
 
 > A duplicate order loses capital. A duplicate email is embarrassing. The difference is step 4.
 
-Quant trading. A trading daemon runs 24/7. State cannot be lost: positions, orders, P&L, risk exposure, regime parameters. It fires orders autonomously. Latency: microseconds to seconds. Failures: dollars. Crash between deciding and confirming an order. Unknown position. Flat or exposed? A durable daemon checkpoints *before* and *after*. Recovery: replay checkpoint. Know your position. No reconciliation. Exactly-once is existential. Durable execution: exactly-once internally. Exchange APIs: idempotency keys. Pattern: checkpoint → send → crash before checkpointing confirmation → order fires again → exchange deduplicates. This works. Almost no AI agent uses it. Audit: every order traceable to a decision traceable to state. SEC, CFTC, FCA, ESMA don't accept "the model decided." They accept checkpoints. Provenance. Deterministic replay. Durable execution produces all three. For free. One duplicated order can exceed the annual infrastructure budget.
+Quant trading. A trading daemon runs 24/7. State cannot be lost: positions, orders, P&L, risk exposure, regime parameters. It fires orders autonomously. Latency: microseconds to seconds. Failures: dollars. Crash between deciding and confirming an order. Unknown position. Flat or exposed? Without step 4: query the exchange, reconcile positions, resume. Manual minutes. Costly minutes. (Minutes cost more than durable execution.) With step 4: daemon checkpoints *before* and *after*. Recovery: replay checkpoint. Know your position. No reconciliation. Exactly-once is existential. Durable execution: exactly-once internally. Exchange APIs: idempotency keys. Pattern: checkpoint → send → crash before checkpointing confirmation → order fires again → exchange deduplicates. This works. Almost no AI agent uses it. Audit: every order traceable to a decision traceable to state. SEC, CFTC, FCA, ESMA don't accept "the model decided." They accept checkpoints. Provenance. Deterministic replay. Durable execution produces all three. For free. One duplicated order can exceed the annual infrastructure budget.
 
 > You can't run a trading strategy as a stateless loop. You can't run it as an always-on agent. Durable daemon or nothing.
 

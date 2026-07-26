@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons/">
-  <title>Durable Daemon Pattern — The Stairway to Heaven — hackspree</title>
-  <meta property="og:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta property="og:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemons/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-problem/">
+  <title>Durable Daemon Pattern — The Problem — hackspree</title>
+  <meta property="og:title" content="Durable Daemon Pattern — The Problem">
+  <meta property="og:description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-problem/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta name="twitter:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="twitter:title" content="Durable Daemon Pattern — The Problem">
+  <meta name="twitter:description" content="AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,32 +75,40 @@
       <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
       <article>
         <header>
-          <p class="post-meta"><time datetime="2026-07-25">2026-07-25</time></p>
-          <h1>Durable Daemon Pattern — The Stairway to Heaven</h1><p class="post-summary">A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span><span class="tag">agent-architecture</span><span class="tag">systems</span><span class="tag">bsd</span><span class="tag">dbos</span><span class="tag">temporal</span><span class="tag">durable-execution</span></div>
+          <p class="post-meta"><time datetime="2026-07-26">2026-07-26</time></p>
+          <h1>Durable Daemon Pattern — The Problem</h1><p class="post-summary">AI agent state is a web, not a database. Crash it and the commitments die. The literature knows we&#39;re good at accumulating, bad at governing. This is the gap the durable daemon pattern exists to close.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span></div>
           
         </header>
-        <div class="post-body"><p>The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Each is a step up from the chaos of long-running AI state.</p>
-<p>This series defines the pattern across five posts. Each is self-contained. Together they form the stairway.</p>
-<ol>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-genealogy">The Genealogy</a></strong> — Where daemons come from. Maxwell's demon, Beastie, BSD, and why Go is the natural language for daemons.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-problem">The Problem</a></strong> — AI agent state is a web, not a database. Crash it and the commitments die. The Ding et al. survey of 435 papers shows we're good at accumulating, bad at governing.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">The Definition</a></strong> — Agent ⊃ Daemon ⊃ Durable Daemon. Four conditions. Conceptual integrity. Agency is not discovered — it is designed.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">The Execution</a></strong> — Step 4 in practice. DBOS, Temporal, the economics of crash-proof execution, and why quant trading is the stress-test that proves the pattern.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-experiments">The Thought Experiments</a></strong> — Thirteen scenarios that test the limits of the pattern. The fork, the debug, the forget, the shutdown, the deadlock, the poison, the Theseus, the union, the society, and the operating system where daemons are primitives.</p>
-</li>
-</ol>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-genealogy">Previously: where daemons come from.</a></p>
+<blockquote>
+<p>What happens when an AI agent runs for a month?</p>
+</blockquote>
+<blockquote>
+<p>State is not a database. It is a web. Delete one node. The web frays.</p>
+</blockquote>
+<p>It learns your preferences — which prospects need soft follow-ups, which Slack channels are noise, which meetings you always skip. It makes commitments on your behalf. It accumulates permissions. It builds inferences. It develops trigger conditions — if a deal goes three days without activity, flag it. It is now more attentive than you are. A commitment depends on a preference. That preference depends on an inference. That inference depends on a Slack message from March. You cannot wipe and rebuild this. It is entangled.</p>
+<blockquote>
+<p>What survives a crash?</p>
+</blockquote>
+<blockquote>
+<p>The chat logs survive. The commitments do not. The agent wakes up amnesiac.</p>
+</blockquote>
+<p>A stateless agent: nothing of the state survives — the binary is fine, the context is gone. An agent with a vector database: the chat logs persist. But not the commitments. Not the permissions. Not the triggers. Not the causal chain. You spend two weeks re-teaching preferences. The dropped commitments become broken promises.</p>
+<blockquote>
+<p>What does the literature say?</p>
+</blockquote>
+<blockquote>
+<p>The field accumulates and retrieves well. It neglects governance, recovery, and forgetting. That gap is what happens when state outruns the runtime.</p>
+</blockquote>
+<p>Ding, Nannapaneni, Liu, and Zhang surveyed 435 papers. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.30306"><em>Always-On Agents</em></a> (June 2026). The survey provides six diagnostic axes — Authority, Scope, Mutability, Provenance, Recoverability, Actionability. These are questions you ask <em>about</em> state: who controls it? what does it cover? how does it change? where did it come from? can it be restored? does it drive behavior?</p>
+<p>These are diagnostic questions. They tell you whether your state is well-governed. They do not give you the architectural guarantees that make it well-governed. The paper gives us the questions. It does not give us the pattern that closes the gap.</p>
+<blockquote>
+<p>State without durability is a liability. Every piece of knowledge is a piece of the system a crash can destroy.</p>
+</blockquote>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">Next: the four conditions of the pattern.</a></p>
 <hr>
-<p><em>This is the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
 </div>
       </article>
     </div>

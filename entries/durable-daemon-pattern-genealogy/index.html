@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="description" content="Daemons are not services. They maintain. They act when state crosses a threshold. From Maxwell&#39;s demon to Beastie to Go binaries, this is the Unix inheritance that foundations the durable daemon pattern.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons/">
-  <title>Durable Daemon Pattern — The Stairway to Heaven — hackspree</title>
-  <meta property="og:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta property="og:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemons/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-genealogy/">
+  <title>Durable Daemon Pattern — The Genealogy — hackspree</title>
+  <meta property="og:title" content="Durable Daemon Pattern — The Genealogy">
+  <meta property="og:description" content="Daemons are not services. They maintain. They act when state crosses a threshold. From Maxwell&#39;s demon to Beastie to Go binaries, this is the Unix inheritance that foundations the durable daemon pattern.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-genealogy/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta name="twitter:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="twitter:title" content="Durable Daemon Pattern — The Genealogy">
+  <meta name="twitter:description" content="Daemons are not services. They maintain. They act when state crosses a threshold. From Maxwell&#39;s demon to Beastie to Go binaries, this is the Unix inheritance that foundations the durable daemon pattern.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,32 +75,38 @@
       <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
       <article>
         <header>
-          <p class="post-meta"><time datetime="2026-07-25">2026-07-25</time></p>
-          <h1>Durable Daemon Pattern — The Stairway to Heaven</h1><p class="post-summary">A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span><span class="tag">agent-architecture</span><span class="tag">systems</span><span class="tag">bsd</span><span class="tag">dbos</span><span class="tag">temporal</span><span class="tag">durable-execution</span></div>
+          <p class="post-meta"><time datetime="2026-07-26">2026-07-26</time></p>
+          <h1>Durable Daemon Pattern — The Genealogy</h1><p class="post-summary">Daemons are not services. They maintain. They act when state crosses a threshold. From Maxwell&#39;s demon to Beastie to Go binaries, this is the Unix inheritance that foundations the durable daemon pattern.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">bsd</span><span class="tag">unix</span><span class="tag">go</span><span class="tag">systems</span></div>
           
         </header>
-        <div class="post-body"><p>The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Each is a step up from the chaos of long-running AI state.</p>
-<p>This series defines the pattern across five posts. Each is self-contained. Together they form the stairway.</p>
-<ol>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-genealogy">The Genealogy</a></strong> — Where daemons come from. Maxwell's demon, Beastie, BSD, and why Go is the natural language for daemons.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-problem">The Problem</a></strong> — AI agent state is a web, not a database. Crash it and the commitments die. The Ding et al. survey of 435 papers shows we're good at accumulating, bad at governing.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">The Definition</a></strong> — Agent ⊃ Daemon ⊃ Durable Daemon. Four conditions. Conceptual integrity. Agency is not discovered — it is designed.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">The Execution</a></strong> — Step 4 in practice. DBOS, Temporal, the economics of crash-proof execution, and why quant trading is the stress-test that proves the pattern.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-experiments">The Thought Experiments</a></strong> — Thirteen scenarios that test the limits of the pattern. The fork, the debug, the forget, the shutdown, the deadlock, the poison, the Theseus, the union, the society, and the operating system where daemons are primitives.</p>
-</li>
-</ol>
+        <div class="post-body"><blockquote>
+<p>Where do daemons come from?</p>
+</blockquote>
+<blockquote>
+<p>Maxwell's demon: a being that observes and opens a gate. It uses information, not energy. The daemon does the same.</p>
+</blockquote>
+<p>In 1976, Stallman's ITS at MIT had DAEMON — a background process. It watched for new files. It woke up. It acted. Persistent. Stateful. Autonomous.</p>
+<p>John Carmack filled DOOM with daemons you shoot. Unix filled the background with daemons you <code>ps aux | grep</code>. The AI era fills your workflow with daemons you delegate to. Three eras. Three kinds of daemon. One pattern.</p>
+<p><img src="/images/bsd-daemon-medium.gif" alt="The BSD Daemon — Beastie. Drawn by John Lasseter in 1988 for The Design and Implementation of the 4.3BSD Operating System. The trident is fork(2). The tennis shoes are unexplained."></p>
+<blockquote>
+<p>What is a daemon, really?</p>
+</blockquote>
+<blockquote>
+<p>A service answers and forgets. A daemon maintains. It acts when state crosses a threshold.</p>
+</blockquote>
+<p>This is the Unix inheritance. A daemon is not something you invoke. It is something you start and it keeps running. <code>cron</code> has watched the clock since 1975: check time, decide, fork and exec, repeat. <code>inetd</code> listened for connections. <code>syslogd</code> collected messages. Each daemon maintained one thing — a queue, a schedule, a watch — and acted when its state changed. The daemon's future behavior depended on its accumulated state. This was true long before anyone called it an &quot;agent.&quot;</p>
+<p>Go is the natural language for this inheritance. Compile to a single static binary. No runtime to install. No <code>libc</code> dance. No virtual environment. Just a file you ship. Goroutines give you lightweight concurrency — one per workflow, cheap as a function call. The standard library handles signals, file descriptors, and process management out of the box. Go was built for daemons. It just didn't know it yet.</p>
+<p><em>Daemon</em> is Greek δαίμων — guardian spirit. The pitchfork is <code>fork(2)</code>. BSD gave daemons conceptual integrity — one tree, one team, one design — and Beastie, drawn by a comic artist paid for cracking a wall safe, redrawn by a Pixar founder, became the mascot. The tennis shoes are unexplained.</p>
+<blockquote>
+<p>Why does this matter now?</p>
+</blockquote>
+<blockquote>
+<p>Because AI agents are daemons. They run across sessions. They accumulate state. They act without being prompted. The genealogy is not an analogy. It is the architecture.</p>
+</blockquote>
+<p>The rest of this series defines the durable daemon pattern. <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-problem">Next: the problem the pattern solves.</a></p>
 <hr>
-<p><em>This is the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
 </div>
       </article>
     </div>

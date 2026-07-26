@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="description" content="The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. This is the conceptual integrity of the pattern.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons/">
-  <title>Durable Daemon Pattern — The Stairway to Heaven — hackspree</title>
-  <meta property="og:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta property="og:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemons/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemon-pattern-definition/">
+  <title>Durable Daemon Pattern — The Definition — hackspree</title>
+  <meta property="og:title" content="Durable Daemon Pattern — The Definition">
+  <meta property="og:description" content="The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. This is the conceptual integrity of the pattern.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/durable-daemon-pattern-definition/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Durable Daemon Pattern — The Stairway to Heaven">
-  <meta name="twitter:description" content="A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.">
+  <meta name="twitter:title" content="Durable Daemon Pattern — The Definition">
+  <meta name="twitter:description" content="The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. This is the conceptual integrity of the pattern.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,32 +75,68 @@
       <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
       <article>
         <header>
-          <p class="post-meta"><time datetime="2026-07-25">2026-07-25</time></p>
-          <h1>Durable Daemon Pattern — The Stairway to Heaven</h1><p class="post-summary">A five-part series defining the durable daemon pattern — four conditions that transform an AI agent from a function call into a trustworthy autonomous system. The genealogy, the problem, the definition, the execution, and the thought experiments.</p>
-          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">memory</span><span class="tag">governance</span><span class="tag">agent-architecture</span><span class="tag">systems</span><span class="tag">bsd</span><span class="tag">dbos</span><span class="tag">temporal</span><span class="tag">durable-execution</span></div>
+          <p class="post-meta"><time datetime="2026-07-26">2026-07-26</time></p>
+          <h1>Durable Daemon Pattern — The Definition</h1><p class="post-summary">The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. This is the conceptual integrity of the pattern.</p>
+          <div class="tags"><span class="tag">daemons</span><span class="tag">durable-daemon-pattern</span><span class="tag">ai-agents</span><span class="tag">always-on-agents</span><span class="tag">agent-architecture</span><span class="tag">systems</span></div>
           
         </header>
-        <div class="post-body"><p>The durable daemon pattern is four conditions — persistence, stateful memory, autonomous action, crash-proof execution. Each necessary. Together sufficient. Each is a step up from the chaos of long-running AI state.</p>
-<p>This series defines the pattern across five posts. Each is self-contained. Together they form the stairway.</p>
-<ol>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-genealogy">The Genealogy</a></strong> — Where daemons come from. Maxwell's demon, Beastie, BSD, and why Go is the natural language for daemons.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-problem">The Problem</a></strong> — AI agent state is a web, not a database. Crash it and the commitments die. The Ding et al. survey of 435 papers shows we're good at accumulating, bad at governing.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-definition">The Definition</a></strong> — Agent ⊃ Daemon ⊃ Durable Daemon. Four conditions. Conceptual integrity. Agency is not discovered — it is designed.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">The Execution</a></strong> — Step 4 in practice. DBOS, Temporal, the economics of crash-proof execution, and why quant trading is the stress-test that proves the pattern.</p>
-</li>
-<li>
-<p><strong><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-experiments">The Thought Experiments</a></strong> — Thirteen scenarios that test the limits of the pattern. The fork, the debug, the forget, the shutdown, the deadlock, the poison, the Theseus, the union, the society, and the operating system where daemons are primitives.</p>
-</li>
-</ol>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-problem">Previously: the problem the pattern solves.</a></p>
+<blockquote>
+<p>What is an agent? What is a daemon? Are they the same thing?</p>
+</blockquote>
+<blockquote>
+<p>All daemons are agents. Not all agents are daemons. A chatbot is an agent. A chatbot is not a daemon. The difference is three conditions.</p>
+</blockquote>
+<p><em>Agent</em> is the broad category: any AI system that perceives and acts. <em>Daemon</em> narrows it: the agent must persist across sessions, act on accumulated state, and invoke itself without prompting. An always-on agent (Ding et al.) satisfies these — always-on agents are daemons, whether the paper says so or not. <em>Durable daemon</em> adds crash-proof execution. Agent ⊃ Daemon ⊃ Durable Daemon.</p>
+<blockquote>
+<p>What gives a system conceptual integrity?</p>
+</blockquote>
+<blockquote>
+<p>One design voice. Every part consistent with every other. Four conditions. Each necessary. Together sufficient.</p>
+</blockquote>
+<p>Conceptual integrity means the left hand knows what the right hand is doing. No contradictions. No surprises. Brooks named it. BSD lived it. The durable daemon pattern has it. Each condition is a step up from the trap.</p>
+<blockquote>
+<p>What is step 1?</p>
+</blockquote>
+<blockquote>
+<p>A process, not a function call. Identity that survives restarts.</p>
+</blockquote>
+<p><strong>Persistence.</strong> State survives. The agent escapes the stateless loop — every invocation at zero, every preference forgotten, every commitment gone.</p>
+<blockquote>
+<p>What is step 2?</p>
+</blockquote>
+<blockquote>
+<p>Not what you said. What you promised. Why you promised it.</p>
+</blockquote>
+<p><strong>Stateful memory.</strong> Behavior depends on accumulated state. Task ledgers. Commitments. Permissions. Provenance. Triggers. Not chat logs. This escapes shallow memory.</p>
+<blockquote>
+<p>What is step 3?</p>
+</blockquote>
+<blockquote>
+<p><code>cron</code> with an LLM. Perceive, decide, act, repeat. No prompt required.</p>
+</blockquote>
+<p><strong>Autonomous action.</strong> The agent watches conditions. Fires triggers. Makes and discharges commitments. Invokes itself. This escapes the inert tool — all the context, sitting idle, waiting. <code>cron</code> has done this since 1975.</p>
+<blockquote>
+<p>What is step 4?</p>
+</blockquote>
+<blockquote>
+<p>An agent that cannot be killed by a deploy.</p>
+</blockquote>
+<p><strong>Crash-proof execution.</strong> Workflows survive process death. Machine reboot. Database failover. Completed steps never re-execute. In-flight steps resume from checkpoint. Audit trail by construction. DBOS checkpoints to Postgres in 1–2 ms. Temporal runs at Stripe scale. The primitives exist. AI agents don't use them.</p>
+<blockquote>
+<p>What is agency?</p>
+</blockquote>
+<blockquote>
+<p>Agency is not discovered. It is designed. The four conditions are the design.</p>
+</blockquote>
+<p>Persistence is scoped agency. Stateful memory is grounded agency. Autonomous action is triggered agency. Crash-proof execution is auditable agency. <code>cron</code> has had this since 1975 — perceive, decide, act, repeat. A durable daemon inherits that loop, adds learned state and probabilistic reasoning. Same structure. Richer inputs. Higher-level actions.</p>
+<blockquote>
+<p>Agent ⊃ Daemon ⊃ Durable Daemon. Three conditions make a daemon. The fourth makes it durable — an agent that cannot be killed by a deploy. That is the pattern.</p>
+</blockquote>
+<p>Beastie's pitchfork gets an upgrade: <code>fork(2)</code> → <code>fork_daemon()</code>. The tennis shoes stay the same.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemon-pattern-execution">Next: step 4 in practice — durable execution, economics, and the quant trading stress-test.</a></p>
 <hr>
-<p><em>This is the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
+<p><em>Part of the <a target="_blank" rel="noopener noreferrer" href="/tags/durable-daemon-pattern">Durable Daemon Pattern</a> series.</em></p>
 </div>
       </article>
     </div>

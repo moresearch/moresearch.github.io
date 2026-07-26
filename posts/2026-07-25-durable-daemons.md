@@ -2,7 +2,7 @@
 title: Durable Daemons — Stairway to Heaven
 date: 2026-07-25
 slug: durable-daemons
-summary: We coin "durable daemons" — AI agents that persist, remember, act autonomously, and survive crashes. Against the complexity of real-world state, they are a stairway to heaven: each of the four conditions is a step up from chaos. Without them, you have a chatbot that forgets. With them, you have an agent that earns its keep.
+summary: Durable daemons have conceptual integrity — AI agents that persist, remember, act autonomously, and survive crashes, unified by four conditions. Against the complexity of real-world state, they are a stairway to heaven: each condition is a step up from chaos. Without them, a chatbot that forgets. With them, an agent that earns its keep.
 tags: daemons, durable-daemons, ai-agents, always-on-agents, memory, governance, agent-architecture, systems, bsd, dbos, temporal, durable-execution
 ---
 
@@ -14,7 +14,7 @@ The problem is complexity. An AI agent that persists across sessions accumulates
 
 ## The four steps
 
-We coin **durable daemon** as a term of art. It is an AI agent satisfying four conditions. Each condition is a step up from the complexity below.
+Fred Brooks taught us that the most important quality of a system is *conceptual integrity* — a single coherent vision, one design voice, every part consistent with every other. The term **durable daemon** has conceptual integrity. It is not a collection of features. It is four conditions, each necessary, together sufficient. Each condition is a step up from the complexity below.
 
 > **Step 1: Persistence.** Runs across sessions. Process may restart; identity and state survive.
 > **Step 2: Stateful memory.** Future behavior depends on accumulated state — task ledgers, commitments, permissions, provenance records, trigger conditions. Not a vector database of chat history.
@@ -23,7 +23,7 @@ We coin **durable daemon** as a term of art. It is an AI agent satisfying four c
 >
 > Steps 1–3 = a daemon. Step 4 = *durable*.
 
-"Always-on agent" (Ding et al., 2026) covers 1–3 but not 4. "AI agent" includes stateless chatbots. "Daemon" means a Unix process with a PID file. A durable daemon is the synthesis: Unix persistence × learned state × durable runtime.
+"Always-on agent" (Ding et al., 2026) has partial integrity — covers 1–3, misses 4. "AI agent" has none — includes stateless chatbots. "Daemon" has the Unix flavor but none of the learned-state machinery. A durable daemon has the full set: Unix persistence × learned state × durable runtime. Four conditions, one design voice.
 
 The paper mapping steps 1–3 is Ding, Nannapaneni, Liu, and Zhang's [*Always-On Agents*](https://arxiv.org/abs/2606.30306) (June 2026): 435 papers, six diagnostic axes (Authority, Scope, Mutability, Provenance, Recoverability, Actionability), a nine-stage state lifecycle. Central finding: the field accumulates and retrieves well, neglects governance, recovery, and forgetting. That gap is the chaos the stairway must cross. I covered the paper [in detail here](https://blog.hackspree.com/#always-on-agents).
 
@@ -37,7 +37,7 @@ Agency in AI is a spectrum. Chatbot: reactive, stateless, zero. AGI: unbounded, 
 
 ## Beastie: the daemon that started it
 
-The daemon acquired its form through BSD Unix. Origin: a locksmith, a Pixar founder, a near-loss of the IP to "a certain large company." We love BSD over Linux for one reason — we being the hackers, the daemon-writers, the ones still reading man pages: BSD is one tree, one team, one design. Daemons are first-class citizens, not afterthoughts assembled by a distribution maintainer.
+The daemon acquired its form through BSD Unix. Origin: a locksmith, a Pixar founder, a near-loss of the IP to "a certain large company." We love BSD over Linux for one reason — we being the hackers, the daemon-writers, the ones still reading man pages: BSD has conceptual integrity. One tree, one team, one design voice. Daemons are first-class citizens of that design, not afterthoughts assembled by a distribution maintainer.
 
 *Daemon* is Greek δαίμων — guardian spirit. Socrates' daimonion warned him of mistakes. McKusick, copyright holder: the daemon is a helper. The pitchfork is Poseidon's trident, symbolizing `fork(2)`.
 
@@ -111,7 +111,7 @@ Each step on the stairway removes a class of failure. Step 1 removes "who are yo
 
 **What is the society of mind of durable daemons?** Minsky (1986): intelligence from simple, stateless agents. Durable daemons invert it: each already intelligent, stateful, multi-capable. Connect a hundred → institutional intelligence. Sales learns Acme stalls Q4; support adjusts December priority; ops pre-allocates January capacity. Distributed theory of Acme Corp, no human coordination, three state ledgers. Minsky: mind from mindless parts. Durable daemons: mind from minded parts, each with its own memory, commitments, agency. No architecture.
 
-**What would a BSD designed for durable daemons look like?** *DaemonBSD*: daemons as kernel primitives. `fork_daemon()` spawns with Postgres state ledger, capability permissions, built-in audit, visible in `ps_daemons`. Init checkpoints across reboots, recovers after panics, drains on shutdown. Package manager installs daemon personalities — sales, support, on-call — each with scope, permissions, state schema. Man pages: state lifecycles, not just flags. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration — one tree, one design, durable daemon as compute unit. Linux: "everything is a file." DaemonBSD: "everything is a durable daemon." Heaven: an OS where durable daemons are not something you build. They are something the system *is*.
+**What would a BSD designed for durable daemons look like?** *DaemonBSD*: daemons as kernel primitives. `fork_daemon()` spawns with Postgres state ledger, capability permissions, built-in audit, visible in `ps_daemons`. Init checkpoints across reboots, recovers after panics, drains on shutdown. Package manager installs daemon personalities — sales, support, on-call — each with scope, permissions, state schema. Man pages: state lifecycles, not just flags. Primitives exist: DBOS, Postgres, capabilities, FreeBSD jails, Temporal. Missing: integration — one tree, one design, durable daemon as compute unit. Linux: "everything is a file." DaemonBSD: "everything is a durable daemon." Conceptual integrity, applied to the operating system. Heaven: an OS where durable daemons are not something you build. They are something the system *is*.
 
 ---
 

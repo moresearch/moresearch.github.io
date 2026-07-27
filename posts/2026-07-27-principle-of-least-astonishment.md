@@ -1,8 +1,8 @@
 ---
-title: Designing Software for AI Coding Agents
+title: The Principle of Least Astonishment — for AI Coding Agents
 date: 2026-07-27
 slug: principle-of-least-astonishment
-summary: AI coding agents are now your most demanding users. They read your APIs literally, follow your conventions religiously, and fail silently when surprised. POLA, convention over configuration, and conceptual integrity are not aesthetic preferences. They are the difference between an agent that builds on your system and one that cannot.
+summary: POLA is fifty years old. For five decades it was advice about human users. Today it is a requirement for AI coding agents — and they are less forgiving. An agent believes the name. Follows the convention. Trusts the public surface. If any of these are lies, the agent produces wrong code you won't catch until it breaks.
 tags: software-engineering, ai-agents, ai-coding, pola, convention-over-configuration, conceptual-integrity, api-design
 ---
 

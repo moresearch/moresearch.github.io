@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
+  <meta name="description" content="Every construct in a system should behave exactly as its syntax suggests. Widely accepted conventions should be followed. Exceptions should be minimal. This is the Principle of Least Astonishment — formulated in 1972, forgotten by most, violated by all. It is the cheapest way to make software trustworthy.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
+  <meta property="og:description" content="Every construct in a system should behave exactly as its syntax suggests. Widely accepted conventions should be followed. Exceptions should be minimal. This is the Principle of Least Astonishment — formulated in 1972, forgotten by most, violated by all. It is the cheapest way to make software trustworthy.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="The durable daemons pattern specifies four conditions. Each necessary. Together sufficient. Agent ⊃ Daemon ⊃ Durable Daemon. Persistence, stateful memory, autonomous action, crash-proof execution. Daemons coordinate through shared state — an event-driven choreography with no central orchestrator.">
+  <meta name="twitter:description" content="Every construct in a system should behave exactly as its syntax suggests. Widely accepted conventions should be followed. Exceptions should be minimal. This is the Principle of Least Astonishment — formulated in 1972, forgotten by most, violated by all. It is the cheapest way to make software trustworthy.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,6 +664,63 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="principle-of-least-astonishment">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/principle-of-least-astonishment/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-27" data-utc="Jul 27, 2026 UTC" aria-label="Jul 27, 2026 UTC" tabindex="0">1785110400</time></p>
+          <h2><a href="#principle-of-least-astonishment">The Principle of Least Astonishment</a></h2><p class="post-summary">Every construct in a system should behave exactly as its syntax suggests. Widely accepted conventions should be followed. Exceptions should be minimal. This is the Principle of Least Astonishment — formulated in 1972, forgotten by most, violated by all. It is the cheapest way to make software trustworthy.</p>
+          <div class="tags"><span class="tag">software-engineering</span><span class="tag">design-principles</span><span class="tag">pola</span><span class="tag">unix</span><span class="tag">api-design</span><span class="tag">correctness</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Imagine a door. You approach it. The handle is a flat metal plate. You push. Nothing happens. You pull. It opens. Now imagine the same door, but the handle is a curved bar. You pull. Nothing happens. You push. It opens. You feel stupid. The door did not fail. The designer failed. The door violated the only rule that matters: behave the way the user expects.</p>
+<blockquote>
+<p>A door handle is an API. A flat plate says push. A curved bar says pull. When the behavior contradicts the signal, the user blames themselves. They shouldn't. The designer should have followed the Principle of Least Astonishment.</p>
+</blockquote>
+<p>The Principle of Least Astonishment — POLA, also called the Law of Least Surprise — states that every component in a system should behave in the way that least surprises its users. It was first formally articulated in 1972 in the context of programming language design:</p>
+<blockquote>
+<p>&quot;For those parts of the system which cannot be adjusted to the peculiarities of the user, the designers of a systems programming language should obey the 'Law of Least Astonishment.' In short, this law states that every construct in the system should behave exactly as its syntax suggests. Widely accepted conventions should be followed whenever possible, and exceptions to previously established rules of the language should be minimal.&quot;</p>
+</blockquote>
+<p>The phrasing is careful. Notice what it does not say. It does not say &quot;make things simple.&quot; It does not say &quot;optimize for beginners.&quot; It says: the syntax should predict the semantics. The surface should predict the depth. The user's expectation, formed by every other system they have ever used, should be correct.</p>
+<p>Geoffrey James popularized the principle in his 1987 book <em>The Tao of Programming</em>: &quot;A program should always respond to the user in the way that astonishes him least.&quot; Eric Raymond canonized it in <em>The Art of UNIX Programming</em> (2003) as the Rule of Least Surprise: &quot;In interface design, always do the least surprising thing.&quot; The Unix lineage is no accident. POLA is the user-facing expression of conceptual integrity — the principle Fred Brooks identified as the most important quality of a system. A system with conceptual integrity has no internal contradictions. A system with POLA has no contradictions between its behavior and its user's expectations. They are the same idea, applied inward and outward.</p>
+<blockquote>
+<p>Conceptual integrity is POLA for the system designer. POLA is conceptual integrity for the user. When the two diverge, the user pays the cost.</p>
+</blockquote>
+<p>Why does POLA matter economically? Because astonishment is a tax. Every time a user is surprised by a system's behavior, they pay in time. They read the documentation. They search Stack Overflow. They file a bug report that gets closed as &quot;working as intended.&quot; They develop superstitions — &quot;I always pass <code>--force</code> because it failed silently once and I never figured out why.&quot; They build wrappers around your API to protect themselves from its behavior. Each of these is a micro-transaction paid to the surprise tax. Summed across a user base, a company, an ecosystem, it is enormous. And it is entirely avoidable.</p>
+<blockquote>
+<p>Surprise is a tax on your users. You charge it every time your system does something they didn't expect. The tax compounds.</p>
+</blockquote>
+<p>Consider <code>rm</code>. It deletes files. It does not move them to a trash folder. It does not ask for confirmation. This is astonishing — until you learn Unix, at which point it is exactly what you expect. <code>rm</code> is the exception that proves the rule: astonishment is acceptable when the domain's conventions override the user's prior expectations. A Unix user learns that the shell does what you tell it, immediately and irreversibly. That is the convention. <code>rm</code> follows it. The astonishment is the user's induction into the domain, not a violation of the domain's rules.</p>
+<p>Now consider <code>python -m http.server</code>. It serves the current directory over HTTP on port 8000. A beginner runs it. It works. They are not astonished. They expected a simple HTTP server and they got one. The syntax predicted the semantics. The command says what it does and does what it says. This is POLA done right.</p>
+<p>Now consider the JavaScript <code>==</code> operator. <code>0 == &quot;0&quot;</code> is <code>true</code>. <code>0 == []</code> is <code>true</code>. <code>&quot;0&quot; == []</code> is <code>false</code>. Equality is not transitive. The syntax <code>==</code> suggests mathematical equality. The semantics are type coercion. The syntax predicted one thing. The behavior delivered another. This is POLA done catastrophically wrong. The language has spent twenty years recovering from this single violation. <code>===</code> exists because <code>==</code> was irredeemable.</p>
+<blockquote>
+<p><code>===</code> is a monument to a POLA violation. Every time a JavaScript developer types that third equals sign, they are paying the surprise tax.</p>
+</blockquote>
+<p>POLA is not the same as simplicity. A system can be simple and astonishing. A system can be complex and predictable. The goal is not fewer features. It is coherence between expectation and behavior. When a system is coherent, complexity disappears into convention. <code>git</code> has a famously complex command set — <code>checkout</code>, <code>reset</code>, <code>revert</code>, <code>rebase</code>, <code>merge</code>, <code>cherry-pick</code>. Each does something different. Each does what its name suggests. A new user is overwhelmed by the number of commands but rarely surprised by what any individual command does. The names are honest. The complexity is the domain's, not the interface's.</p>
+<p>When a system is incoherent, simplicity becomes astonishing. A single button that does three different things depending on invisible state. A flag whose default changes based on which subcommand you used. A function named <code>getUser</code> that creates a user if one doesn't exist. The interface is simple — one function, one name. The behavior is astonishing. The user cannot predict what will happen. They cannot trust the system. They cannot build on it.</p>
+<blockquote>
+<p>An honest name is a POLA contract. If your function is called <code>getUser</code>, it must not create, update, or delete. It must get. If it does anything else, rename it.</p>
+</blockquote>
+<p>POLA is particularly urgent in the age of AI agents. An LLM is a probabilistic system. Its behavior is inherently surprising — the same prompt can produce different outputs. Wrapping it in an agent that makes commitments, takes actions, and accumulates state amplifies the surprise surface. Every agent behavior that contradicts user expectation is a POLA violation. Every POLA violation erodes trust. A user who cannot predict what their agent will do stops delegating to it. The durable daemons pattern exists partly to reduce the surprise surface: persistence means the agent doesn't forget who you are, stateful memory means it remembers its commitments, autonomous action means it acts on predictable triggers, crash-proof execution means it doesn't lose state. Each condition removes a class of surprise.</p>
+<blockquote>
+<p>A durable daemon is an AI agent with a low astonishment factor. The four conditions are POLA applied to agent architecture.</p>
+</blockquote>
+<p><strong>How to apply POLA.</strong> Before you ship an interface, ask: what would a reasonable user expect this to do? If your answer differs from the implementation, change one of them. If you cannot change the behavior, change the name. If you cannot change the name, document the difference — prominently, at the point of use, not in a footnote. If the astonishment factor is high and the feature is necessary, redesign the feature. This advice is from 1984. It has not aged.</p>
+<p><strong>When to violate POLA.</strong> When the domain's conventions are more important than the user's prior expectations. <code>rm</code> does not ask for confirmation. A trading system does not prompt &quot;are you sure?&quot; before executing an order. An autopilot does not request permission before taking control. In safety-critical and latency-critical domains, violating the user's expectation is sometimes the correct behavior. The violation must be deliberate, documented, and justified by the domain's requirements — not by the designer's laziness.</p>
+<blockquote>
+<p>POLA is not absolute. It is a default. The burden of proof is on the violation. If you cannot explain why the astonishment is necessary, it isn't.</p>
+</blockquote>
+<p>The principle is fifty years old. It has been independently discovered by every generation of software engineers who cared about their users. It has been ignored by every generation of software engineers who didn't. The cost of ignoring it is not measured in bugs. It is measured in trust. A system that astonishes its users is a system they will eventually abandon — not because it doesn't work, but because they cannot predict it. And a system you cannot predict is a system you cannot rely on.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Geoffrey James. (1987). <em>The Tao of Programming</em>.</li>
+<li>Eric S. Raymond. (2003). <em>The Art of UNIX Programming</em>. Addison-Wesley. <a target="_blank" rel="noopener noreferrer" href="http://www.catb.org/~esr/writings/taoup/html/ch11s01.html">Chapter 11: The Rule of Least Surprise</a>.</li>
+<li>Fred Brooks. (1975). <em>The Mythical Man-Month</em>. Addison-Wesley.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#bsd-openbsd-linux">BSD is clean, OpenBSD is cleaner</a> — Conceptual integrity in operating system design.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Durable Daemons — Pattern Specification</a> — POLA applied to AI agent architecture.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="durable-daemons-definition">
         <link rel="canonical" href="https://blog.hackspree.com/entries/durable-daemons-definition/">
         <header class="post-header">
@@ -14608,6 +14665,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#principle-of-least-astonishment">The Principle of Least Astonishment</a>
               <a href="#durable-daemons-definition">Durable Daemons — Pattern Specification</a>
               <a href="#durable-daemons-execution">Durable Daemons — Runtime and Implementation</a>
               <a href="#durable-daemons-limits">Durable Daemons — System-Level Failure Modes</a>

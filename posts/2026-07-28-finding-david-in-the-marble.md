@@ -2,71 +2,72 @@
 title: Finding David in the Marble
 date: 2026-07-28
 slug: finding-david-in-the-marble
-summary: Michelangelo did not carve David. He removed everything that was not David. Brooks' The Design of Design is about the same thing: constraints as precondition, iteration as search, style as heuristic, and the loop where engineering and art become one motion.
+summary: Michelangelo said he didn't carve David. He just removed everything that wasn't David. Plato would have called this remembering a Form. Aristotle would have called it actualizing a potential. Brooks called it design. All three were right.
 tags: software-engineering, design-of-design, iteration, fred-brooks, conceptual-integrity, design-philosophy
 ---
 
 The block had been waiting thirty-five years.
 
-It was quarried in 1464 for Agostino di Duccio. Too narrow for his figure. He roughed out the legs and quit. Antonio Rossellino tried a decade later, saw the veins in the marble, walked away. The stone sat in the courtyard of the Florence Cathedral for twenty-five more years. Rain. Sun. The Operai called it *lo gigante* — the giant — too large to move, too narrow to use, too compromised to trust.
+It was quarried in 1464 and given to Agostino di Duccio, who worked it for two years before declaring it impossible. The stone was too narrow for any figure that could stand within it. He roughed out the legs and abandoned it. A decade later, Antonio Rossellino examined the block — the awkward dimensions, the gouges where di Duccio had cut, the veins running through the marble — and refused the commission. The block was hauled into the courtyard of the Florence Cathedral and left there. For twenty-five years it sat in the rain and sun, the roughed-out legs slowly weathering, a monument to two failures. The Operai, the cathedral's works committee, called it *lo gigante* — the giant. Too large to move. Too narrow to use. Too compromised to trust.
 
-In 1501 they gave it to a twenty-six-year-old. He looked at the narrowness and saw a figure who could stand within it. He looked at the flaws and saw features that could absorb them. He looked at what everyone called a ruined block and saw David.
+In 1501, with the block still occupying the courtyard and the Operai still paying storage, they gave it to a twenty-six-year-old sculptor who had recently returned from Rome. His name was Michelangelo Buonarroti. He had been carving since the age of thirteen. He had studied the Greek and Roman masters. He had dissected cadavers in the morgue at Santo Spirito, peeling back skin to understand how muscle lay over bone. He accepted the commission on August 16. He built a wooden shed around the block so no one could watch him work. He slept beside the marble. For two years he struck the stone in secret. When the shed came down, David stood where a ruined block had been.
 
-> The constraints that defeated two sculptors made the third. The narrowness forced David's contrapposto — the weight shift, the coiled stillness. Without the flaw, there is no masterpiece.
+> Michelangelo did not carve David. He removed everything that was not David. The form was already in the stone. His job was to set it free.
 
-![Michelangelo's David — carved from a block too narrow, too tall, abandoned for 35 years. The flaws defined him.](/images/david-michelangelo.jpg)
+![Michelangelo's David — carved from a block too narrow, too tall, abandoned for 35 years. The flaws did not prevent the masterpiece. They defined it.](/images/david-michelangelo.jpg)
 
-Fred Brooks published *The Design of Design* in 2010, the book he spent thirty-five years learning to write. Constraints, he argued, are not the enemy of design. They are the precondition. A blank page is paralysis. A constrained page is possibility. Great design is empirical, not rational — the rational model assumes omniscience. You do not have it. The alternative is iteration: build, learn what is wrong, remove it, build again. Brooks endorsed Boehm's spiral, but the metaphor is older than software. Strike. Assess. Strike again.
+Plato would have understood this immediately. In the *Theory of Forms*, the true reality of a thing is not its physical instantiation but its ideal Form — perfect, eternal, unchanging. The David that stands in the Galleria dell'Accademia is a shadow of the Form of David that exists in the realm of ideas. Michelangelo did not invent David. He remembered him. The sculptor's eye, trained by years of looking at what others had carved and what nature had made, could perceive the Form through the flawed stone. His chisel merely removed the matter that obscured it.
 
-> The rational model requires omniscience. The empirical model requires honesty. One is a fantasy. The other is a discipline.
+Aristotle, Plato's student and critic, would have corrected his teacher. The Form does not exist in a separate realm. It exists *in* the marble, as a potential waiting to be actualized. The acorn is potentially an oak. The block is potentially David. The sculptor does not remember the Form — he actualizes the potential. The block's narrowness did not prevent David. It was the specific constraint that determined *which* David could emerge. A wider block would have produced a different statue, a different actualization. Without the flaw, there is no *this* David. The constraints are not obstacles to the form. They are the form's boundary conditions.
 
-Brooks defined conceptual integrity as the most important quality of a system — one design voice, every part consistent with every other. How do you achieve it? Not by adding. By removing. His three principles are chisels. **Propriety**: do not introduce what is immaterial. **Orthogonality**: do not link what is independent. **Generality**: do not restrict what is inherent. Propriety removes the unnecessary. Orthogonality removes the tangled. Generality removes the arbitrary. The design becomes what it should be by becoming less of what it shouldn't.
+> Plato said the Form exists in the mind. Aristotle said the potential exists in the matter. Michelangelo proved both were right. The mind sees. The matter constrains. The chisel resolves.
 
-> Brooks gave us three chisels. Most of us use them to build. He meant them to take away.
+Fred Brooks published *The Design of Design* in 2010, thirty-five years after *The Mythical Man-Month*. He spent those decades learning what Michelangelo knew at twenty-six. Constraints are not the enemy. They are the precondition. A blank page is paralysis — infinite possibility, no reason to choose. A constrained page is freedom — the boundaries tell you what you are looking for. Great design is empirical, not rational. The rational model — specify everything, then build — assumes you can see the Form without touching the stone. You cannot. Not for anything worth building. The alternative is the sculptor's rhythm. Strike. Step back. Assess. Strike again. Brooks endorsed Boehm's spiral model, but Boehm was describing what Michelangelo practiced. The design does not emerge from the plan. It emerges from the removal.
 
-Herbert Simon, in *The Sciences of the Artificial* (1969), formalized design as search. The design space is every possible form — infinite until constrained. The block's narrowness eliminated nine-tenths of what Michelangelo might have imagined. The rough cuts eliminated more. The veins eliminated more. What remained was not a ruined block. It was a sharply constrained corridor through the infinite, leading to David. Simon's term for this is *satisficing* — you stop searching not when you find the perfect design, but when the cost of further search exceeds the expected improvement. Constraints make satisficing possible.
+> The rational model requires omniscience. The empirical model requires honesty. Only one of these is available to humans.
 
-Michelangelo's utility function was his eye. He did not enumerate. He did not evaluate every possibility. The constraints had already done most of the elimination. His style — the accumulated judgment of a lifetime — collapsed what remained into a single path.
+Brooks defined *conceptual integrity* as the most important quality of a system — one design voice, every part consistent with every other. It is the software equivalent of the Platonic Form: the ideal system that exists in the designer's mind before a line of code is written. How do you achieve it? Brooks gave three principles, all negative, all chisels. **Propriety**: do not introduce what is immaterial. **Orthogonality**: do not link what is independent. **Generality**: do not restrict what is inherent. Propriety removes the unnecessary. Orthogonality removes the tangled. Generality removes the arbitrary. The design becomes what it should be by becoming less of what it shouldn't.
 
-> The design space is infinite. Constraints make it finite. Style makes it navigable.
+> Brooks gave us three chisels. Most of us use them to build. He meant them to take away. The Form is revealed by subtraction, not addition.
 
-Brooks devoted a chapter to style. Style, he argued, is not personality. It is the trained heuristic that tells you which way to move. A designer without style tries everything. A designer with style tries the right thing first. Style is acquired by studying other designers' work — understanding the choices, not imitating them. By making conscious judgments about what moves you. By practicing until judgment becomes instinct. Michelangelo developed his by dissecting cadavers at Santo Spirito, studying Greek proportion, carving from thirteen. By twenty-six he had cut enough marble to know what the marble wanted to become.
+Herbert Simon, in *The Sciences of the Artificial* (1969), gave this a third philosophical frame: design is *search*. The design space is every possible form the marble could take, every possible architecture the code could have. The space is infinite — until you constrain it. The block's narrowness eliminated nine-tenths of what Michelangelo might have imagined. The rough cuts eliminated more. The veins eliminated more. What remained was not a ruined block. It was a sharply constrained corridor through the infinite. Simon's term for when you stop is *satisficing* — you halt not when the design is perfect, but when the cost of further search exceeds the expected gain. Constraints make satisficing possible. Without them, you search forever.
 
-> "Great designs come from great designers." Not from process. Not from committees. From people whose style has pruned the infinite into something a mind can hold.
+Michelangelo could not explain how he knew where David was in the stone. He just knew. This is what Michael Polanyi called *tacit knowledge* — we know more than we can tell. A master sculptor cannot write a manual for seeing the statue in the block. A master designer cannot write a manual for seeing the architecture in the problem. The knowledge exists in the hands, in the eye, in the accumulated judgment of a lifetime. It can be transmitted only by practice — by striking the stone, assessing the result, striking again. Brooks understood this. His chapter on style is an argument that style is tacit knowledge made visible. A designer without style tries everything because they have no tacit knowledge to guide them. A designer with style tries the right thing first because their hands know what their mouth cannot say.
+
+> Michelangelo could not tell you how he saw David. He could only show you. Style is the difference between knowing and telling. It is acquired the way Michelangelo acquired it: by cutting enough stone that the stone began to speak back.
 
 ## The loop
 
-Art and engineering are not similar disciplines. They are two moments in the same loop. In the first, you act on the system — build, measure, cut. In the second, you step back and judge — closer to David or further? Engineering without the art phase is accretion: systems that grow without shape, complexity no one intended. Art without the engineering phase is fantasy: beautiful on paper, impossible in code. The loop requires both.
+Art and engineering are not two disciplines. They are two moments in one discipline. In the first moment, you act on the system — build, measure, cut. In the second, you step back and judge — closer to the Form or further away? The two moments alternate. Neither is optional. Engineering without the art moment is accretion: systems that grow without shape, features added and never removed, complexity no one intended and no one can arrest. Art without the engineering moment is the sin Plato accused the poets of: beautiful visions that cannot survive contact with matter. The loop requires both moments. Michelangelo's genius was not in either moment. It was in the fluency with which he moved between them.
 
-> Strike. Assess. Strike. The sculptor's rhythm is the designer's rhythm. The only difference is the medium.
+> Strike. Assess. Strike. The sculptor's rhythm is the designer's rhythm. The only difference is the medium. Michelangelo moved between the two moments so fluently they became one motion. Brooks called that fluency *style*.
 
-Michelangelo's loop: dissecting cadavers was engineering. Studying Polykleitos was engineering. Thirteen years of carving was engineering. Seeing David in the block was art. But the loop did not stop there. Each strike was engineering. Each assessment was art. For two years, the loop ran. The result was a thing with no unnecessary surface, no wrong angle. Conceptual integrity in stone. He was not an artist who happened to be good at engineering. He moved between the two moments so fluently they became one motion. Brooks called that fluency *style*.
+A well-designed system has the same quality. A clean interface. A coherent abstraction. A module that does one thing completely. No metric captures these properties. They are aesthetic — the residue of the art moment, accumulated across enough iterations that the system feels inevitable. You trust a system whose parts agree, that does what it says and nothing else, from which someone removed everything that was not it. Trust is the aesthetic response to conceptual integrity. And conceptual integrity is what the loop produces when both moments are executed with discipline.
 
-A well-designed system has the same quality. A clean interface. A coherent abstraction. A module that does one thing completely. These are not engineering properties — no metric captures them. They are aesthetic properties, the residue of the art phase accumulated across enough iterations that the system feels inevitable. Trust is the aesthetic response to conceptual integrity. You trust a system whose parts agree, that does what it says and nothing else, from which someone removed everything that was not it.
+Brooks insisted that design must come from "one mind, or from a very small number of agreeing resonant minds." He was not talking about intelligence. He was talking about the loop. The designer who has alternated enough times — build, assess, remove, repeat — develops an eye. They see the system before it is built. They know which feature is immaterial. They know because they have recognized David enough times, in enough blocks of marble, in enough codebases. The Form has become visible to them. The potential in the problem speaks to them. Their hands know what their mouth cannot say.
 
-> Engineering without the art phase produces systems that work and are hated. Art without the engineering phase produces designs that are loved and cannot be built. The loop is not optional. It is the discipline.
-
-Brooks insisted that design must proceed from "one mind, or from a very small number of agreeing resonant minds." He was not talking about intelligence. He was talking about fluency in the loop. The designer who has built, removed, alternated enough times develops an eye. They see the system before it is built. They know which feature is immaterial. They know because they have recognized David enough times, in enough blocks of marble, in enough codebases.
-
-> Every good engineer moves through both phases whether they know it or not. The ones who know it move faster. They strike with intention. They assess with honesty. They recognize David earlier. They remove less because they add less. The loop tightens. The marble releases what it was always holding.
+> Every good engineer moves through both moments whether they know it or not. The ones who know it move faster. They strike with intention. They assess with honesty. They recognize David earlier. They remove less because they add less. The loop tightens. The marble releases what it was always holding.
 
 ## Open questions
 
-**Is style teachable?** Brooks says yes — study others, practice, revise. But Michelangelo's style came from dissecting cadavers and carving from thirteen. Can you compress that into a curriculum? Or does style require the obsession that makes someone sleep beside a block of marble for two years?
+**Is style teachable?** Brooks says yes — study others, practice, revise. Polanyi says no — tacit knowledge cannot be transmitted, only acquired through experience. Michelangelo slept beside the marble for two years. Can you teach that in a workshop?
 
-**Does the loop work for teams?** Brooks says design must proceed from one mind or a very small number. But most software is built by teams. Does the loop scale? Or does conceptual integrity dilute with every additional mind in the loop?
+**Does the loop scale?** Brooks says design must come from one mind or a very small number. But most software is built by teams. Does conceptual integrity dilute with every additional mind? Or can a team learn to move through the loop together — one mind made of many?
 
-**Can an AI coding agent develop style?** An agent can study every open-source repository ever written. It can practice instantly. But can it develop taste — the judgment that tells you this abstraction is right and that one is wrong? Or is taste the one thing that requires a human eye?
+**Can a machine develop style?** An AI coding agent can study every repository ever written. It can practice instantly. But tacit knowledge requires a body — hands that strike the stone, eyes that assess the surface. Can style exist without a body? Can taste?
 
-**Is satisficing still the right stopping condition?** Simon said stop when further search costs more than expected improvement. But software decays. The design that satisficed last year is today's technical debt. Is the loop ever really done, or do we just pause it?
+**Is software too mutable for the loop?** Michelangelo's block had irrecoverable constraints. Software has none — you can always rewrite. When everything can be changed, does anything feel like a constraint? And without constraints, where does the Form come from?
 
-**What is the equivalent of the abandoned block?** Michelangelo's block was a physical object with irrecoverable constraints. Software is mutable — you can always rewrite. Does that make constraints harder to accept? When everything can be changed, does anything feel like a constraint? And without constraints, where does the design come from?
+**What is the Form of software?** Plato's Forms are eternal and unchanging. Software is neither. It rots. It accumulates debt. The design that satisficed last year is today's liability. Is there a Form that survives decay? Or is the loop never done — just paused, waiting for the next iteration?
 
 ---
 
 **References:**
 
-- Fred Brooks. (2010). *The Design of Design: Essays from a Computer Scientist*. Addison-Wesley.
+- Plato. *Theory of Forms*. *The Republic*, Books VI–VII.
+- Aristotle. *Potentiality and Actuality*. *Metaphysics*, Book IX.
+- Michael Polanyi. (1966). *The Tacit Dimension*. University of Chicago Press.
 - Herbert Simon. (1969). *The Sciences of the Artificial*. MIT Press.
+- Fred Brooks. (2010). *The Design of Design: Essays from a Computer Scientist*. Addison-Wesley.
 - [Michelangelo's David](https://en.wikipedia.org/wiki/David_(Michelangelo)). 1501–1504. Galleria dell'Accademia, Florence.
 - Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment).

@@ -6,13 +6,19 @@ summary: Michelangelo did not carve David. He removed everything that was not Da
 tags: software-engineering, design-of-design, iteration, fred-brooks, conceptual-integrity, design-philosophy
 ---
 
-The block had been waiting thirty-five years. Two sculptors had tried and walked away. The legs were roughed out, the proportions already compromised. The marble was considered ruined — too tall, too narrow, too damaged by weather and bad first cuts. In 1501 it was given to a twenty-six-year-old who looked at it and saw David.
+The block had been waiting thirty-five years.
 
-> Michelangelo did not carve David. He removed everything that was not David. This is the first lesson of design. The form is already in the problem. Your job is to see it and set it free.
+It was quarried in 1464 for a sculptor named Agostino di Duccio. He worked it for two years and quit. The stone was too narrow for the figure he had planned. The proportions were wrong. He roughed out the legs and abandoned it. A decade later, Antonio Rossellino tried. He looked at the block — the awkward dimensions, the existing cuts, the veins running through the marble — and walked away. The stone sat exposed in the courtyard of the Florence Cathedral for another twenty-five years. Rain. Sun. The legs slowly weathering. The Operai, the committee in charge of the cathedral's artworks, considered it ruined. They referred to it as *lo gigante* — the giant — a block too large to move, too narrow to use, too compromised to trust.
 
-![Michelangelo's David — carved from a block of marble abandoned for 35 years. The process was subtractive. The form was already there.](/images/david-michelangelo.jpg)
+In 1501, they gave it to a twenty-six-year-old. He looked at the narrowness and saw a figure who could stand within it. He looked at the flaws and saw features that could absorb them. He looked at what everyone called a ruined block and saw David.
 
-Fred Brooks published *The Design of Design* in 2010. It is the book he spent thirty-five years learning to write. His argument is quiet and absolute: great design is an empirical act, not a rational one. The rational model — specify, architect, implement, ship — assumes you can see the end from the beginning. You cannot. Not for anything worth building. The alternative is iteration. Build. Learn what is wrong. Remove it. Build again. The design does not emerge from the plan. It emerges from the removal. Brooks called this Boehm's spiral, but the metaphor is older than software. It is the sculptor's rhythm. Strike. Assess. Strike again.
+> The constraints that defeated two sculptors made the third. They were not obstacles to the design. They were the design. The narrowness forced David's contrapposto — the weight shift, the tension, the coiled stillness that makes the statue a living thing. Without the flaw, there is no masterpiece.
+
+![Michelangelo's David — carved from a block of marble too narrow, too tall, abandoned for 35 years. The flaws didn't prevent David. They defined him.](/images/david-michelangelo.jpg)
+
+Fred Brooks published *The Design of Design* in 2010. It is the book he spent thirty-five years learning to write. One of its central arguments is that constraints are not the enemy of design. They are the precondition for it. A blank page is paralysis. A constrained page is possibility. The block's narrowness was not a limitation that Michelangelo overcame. It was the limitation that made David possible. Without it, he would have carved a different statue — perhaps a fine one, perhaps a forgotten one. With it, he carved the most famous sculpture in the world.
+
+Brooks' argument is quiet and absolute: great design is an empirical act, not a rational one. The rational model — specify, architect, implement, ship — assumes you can see the end from the beginning. You cannot. Not for anything worth building. The alternative is iteration. Build. Learn what is wrong. Remove it. Build again. The design does not emerge from the plan. It emerges from the removal — and the removal is guided by the constraints. Brooks called this Boehm's spiral, but the metaphor is older than software. It is the sculptor's rhythm. Strike. Assess. Strike again. Each strike answers to the stone.
 
 > The rational model requires omniscience. The empirical model requires honesty. One is a fantasy. The other is a discipline.
 
@@ -20,7 +26,9 @@ Brooks understood that conceptual integrity is the most important quality of a s
 
 > Brooks gave us three chisels. Most of us use them to add. He meant them to take away.
 
-Herbert Simon, whom Brooks drew from, said design is a search problem. The design space is every possible form the marble could take, every possible architecture the code could have. The space is infinite. You cannot enumerate it. You navigate it. Each iteration is a move. Each evaluation is a judgment: closer or further? Michelangelo's search space was bounded by the block — its height, its flaws, the existing cuts. His utility function was his eye. He looked at the emerging surface and knew whether David was nearer or farther. He did not evaluate every possible statue in the stone. He did not need to. His style — the accumulated judgment of a lifetime of looking and cutting — collapsed the infinite space into a single path.
+Herbert Simon, whom Brooks drew from, said design is a search problem. The design space is every possible form the marble could take, every possible architecture the code could have. The space is infinite — until you constrain it. The block's narrowness eliminated nine-tenths of the statues Michelangelo might have imagined. The rough cuts eliminated more. The veins in the marble eliminated still more. What remained was not a ruined block. It was a sharply constrained search space — a narrow corridor through the infinite, leading to David. The constraints did not limit Michelangelo. They guided him.
+
+His utility function was his eye. He looked at the emerging surface and knew whether David was nearer or farther. He did not enumerate. He did not evaluate every possibility. He did not need to. The constraints had already done most of the elimination. His style — the accumulated judgment of a lifetime of looking and cutting — collapsed what remained into a single path.
 
 > The design space is infinite. Constraints make it finite. Style makes it navigable.
 

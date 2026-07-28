@@ -40,19 +40,21 @@ Michelangelo developed his style by studying Greek and Roman sculpture. By disse
 
 The marble is already on your desk. It has been for thirty-five years.
 
-Brooks titled the chapter "Esthetics and Style in Technical Design." The word *esthetics* was deliberate. He was not being poetic. He was being precise. A well-designed system feels right in a way metrics cannot capture — not performance, not throughput, not lines of code. A clean interface. A coherent abstraction. A module that does one thing completely. These are aesthetic properties. They are judged the way a sculpture is judged: by looking, by living with it, by sensing whether anything is missing or anything is extra.
+## The loop
 
-> The best engineers are artists who work in logic instead of marble. The medium is different. The discipline is the same.
+Art and engineering are not similar disciplines. They are phases in the same loop. The loop has two moments. In the first, you act on the system — you build, you measure, you cut. Call this engineering. In the second, you step back and judge — is it closer to David or further away? Call this art. Then you act again. Engineering without the art phase produces accretion: systems that grow without ever being shaped, features added and never removed, complexity that no one intended and no one can arrest. Art without the engineering phase produces fantasy: designs that are beautiful on paper and impossible in code. The loop requires both.
 
-Michelangelo dissected cadavers to understand anatomy — craft. He studied classical proportion — craft. He carved for thirteen years — craft. The result was not craft. The result was David. A thing with no unnecessary surface, no wrong angle, no part that does not belong to the whole. Conceptual integrity in stone.
+> Engineering and art are not two disciplines. They are two moments in one discipline. Strike. Assess. Strike. The sculptor's rhythm is the software designer's rhythm. The only difference is the medium.
 
-Software that makes people weep is rare. Software that makes people trust it is the same thing in a different medium. Trust is the aesthetic response to conceptual integrity. You trust a system that has never surprised you — whose parts agree, that does what it says and nothing else, from which someone removed everything that was not it. That someone was an artist. They worked in code. The discipline was the same.
+Michelangelo dissected cadavers at Santo Spirito to understand how muscle lay over bone. This was engineering — measurement, analysis, craft. He studied the classical proportions of Polykleitos and Praxiteles. Engineering. He carved for thirteen years before touching a major commission. Engineering. Then he stood before the abandoned block and saw David. That was art — judgment, taste, the trained eye seeing what the stone already contained. But the art did not end there. He struck. He assessed. He struck again. Each strike was engineering. Each assessment was art. The loop ran for two years. The result was a thing with no unnecessary surface, no wrong angle, no part that does not belong to the whole. Conceptual integrity in stone.
 
-> Engineering without aesthetics produces systems that work and are hated. Engineering with aesthetics produces systems that work and are loved. The difference is form. Form is the residue of removal.
+> Michelangelo was not an artist who happened to be good at engineering. He moved between the two moments so fluently that they became one motion. That fluency is what Brooks called style.
 
-Brooks meant taste, not intelligence, when he said great designs come from great designers. Taste is the eye that develops from removing enough wrongness from enough systems. It sees the design before it is built. It knows which feature is immaterial, which coupling is unnatural, which constraint is artificial. It recognizes David before the first strike — because it has seen him enough times, in enough blocks of marble, in enough codebases.
+Brooks titled the chapter "Esthetics and Style in Technical Design." He was not being poetic. He was being precise. A well-designed system has a quality that metrics cannot capture. A clean interface. A coherent abstraction. A module that does one thing completely. These are not engineering properties. They are aesthetic properties — the residue of the art phase, accumulated across enough iterations that the system feels inevitable. You look at it and sense that nothing is missing and nothing is extra. You trust it. Trust is the aesthetic response to conceptual integrity — and conceptual integrity is what the loop produces when both phases are executed with discipline.
 
-> Every good engineer is an artist whether they know it or not. The ones who know it are better.
+This is what Brooks meant when he said great designs come from great designers. He was not talking about intelligence. He was talking about fluency in the loop. The designer who has built enough systems, removed enough wrongness, alternated between the engineering moment and the artistic moment enough times — that designer develops an eye. They see the system before it is built. They know which feature is immaterial. They know which coupling is unnatural. They know because they have seen David enough times to recognize him before the first strike.
+
+> Every good engineer moves through both phases of the loop whether they know it or not. The ones who know it move faster. They strike with intention. They assess with honesty. They recognize David earlier. They remove less because they add less. The loop tightens. The design clarifies. The marble releases what it was always holding.
 
 ---
 

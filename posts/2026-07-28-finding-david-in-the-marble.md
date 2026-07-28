@@ -1,69 +1,46 @@
 ---
-title: Finding David in the Marble — Iteration and The Design of Design
+title: Finding David in the Marble
 date: 2026-07-28
 slug: finding-david-in-the-marble
-summary: Michelangelo said he didn't carve David. He just chipped away everything that wasn't David. Brooks' The Design of Design argues the same thing about software: great design is not built. It is found. Through iteration. By removing what does not belong.
+summary: Michelangelo did not carve David. He removed everything that was not David. Brooks' The Design of Design is a book about chisels — the ones you use on software, on constraints, on yourself. Great design is not built. It is found. Through iteration. By subtraction. By learning to see.
 tags: software-engineering, design-of-design, iteration, fred-brooks, conceptual-integrity, design-philosophy
 ---
 
-In 1501, a 26-year-old sculptor was given a block of marble. It was not a fresh block. It had been sitting in a cathedral courtyard for thirty-five years. Two other sculptors had tried to carve it and abandoned it. The legs were roughed out. The block was considered flawed, unwieldy, and probably unusable. The sculptor was Michelangelo. The block became David.
+The block had been waiting thirty-five years. Two sculptors had tried and walked away. The legs were roughed out, the proportions already compromised. The marble was considered ruined — too tall, too narrow, too damaged by weather and bad first cuts. In 1501 it was given to a twenty-six-year-old who looked at it and saw David.
 
-> The marble was not special. The sculptor was not magical. The process was subtractive. Michelangelo saw what the statue could be and removed everything that wasn't it.
+> Michelangelo did not carve David. He removed everything that was not David. This is the first lesson of design. The form is already in the problem. Your job is to see it and set it free.
 
-![Michelangelo's David — carved from a block of marble abandoned for 35 years, considered flawed. The process was not additive. It was subtractive.](/images/david-michelangelo.jpg)
+![Michelangelo's David — carved from a block of marble abandoned for 35 years. The process was subtractive. The form was already there.](/images/david-michelangelo.jpg)
 
-Fred Brooks published *The Design of Design* in 2010, thirty-five years after *The Mythical Man-Month*. The later book is less famous. It is more important. Brooks' central argument: great design is an empirical process, not a rational one. The rational model — plan everything in advance, specify completely, build once — is a fantasy. It works for problems we have solved before. It fails for problems worth solving. The alternative is iteration. Build something. Learn what is wrong with it. Remove what is wrong. Build again. The design does not emerge from the plan. It emerges from the removal.
+Fred Brooks published *The Design of Design* in 2010. It is the book he spent thirty-five years learning to write. His argument is quiet and absolute: great design is an empirical act, not a rational one. The rational model — specify, architect, implement, ship — assumes you can see the end from the beginning. You cannot. Not for anything worth building. The alternative is iteration. Build. Learn what is wrong. Remove it. Build again. The design does not emerge from the plan. It emerges from the removal. Brooks called this Boehm's spiral, but the metaphor is older than software. It is the sculptor's rhythm. Strike. Assess. Strike again.
 
-> The rational model says: design, then build. The empirical model says: build, then remove, then build again. The first requires omniscience. The second requires honesty. Only one of these is available to humans.
+> The rational model requires omniscience. The empirical model requires honesty. One is a fantasy. The other is a discipline.
 
-This is Michelangelo's method applied to software. He did not assemble David from pieces. He did not have a blueprint precise enough to hand to an assistant. He worked the stone directly. He removed material. At each stage, the emerging form told him what to remove next. The statue was already in the marble. His job was to find it. A software design is already in the problem. The designer's job is to find it — not by getting it right the first time, but by getting it wrong and removing the wrongness.
+Brooks understood that conceptual integrity is the most important quality of a system. One design voice. Every part consistent with every other. But how do you achieve it? Not by adding. By removing. His three principles are all negative constraints, all chisels. **Propriety**: do not introduce what is immaterial. If a feature does not earn its place, strike it away. **Orthogonality**: do not link what is independent. If two things are coupled without cause, separate them. **Generality**: do not restrict what is inherent. If a limitation is artificial, free it. Each principle is a removal. Propriety removes the unnecessary. Orthogonality removes the tangled. Generality removes the arbitrary. The design becomes what it should be by becoming less of what it shouldn't.
 
-Brooks is explicit about this. In *The Design of Design*, he rejects the waterfall model as a description of how real design happens. He endorses Barry Boehm's spiral model — design, prototype, evaluate, redesign. Each iteration is a pass at the stone. Each pass removes what doesn't belong. The design gets simpler, not more complex. The final system has fewer parts than the intermediate versions. It is not that features were added. It is that features were removed.
+> Brooks gave us three chisels. Most of us use them to add. He meant them to take away.
 
-> A system grows by accretion. A design grows by reduction. The first is assembly. The second is sculpture.
+Herbert Simon, whom Brooks drew from, said design is a search problem. The design space is every possible form the marble could take, every possible architecture the code could have. The space is infinite. You cannot enumerate it. You navigate it. Each iteration is a move. Each evaluation is a judgment: closer or further? Michelangelo's search space was bounded by the block — its height, its flaws, the existing cuts. His utility function was his eye. He looked at the emerging surface and knew whether David was nearer or farther. He did not evaluate every possible statue in the stone. He did not need to. His style — the accumulated judgment of a lifetime of looking and cutting — collapsed the infinite space into a single path.
 
-This is why Brooks' three principles of conceptual integrity are all negative constraints. **Propriety**: do not introduce what is immaterial. If a feature does not earn its place, remove it. **Orthogonality**: do not link what is independent. If two things are coupled, separate them. **Generality**: do not restrict what is inherent. If a limitation is artificial, eliminate it. Each principle is a chisel. Each application removes something. Propriety removes features. Orthogonality removes coupling. Generality removes constraints. The design becomes what it should be by becoming less of what it shouldn't.
+> The design space is infinite. Constraints make it finite. Style makes it navigable.
 
-> Brooks' three principles are three chisels. Propriety removes the unnecessary. Orthogonality removes the tangled. Generality removes the arbitrary. The statue emerges.
+Brooks devoted a chapter to style — "Esthetics and Style in Technical Design." It is the most overlooked chapter in the book. Style, he argued, is not personality. It is not decoration. It is the trained heuristic that tells you which way to move in the search space. A designer without style tries everything. A designer with style tries the right thing first. Style is acquired by studying other designers' work — not imitating it, but understanding the choices behind it. By making conscious judgments about what moves you and why. By practicing until judgment becomes instinct. By revising your own work and noticing where your hand wavered.
 
-Michelangelo's David was not the first attempt on that block. Agostino di Duccio worked it for two years and quit. Antonio Rossellino tried and quit. The block sat exposed to weather for three and a half decades. Everyone who saw it saw a flawed block. Michelangelo saw David. This is what separates a designer from a builder. The builder sees what is there. The designer sees what could be there — and has the discipline to remove everything else.
+> "Great designs come from great designers." Not from process. Not from committees. From people whose style has pruned the infinite space into something a mind can hold.
 
-Software projects have their own abandoned blocks. The legacy codebase that everyone says needs a rewrite. The module that three teams have tried to refactor and given up on. The architecture that accumulated so many exceptions it no longer has a ruling principle. The instinct is to start over. New language. New framework. Clean slate. Michelangelo did not start over. He took the abandoned block — the one with the roughed-out legs, the one everyone said was ruined — and he removed what didn't belong to the David he saw. The legacy codebase is not a ruined block. It is a block someone roughed out and abandoned. Your job is to find the design inside it and remove everything else.
+Michelangelo developed his style by studying Greek and Roman sculpture. By dissecting cadavers in the morgue at Santo Spirito, learning how muscle lay over bone. By carving from the age of thirteen. By the time he stood before the abandoned block, he had cut enough marble to know what the marble wanted to become. He did not impose David on the stone. He listened to the stone and found David already inside, waiting to be released.
 
-> Starting over is the fantasy of the rational model. Finding the design in the existing system is the discipline of the empirical one. The marble is already on your desk. It has been for thirty-five years.
+> You learn to see David by chipping away at enough blocks that were not David. Taste is the residue of iteration. Style is the search heuristic that taste produces.
 
-Iteration is not about getting it right. It is about getting it less wrong. Each cycle, you remove something. A feature that doesn't earn its place. A coupling that shouldn't exist. A constraint that serves no purpose. The codebase shrinks. The design clarifies. You are not building David. You are finding him. He was always in there. He was just buried under the features, the couplings, and the constraints that were not him.
+The most important thing Brooks said is not about process. It is about seeing. The designer must see the design in the mind's eye before it is built. This is not mysticism. It is the result of a trained heuristic operating on a constrained space for long enough that the path becomes visible before the first step is taken. Michelangelo saw David in the ruined block. The software designer must see the system in the problem before the code is written. And the only way to learn to see is to build, to look honestly at what you built, to remove everything that isn't it, and to build again.
 
-## Design is a search problem
-
-Herbert Simon, in *The Sciences of the Artificial* (1969), formalized what Michelangelo did intuitively. Design is a search problem. The design space is the set of all possible designs that satisfy the constraints — every statue that could be carved from the block, every architecture that could organize the code. The designer's job is to navigate this space. Each iteration is a move from one point in the space to a neighboring point. Each evaluation is a judgment of whether the new point is better than the old one.
-
-> The design space is infinite. The constraints make it finite. The designer's style makes it navigable.
-
-Brooks adopted Simon's framework directly in *The Design of Design*. The rational model has four components. **Goals**: what the design must achieve. **Utility function**: how you compare two designs to decide which is better. **Constraints**: boundaries the design must not cross. **Resources**: time, people, budget. The designer proposes a tentative design, evaluates it against the utility function, and iterates. This is a search through a combinatorial space. The goal is not optimality — the space is too large. The goal is *satisficing*, Simon's term for a design that is good enough given the constraints. You stop searching when the cost of further search exceeds the expected improvement.
-
-Michelangelo's search space was defined by the marble block. The block's dimensions were the constraints. The existing rough cuts from di Duccio were constraints. The commission's requirements — a figure of David, biblical hero — were the goals. Michelangelo's utility function was his eye. He looked at the emerging form and judged whether it was closer to David or further away. Each strike of the chisel was a move in the search space. The search terminated when the form matched what he saw in his mind.
-
-> Michelangelo did not enumerate the search space. He did not evaluate every possible statue in the block. His style — his accumulated judgment about what forms were beautiful, what proportions were right, what surface was finished — pruned the space to a single path. Style is the search heuristic.
-
-This is Brooks' most undervalued insight. In a chapter called "Esthetics and Style in Technical Design," he argues that style is not decoration. It is the thing that makes search tractable. A designer without style evaluates every option. A designer with style knows which options are worth evaluating. Style is developed by studying other designers' work intentionally — not copying it, but understanding the choices they made and why. By making conscious judgments about what you like. By practicing until the judgments become instinct. By revising your own designs and noticing where your style was inconsistent. Style is not a personality. It is a trained search heuristic.
-
-> Brooks: "Great designs come from great designers." Not from great processes. Not from great committees. From great designers — people whose style has pruned the search space so effectively that they find David where others see a flawed block.
-
-Michelangelo developed his style by studying classical sculpture, dissecting cadavers to understand anatomy, and carving constantly from the age of thirteen. By twenty-six, when he took on the David commission, his style was sharp enough to see the statue in a block everyone else had abandoned. He did not search randomly. He did not evaluate every possible statue. His style told him where David was, and he removed everything else. A great software designer does the same. The style tells them which architecture to try first. Which abstraction to keep. Which feature to remove. The search space is too large for brute force. Style is what makes it small enough for a human mind.
-
-> Style is the compression algorithm for the design space. It takes the infinite and makes it finite. It takes the navigable and makes it intuitive. Without it, you are enumerating possibilities until the budget runs out. With it, you are Michelangelo.
-
-The most important thing Brooks said about design is not about process. It is about seeing. "The designer must see the design in the mind's eye before it is built." Michelangelo saw David in the abandoned block. The software designer must see the system in the problem before it is coded. This is not mysticism. It is the result of a trained search heuristic — style — operating on a constrained space. And the heuristic is developed through iteration: by building things, seeing what is wrong with them, removing what is wrong, and building again. You learn to see David by chipping away at enough blocks that weren't David.
-
-> Taste is the residue of iteration. Style is the search heuristic that taste produces. The designer who has chipped enough marble sees the statue before the first strike of the chisel.
+The marble is already on your desk. It has been for thirty-five years.
 
 ---
 
 **References:**
 
 - Fred Brooks. (2010). *The Design of Design: Essays from a Computer Scientist*. Addison-Wesley.
-- Fred Brooks. (1975). *The Mythical Man-Month*. Addison-Wesley.
+- Herbert Simon. (1969). *The Sciences of the Artificial*. MIT Press.
 - [Michelangelo's David](https://en.wikipedia.org/wiki/David_(Michelangelo)). 1501–1504. Galleria dell'Accademia, Florence.
-- Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment) — POLA, CoC, and conceptual integrity for agent-consumed software.
-- Related: [BSD is clean, OpenBSD is cleaner](https://blog.hackspree.com/#bsd-openbsd-linux) — Conceptual integrity in operating system design.
+- Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment).

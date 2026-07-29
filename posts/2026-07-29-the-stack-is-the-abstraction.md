@@ -6,7 +6,7 @@ summary: Design is a search problem. The stack is the set of constraints that ma
 tags: software-engineering, tech-stack, abstractions, architecture, ai-agents, design
 ---
 
-Design is a search problem. The space of all possible systems is infinite. You cannot search it. You need constraints.
+Design is a search problem. The space of all possible systems is infinite. You cannot search it. You need constraints. Christopher Alexander called this the search for "good fit" between form and context — and argued, in *Notes on the Synthesis of Form*, that constraints are the mechanism that makes fit discoverable. Without them, the search never converges.
 
 The stack is the constraint. A database narrows persistence. A framework narrows routing. A message queue narrows communication. Each layer says: the answer is in this region, not that one. PostgreSQL eliminates document stores. Rails eliminates manual HTTP handling. Temporal eliminates ad-hoc retry logic. The stack does not add options. It removes them. That is the point.
 
@@ -14,7 +14,7 @@ The stack is the constraint. A database narrows persistence. A framework narrows
 
 Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
 
-A good stack makes intent manifest. Brooks called this *conceptual integrity* — one design voice, every part consistent. The stack provides it by giving every part the same vocabulary. Persistence is schemas and migrations. Routing is endpoints and handlers. Durable execution is workflows and steps. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives.
+A good stack makes intent manifest. Dijkstra argued that the intellectual manageability of software depends on levels of abstraction — each level a self-contained world the programmer can reason about without descending into the one below. Brooks called this *conceptual integrity* — one design voice, every part consistent. The stack provides both: the levels and the voice. Persistence is schemas and migrations. Routing is endpoints and handlers. Durable execution is workflows and steps. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives. Persistence is schemas and migrations. Routing is endpoints and handlers. Durable execution is workflows and steps. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives.
 
 > The stack translates intent into code. The designer's intent is the input. The system is the output. The stack is the compiler.
 
@@ -22,7 +22,7 @@ This matters doubly for AI coding agents. An agent does not search creatively. I
 
 > Coding agents excel at well-constrained problems. The stack is what constrains them. Without it, every answer is possible. With it, one answer is right.
 
-This inverts the Unix philosophy. "Do one thing well" gives you thin tools and expects the programmer to compose them. The agent cannot compose. It searches. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space where competence is the only option. The design decision is made before the agent writes a line: how much of the search space am I willing to eliminate in advance?
+This inverts the Unix philosophy. "Do one thing well" gives you thin tools and expects the programmer to compose them. The agent cannot compose — it searches. Rich Hickey's distinction is useful here: Unix tools are simple but require the programmer to *complect* them — to entangle them into a system. Thick stacks are pre-composed. They give you the composition. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space where competence is the only option. The design decision is made before the agent writes a line: how much of the search space am I willing to eliminate in advance?
 
 > The designer who constrains the search space builds a system the agent can contribute to. The designer who doesn't builds a system the agent will break.
 
@@ -46,9 +46,12 @@ Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04
 
 **References:**
 
-- Joel Spolsky. (2006). [The Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/).
-- David Heinemeier Hansson. [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration). Ruby on Rails.
-- Fred Brooks. (2010). *The Design of Design*. Addison-Wesley.
-- Herbert Simon. (1969). *The Sciences of the Artificial*. MIT Press.
+- Herbert Simon. (1969). *The Sciences of the Artificial*. MIT Press. — Design as search; satisficing as stopping condition.
+- Christopher Alexander. (1964). *Notes on the Synthesis of Form*. Harvard University Press. — Design as the search for "good fit" between form and context; constraints as the mechanism that makes fit discoverable.
+- Fred Brooks. (2010). *The Design of Design*. Addison-Wesley. — Conceptual integrity; the rational model vs. the empirical model; style as trained heuristic.
+- David Heinemeier Hansson. [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration). Ruby on Rails. — Conventions as decisions removed from the design space.
+- Joel Spolsky. (2006). [The Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/). — The organization as platform; abstraction as invisibility.
+- Rich Hickey. (2011). [Simple Made Easy](https://www.infoq.com/presentations/Simple-Made-Easy/). — Simplicity vs. complexity; complect vs. compose; why abstractions must not entangle.
+- Edsger W. Dijkstra. (1972). [The Humble Programmer](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html). *Communications of the ACM*, 15(10). — Levels of abstraction as the intellectual manageability of software.
 - Related: [Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — Design as search, constraints as preconditions.
 - Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment) — Why the stack must not surprise the agent.

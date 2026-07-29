@@ -1,5 +1,5 @@
 ---
-title: Finding David in the Marble
+title: On Finding David in the Marble
 date: 2026-07-28
 slug: finding-david-in-the-marble
 summary: Finding David in the marble is a search problem. So is finding the design in the code. Plato called it remembering a Form. Aristotle called it actualizing a potential. Simon called it satisficing. Brooks called it iteration. All of them were describing the same loop — the one every software engineer learns to move through, or burns out fighting.

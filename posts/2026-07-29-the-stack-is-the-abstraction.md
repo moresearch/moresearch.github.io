@@ -10,8 +10,6 @@ Design is a search problem. The space of all possible systems is infinite. You c
 
 The stack is the constraint. A database narrows persistence. A framework narrows routing. A message queue narrows communication. Each layer says: the answer is in this region, not that one. PostgreSQL eliminates document stores. Rails eliminates manual HTTP handling. Temporal eliminates ad-hoc retry logic. The stack does not add options. It removes them. That is the point.
 
-Kevlin Henney observed that abstraction is neither good nor bad — its quality depends on what it removes. A poor abstraction "leaves too much in or removes the wrong details." The stack is a set of abstractions. Each one must remove the right things. A stack that removes the wrong things is not a constraint — it is an obstruction.
-
 > The stack is not a collection of tools. It is a set of constraints on the design space. What remains is small enough to search.
 
 Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
@@ -30,15 +28,13 @@ This matters doubly for AI coding agents. An agent does not search creatively. I
 
 > Coding agents excel at well-constrained problems. The stack is what constrains them. Without it, every answer is possible. With it, one answer is right.
 
-This inverts the Unix philosophy. "Do one thing well" gives you thin tools and expects the programmer to compose them. The agent cannot compose — it searches. Rich Hickey's distinction is useful here: Unix tools are simple but require the programmer to *complect* them — to entangle them into a system. Thick stacks are pre-composed. They give you the composition. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space where competence is the only option. The design decision is made before the agent writes a line: how much of the search space am I willing to eliminate in advance?
-
-> The designer who constrains the search space builds a system the agent can contribute to. The designer who doesn't builds a system the agent will break.
+This inverts the Unix philosophy. "Do one thing well" gives you thin tools and expects the programmer to compose them. The agent cannot compose — it searches. Hickey's distinction: Unix tools are simple but require the programmer to *complect* them into a system. Thick stacks are pre-composed. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space where competence is the only option. The question is answered before the agent writes a line: how much of the search space am I willing to eliminate in advance?
 
 ## Yes, but
 
 Every strong thesis has a shadow. Here is mine.
 
-**Too many layers.** David Wheeler said every problem in computer science can be solved by another level of indirection. Kevlin Henney added: except the problem of too many layers of indirection. A stack can over-constrain. Each layer adds a surface the designer must learn, a dependency that must be maintained, a convention that might conflict. The stack that eliminates too little leaves the search unbounded. The stack that eliminates too much buries the answer under abstractions the problem didn't need. The designer's job is to find the minimum set of layers that makes the search tractable — and then stop.
+**Too many layers.** Wheeler: every problem can be solved by another level of indirection. Henney: except too many levels of indirection. Abstractions are neither good nor bad — their quality depends on what they remove. A poor abstraction "leaves too much in or removes the wrong details." A stack can over-constrain. Each layer adds a surface to learn, a dependency to maintain, a convention that might conflict. Too little elimination leaves the search unbounded. Too much buries the answer under abstractions the problem didn't need. The designer's job: the minimum set of layers that makes the search tractable. Then stop.
 
 **Lock-in is real. So is drift.** A thick stack constrains the search. When the constraint is wrong, it excludes the answer. I have watched teams contort a relational schema around document-shaped data because they picked PostgreSQL before they understood the problem. The contortion is expensive. The rewrite is more expensive. But the alternative — no constraint, no stack, just composable pieces — is worse. A team with no stack does not avoid lock-in. It drifts. Every developer picks their own abstraction. The codebase becomes a museum of decisions, each reasonable in isolation, none coherent together. At least lock-in is honest. Drift is lock-in you didn't choose. I'll take the former.
 
@@ -50,7 +46,7 @@ Every strong thesis has a shadow. Here is mine.
 
 > I am not arguing that thick stacks are always right. I am arguing that the burden of proof has shifted. The default should be a thick stack — a constrained search space, a coherent vocabulary, a surface the agent can read. The default should not be freedom. Freedom is what you reach for when the constraint has failed, not what you start with. Freedom is expensive. Make the stack pay for it.
 
-Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/) argued management exists to insulate programmers from everything not code. The stack insulates the design from everything not the problem. Both succeed when invisible. Both become traps when they're not. Choose the trap you can see.
+Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/) argued management insulates programmers from everything not code. The stack insulates the design from everything not the problem. Both succeed when invisible. Both fail when they demand attention. The designer's job is to make them disappear.
 
 ---
 

@@ -10,6 +10,8 @@ Design is a search problem. The space of all possible systems is infinite. You c
 
 The stack is the constraint. A database narrows persistence. A framework narrows routing. A message queue narrows communication. Each layer says: the answer is in this region, not that one. PostgreSQL eliminates document stores. Rails eliminates manual HTTP handling. Temporal eliminates ad-hoc retry logic. The stack does not add options. It removes them. That is the point.
 
+Kevlin Henney observed that abstraction is neither good nor bad — its quality depends on what it removes. A poor abstraction "leaves too much in or removes the wrong details." The stack is a set of abstractions. Each one must remove the right things. A stack that removes the wrong things is not a constraint — it is an obstruction.
+
 > The stack is not a collection of tools. It is a set of constraints on the design space. What remains is small enough to search.
 
 Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
@@ -29,6 +31,8 @@ This inverts the Unix philosophy. "Do one thing well" gives you thin tools and e
 ## Yes, but
 
 Every strong thesis has a shadow. Here is mine.
+
+**Too many layers.** David Wheeler said every problem in computer science can be solved by another level of indirection. Kevlin Henney added: except the problem of too many layers of indirection. A stack can over-constrain. Each layer adds a surface the designer must learn, a dependency that must be maintained, a convention that might conflict. The stack that eliminates too little leaves the search unbounded. The stack that eliminates too much buries the answer under abstractions the problem didn't need. The designer's job is to find the minimum set of layers that makes the search tractable — and then stop.
 
 **Lock-in is real. So is drift.** A thick stack constrains the search. When the constraint is wrong, it excludes the answer. I have watched teams contort a relational schema around document-shaped data because they picked PostgreSQL before they understood the problem. The contortion is expensive. The rewrite is more expensive. But the alternative — no constraint, no stack, just composable pieces — is worse. A team with no stack does not avoid lock-in. It drifts. Every developer picks their own abstraction. The codebase becomes a museum of decisions, each reasonable in isolation, none coherent together. At least lock-in is honest. Drift is lock-in you didn't choose. I'll take the former.
 
@@ -53,5 +57,6 @@ Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04
 - Joel Spolsky. (2006). [The Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/). — The organization as platform; abstraction as invisibility.
 - Rich Hickey. (2011). [Simple Made Easy](https://www.infoq.com/presentations/Simple-Made-Easy/). — Simplicity vs. complexity; complect vs. compose; why abstractions must not entangle.
 - Edsger W. Dijkstra. (1972). [The Humble Programmer](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html). *Communications of the ACM*, 15(10). — Levels of abstraction as the intellectual manageability of software.
+- Kevlin Henney. [From Mechanism to Method: Generic Decoupling](https://accu.org/journals/overload/12/60/henney_308/). *Overload*, 60. — Abstraction quality: good abstractions remove the right details; corollary to Wheeler's indirection aphorism.
 - Related: [Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — Design as search, constraints as preconditions.
 - Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment) — Why the stack must not surprise the agent.

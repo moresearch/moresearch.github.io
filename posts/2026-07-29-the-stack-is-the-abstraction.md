@@ -14,7 +14,7 @@ The stack is the constraint. A database narrows persistence. A framework narrows
 
 Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
 
-A good stack makes intent manifest. Dijkstra argued that the intellectual manageability of software depends on levels of abstraction — each level a self-contained world the programmer can reason about without descending into the one below. Brooks called this *conceptual integrity* — one design voice, every part consistent. The stack provides both: the levels and the voice. Persistence is schemas and migrations. Routing is endpoints and handlers. Durable execution is workflows and steps. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives.
+Beyond search, the stack makes intent manifest. Dijkstra argued that the intellectual manageability of software depends on levels of abstraction — each level a self-contained world the programmer can reason about without descending into the one below. Brooks called this *conceptual integrity* — one design voice, every part consistent. The stack provides both: the levels and the voice. Persistence is schemas and migrations. Routing is endpoints and handlers. Durable execution is workflows and steps. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives.
 
 > The stack translates intent into code. The designer's intent is the input. The system is the output. The stack is the compiler.
 
@@ -48,19 +48,17 @@ Every strong thesis has a shadow. Here is mine.
 
 ## Determinism
 
-There is one more reason the stack matters now, and it is the reason that makes everything else in this post urgent.
+AI coding agents are non-deterministic. The same prompt produces different code. An agent asked to build a backend might return Express, Fastify, or raw Node. Each is correct. None is predictable. The agent's non-determinism becomes the system's instability.
 
-AI coding agents are non-deterministic. The same prompt produces different code each time. Without constraints, the variance is unbounded. An agent asked to build a backend might return Express one day, Fastify the next, raw Node the third. Each is correct. None is predictable. The agent's non-determinism becomes the system's instability.
+The stack absorbs the variance. Inside Rails, there are only so many ways to write a migration, only so many ways to write a controller. The agent may vary — different variable names, slightly different queries — but the variance is bounded by the stack's vocabulary. The code differs. The design is the same.
 
-The stack absorbs the variance. When the agent operates inside Rails, the answer space collapses. There are only so many ways to define a migration, only so many ways to write a controller. The agent may still vary — different variable names, slightly different query structures — but the variance is bounded by the stack's vocabulary. The code is different each time. The design is the same.
+> The stack turns non-deterministic agents into deterministic contributors. The prompt may vary. The model may vary. The output stays within the lines.
 
-> The stack turns non-deterministic agents into deterministic contributors. The prompt may vary. The model may vary. The output stays within the lines. That is what a stack is for.
+This is the defining problem of the Agentic Software Engineering era: introducing non-deterministic processes into a discipline that depends on reproducibility. Builds must be repeatable. Behavior must be testable. The system must behave the same way twice. The stack is the countermeasure. It constrains the agent to a space where all paths lead to the same architecture. The details differ. The design converges. The non-determinism is rendered safe.
 
-This is the defining problem of the Agentic Software Engineering era. We are introducing non-deterministic processes into a discipline that depends on predictability. Builds must be reproducible. Behavior must be testable. The system must behave the same way twice. An agent that writes different code each time threatens all three. The stack is the countermeasure. It says: the agent may choose any path through this space, but the space is small enough that all paths lead to the same design. The details differ. The architecture converges. The stack makes the agent's non-determinism safe.
+> In the Agentic Software Engineering era, the stack is not a productivity tool. It is a stability guarantee. It ensures the agent's output is coherent — idiomatic — today and tomorrow, when a different agent with a different model modifies the same codebase and must find code it can read.
 
-> In the Agentic Software Engineering era, the stack is not a productivity tool. It is a stability guarantee. It ensures that an agent's output is not just correct, but coherent — not just working, but idiomatic — not just today, but tomorrow, when a different agent with a different model modifies the same codebase and must find code it can read.
-
-Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/) argued management insulates programmers from everything not code. The stack insulates the design from everything not the problem — including the agent that builds it. Both succeed when invisible. Both fail when they demand attention. The designer's job is to make them disappear.
+Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/) argued management insulates programmers from everything not code. The stack insulates the design from everything not the problem — including the agent that builds it. Both succeed when invisible. The designer's job is to make them disappear.
 
 ---
 

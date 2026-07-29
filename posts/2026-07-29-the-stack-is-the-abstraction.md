@@ -54,6 +54,22 @@ The stack solves this by constraining not the path, but the region. Inside Rails
 
 Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/) argued management insulates programmers from everything not code. The stack insulates the designer's intent — Brooks' vision in the mind's eye — from everything not the problem, including the agent that searches it. Both succeed when invisible. The designer's job is to make them disappear.
 
+## Open questions
+
+**How much of the problem must you understand before choosing the stack?** A stack constrains the search. Choose too early, and the constraint eliminates the answer. Choose too late, and the codebase has already drifted into a museum of ad-hoc decisions. When is the right moment to commit?
+
+**How do you test whether the stack still fits?** The problem evolves. The stack that constrained the search perfectly at version 1 may exclude the answer at version 3. What is the signal that it's time to change the constraint — to swap a layer, adopt a new pattern, or remove an abstraction that no longer earns its place?
+
+**Who decides the stack?** Brooks said design must come from one mind or very few. Does the stack decision require the same? Or is stack choice inherently a team decision — a social contract about which constraints everyone will accept — and therefore demands broad buy-in?
+
+**How do you balance thickness against legibility for the agent?** A thick stack constrains the agent's search. But every layer is also a surface the agent must learn. At what point does thickness become opacity — the agent drowning not in possibility but in abstraction?
+
+**What is the half-life of a stack decision?** Some constraints are permanent. Some expire when the team grows, the problem shifts, or the agent's training distribution changes. How do you know which is which? Which layers do you expect to replace, and which do you expect to outlast you?
+
+**Can a stack be too thin for humans and too thick for agents simultaneously?** Human designers want freedom. Agents want constraints. The stack that satisfies both may not exist. Do you optimize for the human or the agent? Does the answer change over time as agents improve?
+
+**What is the minimum viable stack?** The minimum set of layers that makes the search tractable — and then stop. Every layer beyond the minimum is a tax. How do you know when you've reached the minimum? What is the test?
+
 ---
 
 **References:**

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Einstein described discovery as a cycle: induction, deduction, and a mysterious third thing — the intuitive jump from experience to axioms. Tom Zahavy&#39;s position paper argues that LLMs have mastered the first two and are structurally incapable of the third. The jump is abduction. Abduction is the search problem of design. And it requires something LLMs don&#39;t have: a body.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/llms-cant-jump/">
+  <title>LLMs Can&#39;t Jump — hackspree</title>
+  <meta property="og:title" content="LLMs Can&#39;t Jump">
+  <meta property="og:description" content="Einstein described discovery as a cycle: induction, deduction, and a mysterious third thing — the intuitive jump from experience to axioms. Tom Zahavy&#39;s position paper argues that LLMs have mastered the first two and are structurally incapable of the third. The jump is abduction. Abduction is the search problem of design. And it requires something LLMs don&#39;t have: a body.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/llms-cant-jump/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="LLMs Can&#39;t Jump">
+  <meta name="twitter:description" content="Einstein described discovery as a cycle: induction, deduction, and a mysterious third thing — the intuitive jump from experience to axioms. Tom Zahavy&#39;s position paper argues that LLMs have mastered the first two and are structurally incapable of the third. The jump is abduction. Abduction is the search problem of design. And it requires something LLMs don&#39;t have: a body.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-07-29">2026-07-29</time></p>
+          <h1>LLMs Can&#39;t Jump</h1><p class="post-summary">Einstein described discovery as a cycle: induction, deduction, and a mysterious third thing — the intuitive jump from experience to axioms. Tom Zahavy&#39;s position paper argues that LLMs have mastered the first two and are structurally incapable of the third. The jump is abduction. Abduction is the search problem of design. And it requires something LLMs don&#39;t have: a body.</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">llm</span><span class="tag">abduction</span><span class="tag">scientific-discovery</span><span class="tag">deepmind</span><span class="tag">epistemology</span><span class="tag">design</span></div>
+          
+        </header>
+        <div class="post-body"><p>Einstein wrote a letter to Maurice Solovine in 1952. In it, he drew a diagram of how discovery works. Sensory experience forms the base. From it, the mind makes an intuitive leap to axioms — general principles that are not logically derivable from the data. From those axioms, the mind deduces consequences. The consequences are tested against experience. The loop repeats. Einstein called the leap <em>Aufstieg</em> — ascent. He said it was the most mysterious part of the process, the part that cannot be mechanized.</p>
+<p>Tom Zahavy, at Google DeepMind, has written a position paper arguing that Einstein was right. The paper is called <em>LLMs Can't Jump</em>. The jump is abduction — the generation of novel explanatory hypotheses from sparse or absent data. Zahavy's argument is that LLMs have mastered induction (statistical pattern matching) and are rapidly conquering deduction (formal proof). They lack the mechanism for the jump. They cannot do it. Their architecture prevents it.</p>
+<blockquote>
+<p>Induction is interpolation within the known. Deduction is derivation from premises. Abduction is the leap to premises that do not yet exist. LLMs interpolate. They derive. They do not leap.</p>
+</blockquote>
+<p>The case study is General Relativity. When Einstein began working on it in 1907, Newtonian mechanics was wildly successful. There was no crisis in the data. The only anomaly was Mercury's orbital precession — a tiny discrepancy that most physicists considered an measurement error. Einstein did not have a dataset that demanded a new theory of gravity. He had a thought experiment: a person falling freely in an elevator would not feel their own weight. From this embodied intuition — not from gradient descent over a loss function — he derived the equivalence principle, and from there, the field equations of General Relativity.</p>
+<blockquote>
+<p>Einstein did not compress data. He jumped from it. The jump was not an interpolation between known points. It was the creation of a new point — a new axis in the conceptual space. LLMs cannot create new axes. They can only navigate the ones we have already named.</p>
+</blockquote>
+<p>Zahavy identifies the structural reasons. LLMs process tokens, not physical experience. &quot;Gravity&quot; is a statistical relationship between words, not a sensation. The model has never fallen. It has never felt weight disappear. It cannot perform the embodied thought experiment that gave Einstein his axioms. This is the symbol grounding problem, applied to discovery. You cannot reason about what you have not experienced. You cannot jump from a platform you have never stood on.</p>
+<p>The prevailing theory of creativity in AI is compression — Schmidhuber's thesis that creativity is just efficient data compression. A sufficiently good compressor, given enough data, will produce general intelligence. Zahavy's counterargument is General Relativity. There was no data to compress. Newtonian mechanics fit almost all the data perfectly. The discovery came from a jump away from the data, not a better fit to it. Compression explains induction. It does not explain abduction. A compressor can find the shortest representation of what is. It cannot represent what is not yet.</p>
+<blockquote>
+<p>Compression tells you what the data contains. Abduction tells you what the data implies but does not contain. The first is interpolation. The second is invention. LLMs are compressors. The jump requires something else.</p>
+</blockquote>
+<p>Zahavy's proposed solution is multimodal world models — AI systems that can interact with simulated physical environments, perform counterfactual interventions, and ground their representations in sensory experience. DeepMind's Genie architecture, which allows action-controllable interaction with generated worlds, is a step in this direction. The idea is that you cannot jump from tokens. You need a body — even a simulated one — that can fall, collide, and observe the consequences. The translation of simulation into formal axioms remains the critical bottleneck. But at least the simulation provides something to jump <em>from</em>.</p>
+<blockquote>
+<p>Einstein's elevator was a simulation running in his own sensorimotor cortex. He had fallen. He had felt acceleration. His body knew what weightlessness felt like before his mind could formalize it. An LLM has no elevator to fall in.</p>
+</blockquote>
+<p>This connects to a deeper argument this blog has been making. Design is a search problem. The stack constrains the search. Style is the trained heuristic that makes the search tractable. But abduction — the jump — is the search problem at its most radical. It is a search that must create the space it searches. The designer who sees David in the marble is performing an abductive leap. The axioms are not in the data. They are in the mind's eye, projected onto the stone, tested by the chisel. Brooks called this seeing the design in the mind's eye before it is built. Einstein called it the intuitive leap from experience to axioms. Both were describing the same thing. Neither could mechanize it.</p>
+<blockquote>
+<p>Abduction is the search problem of design at its origin. It is the moment the search space itself is created. LLMs search spaces we define. They cannot define new ones. The jump is the act of definition. It is the one thing we have not automated. It may be the one thing we cannot.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Tom Zahavy. (2026). <a target="_blank" rel="noopener noreferrer" href="https://philsci-archive.pitt.edu/28024/">LLMs Can't Jump</a>. Google DeepMind. ICML 2026.</li>
+<li>Albert Einstein. (1952). Letter to Maurice Solovine. In <em>Letters to Solovine</em>, Philosophical Library.</li>
+<li>Jürgen Schmidhuber. (2009). Driven by Compression Progress. <em>arXiv:0812.4360</em>.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#finding-david-in-the-marble">On Finding David in the Marble</a> — Design as search, the intuitive leap from form to marble.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#the-stack-is-the-abstraction">The Stack as a Design Abstraction</a> — How constraints make search tractable, and why agents need them.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

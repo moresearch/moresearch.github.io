@@ -12,7 +12,7 @@ The stack is the constraint. A database narrows persistence. A framework narrows
 
 > The stack is not a collection of tools. It is a set of constraints on the design space. What remains is small enough to search.
 
-Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
+Choose PostgreSQL, and you commit to schemas, migrations, ACID. Choose MongoDB, and you commit to documents and eventual consistency. This is not a performance decision. It is a search decision — which region of the design space will you explore? DHH understood this: convention over configuration is not about keystrokes. It is about eliminating the design search. Every Rails convention removes a decision. Rails doesn't make you faster. It makes the design space smaller. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad one eliminates the answer before you start looking.
 
 Beyond search, the stack makes intent manifest. Dijkstra argued the intellectual manageability of software depends on levels of abstraction — each level a self-contained world. Brooks called the result *conceptual integrity* — one design voice, every part consistent, the design existing in the mind's eye before code is written. The stack is what carries it from mind to machine. The designer thinks at the level of the problem. The stack translates. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives.
 
@@ -58,7 +58,7 @@ Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04
 
 **How much of the problem must you understand before choosing the stack?** A stack constrains the design search. Choose too early, and the constraint eliminates the answer. Choose too late, and the codebase has already drifted into a museum of ad-hoc decisions. When is the right moment to commit?
 
-**How do you test whether the stack still fits?** The problem evolves. The stack that constrained the search perfectly at version 1 may exclude the answer at version 3. What is the signal that it's time to change the constraint — to swap a layer, adopt a new pattern, or remove an abstraction that no longer earns its place?
+**How do you test whether the stack still fits?** The problem evolves. The stack that constrained the design search perfectly at version 1 may exclude the answer at version 3. What is the signal that it's time to change the constraint — to swap a layer, adopt a new pattern, or remove an abstraction that no longer earns its place?
 
 **Who decides the stack?** Brooks said design must come from one mind or very few. Does the stack decision require the same? Or is stack choice inherently a team decision — a social contract about which constraints everyone will accept — and therefore demands broad buy-in?
 

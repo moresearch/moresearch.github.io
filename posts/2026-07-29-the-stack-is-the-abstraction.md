@@ -12,11 +12,13 @@ The stack is the constraint. A database narrows how you think about persistence.
 
 > The stack is not a collection of tools. It is a set of constraints on the design space. Each layer eliminates a region of possible solutions. What remains is small enough to search.
 
-This is why stack decisions are design decisions. Choose PostgreSQL, and you have committed to schemas, migrations, and ACID — a specific region of the persistence space. Choose MongoDB, and you have committed to documents, collections, and eventual consistency — a different region. The choice is not about performance. It is about which region of the design space you will search. A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad stack choice eliminates the answer before you start looking.
+This is why stack decisions are design decisions. Choose PostgreSQL, and you have committed to schemas, migrations, and ACID. Choose MongoDB, and you have committed to documents and eventual consistency. The choice is not about performance. It is about which region of the design space you will search. DHH understood this when he built Rails: convention over configuration is not about saving keystrokes. It is about eliminating search. Every convention is a decision removed from the design space. Rails doesn't make you faster. It makes the design space smaller. That's the real win.
+
+A good stack choice makes the region small enough to navigate and rich enough to contain the answer. A bad stack choice eliminates the answer before you start looking.
 
 > The stack is the designer saying: the answer is in this region. Every layer is a bet that the region contains it.
 
-A good stack makes intent manifest. Not because the abstractions are clever — because they reduce the distance between thought and code. Persistence becomes schemas and migrations. Routing becomes endpoints and handlers. Durable execution becomes workflows and steps. Each abstraction lifts the code closer to what the designer meant. Fewer lines on machinery. More lines on meaning.
+A good stack makes intent manifest. Brooks called this *conceptual integrity* — one design voice, every part consistent. The stack provides it by giving every part the same vocabulary. Persistence is always schemas and migrations. Routing is always endpoints and handlers. Durable execution is always workflows and steps. The designer thinks at the level of the problem. The stack handles the translation. Fewer lines on machinery. More lines on meaning. When the vocabulary is consistent, the design is coherent. When the design is coherent, the intent survives the implementation.
 
 > The stack translates intent into code. A good stack makes the translation direct. A bad stack makes it circuitous. The designer's intent is the input. The system is the output. The stack is the compiler.
 
@@ -24,7 +26,7 @@ This matters for AI coding agents for the same reason it matters for humans — 
 
 > Coding agents excel at well-constrained problems. The stack is what constrains them. Without it, the agent faces every possible answer. With it, the agent faces one right answer and a few wrong ones. The stack makes the agent competent.
 
-The designer who chooses a stack is designing the search space the agent will inhabit. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space. It will produce code. It will be wrong in ways you won't notice. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space with idiomatic answers close to the surface. The agent produces competent code because competence is the only option the space allows. The design decision is made before the agent writes a line: how much of the search space am I willing to eliminate in advance?
+The designer who chooses a stack is designing the search space the agent will inhabit. This inverts the Unix philosophy. "Do one thing well" gives you thin, composable tools and expects the programmer to compose them. The agent cannot compose. It searches. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. It will produce code. It will be wrong in ways you won't notice. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space with right answers close to the surface. The agent writes competent code because competence is the only option the space allows. The design decision is made before the agent writes a line: how much of the search space am I willing to eliminate in advance?
 
 > The designer who constrains the search space tightly builds a system the agent can contribute to. The designer who leaves the space unbounded builds a system the agent will break. The stack is the difference.
 
@@ -35,6 +37,8 @@ Joel Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/20
 **References:**
 
 - Joel Spolsky. (2006). [The Development Abstraction Layer](https://www.joelonsoftware.com/2006/04/11/the-development-abstraction-layer-2/).
+- David Heinemeier Hansson. [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration). Ruby on Rails.
+- Fred Brooks. (2010). *The Design of Design*. Addison-Wesley.
 - Herbert Simon. (1969). *The Sciences of the Artificial*. MIT Press.
 - Related: [Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — Design as search, constraints as preconditions.
 - Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment) — Why the stack must not surprise the agent.

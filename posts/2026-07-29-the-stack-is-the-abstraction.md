@@ -1,5 +1,5 @@
 ---
-title: The Stack Is the Abstraction
+title: The Stack as a Design Abstraction
 date: 2026-07-29
 slug: the-stack-is-the-abstraction
 summary: Design is a search problem. The stack is the set of constraints that make the search tractable. Each layer narrows the space. A good stack makes the designer's intent manifest with less code and fewer decisions. This matters doubly for AI coding agents — they excel at well-constrained problems and drown in unbounded ones. The stack is what constrains the problem.

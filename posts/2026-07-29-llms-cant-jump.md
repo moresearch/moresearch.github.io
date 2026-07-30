@@ -10,6 +10,8 @@ Einstein wrote a letter to Maurice Solovine in 1952. In it, he drew a diagram of
 
 Tom Zahavy, at Google DeepMind, has written a position paper arguing that Einstein was right. The paper is called *LLMs Can't Jump*. The jump is abduction — the generation of novel explanatory hypotheses from sparse or absent data. Zahavy's argument is that LLMs have mastered induction (statistical pattern matching) and are rapidly conquering deduction (formal proof). They lack the mechanism for the jump. They cannot do it. Their architecture prevents it.
 
+[Watch: Tom Zahavy presents LLMs Can't Jump — The Abductive Gap in AI Discovery](https://www.youtube.com/watch?v=vaH2eweyuvs)
+
 > Induction is interpolation within the known. Deduction is derivation from premises. Abduction is the leap to premises that do not yet exist. LLMs interpolate. They derive. They do not leap.
 
 The case study is General Relativity. When Einstein began working on it in 1907, Newtonian mechanics was wildly successful. There was no crisis in the data. The only anomaly was Mercury's orbital precession — a tiny discrepancy that most physicists considered an measurement error. Einstein did not have a dataset that demanded a new theory of gravity. He had a thought experiment: a person falling freely in an elevator would not feel their own weight. From this embodied intuition — not from gradient descent over a loss function — he derived the equivalence principle, and from there, the field equations of General Relativity.

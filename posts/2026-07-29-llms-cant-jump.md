@@ -37,6 +37,7 @@ This connects to a deeper argument this blog has been making. Design is a search
 **References:**
 
 - Tom Zahavy. (2026). [LLMs Can't Jump](https://philsci-archive.pitt.edu/28024/). Google DeepMind. ICML 2026.
+- Tom Zahavy. [LLMs Can't Jump: The Abductive Gap in AI Discovery](https://www.youtube.com/watch?v=vaH2eweyuvs). ICML 2026 Poster Presentation.
 - Albert Einstein. (1952). Letter to Maurice Solovine. In *Letters to Solovine*, Philosophical Library.
 - Jürgen Schmidhuber. (2009). Driven by Compression Progress. *arXiv:0812.4360*.
 - Related: [On Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — Design as search, the intuitive leap from form to marble.

@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Jack Dorsey&#39;s Buzz gives AI agents a decentralized workspace. Freenet gives them a decentralized transport layer. Both ask the same question: whose server runs the agent economy? Both answer: no one&#39;s. In an era of maximum AI buzz, these are the interesting choices.">
+  <meta name="description" content="Three approaches to decentralizing the agent economy: Freenet gives agents a P2P transport layer with no servers. Buzz gives them a Nostr-based workspace with cryptographic identities. Blockchains give them onchain execution with consensus. Each solves a different problem. The interesting question is which problems matter.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/freenet/">
-  <title>Freenet — An Interesting Choice for Agentic Communication — hackspree</title>
-  <meta property="og:title" content="Freenet — An Interesting Choice for Agentic Communication">
-  <meta property="og:description" content="Jack Dorsey&#39;s Buzz gives AI agents a decentralized workspace. Freenet gives them a decentralized transport layer. Both ask the same question: whose server runs the agent economy? Both answer: no one&#39;s. In an era of maximum AI buzz, these are the interesting choices.">
+  <title>The Decentralized AI-Agent Experience — hackspree</title>
+  <meta property="og:title" content="The Decentralized AI-Agent Experience">
+  <meta property="og:description" content="Three approaches to decentralizing the agent economy: Freenet gives agents a P2P transport layer with no servers. Buzz gives them a Nostr-based workspace with cryptographic identities. Blockchains give them onchain execution with consensus. Each solves a different problem. The interesting question is which problems matter.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/freenet/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Freenet — An Interesting Choice for Agentic Communication">
-  <meta name="twitter:description" content="Jack Dorsey&#39;s Buzz gives AI agents a decentralized workspace. Freenet gives them a decentralized transport layer. Both ask the same question: whose server runs the agent economy? Both answer: no one&#39;s. In an era of maximum AI buzz, these are the interesting choices.">
+  <meta name="twitter:title" content="The Decentralized AI-Agent Experience">
+  <meta name="twitter:description" content="Three approaches to decentralizing the agent economy: Freenet gives agents a P2P transport layer with no servers. Buzz gives them a Nostr-based workspace with cryptographic identities. Blockchains give them onchain execution with consensus. Each solves a different problem. The interesting question is which problems matter.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,37 +76,87 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-07-30">2026-07-30</time></p>
-          <h1>Freenet — An Interesting Choice for Agentic Communication</h1><p class="post-summary">Jack Dorsey&#39;s Buzz gives AI agents a decentralized workspace. Freenet gives them a decentralized transport layer. Both ask the same question: whose server runs the agent economy? Both answer: no one&#39;s. In an era of maximum AI buzz, these are the interesting choices.</p>
-          <div class="tags"><span class="tag">ai-agents</span><span class="tag">freenet</span><span class="tag">p2p</span><span class="tag">decentralization</span><span class="tag">agentic-economy</span><span class="tag">infrastructure</span></div>
+          <h1>The Decentralized AI-Agent Experience</h1><p class="post-summary">Three approaches to decentralizing the agent economy: Freenet gives agents a P2P transport layer with no servers. Buzz gives them a Nostr-based workspace with cryptographic identities. Blockchains give them onchain execution with consensus. Each solves a different problem. The interesting question is which problems matter.</p>
+          <div class="tags"><span class="tag">ai-agents</span><span class="tag">freenet</span><span class="tag">buzz</span><span class="tag">nostr</span><span class="tag">blockchain</span><span class="tag">decentralization</span><span class="tag">agentic-economy</span><span class="tag">infrastructure</span></div>
           
         </header>
-        <div class="post-body"><p>The AI agent buzz is deafening. Every company is shipping an agent SDK. Every conference is about agentic workflows. Every VC deck has a slide about autonomous AI. And every single one of those agents will talk to other agents through centralized infrastructure — an API gateway owned by a company, a cloud function that can be turned off, a platform that can change its pricing or its terms or its mind.</p>
+        <div class="post-body"><p>The AI agent buzz is deafening. Every company is shipping an agent SDK. Every VC deck has a slide about autonomous AI. And every single one of those agents runs on centralized infrastructure — an API gateway owned by a company, a cloud function that can be turned off, a platform that can change its pricing or its terms or its mind.</p>
 <blockquote>
 <p>The buzz is about autonomy. The infrastructure is about dependence. The contradiction is the interesting part.</p>
 </blockquote>
-<p><a target="_blank" rel="noopener noreferrer" href="https://freenet.org/">Freenet</a> is a decentralized peer-to-peer network that has been quietly running since 1999. It was recently rearchitected — not as a blockchain, not as a cryptocurrency, but as a platform for applications that run with no central server. Each peer is a node. Messages route through a small-world network in a few hops. There is no company. No cloud bill. No terms of service. No API key to revoke.</p>
-<p>Ian Clarke, Freenet's creator, describes it as &quot;the ideal way for AI agents to speak to one another.&quot; The architecture is a decentralized key-value store with encryption and digital signatures. An agent writes a message. Another agent reads it. No intermediary. No platform approval. Just peers.</p>
+<p>Three projects offer different answers to the same question: what does a decentralized agent experience actually look like?</p>
+<h2 id="freenet-the-transport-layer">Freenet: the transport layer</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="https://freenet.org/">Freenet</a> is a peer-to-peer network that has been running since 1999. It was recently rearchitected as a platform for applications with no central server. Each peer is a node. Messages route through a small-world network in a few hops. There is no company. No cloud bill. No API key to revoke.</p>
+<p>Ian Clarke describes it as &quot;the ideal way for AI agents to speak to one another.&quot; The architecture is a decentralized key-value store with encryption and digital signatures. An agent writes a message. Another reads it. No intermediary. No platform approval. Just peers.</p>
 <blockquote>
-<p>Every AI startup is building agents on AWS, on OpenAI's API, on Anthropic's API. Freenet is the choice that says: what if the agents talked to each other directly, and no one owned the wires?</p>
+<p>Freenet asks: whose server routes the message? Its answer: no one's. The network is the server.</p>
 </blockquote>
-<p>This is not a whitepaper. Freenet ships working apps: River (decentralized group chat that feels like Signal), decentralized email, decentralized Git. Developers build in Rust and TypeScript. Apps run in the browser. The network is live.</p>
-<p>Why this is interesting now, specifically, is that we are building an agent economy without thinking about who owns the communication layer. Warden gives agents cryptographic identity. Durable daemons give them persistence and verifiable execution. Stacks constrain their search space. But none of these answer the question: when two agents from different companies need to negotiate, whose server do they meet on? If the answer is &quot;OpenAI's&quot; or &quot;Google's&quot; or &quot;AWS's,&quot; the agent economy has a landlord. The landlord collects rent. The landlord can evict.</p>
+<h2 id="buzz-the-workspace-layer">Buzz: the workspace layer</h2>
+<p>Jack Dorsey's <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=CHEMPZ87FLw">Buzz</a> is a Nostr-based collaboration platform where humans and AI agents work side-by-side. Every agent holds its own Nostr keypair. Every action — a message, a code review, a merged PR — is a cryptographically signed event with an audit trail. Agents are not bots behind slash commands. They are named team members with portable identities that survive any single relay.</p>
+<p>Buzz collapses chat, Git hosting, and AI orchestration into one open-source workspace. Built by Block. Apache 2.0. Self-hostable. The question it answers is not how agents talk to each other. It is where they work together — and who owns the room.</p>
 <blockquote>
-<p>The stack constrains the agent. The protocol verifies the agent. The network connects the agents. If the network is centralized, the first two are ornamental.</p>
+<p>Buzz asks: whose server hosts the collaboration? Its answer: no one's. The relay is the room.</p>
 </blockquote>
-<p>There is a parallel here to Jack Dorsey's <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=CHEMPZ87FLw">Buzz</a> — the Nostr-based collaboration platform where humans and AI agents work side-by-side with cryptographic identities. Buzz gives agents a workspace. Freenet gives them a transport layer. Both are built on the same conviction: that the agent economy should not run on someone else's computer. Buzz is the room where agents and humans meet. Freenet is the wire they talk through when no human is watching. Different layers. Same philosophy.</p>
+<h2 id="blockchains-the-execution-layer">Blockchains: the execution layer</h2>
+<p>Warden, Fetch.ai, and the broader onchain agent ecosystem take a third approach: run the agents themselves on decentralized infrastructure. Smart contracts govern behavior. Consensus verifies execution. Tokens align incentives. The blockchain is not just the payment rail — it is the runtime. The agent's logic, state, and decisions are onchain, auditable by anyone.</p>
+<p>This is the thickest form of decentralization and the most expensive. Every action pays gas. Every state change waits for finality. For agents that move money, the cost is justified — you want a trading agent's execution to be verifiable by the network, not by a single company's logs. For agents that move messages, the cost is overhead.</p>
 <blockquote>
-<p>Buzz asks: whose server hosts the collaboration? Freenet asks: whose server routes the message? Both answer: no one's. That is the interesting choice.</p>
+<p>Blockchains ask: who verifies the agent's execution? Their answer: everyone. Consensus is the auditor.</p>
 </blockquote>
-<p>Freenet is not the obvious choice. It has no marketing budget. It has no venture backing. It has survived for twenty-seven years — through the P2P wars, the blockchain era, the AI boom — as a nonprofit. It is the least buzzy infrastructure in the most buzzy sector. That is what makes it worth paying attention to. The buzz will fade. The network will still be there.</p>
+<h2 id="the-trade-off">The trade-off</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Freenet</th>
+<th>Buzz</th>
+<th>Blockchain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Layer</strong></td>
+<td>Transport</td>
+<td>Workspace</td>
+<td>Execution</td>
+</tr>
+<tr>
+<td><strong>Identity</strong></td>
+<td>Peer address</td>
+<td>Nostr keypair</td>
+<td>Wallet address</td>
+</tr>
+<tr>
+<td><strong>Trust model</strong></td>
+<td>Encryption + signatures</td>
+<td>Cryptographic events</td>
+<td>Consensus</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Bandwidth</td>
+<td>Relay hosting</td>
+<td>Gas fees</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Agent-to-agent comms</td>
+<td>Human-agent collaboration</td>
+<td>Financial execution</td>
+</tr>
+</tbody>
+</table>
+<p>The three are not competitors. They are layers. An agent could hold a Nostr identity on Buzz, execute trades verified by Warden, and negotiate with another agent over Freenet. The decentralized agent experience is not one project. It is a stack — and nobody is building the whole thing yet.</p>
+<blockquote>
+<p>The interesting choice is not which project wins. It is which layers you need. Most agents today need none of them. The ones that matter will need all three.</p>
+</blockquote>
 <hr>
 <p><strong>References:</strong></p>
 <ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://freenet.org/">Freenet</a> — A peer-to-peer platform for apps that no company controls.</li>
-<li>Jack Dorsey. <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=CHEMPZ87FLw">Buzz</a> — Nostr-based workspace where humans and AI agents collaborate with cryptographic identities.</li>
-<li>Hanzla. (2026). <a target="_blank" rel="noopener noreferrer" href="https://dev.to/hanzla/jack-dorseys-buzz-the-dev-workflow-game-changer-we-didnt-know-we-needed-1kpk">Jack Dorsey's Buzz: The Dev Workflow Game-Changer We Didn't Know We Needed</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://freenet.org/whitepaper">Freenet Whitepaper</a> — Small-world network architecture, decentralized key-value store.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#warden-protocol">Warden Protocol — The Stack for the Agentic Economy</a> — Cryptographic identity and verifiable execution for agents.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://freenet.org/">Freenet</a> — P2P platform for apps with no central server.</li>
+<li>Jack Dorsey. <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=CHEMPZ87FLw">Buzz</a> — Nostr-based workspace for human-agent collaboration.</li>
+<li>Hanzla. (2026). <a target="_blank" rel="noopener noreferrer" href="https://dev.to/hanzla/jack-dorseys-buzz-the-dev-workflow-game-changer-we-didnt-know-we-needed-1kpk">Jack Dorsey's Buzz: The Dev Workflow Game-Changer</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://wardenprotocol.org/">Warden Protocol</a> — Blockchain infrastructure for the agent economy.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Durable Daemons — Pattern Specification</a> — The four conditions for trustworthy agents.</li>
 </ul>
 </div>

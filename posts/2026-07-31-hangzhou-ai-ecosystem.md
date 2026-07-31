@@ -24,7 +24,41 @@ The applications are deployed, not demoed. The **City Brain** unifies public sec
 
 > When the traffic lights, the hospital triage, the railway station, the cleaning robots, and the medical diagnosis all run on AI, you have stopped talking about AI adoption. You are living in an AI city.
 
-Hangzhou matters because it treats AI as municipal infrastructure — not a sector, not a pilot, but a layer of the urban stack. The compute is a public utility. Data trades on an exchange. Models are open-source. Robots are deployed. The transformation from e-commerce capital to autonomous smart city is running now. The open question is whether any other city can replicate the density of talent, the scale of public compute, and the institutional tolerance for experimentation — or whether Hangzhou will remain the exception that reveals how hard this actually is.
+Hangzhou matters because it treats AI as municipal infrastructure — not a sector, not a pilot, but a layer of the urban stack. The compute is a public utility. Data trades on an exchange. Models are open-source. Robots are deployed. The transformation from e-commerce capital to autonomous smart city is running now.
+
+## The dependency stack
+
+Hangzhou built its own stack. Most of the world cannot. In June, the US ordered Anthropic to cut foreign access to its newest model, Fable. The company couldn't separate American users from the rest, so the world lost access overnight. OpenAI's GPT-5.6 Sol followed weeks later. Two American labs, both switched off abroad by decree.
+
+The instinct: go open. Moonshot AI released Kimi K3 — an open-weight model beating American leaders at code. DeepSeek followed. Free of Washington. Except you cannot. Three walls: compute (2.8 trillion parameters — almost no one can run it), transparency (open-weight is not open source — no data, no method), and reciprocity (Beijing is weighing the same export limits).
+
+Fully open alternatives — Switzerland's Apertus, Germany's Soofi — sit a step behind the frontier. Honest is not competitive. Mistral, Europe's contender, does everything right: independent ownership, its own data centers. Yet it runs on chips designed in America, built in Taiwan, at the one factory on earth that can make them. If the company that did everything right cannot reach the bottom of its stack, neither can you.
+
+> You are only as sovereign as your weakest layer. For almost everyone, that layer sits far below the model they thought they chose.
+
+Hangzhou is the exception that proves the rule. It built the compute, the pipeline, the institutions. Most cannot. If the AI we depend on can be switched off in a capital we do not vote in, what is the plan? Pretending escape is not one.
+
+---
+
+**References:**
+
+- [Hangzhou: AI Enters Daily Life](https://www.hangzhou.gov.cn/col/col812262/art/2026/art_6d6def88b05544f4a5bf6f3c82da31c1.html). *Hangzhou Municipal Government*, 2026.
+- [Unveiling the Secret of Hangzhou's AI in the Town](https://eu.36kr.com/en/p/3631530874712841). *36Kr*, 2026.
+- [Hangzhou Targets Trillion-Yuan AI Industry](https://ori.hangzhou.com.cn/content/content_9159702.htm). *Hangzhou Daily*, 2026.
+- [DeepSeek](https://www.deepseek.com/) — Open-source large language model.
+- [Zhejiang University](https://www.zju.edu.cn/english/) — Birthplace of DeepSeek, Deep Robotics, and Manycore founders.
+- [Alibaba Cloud](https://www.alibabacloud.com/) — Cloud infrastructure across 29 global regions.
+- [Stanford 2026 AI Index](https://www.geekwire.com/2026/etzioni-on-ai-ais-annual-physical-surfaces-one-big-surprise/) — Context on global AI adoption.
+- [Unitree Robotics](https://www.unitree.com/) — Quadrupedal robots, 19% global market share.
+- [Alibaba City Brain](https://www.alibabacloud.com/solutions/smart-city) — AI-powered urban management system.
+- [Deep Robotics](https://www.deeprobotics.cn/en/) — Quadrupedal robots for inspection, security, and rescue.
+- [Udeer.AI](https://www.udeer.ai/) — Autonomous cleaning robots with environmental awareness.
+- [Manycore Tech](https://www.manycore.com/) — Spatial understanding models (SpatialLM), 3D interior design platform.
+- [BrainCo](https://www.brainco.com/) — Brain-computer interfaces, relocated from Boston to Hangzhou AI Town.
+- [Game Science](https://www.gamesci.com.cn/) — Creator of *Black Myth: Wukong*, relocated from Shenzhen to Hangzhou.
+- [Mistral AI](https://mistral.ai/) — Europe's leading AI lab, independent infrastructure.
+- [Moonshot AI](https://www.moonshot.ai/) — Kimi K3, open-weight model.
+- Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.
 
 ---
 

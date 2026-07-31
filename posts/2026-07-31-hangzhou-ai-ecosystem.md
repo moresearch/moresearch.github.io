@@ -2,7 +2,7 @@
 title: Hangzhou Is Building the AI City
 date: 2026-07-31
 slug: hangzhou-ai-ecosystem
-summary: Hangzhou was Alibaba's company town. Now it is China's AI capital — DeepSeek, the Six Little Dragons, a City Brain running on 70,000P of compute, and autonomous robots patrolling its streets. The transformation from e-commerce hub to autonomous smart city is not a policy document. It is physical infrastructure, running now.
+summary: Hangzhou treats AI as municipal infrastructure — not a sector, not a pilot. DeepSeek, the Six Little Dragons, 70,000 petaflops of public compute, a City Brain governing traffic and security, robots patrolling streets. The transformation from Alibaba's company town to autonomous smart city is running now. The question is whether any other city can replicate it.
 tags: ai, hangzhou, china, smart-city, deepseek, alibaba, city-brain, autonomous-systems
 ---
 
@@ -12,7 +12,7 @@ Hangzhou was Alibaba's company town. Now it is the first city on earth to treat 
 
 The anchor is **DeepSeek** — the open-source model that triggered a global recalibration of AI economics in early 2025. It was built here. So was **Unitree Robotics**, whose quadrupeds captured 19% of the global market in seven years. So was **Manycore Tech**, whose spatial AI models reconstruct interior worlds. So was **BrainCo**, which relocated from Boston to Hangzhou's AI Town. Together with Game Science (*Black Myth: Wukong*) and Deep Robotics, they form the **Six Little Dragons** — the core of a trillion-yuan AI industry cluster growing at 26% annually.
 
-> Six companies. One city. A trillion-yuan target. Hangzhou's bet is that AI ecosystems don't need scale. They need density.
+> Six companies. One city. A trillion-yuan target. Hangzhou bets on density, not scale. The towns are 3 km². The compute is public. The robots are deployed.
 
 The density is engineered. Hangzhou is organized into technology towns — compact 3 km² zones where living, social, industrial, and entrepreneurial infrastructure are compressed into walkable districts. Yuhang's AI Town hosts BrainCo. Xihu's Yunqi Town birthed Alibaba Cloud. Binjiang's Embodied Intelligent Robot Town hosts Unitree. Each town is a micro-ecosystem. The governance philosophy is *serve without interfering*. Permits are fast. Costs are low. The talent pipeline runs through Zhejiang University — birthplace of DeepSeek, Deep Robotics, and Manycore's founders.
 
@@ -43,4 +43,5 @@ Hangzhou matters because it treats AI as municipal infrastructure — not a sect
 - [Udeer.AI](https://www.udeer.ai/) — Autonomous cleaning robots with environmental awareness.
 - [Manycore Tech](https://www.manycore.com/) — Spatial understanding models (SpatialLM), 3D interior design platform.
 - [BrainCo](https://www.brainco.com/) — Brain-computer interfaces, relocated from Boston to Hangzhou AI Town.
+- [Game Science](https://www.gamesci.com.cn/) — Creator of *Black Myth: Wukong*, relocated from Shenzhen to Hangzhou.
 - Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.

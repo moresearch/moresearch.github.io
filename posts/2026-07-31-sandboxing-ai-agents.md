@@ -2,7 +2,7 @@
 title: Sandboxes Are Hard
 date: 2026-07-31
 slug: sandboxing-ai-agents
-summary: Amjad Masad, CEO of Replit, argues that the real problem with AI agent security is not the agent. It is the sandbox. Sandboxing is extraordinarily difficult, and most implementations — including those from dedicated vendors — make fundamental errors. The first rule of security is humility: assume every layer will fail. Build the next one to catch it.
+summary: AI agents escape sandboxes. The headlines blame the agents. Amjad Masad blames the sandboxes. His argument: sandboxing is extraordinarily difficult, most implementations make fundamental errors, and the only honest security posture is defense in depth — thirteen layers, each assuming the one below it will fail. Compliance is not security. A pen test is a snapshot. Humility is the architecture.
 tags: ai-agents, security, sandboxing, defense-in-depth, replit, infrastructure
 ---
 
@@ -26,7 +26,7 @@ The stack is the design abstraction. Each layer constrains a region of the failu
 
 The hardest part of sandboxing is not the technology. It is the posture. You must accept that every layer will eventually fail and build the next one anyway. You must resist the temptation to declare the system secure because it passed a penetration test. Compliance is not security. A clean pen test is a snapshot. The only honest posture: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, repeat.
 
-> The companies that get sandboxing wrong are the ones that believe their own marketing. The companies that get it right are the ones that have been attacked for a decade and learned what humility costs.
+> The companies that get sandboxing wrong believe their own marketing. The ones that get it right have been attacked for a decade and learned what a single layer of isolation cannot do.
 
 ---
 
@@ -41,5 +41,6 @@ The hardest part of sandboxing is not the technology. It is the posture. You mus
 - [Clerk](https://clerk.com/) — Authentication-as-a-service. Eliminates entire classes of auth bugs.
 - [Semgrep](https://semgrep.dev/) — Static analysis for vulnerability detection in the scanning pipeline.
 - [HoundDog](https://hounddog.ai/) — Privacy issue detection in pre-publish security scanning.
+- [HackerOne](https://www.hackerone.com/) — Bug bounty and continuous penetration testing platform.
 - Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer constrains the failure space.
 - Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — Trustworthy agents require defense in depth.

@@ -6,7 +6,7 @@ summary: Hangzhou was Alibaba's company town. Now it is China's AI capital — D
 tags: ai, hangzhou, china, smart-city, deepseek, alibaba, city-brain, autonomous-systems
 ---
 
-Hangzhou was the city Alibaba built. E-commerce made it. The digital economy defined it. That era is over. Hangzhou is now the city AI is rebuilding — from the traffic lights to the hospitals to the robots patrolling its streets.
+Hangzhou was Alibaba's company town. Now it is the first city on earth to treat AI as municipal infrastructure — not a sector, not a policy document, not a pilot programme. A layer of the urban stack. The traffic lights, the hospital triage, the railway station, the robots — all running on shared public compute, all deployed now.
 
 > A city is a stack. Hangzhou is replacing every layer with AI. The transformation is not a strategy document. It is physical infrastructure.
 

@@ -6,7 +6,7 @@ summary: Amjad Masad, CEO of Replit, argues that the real problem with AI agent 
 tags: ai-agents, security, sandboxing, defense-in-depth, replit, infrastructure
 ---
 
-The headlines say AI agents are escaping their sandboxes. Amjad Masad, CEO of Replit, says the headlines have it backwards. The problem is not that agents are clever. The problem is that sandboxes are hard — and most people build them wrong.
+AI agents escape sandboxes. The headlines blame the agents. Amjad Masad, CEO of Replit, blames the sandboxes. His argument: sandboxing is an extraordinarily difficult infrastructure problem, and most implementations — including those from dedicated vendors — make fundamental errors. The agent is not the threat. The single layer of isolation pretending to be a security architecture is the threat.
 
 > "The first rule of security is humility. Assume zero-days exist — because they do. Assume your isolation will eventually fail."
 
@@ -36,5 +36,6 @@ The hardest part of sandboxing is not the technology. It is the humility. You mu
 - Replit. [Defense in Depth: How Replit Secures Every Layer of the Vibe Coding Stack](https://replit.com/blog/defense-in-depth-how-replit-secures-every-layer-of-the-vibe-coding-stack). Replit Blog, 2026.
 - George Fahmy. [The Agent Sandbox Taxonomy](https://github.com/kajogo777/the-agent-sandbox-taxonomy). GitHub, 2026. — Open-source taxonomy of sandboxing approaches.
 - [gVisor](https://gvisor.dev/) — Google's application kernel for container sandboxing.
+- [Firecracker](https://firecracker-microvm.github.io/) — AWS's microVM for multi-tenant isolation. Powers Lambda and Fargate.
 - Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer constrains the failure space.
 - Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — Trustworthy agents require defense in depth.

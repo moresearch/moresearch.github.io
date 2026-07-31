@@ -24,7 +24,7 @@ The applications are deployed, not demoed. The **City Brain** unifies public sec
 
 > When the traffic lights, the hospital triage, the railway station, the cleaning robots, and the medical diagnosis all run on AI, you have stopped talking about AI adoption. You are living in an AI city.
 
-Hangzhou matters because it is the first city to treat AI as municipal infrastructure — not a sector to be subsidized, but a layer of the urban stack. The compute is a public utility. The data is traded on an exchange. The models are open-source. The robots are deployed. The transformation from e-commerce capital to autonomous smart city is complete. The question is not whether the technology works. The question is whether any other city can replicate the density of talent, the scale of public compute, and the institutional tolerance for experimentation that made it possible — or whether Hangzhou will remain the exception that proves how hard this really is.
+Hangzhou matters because it treats AI as municipal infrastructure — not a sector, not a pilot, but a layer of the urban stack. The compute is a public utility. Data trades on an exchange. Models are open-source. Robots are deployed. The transformation from e-commerce capital to autonomous smart city is running now. The open question is whether any other city can replicate the density of talent, the scale of public compute, and the institutional tolerance for experimentation — or whether Hangzhou will remain the exception that reveals how hard this actually is.
 
 ---
 
@@ -38,5 +38,9 @@ Hangzhou matters because it is the first city to treat AI as municipal infrastru
 - [Alibaba Cloud](https://www.alibabacloud.com/) — Cloud infrastructure across 29 global regions.
 - [Stanford 2026 AI Index](https://www.geekwire.com/2026/etzioni-on-ai-ais-annual-physical-surfaces-one-big-surprise/) — Context on global AI adoption.
 - [Unitree Robotics](https://www.unitree.com/) — Quadrupedal robots, 19% global market share.
-- [Alibaba City Brain](https://www.alibabacloud.com/solutions/smart-city) — AI-powered urban management system deployed in Hangzhou.
+- [Alibaba City Brain](https://www.alibabacloud.com/solutions/smart-city) — AI-powered urban management system.
+- [Deep Robotics](https://www.deeprobotics.cn/en/) — Quadrupedal robots for inspection, security, and rescue.
+- [Udeer.AI](https://www.udeer.ai/) — Autonomous cleaning robots with environmental awareness.
+- [Manycore Tech](https://www.manycore.com/) — Spatial understanding models (SpatialLM), 3D interior design platform.
+- [BrainCo](https://www.brainco.com/) — Brain-computer interfaces, relocated from Boston to Hangzhou AI Town.
 - Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.

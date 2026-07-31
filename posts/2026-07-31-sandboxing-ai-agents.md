@@ -24,7 +24,7 @@ The stack is the design abstraction. Each layer constrains a region of the failu
 
 > The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected, the sandbox ensures the unexpected stays contained.
 
-The hardest part of sandboxing is not the technology. It is the humility. You must accept that every layer you build will eventually fail. You must build the next layer anyway. You must resist the temptation to declare the system secure because it passed a penetration test or earned a compliance certification. Compliance is not security. A clean pen test is a snapshot, not a guarantee. The only honest posture is: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, and start again.
+The hardest part of sandboxing is not the technology. It is the posture. You must accept that every layer will eventually fail and build the next one anyway. You must resist the temptation to declare the system secure because it passed a penetration test. Compliance is not security. A clean pen test is a snapshot. The only honest posture: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, repeat.
 
 > The companies that get sandboxing wrong are the ones that believe their own marketing. The companies that get it right are the ones that have been attacked for a decade and learned what humility costs.
 
@@ -39,5 +39,7 @@ The hardest part of sandboxing is not the technology. It is the humility. You mu
 - [Firecracker](https://firecracker-microvm.github.io/) — AWS's microVM for multi-tenant isolation. Powers Lambda and Fargate.
 - [Trail of Bits](https://www.trailofbits.com/) — Security assessment of Replit's infrastructure.
 - [Clerk](https://clerk.com/) — Authentication-as-a-service. Eliminates entire classes of auth bugs.
+- [Semgrep](https://semgrep.dev/) — Static analysis for vulnerability detection in the scanning pipeline.
+- [HoundDog](https://hounddog.ai/) — Privacy issue detection in pre-publish security scanning.
 - Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer constrains the failure space.
 - Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — Trustworthy agents require defense in depth.

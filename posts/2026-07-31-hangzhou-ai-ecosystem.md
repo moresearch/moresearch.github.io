@@ -2,7 +2,7 @@
 title: Hangzhou Built the AI City. Can Anyone Else?
 date: 2026-07-31
 slug: hangzhou-ai-ecosystem
-summary: Hangzhou treats AI as municipal infrastructure — not a sector, not a pilot. DeepSeek, the Six Little Dragons, 70,000 petaflops of public compute, a City Brain governing traffic and security, robots patrolling streets. The transformation from Alibaba's company town to autonomous smart city is running now. The question is whether any other city can replicate it.
+summary: Hangzhou treats AI as municipal infrastructure. DeepSeek, the Six Little Dragons, 70,000 petaflops of public compute, a City Brain running traffic and security, robots on the streets. But most of the world cannot replicate this. The dependency stack — compute, weights, silicon — means AI sovereignty has no third way. Hangzhou is the exception. The question is whether it is the only one.
 tags: ai, hangzhou, china, smart-city, deepseek, alibaba, city-brain, autonomous-systems
 ---
 
@@ -32,11 +32,11 @@ Hangzhou built its own stack. Most of the world cannot. In June, the US ordered 
 
 The instinct: go open. Moonshot AI released Kimi K3 — open-weight, beats American leaders at code. DeepSeek followed. Free of Washington. Except you cannot. Three walls. Compute: 2.8 trillion parameters, almost no one can run it. Transparency: open-weight is not open source — no training data, no methodology. Reciprocity: Beijing is weighing the same export limits Washington imposed.
 
-Fully open alternatives — Switzerland's Apertus, Germany's Soofi — sit a step behind the frontier. Honest is not competitive. Mistral, Europe's contender, does everything right: independent ownership, its own data centers. Yet it runs on chips designed in America, built in Taiwan, at the one factory on earth that can make them. If the company that did everything right cannot reach the bottom of its stack, neither can you.
+Fully open alternatives — Switzerland's Apertus, Germany's Soofi — sit a step behind the frontier. Honest and sovereign is not the same as competitive. Mistral, Europe's contender, does everything right: independent ownership, its own data centers. Yet its chips are designed in America, built by TSMC in Taiwan — the one factory on earth that can make them. If the company that did everything right cannot reach the bottom of its stack, neither can you.
 
 > You are only as sovereign as your weakest layer. For almost everyone, that layer sits far below the model they thought they chose.
 
-Hangzhou is the exception that proves the rule. It built the compute, the pipeline, the institutions. Most cannot. If the AI we depend on can be switched off in a capital we do not vote in, what is the plan? Pretending escape is not one.
+Hangzhou is the exception that proves the rule. It built compute, talent, and institutions in a single dense corridor. Most cities and most countries cannot. If the AI we depend on can be switched off by a capital we do not vote in, and runs only on machines we cannot build, what is the plan for the next year, the next three, the next ten? Pretending we have already escaped is not one.
 
 ---
 
@@ -62,4 +62,6 @@ Hangzhou is the exception that proves the rule. It built the compute, the pipeli
 - [Moonshot AI](https://www.moonshot.ai/) — Kimi K3, open-weight model.
 - [Anthropic Fable](https://www.anthropic.com/) — Cut from foreign users by US export control, June 2026.
 - [TSMC](https://www.tsmc.com/) — The one factory on earth that can make advanced AI chips.
+- [Apertus](https://www.apertus.ch/) — Switzerland's fully open AI model.
+- [Soofi](https://soofi.ai/) — Germany's sovereign open-source AI initiative.
 - Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.

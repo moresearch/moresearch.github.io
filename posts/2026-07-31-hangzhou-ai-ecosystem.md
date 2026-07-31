@@ -24,7 +24,7 @@ The applications are not demos. The **City Brain** integrates public security, t
 
 > When the traffic lights, the hospital triage, the railway station, the cleaning robots, and the medical diagnosis all run on AI, you have stopped talking about AI adoption. You are living in an AI city.
 
-Hangzhou matters because it is the first city to treat AI as municipal infrastructure — not a sector to be subsidized, but a layer of the urban stack. The compute is public. The data is traded on an exchange. The models are open-source. The robots are deployed. The transformation from e-commerce capital to autonomous smart city is complete. The question is not whether it works. The question is whether any other city can replicate the density, the compute, and the institutional tolerance for experimentation that made it possible.
+Hangzhou matters because it is the first city to treat AI as municipal infrastructure — not a sector to be subsidized, but a layer of the urban stack. The compute is a public utility. The data is traded on an exchange. The models are open-source. The robots are deployed. The transformation from e-commerce capital to autonomous smart city is complete. The question is not whether the technology works. The question is whether any other city can replicate the density of talent, the scale of public compute, and the institutional tolerance for experimentation that made it possible — or whether Hangzhou will remain the exception that proves how hard this really is.
 
 ---
 
@@ -34,4 +34,8 @@ Hangzhou matters because it is the first city to treat AI as municipal infrastru
 - [Unveiling the Secret of Hangzhou's AI in the Town](https://eu.36kr.com/en/p/3631530874712841). *36Kr*, 2026.
 - [Hangzhou Targets Trillion-Yuan AI Industry](https://ori.hangzhou.com.cn/content/content_9159702.htm). *Hangzhou Daily*, 2026.
 - [DeepSeek](https://www.deepseek.com/) — Open-source large language model.
-- Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — How the UAE built education-first sovereign AI.
+- [Zhejiang University](https://www.zju.edu.cn/english/) — Birthplace of DeepSeek, Deep Robotics, and Manycore founders.
+- [Alibaba Cloud](https://www.alibabacloud.com/) — Cloud infrastructure across 29 global regions.
+- [Stanford 2026 AI Index](https://www.geekwire.com/2026/etzioni-on-ai-ais-annual-physical-surfaces-one-big-surprise/) — Context on global AI adoption.
+- [Unitree Robotics](https://www.unitree.com/) — Quadrupedal robots, 19% global market share.
+- Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.

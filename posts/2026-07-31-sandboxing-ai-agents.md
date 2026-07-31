@@ -34,5 +34,7 @@ The hardest part of sandboxing is not the technology. It is the humility. You mu
 
 - Amjad Masad. [Sandboxes Are Hard](https://www.linkedin.com/feed/update/urn:li:activity:7488800810252890112/). LinkedIn, July 2026.
 - Replit. [Defense in Depth: How Replit Secures Every Layer of the Vibe Coding Stack](https://replit.com/blog/defense-in-depth-how-replit-secures-every-layer-of-the-vibe-coding-stack). Replit Blog, 2026.
-- Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer is a constraint on the failure space.
-- Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — The four conditions for trustworthy agents.
+- George Fahmy. [The Agent Sandbox Taxonomy](https://github.com/kajogo777/the-agent-sandbox-taxonomy). GitHub, 2026. — Open-source taxonomy of sandboxing approaches.
+- [gVisor](https://gvisor.dev/) — Google's application kernel for container sandboxing.
+- Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer constrains the failure space.
+- Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — Trustworthy agents require defense in depth.

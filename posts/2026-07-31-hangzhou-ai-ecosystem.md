@@ -38,4 +38,5 @@ Hangzhou matters because it is the first city to treat AI as municipal infrastru
 - [Alibaba Cloud](https://www.alibabacloud.com/) — Cloud infrastructure across 29 global regions.
 - [Stanford 2026 AI Index](https://www.geekwire.com/2026/etzioni-on-ai-ais-annual-physical-surfaces-one-big-surprise/) — Context on global AI adoption.
 - [Unitree Robotics](https://www.unitree.com/) — Quadrupedal robots, 19% global market share.
+- [Alibaba City Brain](https://www.alibabacloud.com/solutions/smart-city) — AI-powered urban management system deployed in Hangzhou.
 - Related: [The UAE's Human Stack](https://blog.hackspree.com/#uae-ai-adoption) — Education-first sovereign AI.

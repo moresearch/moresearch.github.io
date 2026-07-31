@@ -3,7 +3,7 @@ title: Hangzhou Built the AI City. Can Anyone Else?
 date: 2026-07-31
 slug: hangzhou-ai-ecosystem
 summary: Hangzhou treats AI as municipal infrastructure. DeepSeek, the Six Little Dragons, 70,000 petaflops of public compute, a City Brain running traffic and security, robots on the streets. But most of the world cannot replicate this. The dependency stack — compute, weights, silicon — means AI sovereignty has no third way. Hangzhou is the exception. The question is whether it is the only one.
-tags: ai, hangzhou, china, smart-city, deepseek, alibaba, city-brain, autonomous-systems
+tags: ai, hangzhou, china, smart-city, deepseek, alibaba, city-brain, autonomous-systems, ai-sovereignty, export-controls, mistral, tsmc
 ---
 
 Hangzhou was Alibaba's company town. Now it is the first city on earth to treat AI as municipal infrastructure — not a sector, not a policy document, not a pilot programme. A layer of the urban stack. The traffic lights, the hospital triage, the railway station, the robots — all running on shared public compute, all deployed now.
@@ -24,7 +24,7 @@ The applications are deployed, not demoed. The **City Brain** unifies public sec
 
 > When the traffic lights, the hospital triage, the railway station, the cleaning robots, and the medical diagnosis all run on AI, you have stopped talking about AI adoption. You are living in an AI city.
 
-Hangzhou matters because it treats AI as municipal infrastructure — not a sector, not a pilot, but a layer of the urban stack. The compute is a public utility. Data trades on an exchange. Models are open-source. Robots are deployed. The transformation from e-commerce capital to autonomous smart city is running now.
+Hangzhou treats AI as a layer of the urban stack, not a subsidized sector. Compute is a public utility. Data trades on an exchange. Models are open-source. Robots are deployed. The transformation is running now.
 
 ## The dependency stack
 

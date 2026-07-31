@@ -685,7 +685,7 @@
 <blockquote>
 <p>Most cities talk about smart cities. Hangzhou built the compute first, then made it a utility, then let companies build on it. The order is the argument.</p>
 </blockquote>
-<p>The applications are not demos. The <strong>City Brain</strong> integrates public security, transportation, weather, water, and urban management into a unified AI governance system. Traffic lights adjust in real time to vehicle flow. The West Railway Station uses AI cameras to identify ride-hailing vehicles and notify passengers. Sir Run Run Shaw Hospital runs an AI triage system with 98.7% accuracy that reduced mis-registration by 60%. Autonomous cleaning robots from Udeer.AI identify dirty areas rather than sweeping entire surfaces. Deep Robotics' quadrupeds patrol power tunnels in Singapore and climb stairs in Hangzhou. A Traditional Chinese Medicine AI diagnoses patients by analyzing tongue images and biological data, validated by 157,000 clinical studies. An AI public security assistant is live. A sleep health agent is live. A tourism agent integrated with AR glasses is live.</p>
+<p>The applications are deployed, not demoed. The <strong>City Brain</strong> unifies public security, transportation, weather, and urban management into a single AI governance layer. Traffic lights adjust in real time. The West Railway Station identifies ride-hailing vehicles via AI cameras. Sir Run Run Shaw Hospital runs AI triage at 98.7% accuracy — mis-registration down 60%. Udeer.AI cleaning robots identify dirty areas rather than sweeping entire surfaces. Deep Robotics quadrupeds patrol power tunnels in Singapore. A TCM diagnosis AI analyzes tongue images and biological data, validated across 157,000 clinical studies. Agents for public security, sleep health, and AR tourism are live.</p>
 <blockquote>
 <p>When the traffic lights, the hospital triage, the railway station, the cleaning robots, and the medical diagnosis all run on AI, you have stopped talking about AI adoption. You are living in an AI city.</p>
 </blockquote>
@@ -727,9 +727,9 @@
 <p>Thirteen layers. Each layer assumes the one below it will fail. When one does — and one always does — the rest hold. This is not paranoia. This is engineering.</p>
 </blockquote>
 <p>The design principle is defense in depth. It is the opposite of trusting a single boundary. A container is not a sandbox. A microVM is not a sandbox. A hypervisor is not a sandbox. Each is a layer of a sandbox. The sandbox is the stack — the accumulated constraints that make the agent's behavior predictable even when one constraint fails.</p>
-<p>This connects to a deeper argument this blog has been making. The stack is the design abstraction. Each layer eliminates a region of the failure space. A container eliminates host compromise. A microVM eliminates kernel sharing. A transparent proxy eliminates secret leakage. An append-only sidecar eliminates history deletion. Each layer is a constraint on what can go wrong. The stack is the accumulated set of constraints that make deployment safe.</p>
+<p>The stack is the design abstraction. Each layer constrains a region of the failure space. A container constrains host compromise. A microVM constrains kernel sharing. A transparent proxy constrains secret leakage. An append-only sidecar constrains history deletion. No single layer is sufficient. The stack is the accumulated set of constraints.</p>
 <blockquote>
-<p>The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected — and it will — the sandbox ensures the unexpected stays contained.</p>
+<p>The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected, the sandbox ensures the unexpected stays contained.</p>
 </blockquote>
 <p>The hardest part of sandboxing is not the technology. It is the humility. You must accept that every layer you build will eventually fail. You must build the next layer anyway. You must resist the temptation to declare the system secure because it passed a penetration test or earned a compliance certification. Compliance is not security. A clean pen test is a snapshot, not a guarantee. The only honest posture is: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, and start again.</p>
 <blockquote>
@@ -743,6 +743,8 @@
 <li>George Fahmy. <a target="_blank" rel="noopener noreferrer" href="https://github.com/kajogo777/the-agent-sandbox-taxonomy">The Agent Sandbox Taxonomy</a>. GitHub, 2026. — Open-source taxonomy of sandboxing approaches.</li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://gvisor.dev/">gVisor</a> — Google's application kernel for container sandboxing.</li>
 <li><a target="_blank" rel="noopener noreferrer" href="https://firecracker-microvm.github.io/">Firecracker</a> — AWS's microVM for multi-tenant isolation. Powers Lambda and Fargate.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.trailofbits.com/">Trail of Bits</a> — Security assessment of Replit's infrastructure.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://clerk.com/">Clerk</a> — Authentication-as-a-service. Eliminates entire classes of auth bugs.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#the-stack-is-the-abstraction">The Stack as a Design Abstraction</a> — Each layer constrains the failure space.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Durable Daemons — Pattern Specification</a> — Trustworthy agents require defense in depth.</li>
 </ul>

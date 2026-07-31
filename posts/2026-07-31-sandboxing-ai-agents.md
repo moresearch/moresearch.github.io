@@ -20,9 +20,9 @@ Replit's security stack is thirteen layers deep. Zero-trust service-to-service a
 
 The design principle is defense in depth. It is the opposite of trusting a single boundary. A container is not a sandbox. A microVM is not a sandbox. A hypervisor is not a sandbox. Each is a layer of a sandbox. The sandbox is the stack — the accumulated constraints that make the agent's behavior predictable even when one constraint fails.
 
-This connects to a deeper argument this blog has been making. The stack is the design abstraction. Each layer eliminates a region of the failure space. A container eliminates host compromise. A microVM eliminates kernel sharing. A transparent proxy eliminates secret leakage. An append-only sidecar eliminates history deletion. Each layer is a constraint on what can go wrong. The stack is the accumulated set of constraints that make deployment safe.
+The stack is the design abstraction. Each layer constrains a region of the failure space. A container constrains host compromise. A microVM constrains kernel sharing. A transparent proxy constrains secret leakage. An append-only sidecar constrains history deletion. No single layer is sufficient. The stack is the accumulated set of constraints.
 
-> The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected — and it will — the sandbox ensures the unexpected stays contained.
+> The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected, the sandbox ensures the unexpected stays contained.
 
 The hardest part of sandboxing is not the technology. It is the humility. You must accept that every layer you build will eventually fail. You must build the next layer anyway. You must resist the temptation to declare the system secure because it passed a penetration test or earned a compliance certification. Compliance is not security. A clean pen test is a snapshot, not a guarantee. The only honest posture is: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, and start again.
 
@@ -37,5 +37,7 @@ The hardest part of sandboxing is not the technology. It is the humility. You mu
 - George Fahmy. [The Agent Sandbox Taxonomy](https://github.com/kajogo777/the-agent-sandbox-taxonomy). GitHub, 2026. — Open-source taxonomy of sandboxing approaches.
 - [gVisor](https://gvisor.dev/) — Google's application kernel for container sandboxing.
 - [Firecracker](https://firecracker-microvm.github.io/) — AWS's microVM for multi-tenant isolation. Powers Lambda and Fargate.
+- [Trail of Bits](https://www.trailofbits.com/) — Security assessment of Replit's infrastructure.
+- [Clerk](https://clerk.com/) — Authentication-as-a-service. Eliminates entire classes of auth bugs.
 - Related: [The Stack as a Design Abstraction](https://blog.hackspree.com/#the-stack-is-the-abstraction) — Each layer constrains the failure space.
 - Related: [Durable Daemons — Pattern Specification](https://blog.hackspree.com/#durable-daemons-definition) — Trustworthy agents require defense in depth.

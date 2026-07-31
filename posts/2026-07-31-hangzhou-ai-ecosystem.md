@@ -1,5 +1,5 @@
 ---
-title: Hangzhou Built the AI City. No One Else Can.
+title: The AI City No One Can Copy
 date: 2026-07-31
 slug: hangzhou-ai-ecosystem
 summary: Hangzhou treats AI as municipal infrastructure. DeepSeek, the Six Little Dragons, 70,000 petaflops of public compute, a City Brain running traffic and security, robots on the streets. But most of the world cannot replicate this. The dependency stack — compute, weights, silicon — means AI sovereignty has no third way. Hangzhou is the exception. The question is whether it is the only one.

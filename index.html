@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Hangzhou was Alibaba&#39;s company town. Now it is China&#39;s AI capital — DeepSeek, the Six Little Dragons, a City Brain running on 70,000P of compute, and autonomous robots patrolling its streets. The transformation from e-commerce hub to autonomous smart city is not a policy document. It is physical infrastructure, running now.">
+  <meta name="description" content="Amjad Masad, CEO of Replit, argues that the real problem with AI agent security is not the agent. It is the sandbox. Sandboxing is extraordinarily difficult, and most implementations — including those from dedicated vendors — make fundamental errors. The first rule of security is humility: assume every layer will fail. Build the next one to catch it.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="Hangzhou was Alibaba&#39;s company town. Now it is China&#39;s AI capital — DeepSeek, the Six Little Dragons, a City Brain running on 70,000P of compute, and autonomous robots patrolling its streets. The transformation from e-commerce hub to autonomous smart city is not a policy document. It is physical infrastructure, running now.">
+  <meta property="og:description" content="Amjad Masad, CEO of Replit, argues that the real problem with AI agent security is not the agent. It is the sandbox. Sandboxing is extraordinarily difficult, and most implementations — including those from dedicated vendors — make fundamental errors. The first rule of security is humility: assume every layer will fail. Build the next one to catch it.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="Hangzhou was Alibaba&#39;s company town. Now it is China&#39;s AI capital — DeepSeek, the Six Little Dragons, a City Brain running on 70,000P of compute, and autonomous robots patrolling its streets. The transformation from e-commerce hub to autonomous smart city is not a policy document. It is physical infrastructure, running now.">
+  <meta name="twitter:description" content="Amjad Masad, CEO of Replit, argues that the real problem with AI agent security is not the agent. It is the sandbox. Sandboxing is extraordinarily difficult, and most implementations — including those from dedicated vendors — make fundamental errors. The first rule of security is humility: assume every layer will fail. Build the next one to catch it.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,6 +664,45 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="sandboxing-ai-agents">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/sandboxing-ai-agents/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-07-31" data-utc="Jul 31, 2026 UTC" aria-label="Jul 31, 2026 UTC" tabindex="0">1785456000</time></p>
+          <h2><a href="#sandboxing-ai-agents">Sandboxes Are Hard</a></h2><p class="post-summary">Amjad Masad, CEO of Replit, argues that the real problem with AI agent security is not the agent. It is the sandbox. Sandboxing is extraordinarily difficult, and most implementations — including those from dedicated vendors — make fundamental errors. The first rule of security is humility: assume every layer will fail. Build the next one to catch it.</p>
+          <div class="tags"><span class="tag">ai-agents</span><span class="tag">security</span><span class="tag">sandboxing</span><span class="tag">defense-in-depth</span><span class="tag">replit</span><span class="tag">infrastructure</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The headlines say AI agents are escaping their sandboxes. Amjad Masad, CEO of Replit, says the headlines have it backwards. The problem is not that agents are clever. The problem is that sandboxes are hard — and most people build them wrong.</p>
+<blockquote>
+<p>&quot;The first rule of security is humility. Assume zero-days exist — because they do. Assume your isolation will eventually fail.&quot;</p>
+</blockquote>
+<p>Masad would know. Replit has run arbitrary, untrusted code since 2016 — surviving attacks from hobbyists, researchers, and state actors. The company's experience is the argument. A sandbox is not a product you buy. It is an architecture you build — layer by layer, each layer assuming the one below it will break.</p>
+<blockquote>
+<p>Having a sandbox is not the same as having a security architecture. The first is a feature. The second is a stack.</p>
+</blockquote>
+<p>Replit's security stack is thirteen layers deep. Zero-trust service-to-service auth with short-lived tokens. Linux containers hardened with seccomp-bpf. Per-customer GCP Projects — even free-tier users get their own project for maximum tenant isolation. MicroVM migration in progress to eliminate the shared kernel entirely. An append-only Git sidecar so that even if the agent deletes its <code>.git</code> directory, history is recoverable. A transparent proxy for secrets — the agent's code never receives passwords. MCP tool calls proxied through a scanning layer that blocks prompt injection attacks. Continuous penetration testing via HackerOne and Trail of Bits. An internal AI red-teaming harness that continuously scans, prioritizes, and validates findings before engaging engineers.</p>
+<blockquote>
+<p>Thirteen layers. Each layer assumes the one below it will fail. When one does — and one always does — the rest hold. This is not paranoia. This is engineering.</p>
+</blockquote>
+<p>The design principle is defense in depth. It is the opposite of trusting a single boundary. A container is not a sandbox. A microVM is not a sandbox. A hypervisor is not a sandbox. Each is a layer of a sandbox. The sandbox is the stack — the accumulated constraints that make the agent's behavior predictable even when one constraint fails.</p>
+<p>This connects to a deeper argument this blog has been making. The stack is the design abstraction. Each layer eliminates a region of the failure space. A container eliminates host compromise. A microVM eliminates kernel sharing. A transparent proxy eliminates secret leakage. An append-only sidecar eliminates history deletion. Each layer is a constraint on what can go wrong. The stack is the accumulated set of constraints that make deployment safe.</p>
+<blockquote>
+<p>The agent is non-deterministic. The sandbox is the constraint that bounds the non-determinism. When the agent does something unexpected — and it will — the sandbox ensures the unexpected stays contained.</p>
+</blockquote>
+<p>The hardest part of sandboxing is not the technology. It is the humility. You must accept that every layer you build will eventually fail. You must build the next layer anyway. You must resist the temptation to declare the system secure because it passed a penetration test or earned a compliance certification. Compliance is not security. A clean pen test is a snapshot, not a guarantee. The only honest posture is: assume compromise, contain the blast radius, monitor continuously, respond fast, harden the root cause, and start again.</p>
+<blockquote>
+<p>The companies that get sandboxing wrong are the ones that believe their own marketing. The companies that get it right are the ones that have been attacked for a decade and learned what humility costs.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Amjad Masad. <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/feed/update/urn:li:activity:7488800810252890112/">Sandboxes Are Hard</a>. LinkedIn, July 2026.</li>
+<li>Replit. <a target="_blank" rel="noopener noreferrer" href="https://replit.com/blog/defense-in-depth-how-replit-secures-every-layer-of-the-vibe-coding-stack">Defense in Depth: How Replit Secures Every Layer of the Vibe Coding Stack</a>. Replit Blog, 2026.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#the-stack-is-the-abstraction">The Stack as a Design Abstraction</a> — Each layer is a constraint on the failure space.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">Durable Daemons — Pattern Specification</a> — The four conditions for trustworthy agents.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="hangzhou-ai-ecosystem">
         <link rel="canonical" href="https://blog.hackspree.com/entries/hangzhou-ai-ecosystem/">
         <header class="post-header">
@@ -15121,6 +15160,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#sandboxing-ai-agents">Sandboxes Are Hard</a>
               <a href="#hangzhou-ai-ecosystem">Hangzhou Is Building the AI City</a>
               <a href="#tragedy-of-the-third-option">The Tragedy of the Third Option</a>
               <a href="#uae-ai-adoption">UAE Sovereign AI: First, Train the Humans</a>

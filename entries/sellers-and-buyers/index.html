@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Every software engineering interaction is an exchange. Someone is selling. Someone is buying. The architect sells the decision to the team. The open-source maintainer sells attention to the user. The candidate sells capability to the company. The currency varies — trust, time, attention, reputation — but the structure does not. You are always on one side of the counter. Knowing which side is the first step to knowing what you are worth.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/sellers-and-buyers/">
+  <title>Sellers &amp; Buyers — hackspree</title>
+  <meta property="og:title" content="Sellers &amp; Buyers">
+  <meta property="og:description" content="Every software engineering interaction is an exchange. Someone is selling. Someone is buying. The architect sells the decision to the team. The open-source maintainer sells attention to the user. The candidate sells capability to the company. The currency varies — trust, time, attention, reputation — but the structure does not. You are always on one side of the counter. Knowing which side is the first step to knowing what you are worth.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/sellers-and-buyers/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Sellers &amp; Buyers">
+  <meta name="twitter:description" content="Every software engineering interaction is an exchange. Someone is selling. Someone is buying. The architect sells the decision to the team. The open-source maintainer sells attention to the user. The candidate sells capability to the company. The currency varies — trust, time, attention, reputation — but the structure does not. You are always on one side of the counter. Knowing which side is the first step to knowing what you are worth.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-01">2026-08-01</time></p>
+          <h1>Sellers &amp; Buyers</h1><p class="post-summary">Every software engineering interaction is an exchange. Someone is selling. Someone is buying. The architect sells the decision to the team. The open-source maintainer sells attention to the user. The candidate sells capability to the company. The currency varies — trust, time, attention, reputation — but the structure does not. You are always on one side of the counter. Knowing which side is the first step to knowing what you are worth.</p>
+          <div class="tags"><span class="tag">software-engineering</span><span class="tag">economics</span><span class="tag">tradeoffs</span><span class="tag">philosophy</span><span class="tag">exchange</span></div>
+          
+        </header>
+        <div class="post-body"><p>Every exchange has a seller and a buyer. The seller offers something. The buyer offers something in return. The exchange clears when both parties believe they are getting more than they are giving. This is true of markets, of relationships, of ideas. It is true of software engineering. It is true of you.</p>
+<blockquote>
+<p>You are always on one side of the counter. The question is whether you know which side, and whether you are getting a fair price.</p>
+</blockquote>
+<p>Consider the open-source maintainer. They sell attention. Thousands of users buy it. The price is issues, pull requests, demands for features the maintainer never wanted to build. The maintainer receives reputation, satisfaction, the quiet pleasure of building something others depend on. The users receive working software. The exchange clears. Until it doesn't — until the maintainer burns out because the price of attention exceeded what reputation could pay for.</p>
+<blockquote>
+<p>Open source is a market where the sellers set no price and the buyers set no limit. The resulting equilibrium is burnout. The only sustainable position is to know you are selling and price accordingly.</p>
+</blockquote>
+<p>Consider the architect. They sell a decision. The team buys it — or doesn't. The architect offers coherence, simplicity, a path through the design space that someone had to choose. The team offers trust, implementation, the willingness to live with a decision they did not make. The exchange clears when the architect has the team's confidence and the team has the architect's clarity. It fails when the architect sells a decision the team won't buy — the architecture document that gathers dust because no one believed in it enough to build it.</p>
+<blockquote>
+<p>Architecture is a market of decisions. The architect is the seller. The team is the buyer. The currency is trust. When the architect runs out of trust, no amount of technical correctness will close the sale.</p>
+</blockquote>
+<p>Consider the engineer in a code review. The author sells a change. The reviewer buys it — or requests revisions. The author offers correctness, clarity, improvement. The reviewer offers scrutiny, judgment, the gatekeeping function that keeps the codebase coherent. The exchange clears when the change is merged. It fails when the reviewer's scrutiny exceeds the author's willingness to revise — or when the author's persistence wears down the reviewer's standards.</p>
+<blockquote>
+<p>Every pull request is a transaction. The author sells the change. The reviewer buys or rejects. The currency is the reviewer's attention and the author's willingness to revise. When either runs out, the exchange fails, and the change sits open until someone closes it.</p>
+</blockquote>
+<p>Consider the hiring process. The candidate sells capability. The company buys it with salary, equity, status. The exchange appears asymmetric — the company has more power — but only until the candidate has competing offers. Then the candidate becomes the seller in a seller's market, and the company discovers that the price of talent is set by whoever else is buying.</p>
+<blockquote>
+<p>Hiring is a market where both sides are selling and both sides are buying. The candidate sells capability and buys compensation. The company sells opportunity and buys labor. The one who misunderstands the market is the one who gets a bad price.</p>
+</blockquote>
+<p>The pattern holds everywhere. The engineering manager sells direction to reports and buys execution from them. The conference speaker sells ideas and buys attention. The standards body sells interoperability and buys adoption. The junior engineer sells potential and buys mentorship. The senior engineer sells judgment and buys autonomy. Every interaction is an exchange. Someone is selling. Someone is buying. The currency varies. The structure does not.</p>
+<blockquote>
+<p>The engineer who does not know they are selling undersells. The engineer who does not know they are buying overpays. The first skill of software engineering economics is knowing which side of the counter you are on and what you are trading.</p>
+</blockquote>
+<p>This is not cynicism. It is clarity. The alternative is to pretend that ideas spread by merit alone, that decisions are accepted because they are correct, that code is merged because it is good. Merit matters. Correctness matters. Quality matters. But they enter the exchange as what the seller offers, not as forces that bypass the exchange. The best idea in the world, poorly sold, is a document no one reads. The best engineer, poorly negotiated, is a talent no one pays for.</p>
+<blockquote>
+<p>Sell well. Buy wisely. Know the currency. The market is always open.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Adam Smith. (1776). <em>The Wealth of Nations</em>. — The division of labor and the nature of exchange.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#tragedy-of-the-third-option">The Tragedy of the Third Option</a> — Binary choice as the structure of commitment.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

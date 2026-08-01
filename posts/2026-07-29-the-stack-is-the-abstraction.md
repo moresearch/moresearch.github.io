@@ -30,6 +30,10 @@ This matters doubly for AI coding agents. An agent does not search creatively. I
 
 This inverts the Unix philosophy. "Do one thing well" gives you thin tools and expects the programmer to compose them. The agent cannot compose — it searches. Hickey's distinction: Unix tools are simple but require the programmer to *complect* them into a system. Thick stacks are pre-composed. Thin abstractions — Express, raw SQL, manual deploys — give the agent a vast space with no idiomatic gradient. Thick abstractions — Rails, an ORM, a PaaS — give the agent a narrow space where competence is the only option. The question is answered before the agent writes a line: how much of the search space am I willing to eliminate in advance?
 
+Karthik Joshi, writing on Martin Fowler's site, makes the same argument about [DSLs and LLMs](https://martinfowler.com/articles/llm-and-dsls.html). A general-purpose language like Java "offers lots of valid ways to express the same intent. A DSL strips the variation away." The DSL is the thickest possible stack layer. It does not just constrain the architecture. It constrains the syntax. When an agent generates code in a DSL, the output space is small enough that a parser can validate it deterministically. The agent can generate, validate, and self-repair without human intervention. Errors appear as domain-level messages, not opaque stack traces. The enduring artifact is not the prompt. It is the DSL — a constrained vocabulary that both the agent and the human can read.
+
+> A DSL is a stack layer with a compiler. The agent generates. The parser validates. The agent repairs. The human reviews the domain logic, not the plumbing. The stack is the abstraction. The DSL is the stack at its thickest.
+
 ## Yes, but
 
 Every strong thesis has a shadow. Here is mine.
@@ -83,5 +87,6 @@ Spolsky's [Development Abstraction Layer](https://www.joelonsoftware.com/2006/04
 - Edsger W. Dijkstra. (1972). [The Humble Programmer](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html). *Communications of the ACM*, 15(10). — Levels of abstraction as the intellectual manageability of software.
 - Frank Buschmann, Regine Meunier, Hans Rohnert, Peter Sommerlad, Michael Stal. (1996). *Pattern-Oriented Software Architecture: A System of Patterns*. Wiley. — Architectural patterns as constraints on structural design; Layers, MVC, Pipes and Filters as search-space eliminators.
 - Kevlin Henney. [From Mechanism to Method: Generic Decoupling](https://accu.org/journals/overload/12/60/henney_308/). *Overload*, 60. — Abstraction quality: good abstractions remove the right details; corollary to Wheeler's indirection aphorism.
+- Karthik Joshi. [DSLs Enable Reliable Use of LLMs](https://martinfowler.com/articles/llm-and-dsls.html). *martinfowler.com*, 2026. — DSLs as the thickest stack layer: constrained output, deterministic validation, agent self-repair.
 - Related: [Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — Design as search, constraints as preconditions.
 - Related: [The Principle of Least Astonishment — for AI Coding Agents](https://blog.hackspree.com/#principle-of-least-astonishment) — Why the stack must not surprise the agent.

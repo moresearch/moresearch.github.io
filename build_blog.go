@@ -25,8 +25,9 @@ const (
 )
 
 var (
-	slugPattern = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
-	markdowner  = goldmark.New(
+	slugPattern  = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
+	thumbPattern = regexp.MustCompile(`<img src="([^"]*)" alt="thumb:([^"]*)"(?:/>|>)`)
+	markdowner   = goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 		goldmark.WithParserOptions(parser.WithAutoHeadingID()),
 	)
@@ -469,6 +470,35 @@ var (
       border-radius: 12px;
       background: #060606;
       box-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
+    }
+
+    .post-body figure.fig-thumb {
+      display: inline-block;
+      width: 250px;
+      margin: 0 12px 14px 0;
+      vertical-align: top;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      background: #060606;
+      overflow: hidden;
+    }
+
+    .post-body figure.fig-thumb img {
+      width: 100%;
+      height: auto;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .post-body figure.fig-thumb figcaption {
+      padding: 7px 9px;
+      color: #8a8a8a;
+      font-size: 9px;
+      line-height: 1.55;
+      letter-spacing: 0.02em;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     .post-body ul,
@@ -1059,8 +1089,20 @@ func renderMarkdown(body string) (template.HTML, error) {
 	if err := markdowner.Convert([]byte(body), &buffer); err != nil {
 		return "", err
 	}
-	rendered := strings.ReplaceAll(
-		buffer.String(),
+	rendered := buffer.String()
+	// Images with alt text prefixed "thumb:" become compact thumbnails with
+	// captions instead of full-width figures.
+	rendered = thumbPattern.ReplaceAllString(
+		rendered,
+		`<figure class="fig-thumb"><img src="$1" alt="$2" loading="lazy"><figcaption>$2</figcaption></figure>`,
+	)
+	// Unwrap the paragraph goldmark wraps around each image so thumbnails can
+	// flow as an inline-block gallery. Handles both single and consecutive
+	// thumb figures in one paragraph.
+	rendered = strings.ReplaceAll(rendered, `<p><figure class="fig-thumb">`, `<figure class="fig-thumb">`)
+	rendered = strings.ReplaceAll(rendered, `</figure></p>`, `</figure>`)
+	rendered = strings.ReplaceAll(
+		rendered,
 		`<a href=`,
 		`<a target="_blank" rel="noopener noreferrer" href=`,
 	)

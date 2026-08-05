@@ -1,5 +1,5 @@
 ---
-title: "You Don't Learn What You Delegate"
+title: You Don't Learn What You Delegate
 date: 2026-08-03
 slug: ai-impacts-skill-formation
 summary: "A pre-registered randomized trial (n=52) of Python programmers learning a new async library found AI assistance cut quiz scores 17% (d=0.74, p=0.01) while saving no significant time. Errors are the curriculum; pasted code is not. Six AI-use personas split the group: delegators scored 24–39%, conceptual inquirers 65–86%. Summary infographic below."
@@ -103,11 +103,8 @@ Every figure from the paper, thumbed. Substantive results first; study artifacts
 - S. Peng et al. [The Impact of AI on Developer Productivity: Evidence from GitHub Copilot](https://arxiv.org/abs/2302.06590), 2023. — 55.5% faster task completion.
 - Z. Cui et al. [The Effects of Generative AI on High Skilled Work: Evidence from Three Field Experiments with Software Developers](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566), 2024. — 26.8% productivity boost.
 - T. Wu et al. [The Value of AI Assistance? Evidence from the Performance and Learning of Knowledge Workers](https://www.nber.org/papers/w33041), 2024. — performance gains did not persist after AI was removed.
-
-**Related on this site:**
-
-- [The Dark Factory Doesn't Eliminate Complexity — It Moves It](https://blog.hackspree.com/#dark-factory-complexity) — AI removes the work; the question is where the skill goes.
-- [Empirical Software Engineering: What the Studies Actually Say](https://blog.hackspree.com/#empirical-se-what-studies-say) — why RCTs in software are rare, and how to read them.
-- [Empirical Software Engineering: How to Think Empirically](https://blog.hackspree.com/#empirical-se-how-to-think) — pre-registration, effect sizes, and the discipline behind this trial.
-- [LLMs Can't Jump](https://blog.hackspree.com/#llms-cant-jump) — what models cannot do is exactly what the control group had to learn.
-- [Always-On Agents: State, Memory, and the Governance Gap](https://blog.hackspree.com/#always-on-agents) — agentic AI removes the query-composition step this paper found valuable.
+- Related: [The Dark Factory Doesn't Eliminate Complexity — It Moves It](https://blog.hackspree.com/#dark-factory-complexity) — AI removes the work; the question is where the skill goes.
+- Related: [Empirical Software Engineering: What the Studies Actually Say](https://blog.hackspree.com/#empirical-se-what-studies-say) — why RCTs in software are rare, and how to read them.
+- Related: [Empirical Software Engineering: How to Think Empirically](https://blog.hackspree.com/#empirical-se-how-to-think) — pre-registration, effect sizes, and the discipline behind this trial.
+- Related: [LLMs Can't Jump](https://blog.hackspree.com/#llms-cant-jump) — what models cannot do is exactly what the control group had to learn.
+- Related: [Always-On Agents: State, Memory, and the Governance Gap](https://blog.hackspree.com/#always-on-agents) — agentic AI removes the query-composition step this paper found valuable.

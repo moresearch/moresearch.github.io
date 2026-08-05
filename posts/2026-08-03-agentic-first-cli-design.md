@@ -1,5 +1,5 @@
 ---
-title: "Agentic-First CLI"
+title: Agentic-First CLI
 date: 2026-08-03
 slug: agentic-first-cli-design
 summary: "The CLI has a new user that reads everything, asks nothing, remembers everything, and pays per token. Agentic-first design is not a new discipline — it is Fred Brooks's The Design of Design applied to a user who never blinks. The contract is the architecture, the output is the model, determinism is respect, tokens are the budget."
@@ -73,11 +73,8 @@ Brooks on budgets: design within budgets — time, memory, cost. The agentic-fir
 - Herbert A. Simon. *The Sciences of the Artificial*. MIT Press, 1969. — satisficing: designers accept the first acceptable solution.
 - [Git — Plumbing and Porcelain](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain) and [`git status --porcelain`](https://git-scm.com/docs/git-status). — the machine-stable output contract.
 - [NO_COLOR](https://no-color.org/) — the environment variable for disabling color output.
-
-**Related on this site:**
-
-- [Brooks on Software Design: Conceptual Integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) — the property the agentic contract depends on.
-- [Brooks on Software Design: One Mind](https://blog.hackspree.com/#brooks-design-one-mind-rule) — who owns the CLI contract, and why committees fail at it.
-- [The Unix Philosophy Is the Only Software Engineering Theory That Works](https://blog.hackspree.com/#unix-philosophy) — `stat` for data, `ls` for rendering; the outside-in view.
-- [CUPID Is Not a Set of Principles. That Is the Point.](https://blog.hackspree.com/#cupid-for-joyful-coding) — composability, predictability, and the Unix property as directions, not rules.
-- [Task Harness Engineering](https://blog.hackspree.com/#task-harness-engineering) — the other half of the agent's toolchain: how harnesses consume CLI contracts.
+- Related: [Brooks on Software Design: Conceptual Integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) — the property the agentic contract depends on.
+- Related: [Brooks on Software Design: One Mind](https://blog.hackspree.com/#brooks-design-one-mind-rule) — who owns the CLI contract, and why committees fail at it.
+- Related: [The Unix Philosophy Is the Only Software Engineering Theory That Works](https://blog.hackspree.com/#unix-philosophy) — `stat` for data, `ls` for rendering; the outside-in view.
+- Related: [CUPID: Properties, Not Principles](https://blog.hackspree.com/#cupid-for-joyful-coding) — composability, predictability, and the Unix property as directions, not rules.
+- Related: [Task Harness Engineering](https://blog.hackspree.com/#task-harness-engineering) — the other half of the agent's toolchain: how harnesses consume CLI contracts.

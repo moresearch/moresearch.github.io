@@ -80,11 +80,8 @@ The first question is the one sellers never ask; the last is the one the AI age 
 - [Recur Club — revenue-based financing for growing companies](https://recurclub.com/).
 - [Plaid — the data layer RBF underwriting runs on](https://plaid.com/).
 - [Stripe — revenue data via API](https://stripe.com/).
-
-**Related on this site:**
-
-- [Engineering Is Art and Philosophy, Grounded in Economic Law](https://blog.hackspree.com/#engineering-is-economics) — the margin structure that makes AI startups financeable, as an engineering property.
-- [Task Automation Economics](https://blog.hackspree.com/#task-automation-economics) — why an agent run is not automation, and how the AI product's economics differ.
-- [Data Quality and the Problem of Truth](https://blog.hackspree.com/#data-engineering-quality) — revenue quality is a data-quality problem; truth is borrowing capacity.
-- [Always-On Agents: State, Memory, and the Governance Gap](https://blog.hackspree.com/#always-on-agents) — the agentic operations layer that makes startup finance legible.
-- [Lending Protocols](https://blog.hackspree.com/#fi-lending) — credit is 3,800 years old; the Code of Hammurabi knew the trade-offs RBF rediscovered.
+- Related: [Engineering Is Art and Philosophy, Grounded in Economic Law](https://blog.hackspree.com/#engineering-is-economics) — the margin structure that makes AI startups financeable, as an engineering property.
+- Related: [Task Automation Economics](https://blog.hackspree.com/#task-automation-economics) — why an agent run is not automation, and how the AI product's economics differ.
+- Related: [Data Quality and the Problem of Truth](https://blog.hackspree.com/#data-engineering-quality) — revenue quality is a data-quality problem; truth is borrowing capacity.
+- Related: [Always-On Agents: State, Memory, and the Governance Gap](https://blog.hackspree.com/#always-on-agents) — the agentic operations layer that makes startup finance legible.
+- Related: [Lending Protocols](https://blog.hackspree.com/#fi-lending) — credit is 3,800 years old; the Code of Hammurabi knew the trade-offs RBF rediscovered.

@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="The CLI has a new user that reads everything, asks nothing, remembers everything, and pays per token. Agentic-first design is not a new discipline — it is Fred Brooks&#39;s The Design of Design applied to a user who never blinks. The contract is the architecture, the output is the model, determinism is respect, tokens are the budget.">
+  <meta name="description" content="The collateral for a revenue-based financing loan is your telemetry. The terms are engineering outcomes: margin is your architecture, revenue quality is your data model, the repayment schedule is your usage curve. Build revenue legibility like a system and the company gets financed like a system.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="The CLI has a new user that reads everything, asks nothing, remembers everything, and pays per token. Agentic-first design is not a new discipline — it is Fred Brooks&#39;s The Design of Design applied to a user who never blinks. The contract is the architecture, the output is the model, determinism is respect, tokens are the budget.">
+  <meta property="og:description" content="The collateral for a revenue-based financing loan is your telemetry. The terms are engineering outcomes: margin is your architecture, revenue quality is your data model, the repayment schedule is your usage curve. Build revenue legibility like a system and the company gets financed like a system.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="The CLI has a new user that reads everything, asks nothing, remembers everything, and pays per token. Agentic-first design is not a new discipline — it is Fred Brooks&#39;s The Design of Design applied to a user who never blinks. The contract is the architecture, the output is the model, determinism is respect, tokens are the budget.">
+  <meta name="twitter:description" content="The collateral for a revenue-based financing loan is your telemetry. The terms are engineering outcomes: margin is your architecture, revenue quality is your data model, the repayment schedule is your usage curve. Build revenue legibility like a system and the company gets financed like a system.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -693,6 +693,98 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="revenue-based-financing-ai">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/revenue-based-financing-ai/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-03" data-utc="Aug 03, 2026 UTC" aria-label="Aug 03, 2026 UTC" tabindex="0">1785715200</time></p>
+          <h2><a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a></h2><p class="post-summary">The collateral for a revenue-based financing loan is your telemetry. The terms are engineering outcomes: margin is your architecture, revenue quality is your data model, the repayment schedule is your usage curve. Build revenue legibility like a system and the company gets financed like a system.</p>
+          <div class="tags"><span class="tag">revenue-based-financing</span><span class="tag">rbf</span><span class="tag">startups</span><span class="tag">saas</span><span class="tag">ai</span><span class="tag">financing</span><span class="tag">software-engineering</span><span class="tag">gross-margin</span><span class="tag">usage-based-pricing</span><span class="tag">data-quality</span><span class="tag">telemetry</span><span class="tag">underwriting</span><span class="tag">non-dilutive</span><span class="tag">engineering-economics</span>
+          </div>
+        </header>
+        <div class="post-body"><p>The collateral for a revenue-based financing (RBF) loan is not an asset. It is your telemetry — the data your software produces about the revenue it generates. The lender underwrites a revenue stream, read through your APIs, your metering, your books: everything it knows, your code told it; everything it cannot trust, your code hid. That makes RBF the financing instrument most legible to software engineers, and the one whose terms are engineering outcomes — margin, usage, data quality. The cost of capital is a performance metric, set by the codebase.</p>
+<p>The thesis: <strong>the company that builds its revenue legibility like a system gets financed like a system — the code you write sets the price of your money.</strong></p>
+<h2 id="the-mechanics">The mechanics</h2>
+<p>The terms are a protocol. A lender advances capital sized against your recurring revenue — commonly several months of it. You repay a fixed percentage of monthly revenue, typically 5–8%, until cumulative repayments reach the advance plus a multiple (typically 1.5–2.5x) or the term limit passes, whichever comes first; in most structures the balance is forgiven at the limit. No equity, no board seat, no fixed payment that can sink a bad month. Lenders may still take a lien at the small end — telemetry is the underwriting collateral, not the only legal one. Reported volume: $9.8B in 2025 (Lighter Capital, Capchase, Pipe, Wayflyer, Founderpath, Recur Club).</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Equity</th>
+<th>Venture debt</th>
+<th>RBF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost</td>
+<td>dilution + board</td>
+<td>interest + warrants</td>
+<td>% of revenue to cap</td>
+</tr>
+<tr>
+<td>Collateral</td>
+<td>none</td>
+<td>company assets</td>
+<td>your telemetry</td>
+</tr>
+<tr>
+<td>What the builder controls</td>
+<td>roadmap + burn</td>
+<td>unit economics</td>
+<td>margin, usage, data quality</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-arithmetic-nobody-does">The arithmetic nobody does</h2>
+<p>The cap is the price, and duration sets the rate. A $1M advance at a 1.8x cap costs $800,000 — roughly 40% a year over 24 months, half that over 48. Sellers quote the percentage of revenue, never the rate, because the rate depends on growth, the one number the lender cannot know. And the arithmetic cuts against fast growth: repayment is a share of revenue, so the cap is hit fastest when revenue grows fastest. At $100k MRR, 6% repayment, 1.8x cap: 10% monthly growth caps out in ~3 years (~25% annualized); 3% growth takes 6+ years (~half). <strong>The rate was never in the contract; it was in the roadmap.</strong> The fastest-growing product is the one where equity would have been cheapest — the instrument is cheapest, in rate terms, for the companies that need capital least.</p>
+<h2 id="where-engineering-decides-the-terms">Where engineering decides the terms</h2>
+<p>The term sheet is written in your code, in four places.</p>
+<p><strong>Gross margin is an architecture decision.</strong> For an AI product, margin is set in the serving layer — routing, batching, caching, prompt compression. Every point of margin recovered is a point the repayment cannot consume.</p>
+<p><strong>Revenue quality is a data problem.</strong> Recurring vs one-off, churn — outputs of your metering, billing, and analytics. &quot;Is this revenue recurring?&quot; is an instrumentation decision. Clean revenue data is the company's credit file.</p>
+<p><strong>Usage-based pricing is fragile revenue.</strong> Readable in real time, cancelable in real time — a config change, a model switch, an agent contract lapse. Contracted MRR survives board meetings; usage revenue survives until the next API call.</p>
+<p><strong>The repayment schedule is your usage curve.</strong> Every revenue-generating agent call is a drip into the repayment — free-tier usage is not collateral.</p>
+<h2 id="the-lender-is-a-software-system">The lender is a software system</h2>
+<p>The counterparty is a system, not a banker: live revenue feeds, ML credit models over churn, automated checks; diligence is an API integration. Its model asks what your analytics stack asks — <em>is this usage real?</em> — and in the AI age real and manufactured usage look alike: agent-driven signups, inflated usage, subsidized pilots, card stacking. Revenue-quality detection is an adversarial ML problem; lenders who skip it underwrite the AI economy's subprime.</p>
+<h2 id="the-fit-test">The fit test</h2>
+<p><strong>Perfect fit:</strong> a high-margin API product with clean metering — 80% gross margin, a year of revenue history. Take $1–3M, buy growth, repay from the usage growth creates.</p>
+<p><strong>Wrong fit:</strong> the compute and training layer — capex with delayed revenue, nothing to underwrite.</p>
+<p><strong>Tricky fit:</strong> below ~60–70% gross margin or pass-through revenue — repayment eats real cash flow and the lender cannot trust the stream.</p>
+<h2 id="what-the-honest-critics-say">What the honest critics say</h2>
+<p>Three objections survive. The cap can cost more than the equity you saved — 1.8x on a fast-growing product can exceed the dilution of a modest round. Revenue is the tax base and the north star — RBF takes a cut of the metric you optimize, hardest in the quarter when it repays fastest. And revenue can be manufactured, more easily in the AI age — revenue quality (recurring, diversified, contract-backed, human-signed) becomes the new credit score.</p>
+<h2 id="the-test">The test</h2>
+<p>Six questions, asked the way an engineer reviews a design:</p>
+<ul>
+<li>What is the annualized cost of the cap at your actual growth rate? (If you cannot answer, you are signing a rate you do not know.)</li>
+<li>What is gross margin per feature, and who owns it?</li>
+<li>Is revenue recurring or usage-based, and does your metering make the difference visible?</li>
+<li>Is the capital for growth rather than R&amp;D capex?</li>
+<li>Does the cap cost less, in real dollars, than the equity you would give up?</li>
+<li>Will the revenue still be there, and still real, in month 24 — and would your own data prove it?</li>
+</ul>
+<p>The first question is the one sellers never ask; the last is the one the AI age added. If the only thing generating the revenue is the same machinery that reports it, the lender is underwriting a mirror.</p>
+<blockquote>
+<p>RBF prices what you have built, not what you might build. The collateral is your code, the repayment is your usage, and the cost of the loan is whatever you failed to compute about your own growth. Do the arithmetic before the lender does.</p>
+</blockquote>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.investopedia.com/terms/r/revenue-based-financing.asp">Revenue-based financing — definition and terms (5–8% of monthly revenue; 1.5–2.5x caps)</a>. <em>Investopedia.</em></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.hubspot.com/sales/revenue-based-financing">Global RBF market surpassed $9.8B in 2025, 129+ active lenders</a>. <em>HubSpot Sales Blog.</em></li>
+<li>Lighter Capital — <a target="_blank" rel="noopener noreferrer" href="https://www.lightercapital.com/">the largest dedicated RBF lender for SaaS</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.capchase.com/">Capchase — subscription and revenue financing</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://pipe.com/">Pipe — the revenue exchange</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.founderpath.com/">Founderpath — RBF for bootstrapped SaaS</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://recurclub.com/">Recur Club — revenue-based financing for growing companies</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://plaid.com/">Plaid — the data layer RBF underwriting runs on</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://stripe.com/">Stripe — revenue data via API</a>.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering Is Art and Philosophy, Grounded in Economic Law</a> — the margin structure that makes AI startups financeable, as an engineering property.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">Task Automation Economics</a> — why an agent run is not automation, and how the AI product's economics differ.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-engineering-quality">Data Quality and the Problem of Truth</a> — revenue quality is a data-quality problem; truth is borrowing capacity.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents: State, Memory, and the Governance Gap</a> — the agentic operations layer that makes startup finance legible.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-lending">Lending Protocols</a> — credit is 3,800 years old; the Code of Hammurabi knew the trade-offs RBF rediscovered.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="agentic-first-cli-design">
         <link rel="canonical" href="https://blog.hackspree.com/entries/agentic-first-cli-design/">
         <header class="post-header">
@@ -996,101 +1088,6 @@
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-accidental-complexity">Accidental Complexity Is the Only Complexity You Can Remove</a> — SRP's artificial seams as imported accidents; framework scaffolding as the tar pit.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a> — minimal dependencies as the only defense that compounds.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#taste-conceptual-integrity-brooks">Taste as Conceptual Integrity</a> — idiomatic code as one-mind judgment, written for the person who inherits it.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="revenue-based-financing-ai">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/revenue-based-financing-ai/">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-08-03" data-utc="Aug 03, 2026 UTC" aria-label="Aug 03, 2026 UTC" tabindex="0">1785715200</time></p>
-          <h2><a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a></h2><p class="post-summary">The collateral for a revenue-based financing loan is your telemetry. The terms are engineering outcomes: margin is your architecture, revenue quality is your data model, the repayment schedule is your usage curve. Build revenue legibility like a system and the company gets financed like a system.</p>
-          <div class="tags"><span class="tag">revenue-based-financing</span><span class="tag">rbf</span><span class="tag">startups</span><span class="tag">saas</span><span class="tag">ai</span><span class="tag">financing</span><span class="tag">software-engineering</span><span class="tag">gross-margin</span><span class="tag">usage-based-pricing</span><span class="tag">data-quality</span><span class="tag">telemetry</span><span class="tag">underwriting</span><span class="tag">non-dilutive</span><span class="tag">engineering-economics</span>
-          </div>
-        </header>
-        <div class="post-body"><p>The collateral for a revenue-based financing (RBF) loan is not an asset. It is your telemetry — the data your software produces about the revenue it generates. The lender underwrites a revenue stream, read through your APIs, your metering, your books: everything it knows, your code told it; everything it cannot trust, your code hid. That makes RBF the financing instrument most legible to software engineers, and the one whose terms are engineering outcomes — margin, usage, data quality. The cost of capital is a performance metric, set by the codebase.</p>
-<p>The thesis: <strong>the company that builds its revenue legibility like a system gets financed like a system — the code you write sets the price of your money.</strong></p>
-<h2 id="the-mechanics">The mechanics</h2>
-<p>The terms are a protocol. A lender advances capital sized against your recurring revenue — commonly several months of it. You repay a fixed percentage of monthly revenue, typically 5–8%, until cumulative repayments reach the advance plus a multiple (typically 1.5–2.5x) or the term limit passes, whichever comes first; in most structures the balance is forgiven at the limit. No equity, no board seat, no fixed payment that can sink a bad month. Lenders may still take a lien at the small end — telemetry is the underwriting collateral, not the only legal one. Reported volume: $9.8B in 2025 (Lighter Capital, Capchase, Pipe, Wayflyer, Founderpath, Recur Club).</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Equity</th>
-<th>Venture debt</th>
-<th>RBF</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cost</td>
-<td>dilution + board</td>
-<td>interest + warrants</td>
-<td>% of revenue to cap</td>
-</tr>
-<tr>
-<td>Collateral</td>
-<td>none</td>
-<td>company assets</td>
-<td>your telemetry</td>
-</tr>
-<tr>
-<td>What the builder controls</td>
-<td>roadmap + burn</td>
-<td>unit economics</td>
-<td>margin, usage, data quality</td>
-</tr>
-</tbody>
-</table>
-<h2 id="the-arithmetic-nobody-does">The arithmetic nobody does</h2>
-<p>The cap is the price, and duration sets the rate. A $1M advance at a 1.8x cap costs $800,000 — roughly 40% a year over 24 months, half that over 48. Sellers quote the percentage of revenue, never the rate, because the rate depends on growth, the one number the lender cannot know. And the arithmetic cuts against fast growth: repayment is a share of revenue, so the cap is hit fastest when revenue grows fastest. At $100k MRR, 6% repayment, 1.8x cap: 10% monthly growth caps out in ~3 years (~25% annualized); 3% growth takes 6+ years (~half). <strong>The rate was never in the contract; it was in the roadmap.</strong> The fastest-growing product is the one where equity would have been cheapest — the instrument is cheapest, in rate terms, for the companies that need capital least.</p>
-<h2 id="where-engineering-decides-the-terms">Where engineering decides the terms</h2>
-<p>The term sheet is written in your code, in four places.</p>
-<p><strong>Gross margin is an architecture decision.</strong> For an AI product, margin is set in the serving layer — routing, batching, caching, prompt compression. Every point of margin recovered is a point the repayment cannot consume.</p>
-<p><strong>Revenue quality is a data problem.</strong> Recurring vs one-off, churn — outputs of your metering, billing, and analytics. &quot;Is this revenue recurring?&quot; is an instrumentation decision. Clean revenue data is the company's credit file.</p>
-<p><strong>Usage-based pricing is fragile revenue.</strong> Readable in real time, cancelable in real time — a config change, a model switch, an agent contract lapse. Contracted MRR survives board meetings; usage revenue survives until the next API call.</p>
-<p><strong>The repayment schedule is your usage curve.</strong> Every revenue-generating agent call is a drip into the repayment — free-tier usage is not collateral.</p>
-<h2 id="the-lender-is-a-software-system">The lender is a software system</h2>
-<p>The counterparty is a system, not a banker: live revenue feeds, ML credit models over churn, automated checks; diligence is an API integration. Its model asks what your analytics stack asks — <em>is this usage real?</em> — and in the AI age real and manufactured usage look alike: agent-driven signups, inflated usage, subsidized pilots, card stacking. Revenue-quality detection is an adversarial ML problem; lenders who skip it underwrite the AI economy's subprime.</p>
-<h2 id="the-fit-test">The fit test</h2>
-<p><strong>Perfect fit:</strong> a high-margin API product with clean metering — 80% gross margin, a year of revenue history. Take $1–3M, buy growth, repay from the usage growth creates.</p>
-<p><strong>Wrong fit:</strong> the compute and training layer — capex with delayed revenue, nothing to underwrite.</p>
-<p><strong>Tricky fit:</strong> below ~60–70% gross margin or pass-through revenue — repayment eats real cash flow and the lender cannot trust the stream.</p>
-<h2 id="what-the-honest-critics-say">What the honest critics say</h2>
-<p>Three objections survive. The cap can cost more than the equity you saved — 1.8x on a fast-growing product can exceed the dilution of a modest round. Revenue is the tax base and the north star — RBF takes a cut of the metric you optimize, hardest in the quarter when it repays fastest. And revenue can be manufactured, more easily in the AI age — revenue quality (recurring, diversified, contract-backed, human-signed) becomes the new credit score.</p>
-<h2 id="the-test">The test</h2>
-<p>Six questions, asked the way an engineer reviews a design:</p>
-<ul>
-<li>What is the annualized cost of the cap at your actual growth rate? (If you cannot answer, you are signing a rate you do not know.)</li>
-<li>What is gross margin per feature, and who owns it?</li>
-<li>Is revenue recurring or usage-based, and does your metering make the difference visible?</li>
-<li>Is the capital for growth rather than R&amp;D capex?</li>
-<li>Does the cap cost less, in real dollars, than the equity you would give up?</li>
-<li>Will the revenue still be there, and still real, in month 24 — and would your own data prove it?</li>
-</ul>
-<p>The first question is the one sellers never ask; the last is the one the AI age added. If the only thing generating the revenue is the same machinery that reports it, the lender is underwriting a mirror.</p>
-<blockquote>
-<p>RBF prices what you have built, not what you might build. The collateral is your code, the repayment is your usage, and the cost of the loan is whatever you failed to compute about your own growth. Do the arithmetic before the lender does.</p>
-</blockquote>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.investopedia.com/terms/r/revenue-based-financing.asp">Revenue-based financing — definition and terms (5–8% of monthly revenue; 1.5–2.5x caps)</a>. <em>Investopedia.</em></li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.hubspot.com/sales/revenue-based-financing">Global RBF market surpassed $9.8B in 2025, 129+ active lenders</a>. <em>HubSpot Sales Blog.</em></li>
-<li>Lighter Capital — <a target="_blank" rel="noopener noreferrer" href="https://www.lightercapital.com/">the largest dedicated RBF lender for SaaS</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.capchase.com/">Capchase — subscription and revenue financing</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://pipe.com/">Pipe — the revenue exchange</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://www.founderpath.com/">Founderpath — RBF for bootstrapped SaaS</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://recurclub.com/">Recur Club — revenue-based financing for growing companies</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://plaid.com/">Plaid — the data layer RBF underwriting runs on</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://stripe.com/">Stripe — revenue data via API</a>.</li>
-</ul>
-<p><strong>Related on this site:</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#engineering-is-economics">Engineering Is Art and Philosophy, Grounded in Economic Law</a> — the margin structure that makes AI startups financeable, as an engineering property.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">Task Automation Economics</a> — why an agent run is not automation, and how the AI product's economics differ.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-engineering-quality">Data Quality and the Problem of Truth</a> — revenue quality is a data-quality problem; truth is borrowing capacity.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents: State, Memory, and the Governance Gap</a> — the agentic operations layer that makes startup finance legible.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-lending">Lending Protocols</a> — credit is 3,800 years old; the Code of Hammurabi knew the trade-offs RBF rediscovered.</li>
 </ul>
 </div>
       </article>
@@ -15961,11 +15958,11 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a>
               <a href="#agentic-first-cli-design">Agentic-First CLI</a>
               <a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a>
               <a href="#its-adam-back">It&#39;s Adam Back!</a>
               <a href="#cupid-for-joyful-coding">CUPID: Properties, Not Principles</a>
-              <a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a>
               <a href="#ai-sovereignty-is-control">AI Sovereignty Is Control</a>
               <a href="#brooks-accidental-complexity">Accidental Complexity Is the Only Complexity You Can Remove</a>
               <a href="#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>

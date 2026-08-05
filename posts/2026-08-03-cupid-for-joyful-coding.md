@@ -42,7 +42,7 @@ Then the attack on SRP, the most useful passage in the essay. "One reason to cha
 
 ## Predictable — does what you expect
 
-Predictability is "a generalization of testability": code should **behave as expected**, be **deterministic**, and be **observable**. Behave as expected — the first of Kent Beck's four rules, holding even with no tests: the intended behaviour is obvious from structure and naming. Deterministic splits into robust (covers what you know), reliable (same result every time), resilient (survives what you don't). Observable is the control-theory word — internal state inferable from outputs — only possible if designed in. North's ladder: instrumentation, telemetry, monitoring, alerting. "Most software does not even get past step 1."
+Predictability is "a generalization of testability": code should **behave as expected**, be **deterministic**, and be **observable**. Behave as expected — the first of Kent Beck's four rules, holding even with no tests: the intended behaviour is obvious from structure and naming. Deterministic means robust (covers what you know), reliable (same result every time), resilient (survives what you don't). Observable is the control-theory word — internal state inferable from outputs — only possible if designed in. North's ladder: instrumentation, telemetry, monitoring, alerting. "Most software does not even get past step 1."
 
 ## Idiomatic — feels natural, because empathy
 
@@ -97,11 +97,7 @@ None of these has a yes-or-no answer. That is not a weakness. It is the point.
 - Robert C. Martin. *Agile Software Development, Principles, Patterns, and Practices*. Prentice Hall, 2002. — The Single Responsibility Principle ("one and only one reason to change"), the inside-out view North argues against.
 - Dan North. [Code in the Language of the Domain](https://97-things-every-x-should-know.gitbooks.io/97-things-every-programmer-should-know/content/en/thing_14/), in *97 Things Every Programmer Should Know*. O'Reilly, 2010.
 - [Ruby on Rails](https://rubyonrails.org/) — the generated skeleton app whose type-based directory structure North critiques from a domain-based view.
-
-**Related on this site:**
-
-- [The Unix Philosophy Is the Only Software Engineering Theory That Works](https://blog.hackspree.com/#unix-philosophy) — the outside-in view, taken seriously as a theory.
-- [Accidental Complexity Is the Only Complexity You Can Remove](https://blog.hackspree.com/#brooks-accidental-complexity) — SRP's artificial seams as imported accidents; framework scaffolding as the tar pit.
-- [Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface) — minimal dependencies as the only defense that compounds.
-- [Taste as Conceptual Integrity](https://blog.hackspree.com/#taste-conceptual-integrity-brooks) — idiomatic code as one-mind judgment, written for the person who inherits it.
-- [Simplicity Is the Prerequisite for Reliability](https://blog.hackspree.com/#simplicity-reliability-dijkstra) — predictability and observability as structural, not aesthetic.
+- Related: [The Unix Philosophy Is the Only Software Engineering Theory That Works](https://blog.hackspree.com/#unix-philosophy) — the outside-in view, taken seriously as a theory.
+- Related: [Accidental Complexity Is the Only Complexity You Can Remove](https://blog.hackspree.com/#brooks-accidental-complexity) — SRP's artificial seams as imported accidents; framework scaffolding as the tar pit.
+- Related: [Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface) — minimal dependencies as the only defense that compounds.
+- Related: [Taste as Conceptual Integrity](https://blog.hackspree.com/#taste-conceptual-integrity-brooks) — idiomatic code as one-mind judgment, written for the person who inherits it.

@@ -1,5 +1,5 @@
 ---
-title: "It's Adam Back!"
+title: It's Adam Back!
 date: 2026-08-03
 slug: its-adam-back
 summary: "Five people have been named Satoshi Nakamoto. All five collapsed. The case that Adam Back is Satoshi is stronger than every one of them — and the strongest evidence is the thing that looks like it clears him: the emails, the denials, and a career that never paused. The citation, the signals, the resume, the denial. Five exhibits, all pointing one way."
@@ -93,8 +93,5 @@ You cannot prove Adam Back is Satoshi. Neither can anyone else. But every other 
 - Leah McGrath Goodman. [The Face Behind Bitcoin](https://www.newsweek.com/2014/03/14/face-behind-bitcoin-247957.html), *Newsweek*, March 2014.
 - [Money Electric: The Bitcoin Mystery](https://www.hbo.com/money-electric-the-bitcoin-mystery), HBO, October 2024. — the Peter Todd conclusion.
 - [Bitcoin genesis block](https://en.bitcoin.it/wiki/Genesis_block) — the embedded Times headline, January 3, 2009.
-
-**Related on this site:**
-
-- [The Decentralized AI-Agent Experience](https://blog.hackspree.com/#freenet) — the cypherpunk lineage: Eternity Service → Freenet → the distributed future.
-- [Agentic Markets: Mechanism Design and Network Economics](https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets) — incentive design is Bitcoin's real invention; the hardest problem Satoshi had to solve.
+- Related: [The Decentralized AI-Agent Experience](https://blog.hackspree.com/#freenet) — the cypherpunk lineage: Eternity Service → Freenet → the distributed future.
+- Related: [Agentic Markets: Mechanism Design and Network Economics](https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets) — incentive design is Bitcoin's real invention; the hardest problem Satoshi had to solve.

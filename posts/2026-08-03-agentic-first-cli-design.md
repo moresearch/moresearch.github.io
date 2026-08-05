@@ -2,47 +2,60 @@
 title: Agentic-First CLI
 date: 2026-08-03
 slug: agentic-first-cli-design
-summary: "The CLI has a new user that reads everything, asks nothing, remembers everything, and pays per token. Agentic-first design is not a new discipline — it is Fred Brooks's The Design of Design applied to a user who never blinks. The contract is the architecture, the output is the model, determinism is respect, tokens are the budget."
-tags: cli, agentic, design, fred-brooks, the-design-of-design, conceptual-integrity, unix, structured-output, json, deterministic, agents, llm, contract, best-practices
+summary: "The agent is a new category of end user — and the evidence says the interface is a performance variable, not cosmetics. SWE-agent's agent-computer interface doubled state-of-the-art on SWE-bench; frontier agents still score under 65% on terminal tasks. This post compares the design space (CLI vs function calling vs MCP vs chat) and distills the research into an agentic-first CLI checklist."
+tags: cli, agentic, design, fred-brooks, the-design-of-design, conceptual-integrity, unix, structured-output, json, deterministic, agents, llm, contract, acis, swe-agent, terminal-bench
 ---
 
-The CLI has a new user, and it never blinks. It reads every byte of help text, every line of output, every error message — and remembers all of it. It cannot answer a prompt, because the tool will wait forever. It cannot see color. It pays for every token it reads. It is an AI agent, and it is now the most important reader of your command-line interface.
+The agent is a new kind of end user, and the interface is the environment it lives in. That is the founding claim of [SWE-agent](https://arxiv.org/abs/2405.15793) (Yang et al., 2024), the paper that coined the term *agent-computer interface* (ACI):
 
-Most CLIs were designed for a different user: a human who can squint, scroll, and improvise. The agentic-first CLI is designed for the user who actually exists. This post is that design, using Fred Brooks's *The Design of Design* (2010) as its main reference — a design manual written fifteen years before its best audience existed, drawing on ideas fifty years old.
+> "Just as humans benefit from powerful software applications, such as integrated development environments, for complex tasks like software engineering, we posit that LM agents represent a new category of end users with their own needs and abilities, and would benefit from specially-built interfaces to the software they use."
 
-The thesis: **Agentic-first CLI design is not a new discipline. It is The Design of Design applied to a user who never blinks.** The contract is the architecture. The output is the model. Determinism is respect. Tokens are the budget. Conceptual integrity is the difference between a tool an agent learns once and a tool it must re-learn every invocation.
+Everything in this post follows from treating that sentence literally. The CLI has a new user, and it never blinks: it reads every byte of help text and output, remembers all of it, cannot answer a prompt, cannot see color, and pays for every token it reads. Most CLIs were designed for the old user — a human who can squint, scroll, and improvise. The agentic-first CLI is designed for the user who actually exists.
 
-## The user is the judge
+The thesis: **the interface is a first-class performance variable for agents, and the CLI is the right substrate for it — if designed with the discipline of a versioned public API. The evidence comes from the benchmark literature and the interface-design papers; the theory comes from Brooks's *The Design of Design*.**
 
-Brooks's first move is to take the user seriously: a design succeeds or fails in the user's hands. The agent's properties as a user, stated plainly: it reads everything verbatim; it never asks questions; it remembers everything within a context window; it pays per token; it cannot be surprised into learning — it generalizes from what it reads. Every practice below falls out of those properties: reads everything → structured output. Never asks → no prompts. Remembers everything → stability is a promise. Pays per token → quiet by default.
+## The interface is a performance variable
 
-## The contract is the architecture
+The SWE-agent result is the strongest single number in the field: with the same underlying model (GPT-4), a custom agent-computer interface achieved a **12.5% pass@1 on SWE-bench and 87.7% on HumanEvalFix — "far exceeding the previous state-of-the-art achieved with non-interactive LMs."** No new model, no new prompting trick: a better interface. The paper's conclusion is explicit: the design of the ACI changes agent behavior and performance.
 
-Brooks's most powerful doctrine is the separation of architectural design from implementation: the architecture is the contract visible to users; the implementation beneath it is free to change. For a CLI, the architecture is not the code — it is the command names, the flags, the output schema, the exit codes, the help text. That is the surface agents compile against.
+Two benchmarks set the floor and the ceiling for the CLI specifically. [InterCode](https://arxiv.org/abs/2306.14898) (Yang et al., 2023) formalized interactive coding as a reinforcement-learning environment with "code as actions and execution feedback as observations" — the observation channel is the interface. [Terminal-Bench 2.0](https://arxiv.org/abs/2601.11868) (Merrill et al., 2026) built 89 hard, real-world terminal tasks and found that **frontier models and agents score under 65%** — then devoted an error analysis to *why*, because terminal interfaces, as they exist today, are bad ACIs: ambiguous output, interactive prompts, hidden state. [AgentBench](https://arxiv.org/abs/2308.03688) (Liu et al., 2023) reached the same conclusion across eight environments: how the agent observes and acts determines more of the outcome than the model's raw capability.
 
-Git is the canonical example. Its plumbing commands are the implementation; its porcelain commands are the architecture. And `status --porcelain` exists precisely so a machine can depend on a byte-for-byte stable format while the rest of the tool evolves. Porcelain mode is Brooks's separation made into a flag. The consequence: treat the contract as a versioned public API. A breaking change breaks every agent that ever learned the tool; additive change is free. Version the schema *before* you need to break it.
+The practical translation: **every line your CLI emits is an observation your agent reasons over; every prompt it waits on is a stall; every hidden default is a hallucination risk.** The design of the interface is not a UX nicety. It is the agent's model of the world.
 
-## The output is the model
+## The design space: four ways to expose a tool to an agent
 
-Brooks on models: designers work through models, and the model determines what questions you can ask. For an agent, the CLI's output *is* its model of the system — the only evidence it has about what the command did. Prose output is a lossy model: an agent that reads "Build succeeded. 12 targets, 3 warnings." will guess about the warnings, and its guesses are confident. Structured output — `--json`, a stable schema, data on stdout and nothing else — gives the agent a model with no ambiguity.
+| | CLI | Function calling | MCP | Chat |
+|---|---|---|---|---|
+| Structure | flags + `--json` | typed schema | typed schema | prose |
+| Composability | pipes (Unix) | none | protocol | none |
+| Observability | stdout/stderr/exit codes | app logs | protocol logs | chat log |
+| Adoption cost | zero — it exists | per-tool SDK | protocol server | zero |
+| Agent ergonomics | help, examples, exit codes | descriptions + schemas | tool docs | free-form |
+| When it wins | everything Unix-shaped | inside one app | cross-tool discovery | humans |
 
-Three rules: **stdout is data** (no banners, no "Done!", no logs); **stderr is diagnostics** (logs go to a file or behind `--log`); **`--json` is not optional** (if a command produces structured state, it must emit it as structured data). The Unix tradition knew this: `ls` does not know anything about files — `stat` provides the data, `ls` only renders it. The agent is the user who wants `stat` and does not want `ls`'s column widths.
+Anthropic's [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) (Dec 2024) is the most-cited engineering guidance on exactly this choice, and its conclusion favors the boring option: "the most successful implementations use simple, composable patterns rather than complex frameworks." Function calling and MCP solve real problems — typed I/O and cross-tool discovery — but each is a layer the tool must implement and maintain. The CLI already exists, is observable by construction, composes through pipes, and needs no new protocol. **The agentic-first CLI is the low-friction ACI: the discipline of a versioned API applied to the interface you already ship.**
 
-## Determinism is respect
+## What the research says about CLI design
 
-Herbert Simon's satisficing, which Brooks adopts, says designers accept the first acceptable solution rather than optimize. An agent cannot satisfice a nondeterministic tool: if the same command yields different output on successive runs, it must verify — and verification is the most expensive thing an agent does. So: no interactive prompts (detect non-TTY and fail fast, or provide `--yes` / `--no-input`); no hidden state (flags over config-file inference, because the agent cannot see what the config implies); no implicit ordering (sort by default); idempotent by default, with `--check` and `--dry-run` before anything destructive. An agent that trusts the tool runs once. An agent that does not runs three times.
+Each practice below is anchored to a source, not to taste.
 
-## One mind, one contract
+**Structured output is the observation channel.** InterCode's framing — execution feedback as the observation — implies the feedback must be unambiguous. Prose output is a lossy observation: an agent that reads "Build succeeded. 12 targets, 3 warnings." will guess about the warnings, and its guesses are confident. Git solved this in 2009 with `status --porcelain`, a byte-for-byte stable machine format that ships *alongside* the human format; every state-producing command should offer the same: `--json`, data on stdout, nothing else.
 
-Conceptual integrity is the center of Brooks's argument: the system feels like one mind designed it. For a CLI, that means one convention set across every subcommand — the same flag shapes, the same error format, the same exit-code semantics, the same output style. The agent's learned model of one subcommand transfers to the next; a CLI with five flag styles is a committee design, and the agent pays for it in tokens and mistakes.
+**Determinism is trust.** An agent cannot satisfice — Herbert Simon's term, adopted by Brooks — a nondeterministic tool: if the same command yields different output, it must verify, and verification is the most expensive thing an agent does. So: no interactive prompts (detect non-TTY and fail fast, or provide `--yes`/`--no-input`); no hidden state (flags over config inference); sort by default; `--check` and `--dry-run` before anything destructive. An agent that trusts the tool runs once; an agent that does not runs three times.
 
-> "I will contend that conceptual integrity is the most important consideration in system design. It is better to have a system omit certain anomalous features and improvements, but to reflect one set of design ideas, than to have one that contains many good but independent and uncoordinated ideas." — *The Mythical Man-Month*, 1975
+**Help is the documentation the agent reads.** Anthropic's ACI guidance is the sharpest sentence in the field: "Carefully craft your agent-computer interface (ACI) through thorough tool documentation and testing." SWE-agent's ACI shipped documentation for its custom commands, and the paper credits it. An agent that trusts `--help` saves a full exploration cycle; a lie in help text is the most expensive bug an agentic CLI can have.
 
-The corollary Brooks sharpens in *The Design of Design*: the design must proceed from one mind. Every added flag is a subtraction from every existing flag, because the agent must learn them all. The essential skill of the designer is saying no — to smart people with good arguments — and having the authority to make it stick.
+**Exit codes and stderr are the contract.** The interface has three channels — stdout (data), stderr (diagnostics), exit code (verdict) — and agents read all three. The checklists of the terminal benchmarks exist because agents misallocate effort when the channels are mixed: banners on stdout, logs where data belongs, exit 0 on failure.
 
-## Tokens are the budget
+**Consistency is learnability.** SWE-agent found interface design changes agent behavior; Brooks's conceptual integrity explains why: a system that feels like one mind designed it lets the agent's learned model of one subcommand transfer to the next. A CLI with five flag styles is a committee design, and the agent pays for it in tokens and mistakes.
 
-Brooks on budgets: design within budgets — time, memory, cost. The agentic-first budget is the context window; verbose-by-default is a tax on every invocation, forever, at scale. Quiet by default; `--verbose` opts in. Help text is written for reading — complete, accurate, with examples: an agent that trusts `--help` saves a full exploration cycle, and a lie in help text is the most expensive bug an agentic CLI can have. And the design tree — Brooks's model of exploration: try a branch, read the output, backtrack — is exactly what an agent does when it runs your tool. Complete help and stable output make the tree shallow; the cheapest investment is making the first branch always correct.
+**Quiet by default is the budget.** Brooks on budgets — design within time, memory, cost — applied to the agent's context window: verbose-by-default is a tax on every invocation, forever, at scale. `--verbose` opts in.
+
+## Why the CLI, and why not a protocol
+
+The counter-argument is worth taking seriously: if agents need good interfaces, build the interface from scratch — a purpose-built ACI, like SWE-agent did. The rebuttal is economics. A purpose-built ACI for your tool is what MCP servers and function schemas already are: another layer to write, document, and keep in sync with the actual tool. The CLI is the one interface that already exists, already documented, already versioned, already composable. The agentic-first discipline makes it *also* correct for agents — without inventing a protocol.
+
+The exception is cross-tool discovery: when an agent must discover and bind tools at runtime across many systems, a protocol like [MCP](https://modelcontextprotocol.io/) earns its layer. But the interface underneath still needs the same design discipline — MCP tool descriptions and output schemas are the same contract as `--help` and `--json`, wearing a different hat. Anthropic's guidance applies at the layer you control: "reduce abstraction layers and build with basic components" in production.
 
 ## The checklist
 
@@ -60,18 +73,23 @@ Brooks on budgets: design within budgets — time, memory, cost. The agentic-fir
 
 ## The test
 
-*The Design of Design* ends where all good design books do: with the user. Run your CLI the way the agent would — `--help`, one command, `--json`, another command — and read the output as a reader who never blinks, never asks, and never forgets. If any line could mean two things, the agent will choose the wrong one half the time, and it will do so confidently.
+Run your CLI the way the benchmark environments run it: `--help`, one command, `--json`, another command — and read the output as a reader who never blinks, never asks, and never forgets. If any line could mean two things, the agent will choose the wrong one half the time, and it will do so confidently. The terminal benchmarks exist because that failure is measurable; the fix is the discipline above.
 
-> The agent is the user, and the user is the judge. The contract is the architecture; the output is the model; determinism is respect; tokens are the budget; one mind owns the whole thing. Design for a user that never blinks — and every human at the terminal benefits too.
+> The agent is a new kind of end user, and the interface is its environment. The contract is the architecture; the output is the model; determinism is respect; tokens are the budget; one mind owns the whole thing. Design for a user that never blinks — and every human at the terminal benefits too.
 
 ---
 
 **References:**
 
-- Frederick P. Brooks Jr. [*The Design of Design: Essays from a Computer Scientist*](https://www.cs.unc.edu/~brooks/DesignofDesign/). Addison-Wesley, 2010. — models, the design tree, budgets and constraints, satisficing, the separation of architectural design from implementation, conceptual integrity, the one-mind rule.
-- Frederick P. Brooks Jr. [*The Mythical Man-Month*](https://en.wikipedia.org/wiki/The_Mythical_Man-Month). Addison-Wesley, 1975; 20th Anniversary Edition 1995. — conceptual integrity ("the most important consideration in system design"); the separation of architecture from implementation.
-- Herbert A. Simon. *The Sciences of the Artificial*. MIT Press, 1969. — satisficing: designers accept the first acceptable solution.
-- [Git — Plumbing and Porcelain](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain) and [`git status --porcelain`](https://git-scm.com/docs/git-status). — the machine-stable output contract.
+- John Yang, Carlos E. Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik Narasimhan. [SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering](https://arxiv.org/abs/2405.15793). arXiv:2405.15793, 2024. — Agents as a new category of end users; custom ACI; 12.5% SWE-bench / 87.7% HumanEvalFix pass@1; interface design changes agent behavior.
+- Mike A. Merrill, Alexander G. Shaw, Nicholas Carlini, Boxuan Li, Harsh Raj, Ivan Bercovich. [Terminal-Bench: Benchmarking Agents on Hard, Realistic Tasks in Command Line Interfaces](https://arxiv.org/abs/2601.11868). arXiv:2601.11868, 2026. — 89 terminal tasks; frontier agents under 65%; error analysis.
+- John Yang, Akshara Prabhakar, Karthik Narasimhan, Shunyu Yao. [InterCode: Standardizing and Benchmarking Interactive Coding with Execution Feedback](https://arxiv.org/abs/2306.14898). arXiv:2306.14898, 2023. — Interactive coding as an RL environment: code as actions, execution feedback as observations.
+- Xiao Liu et al. [AgentBench: Evaluating LLMs as Agents](https://arxiv.org/abs/2308.03688). arXiv:2308.03688, 2023. — Eight agent environments, including the operating system and terminal.
+- [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents). Anthropic Engineering, Dec 2024. — "Carefully craft your agent-computer interface (ACI) through thorough tool documentation and testing"; simple, composable patterns over frameworks.
+- [Claude Code — Best practices for agentic coding](https://docs.anthropic.com/en/docs/claude-code/best-practices). Anthropic. — Tool and interface design guidance from the team shipping the most-used agentic CLI.
+- [Model Context Protocol](https://modelcontextprotocol.io/). Anthropic, 2024. — The protocol alternative for cross-tool discovery.
+- [Git — Plumbing and Porcelain](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain) and [`git status --porcelain`](https://git-scm.com/docs/git-status). — the machine-stable output contract, in production since 2009.
+- Frederick P. Brooks Jr. [*The Design of Design*](https://www.cs.unc.edu/~brooks/DesignofDesign/). Addison-Wesley, 2010; and [*The Mythical Man-Month*](https://en.wikipedia.org/wiki/The_Mythical_Man-Month), 1975. — Models, the design tree, budgets, satisficing (after Herbert Simon), the separation of architecture from implementation, conceptual integrity, the one-mind rule.
 - [NO_COLOR](https://no-color.org/) — the environment variable for disabling color output.
 - Related: [Brooks on Software Design: Conceptual Integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) — the property the agentic contract depends on.
 - Related: [Brooks on Software Design: One Mind](https://blog.hackspree.com/#brooks-design-one-mind-rule) — who owns the CLI contract, and why committees fail at it.

@@ -1,14 +1,14 @@
 ---
-title: CUPID Is Not a Set of Principles. That Is the Point.
+title: "CUPID: Properties, Not Principles"
 date: 2026-08-03
 slug: cupid-for-joyful-coding
-summary: Dan North's CUPID looks like five principles to replace SOLID's five. That is the misreading. CUPID's real move is replacing the idea of a principle itself — bounded sets of rule-followers become centred sets with a direction of travel. Read as rules, CUPID is SOLID with a better haircut. Read as properties, it is a compass.
+summary: "Dan North's CUPID looks like five principles to replace SOLID's five. That is the misreading. CUPID's real move is replacing the idea of a principle itself — bounded sets of rule-followers become centred sets with a direction of travel. Read as rules, CUPID is SOLID with a better haircut. Read as properties, it is a compass."
 tags: dan-north, cupid, solid, software-design, principles, properties, composability, unix-philosophy, predictability, idiomatic-code, domain-driven-design, joyful-coding, simplicity, empathy
 ---
 
-Dan North's essay [*CUPID: for joyful coding*](https://dannorth.net/blog/cupid-for-joyful-coding/) (February 2022) starts with the reader's body memory. In the early 1990s, as a rookie, he cracked open a large C codebase for image manipulation, expecting to drown. Within minutes he was deep in a nest of calls and knew exactly where the bug was. No automated tests. Just structure, naming, and flow so obvious they felt like architecture he already knew:
+Dan North's essay [*CUPID: for joyful coding*](https://dannorth.net/blog/cupid-for-joyful-coding/) (2022) starts with the reader's body memory. As a rookie in the early 1990s he cracked open a large C codebase for image manipulation, expecting to drown; within minutes he was deep in a nest of calls and knew exactly where the bug was. No automated tests. Just structure, naming, and flow so obvious they felt like architecture he already knew.
 
-> "Have you ever cracked open an unfamiliar codebase and just known how to get around? The structure, the naming, the flow is obvious, familiar somehow. A smile appears on your face. 'I've got this!' you think."
+> "Have you ever cracked open an unfamiliar codebase and just known how to get around? The structure, the naming, the flow is obvious, familiar somehow."
 
 The essay escalates the vocabulary for that feeling: Fowler's "code that humans can understand" is too low a bar; Gabriel's *habitability* — "to change it comfortably and confidently" — gets closer; the word North actually wants is *joyful*. If you spend your working days in code, the codebase is your user experience, programmed in by people you have never met, one of whom may be future you.
 
@@ -20,13 +20,11 @@ North started by trying to replace each SOLID letter with a better one and quick
 
 > "Principles are like rules: you are either compliant or you are not. This gives rise to 'bounded sets' of rule-followers and rule-enforcers rather than 'centred sets' of people with shared values."
 
-Bounded set: in or out, compliant or violating, pass or fail. Centred set: closer or further, with a direction of travel that is always clear, and no one ever "outside." Principles give you judgment day. Properties give you a compass.
-
-The properties are chosen by three "properties of properties": **practical** (easy to articulate, assess, adopt — "there is never a 'done'"), **human** ("what it *feels like* to work with code, not an abstract description of code in itself"), and **layered** (obvious to a beginner, deep for the experienced). Rules get obeyed or broken; properties get approached. Every CUPID letter is best read as a direction, not a target.
+Bounded set: in or out, compliant or violating, pass or fail. Centred set: closer or further, with a direction of travel that is always clear, and no one ever "outside." Principles give you judgment day. Properties give you a compass. The properties are chosen to be practical (easy to articulate, assess, adopt — "there is never a 'done'"), human ("what it *feels like* to work with code, not an abstract description of code in itself"), and layered (obvious to a beginner, deep for the experienced). Every CUPID letter is best read as a direction, not a target.
 
 ## Composable — plays well with others
 
-Composability is three heuristics, none of them laws. **Small surface area:** a narrow, opinionated API has less to learn and less to go wrong — but push it too far and "knowing the right combination" becomes tacit knowledge. There is a sweet spot between fragmented and bloated. **Intention-revealing:** a component you can discover and assess quickly; North's test is the tutorial ladder — a 2-minute tutorial, a 10-minute tutorial, a deep dive. **Minimal dependencies:** the log4j story — "a logging library" is really a dependency on a specific version, and version is where incompatibilities break.
+Three heuristics, none of them laws. **Small surface area:** a narrow, opinionated API has less to learn and less to go wrong — but push it too far and "knowing the right combination" becomes tacit knowledge; there is a sweet spot between fragmented and bloated. **Intention-revealing:** a component you can discover and assess quickly — the tutorial ladder of a 2-minute, a 10-minute, and a deep dive. **Minimal dependencies:** "a logging library" is really a dependency on a specific version, and version is where incompatibilities break.
 
 > "More is not necessarily better; it is all trade-offs."
 
@@ -38,21 +36,19 @@ A principle says *minimize dependencies*. A property says *dependencies are a co
 
 > "The former is about how you use code, and the latter is about the internals of the code itself."
 
-SRP is inside-out: "one and only one reason to change." Unix is outside-in: a specific, well-defined, comprehensive purpose visible from the call site. His example is the best in the essay — `ls` does not know anything about files; `stat` provides the information, `ls` only presents it. `cat` concatenates, `grep` selects, `sed` transforms, and pipes compose them into pipelines. Each command is a narrow, complete, outside-visible contract.
+SRP is inside-out: "one and only one reason to change." Unix is outside-in: a specific, comprehensive purpose visible from the call site. `ls` does not know anything about files — `stat` provides the data, `ls` only renders it; `cat` concatenates, `grep` selects, `sed` transforms, and pipes compose them into pipelines. Each command is a narrow, complete, outside-visible contract.
 
-Then the attack on SRP, the most useful passage in the essay. "One reason to change" is trivially refutable — a single line of code changes for security, compliance, dependencies, operations. The real damage is the *artificial seams*: report content and report format usually change together, so SRP's demand to separate them makes every new field an administrative chore of chaining identical fields across files. Same for UI components. Applied as a rule, SRP imports accidents — seams nobody's problem forced on you.
+Then the attack on SRP, the most useful passage in the essay. "One reason to change" is trivially refutable — a single line changes for security, compliance, dependencies, operations. The real damage is the *artificial seams*: report content and format usually change together, so SRP's demand to separate them makes every new field a chore of chaining identical fields across files. Same for UI components. Applied as a rule, SRP imports accidents — seams nobody's problem forced on you.
 
 > The inside-out question ("what could make this change?") generates seams. The outside-in question ("what would a user of this call it?") generates boundaries. Seams are things to maintain. Boundaries are things to use.
 
 ## Predictable — does what you expect
 
-Predictability is "a generalization of testability": code should **behave as expected**, be **deterministic**, and be **observable**. Behave as expected — the first of Kent Beck's four rules, holding even when there are no tests: the intended behaviour is obvious from structure and naming. Deterministic splits into robust (covers what you know), reliable (same result every time), resilient (survives what you don't). Observable is the control-theory word — internal state inferable from outputs — only possible if designed in. North's ladder is worth keeping: instrumentation (saying what you're doing), telemetry (making it available), monitoring (making it visible), alerting (reacting). His honest aside: "Most software does not even get past step 1."
+Predictability is "a generalization of testability": code should **behave as expected**, be **deterministic**, and be **observable**. Behave as expected — the first of Kent Beck's four rules, holding even with no tests: the intended behaviour is obvious from structure and naming. Deterministic splits into robust (covers what you know), reliable (same result every time), resilient (survives what you don't). Observable is the control-theory word — internal state inferable from outputs — only possible if designed in. North's ladder: instrumentation (saying what you're doing), telemetry (making it available), monitoring (making it visible), alerting (reacting). "Most software does not even get past step 1."
 
 ## Idiomatic — feels natural, because empathy
 
-"The greatest programming trait is empathy; empathy for your users; empathy for support folks; empathy for future developers; any of whom may be future you." Idiomatic code is empathy compiled into style — matching the language's idioms so the reader's context switches are free.
-
-North's spectrum: opinionated languages (Go's `gofmt` makes all code look the same; Python's Zen — "There should be one—and preferably only one—obvious way to do it") versus multi-paradigm ones (Perl's TIMTOWTDI, plus Scala, Ruby, JavaScript) where five ways to iterate a sequence coexist in one codebase, each adding cognitive load. Where the language has no consensus, the team must supply one: shared formatting, "build cop" linting, Architecture Decision Records.
+"The greatest programming trait is empathy; empathy for your users; empathy for support folks; empathy for future developers; any of whom may be future you." Idiomatic code is empathy compiled into style — matching the language's idioms so the reader's context switches are free. Opinionated languages help (Go's `gofmt` makes all code look the same; Python's Zen — "one—and preferably only one—obvious way to do it"); multi-paradigm ones (Perl's TIMTOWTDI, Scala, Ruby, JavaScript) let five ways to iterate a sequence coexist, each adding cognitive load. Where the language has no consensus, the team must supply one: shared formatting, "build cop" linting, Architecture Decision Records.
 
 > "Your learning curve for a technology will likely be shorter-lived than any code you write in it."
 
@@ -60,25 +56,23 @@ Read it again. The person writing the code is a temporary visitor to its style; 
 
 ## Domain-based — the solution models the problem
 
-The last property is the deepest: the solution domain should model the problem domain in language and structure. Language first: a surname is not a `string[30]`; money is not a float. Type the domain — `Surname`, `Money` with its `Currency` and `Amount` — and the cognitive distance between what you write and what it does collapses. North's criterion is the one to remember:
+The last property is the deepest: the solution domain should model the problem domain in language and structure. A surname is not a `string[30]`; money is not a float. Type the domain — `Surname`, `Money` with its `Currency` and `Amount` — and the cognitive distance between what you write and what it does collapses. North's criterion is the one to remember:
 
 > "A casual observer cannot tell whether people are discussing the code or the domain."
 
-He tells of a financial analyst walking two programmers through a pricing algorithm by pointing at the screen — line for line, the code *was* the rules.
-
-Structure next, where CUPID is most contrarian. Framework scaffolds impose an *a priori* structure — the Rails skeleton's `app/models`, `app/views`, `app/controllers`, `app/helpers`, `app/jobs` — that scatters one semantic unit across half a dozen directories. A hospital app in Rails means a patient-record change touches a model, a view, a controller, a helper, each in a different folder. North's proposal is radical in its mildness: structure by the domain, not the framework — `patient_history`, `appointments`, `staffing`, `compliance` as the top level, because "the top level of the codebase should show the primary use cases." Then module boundaries become domain boundaries, and deployment aligns with them. A codebase grouped by framework role is a codebase whose architecture was decided by the framework's author — not by the one mind that understands the domain.
+Structure next, where CUPID is most contrarian. Framework scaffolds impose an *a priori* structure — the Rails skeleton's `app/models`, `app/views`, `app/controllers`, `app/helpers`, `app/jobs` — that scatters one semantic unit across half a dozen directories. A hospital app in Rails means a patient-record change touches a model, a view, a controller, a helper, each in a different folder. North's proposal is radical in its mildness: structure by the domain, not the framework — `patient_history`, `appointments`, `staffing`, `compliance` as the top level, because "the top level of the codebase should show the primary use cases." A codebase grouped by framework role is a codebase whose architecture was decided by the framework's author — not by the one mind that understands the domain.
 
 ## Why it holds together
 
-The properties are mutually reinforcing, and North says so explicitly. Composable and comprehensive — doing one thing well — "is like a reliable friend." Idiomatic code "feels familiar even though you have never seen it before." Predictable code "gives you spare cycles to concentrate on surprises elsewhere." Domain-based code "minimises the cognitive distance from need to solution."
+The properties are mutually reinforcing: composable and comprehensive — doing one thing well — "is like a reliable friend"; idiomatic code "feels familiar even though you have never seen it before"; predictable code "gives you spare cycles to concentrate on surprises elsewhere"; domain-based code "minimises the cognitive distance from need to solution."
 
 > "Moving code towards the 'centre' of any of these properties leaves it better than you found it."
 
-That is the whole philosophy in one sentence — and it is the sentence that cannot survive translation back into principles. "Leaves it better than you found it" has no compliance check. You cannot merge a pull request against it. You can only point at a codebase and say: closer to the centre than last month, and here is the direction to keep travelling.
+That is the whole philosophy in one sentence — and the sentence that cannot survive translation back into principles. "Leaves it better than you found it" has no compliance check. You cannot merge a pull request against it. You can only point at a codebase and say: closer to the centre than last month, and here is the direction to keep travelling.
 
 ## The test
 
-Read CUPID as rules and it is SOLID with a better haircut: five more checkboxes, five more fights in code review. Read it as properties and it is a different instrument. The practical form is five questions, asked at review time, with no pass or fail:
+Read CUPID as rules and it is SOLID with a better haircut: five more checkboxes, five more fights in code review. Read it as properties and it is a different instrument. Five questions, asked at review time, with no pass or fail:
 
 - What would it take to reuse this outside its home? (Composable)
 - What is the one thing this does, and can I see that from outside? (Unix philosophy)

@@ -18,7 +18,7 @@ The organizational definition, as McKinsey's explainer puts it, is broader: "a c
 
 The operational definition moves down the stack, to the layer users touch: the workspace — prompts, files, embeddings, identity, permissions, logs. Call that the **control definition**: sovereignty is who administers the thing.
 
-None of these definitions is wrong. That is the trap. The national definition requires building a country's worth of capability; the capability definition requires holding four layers at once; the control definition requires purchasing software. In a market, the definition that wins is the cheapest one to satisfy — the one that can be bought. Every framework centers what its author sells. This is why the definition is the battlefield: the fight is not over whether to be sovereign, but over what counts as being sovereign.
+None of these definitions is wrong. That is the trap. The national definition requires building a country's worth of capability; the capability definition requires holding four layers at once; the control definition requires purchasing software. In a market, the winning definition is the cheapest to satisfy — the one that can be bought; every framework centers what its author sells. This is why the definition is the battlefield: the fight is not over whether to be sovereign, but over what counts as being sovereign.
 
 ## Residency is not sovereignty
 
@@ -72,11 +72,7 @@ If the answer to the last one is "we don't know," the boundaries you have config
 - [Mueller — Against Sovereignty in Cyberspace (2020)](https://doi.org/10.1093/isr/viz044)
 - [EUR-Lex — Regulation (EU) 2024/1689 (AI Act)](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)
 - [European AI Act open letter (May 2024)](https://euaiact.com/)
-
-**Related on this site:**
-
-- [AI Sovereignty or AI Colony](https://blog.hackspree.com/#ai-sovereignty-or-ai-colony) — why domestic capability, not boundaries, is what prevents dependence.
-- [UAE Sovereign AI: First, Train the Humans](https://blog.hackspree.com/#uae-ai-adoption) — the capability component, measured in people.
-- [Hangzhou AI City](https://blog.hackspree.com/#hangzhou-ai-ecosystem) — the national definition done as municipal infrastructure, and why it is unrepeatable.
-- [Compute Travels. Data Stays.](https://blog.hackspree.com/#compute-travels-data-stays) — data sovereignty as an architecture, not a region.
-- [Chinese Models Will Win the Local-First Race](https://blog.hackspree.com/#chinese-models-local-first) — what export controls did to the model layer.
+- Related: [AI Sovereignty or AI Colony](https://blog.hackspree.com/#ai-sovereignty-or-ai-colony) — why domestic capability, not boundaries, is what prevents dependence.
+- Related: [UAE Sovereign AI: First, Train the Humans](https://blog.hackspree.com/#uae-ai-adoption) — the capability component, measured in people.
+- Related: [Hangzhou AI City](https://blog.hackspree.com/#hangzhou-ai-ecosystem) — the national definition done as municipal infrastructure, and why it is unrepeatable.
+- Related: [Compute Travels. Data Stays.](https://blog.hackspree.com/#compute-travels-data-stays) — data sovereignty as an architecture, not a region.

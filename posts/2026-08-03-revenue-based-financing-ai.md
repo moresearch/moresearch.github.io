@@ -12,7 +12,7 @@ The thesis: **the company that builds its revenue legibility like a system gets 
 
 ## The mechanics
 
-The terms are a protocol. A lender advances capital sized against your recurring revenue — commonly several months of it. You repay a fixed percentage of monthly revenue, typically 5–8%, until cumulative repayments reach the advance plus a multiple (typically 1.5–2.5x) or the term limit passes, whichever comes first; in most structures the balance is forgiven at the limit. No equity, no board seat, no fixed payment that can sink a bad month. Lenders may still take a lien at the small end — the telemetry is the underwriting collateral, not the only legal one. Reported volume: $9.8B in 2025 across a hundred-plus lenders (Lighter Capital, Capchase, Pipe, Wayflyer, Founderpath, Recur Club).
+The terms are a protocol. A lender advances capital sized against your recurring revenue — commonly several months of it. You repay a fixed percentage of monthly revenue, typically 5–8%, until cumulative repayments reach the advance plus a multiple (typically 1.5–2.5x) or the term limit passes, whichever comes first; in most structures the balance is forgiven at the limit. No equity, no board seat, no fixed payment that can sink a bad month. Lenders may still take a lien at the small end — telemetry is the underwriting collateral, not the only legal one. Reported volume: $9.8B in 2025 (Lighter Capital, Capchase, Pipe, Wayflyer, Founderpath, Recur Club).
 
 | | Equity | Venture debt | RBF |
 |---|---|---|---|

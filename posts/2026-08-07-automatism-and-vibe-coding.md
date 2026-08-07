@@ -60,6 +60,14 @@ Automatic output also has no single author and no single intention — a dense w
 
 The hardest question automatism poses is: how do you know the automatic output is good? Neither the artist nor the model can answer by consulting intention — there was none. The Surrealists answered with an external test: the image — the sudden resonance of distant realities meeting. The image could not be explained, only recognized.
 
+Surrealism's own history contains the warning, painted in the movement's other half. Magritte was the counterweight inside the group: where Breton sought the unconscious through unpremeditated marks, Magritte built each image with the deliberation of a cabinetmaker, and the tension between the two poles ran through the movement's entire history. His most famous painting is a manifesto against mistaking representation for reality:
+
+![The Treachery of Images — René Magritte (1928–29). "Ceci n'est pas une pipe": the image is not the thing, and neither is the word. (Low-resolution reproduction; the original is at LACMA.)](/images/magritte-treachery-of-images.jpg)
+
+*Ceci n'est pas une pipe.* Of course it is not a pipe. It is paint arranged to look like a pipe. The treachery is that it works anyway: you read it as a pipe and only the sentence beneath it — itself another representation — breaks the illusion. Magritte's whole point is that resemblance is precisely what makes the lie possible, and that representation is not identity.
+
+This is the trap vibe coding sets. The agent's output is not engineering. It is a representation of engineering — tokens arranged to look like code, sampled from everything code has ever looked like. It resembles working software the way the painting resembles a pipe. Accept the resemblance without testing and you are doing what Magritte's sentence stops you from doing: taking the picture for the thing. The eval is the act of trying to smoke the pipe. The test is the treachery broken.
+
 Code has the advantage that its external test is sharper: does it run, does it pass, does the system behave? The eval and the test suite are the criterion the automatist tradition never had. But a residue remains that evals cannot reach — the judgment of whether the automatic solution has the right shape, whether the surprise is a genuine find or a seductive artifact. For that you need the record of the making: the plan, the action stream, the replay — the trace of what the agent did, not just what it produced. You judge the dictation by its process as much as by its product.
 
 ## The danger of losing contact
@@ -84,6 +92,7 @@ The dictation is automatic. The engineering is not. That is the whole art.
 - André Masson, Joan Miró, Max Ernst — automatic drawing, frottage, grattage, and the method of producing automatically then looking.
 - [Astonishing Examples of Automatic Drawing](https://blog.artsper.com/en/a-closer-look/art-movements-en/automatic-drawing/), Artsper Magazine. — the drawing-side companion to the automatic writings: the practice of bypassing conscious control, with examples.
 - Andrej Karpathy. [Vibe coding](https://en.wikipedia.org/wiki/Vibe_coding), February 2025. — the coinage of the practice this post reads as automatism's purest form: describe intent in natural language, accept the output without reading it closely.
+- René Magritte. [The Treachery of Images](https://en.wikipedia.org/wiki/The_Treachery_of_Images) (*La trahison des images*), 1928–29. — "Ceci n'est pas une pipe": the deliberate pole of Surrealism and the standing warning that representation is not identity. Los Angeles County Museum of Art. Embedded above; low-resolution fair-use reproduction via Wikipedia, upscaled for display. (See also Michel Foucault, *This Is Not a Pipe*, 1973.)
 - Jackson Pollock. [My Painting](https://en.wikipedia.org/wiki/Jackson_Pollock). *Possibilities I* (1947–48), ed. Harold Rosenberg. — the get-acquainted period; "the painting has a life of its own"; "it is only when I lose contact with the painting that the result is a mess."
 - Pollock, "I deny the accident. I can control the flow of paint" — interview with William Wright, 1950 (recorded for radio, aired posthumously).
 - [Hans Namuth photograph of Pollock painting on glass, 1950](https://commons.wikimedia.org/wiki/File:Jackson_Pollock_by_Hans_Namuth.jpg) — public domain; embedded at the top of this post.

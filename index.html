@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="The agent is a new category of end user — and the evidence says the interface is a performance variable, not cosmetics. SWE-agent&#39;s agent-computer interface doubled state-of-the-art on SWE-bench; frontier agents still score under 65% on terminal tasks. This post compares the design space (CLI vs function calling vs MCP vs chat) and distills the research into an agentic-first CLI checklist.">
+  <meta name="description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation. This post follows the automatist tradition — from Breton and Soupault&#39;s automatic writing through Masson&#39;s automatic drawing and Pollock&#39;s action painting — to the practice problem at the heart of agentic coding: what you do with the automatic output is the whole craft.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="The agent is a new category of end user — and the evidence says the interface is a performance variable, not cosmetics. SWE-agent&#39;s agent-computer interface doubled state-of-the-art on SWE-bench; frontier agents still score under 65% on terminal tasks. This post compares the design space (CLI vs function calling vs MCP vs chat) and distills the research into an agentic-first CLI checklist.">
+  <meta property="og:description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation. This post follows the automatist tradition — from Breton and Soupault&#39;s automatic writing through Masson&#39;s automatic drawing and Pollock&#39;s action painting — to the practice problem at the heart of agentic coding: what you do with the automatic output is the whole craft.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="The agent is a new category of end user — and the evidence says the interface is a performance variable, not cosmetics. SWE-agent&#39;s agent-computer interface doubled state-of-the-art on SWE-bench; frontier agents still score under 65% on terminal tasks. This post compares the design space (CLI vs function calling vs MCP vs chat) and distills the research into an agentic-first CLI checklist.">
+  <meta name="twitter:description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation. This post follows the automatist tradition — from Breton and Soupault&#39;s automatic writing through Masson&#39;s automatic drawing and Pollock&#39;s action painting — to the practice problem at the heart of agentic coding: what you do with the automatic output is the whole craft.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -693,6 +693,77 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="automatism-and-code">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/automatism-and-code/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-07" data-utc="Aug 07, 2026 UTC" aria-label="Aug 07, 2026 UTC" tabindex="0">1786060800</time></p>
+          <h2><a href="#automatism-and-code">Automatism and Code</a></h2><p class="post-summary">André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation. This post follows the automatist tradition — from Breton and Soupault&#39;s automatic writing through Masson&#39;s automatic drawing and Pollock&#39;s action painting — to the practice problem at the heart of agentic coding: what you do with the automatic output is the whole craft.</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">agentic-software-engineering</span><span class="tag">automatism</span><span class="tag">surrealism</span><span class="tag">automatic-writing</span><span class="tag">jackson-pollock</span><span class="tag">andre-breton</span><span class="tag">art-history</span><span class="tag">curation</span><span class="tag">harness-engineering</span>
+          </div>
+        </header>
+        <div class="post-body"><p>In 1924, André Breton published the <em>Manifesto of Surrealism</em> and defined the movement with a single phrase:</p>
+<blockquote>
+<p>SURREALISM, n. Pure psychic automatism, by which one intends to express verbally, in writing or by any other method, the real functioning of the mind. Dictation of thought, in the absence of any control exercised by reason, and beyond any aesthetic or moral preoccupation.</p>
+</blockquote>
+<p>Breton meant writing without deliberation — letting the mind speak in its own currents, then seeing what had been said. The Surrealists called it automatic writing, and they treated the results as messages from a deeper agency: the unconscious, the irrational, the &quot;real functioning of the mind.&quot;</p>
+<p>A century later, the same idea has become the most consequential mode of software production on earth. A coding agent is an automatic writer: it generates code by sampling from a latent distribution of everything it has read, without deliberation, without a plan in the way a programmer plans — and certainly &quot;beyond any aesthetic or moral preoccupation.&quot; Automatic writing, automatic code.</p>
+<p><strong>Agentic coding is automatism industrialized.</strong> Everything strange about working with agents — the wonder, the unreliability, the editing, the anxiety — is the strangeness the Surrealists met a hundred years ago. Their answer to it is the most useful theory of agentic engineering I know.</p>
+<p><img src="/images/pollock-namuth.jpg" alt="Jackson Pollock painting on glass, photographed by Hans Namuth (1950). The automatic method, made physical — produce first, then look."></p>
+<h2 id="the-first-automatic-writers">The first automatic writers</h2>
+<p>Breton and Philippe Soupault wrote <em>The Magnetic Fields</em> in 1919, in a few weeks of trance-like haste, before the word &quot;Surrealism&quot; existed. The result read like nothing before it: images that did not follow from each other, syntax that kept its shape while sense dissolved. They were not trying to say something. They were trying to let the dictation happen.</p>
+<p>The practice spread to drawing. Masson let his hand wander without an image in mind, then looked at what emerged; Miró built canvases from the same automatist improvisations; Ernst pressed frottage and scraped grattage to let the material itself suggest the image. The method was always the same: <strong>produce automatically, then look.</strong> The looking was not optional. It was the second half of the method — the half that made it art instead of noise.</p>
+<h2 id="the-automatic-controlled">The automatic, controlled</h2>
+<p>Jackson Pollock belongs in this lineage. In the late 1930s, in the drawings he made during his Jungian analysis, he practiced exactly this method: letting the line run without intent, then reading the drawing for what it revealed. A decade later, the method scaled from the page to the floor, from the line to the pour. <em>No. 5, 1948</em> — the painting that would later become the most expensive ever sold at auction — is the pure product of that method: four by eight feet of enamel and paint poured from above, the automatist gesture at full scale.</p>
+<p><img src="/images/no-5-1948.jpg" alt="No. 5, 1948 — Jackson Pollock (1948). The automatic method made material: poured paint, fully controlled. (Low-resolution reproduction; the original is in a private collection.)"></p>
+<blockquote>
+<p>When I am in my painting, I'm not aware of what I'm doing. It is only after a sort of &quot;get acquainted&quot; period that I see what I have been about... the painting has a life of its own. I try to let it come through.</p>
+</blockquote>
+<p>That is an automatist's account of his own method. But Pollock added the half the lay view always forgets:</p>
+<blockquote>
+<p>It is only when I lose contact with the painting that the result is a mess.</p>
+</blockquote>
+<p>And when asked directly whether the pours were accidents: &quot;I deny the accident. I can control the flow of paint.&quot;</p>
+<p>The automatic was the source; control was the craft. The two were not opposites. The pour only worked while the body that produced it stayed in the loop — acting, stepping back, seeing, acting again. The same gesture, without the control, was just paint on canvas.</p>
+<h2 id="what-an-agent-is">What an agent is</h2>
+<p>A coding agent is the most literal automatic writer ever built, because its generation is genuinely opaque to deliberation. When the model emits code, no part of it reasons the way a programmer reasons. It samples from a learned distribution of tokens — a statistical unconscious containing the accumulated text of the world. The output issues &quot;in the absence of any control exercised by reason,&quot; exactly as Breton prescribed, and with no aesthetic or moral preoccupation whatsoever.</p>
+<p>The &quot;dictation of thought&quot; is literal too, and the thought being dictated is not the engineer's. It is the training distribution's — the aggregate of every repository, every discussion, every pattern the model absorbed. The agent is an unconscious at scale, and it writes.</p>
+<p>This is why agentic coding feels the way automatic writing felt. The output is real, sometimes astonishing, and consistently unreliable in ways that defeat introspection. The model cannot tell you why it wrote what it wrote. Neither could Masson's hand. The interesting part is what you do next.</p>
+<h2 id="the-editors-craft">The editor's craft</h2>
+<p>The Surrealists discovered within a decade that pure automatism produces mostly mediocrity. <em>The Magnetic Fields</em> was astonishing; the practice of magnetic fields, repeated, was not. What saved the movement was editing: Breton curated relentlessly — cut, revised, chose which dictations to keep — and the painters composed and corrected after the automatic pass. The art lived in the relation between the automatic and the deliberate.</p>
+<p>The same discovery is being made, at industrial scale, about agents. The prompt is the séance — the conditions under which the dictation happens. The harness is the editing table: the tests that cut what fails, the evals that rank what survives, the sandbox that keeps the automatic from doing damage while it works. The engineer's craft has moved entirely into that relation. <strong>You cannot make the automatic better by staring at it. You make it better by changing its conditions and editing its output.</strong></p>
+<p>Automatic output also has no single author and no single intention — a dense web of small choices that no one deliberately made. Coherence has to be imposed from outside, by the spec, the contract, the harness. The spec is the architect; the agents are the automatic; the editor is you.</p>
+<h2 id="judgment-without-introspection">Judgment without introspection</h2>
+<p>The hardest question automatism poses is: how do you know the automatic output is good? Neither the artist nor the model can answer by consulting intention — there was none. The Surrealists answered with an external test: the image — the sudden resonance of distant realities meeting. The image could not be explained, only recognized.</p>
+<p>Code has the advantage that its external test is sharper: does it run, does it pass, does the system behave? The eval and the test suite are the criterion the automatist tradition never had. But a residue remains that evals cannot reach — the judgment of whether the automatic solution has the right shape, whether the surprise is a genuine find or a seductive artifact. For that you need the record of the making: the plan, the action stream, the replay — the trace of what the agent did, not just what it produced. You judge the dictation by its process as much as by its product.</p>
+<h2 id="the-danger-of-losing-contact">The danger of losing contact</h2>
+<p>The Surrealists' history is a caution about what happens when the relation degrades. Automatism hardened into a style; Breton spent the 1930s excommunicating members over how much control the method allowed. When the automatic is trusted wholesale, the output becomes mannerist — fluent, plausible, empty. When it is distrusted wholesale, the source dries up.</p>
+<p>The equivalent failure in agentic coding is delegation without judgment: the engineer who accepts whatever the agent produces stops exercising judgment, and judgment, once unused, decays. The trial covered on this blog found exactly this — programmers who delegated their learning to an AI scored 17% lower on what they were supposed to learn. Pollock's rule is the law of the whole practice: <em>the result is a mess when you lose contact with the painting.</em> The automatic needs the contact.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Breton wanted to hear the mind speak without the interference of reason. A century later, we have built a machine that does it — at the scale of whole codebases. Automatic writing has become automatic code, and the discipline that makes it work is the discipline the Surrealists spent a decade learning: produce automatically, then look; control the conditions, edit the output, judge by external criteria, keep the surprises worth keeping, and never lose contact.</p>
+<p>The dictation is automatic. The engineering is not. That is the whole art.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>André Breton. <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Surrealist_automatism">Manifesto of Surrealism</a>, 1924. — the definition of &quot;psychic automatism... in the absence of any control exercised by reason.&quot;</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://www.tate.org.uk/art/art-terms/a/automatism">Automatism — Art Term</a>, Tate. — the canonical definition: the term borrowed from physiology for bodily movements that are not consciously controlled (breathing, sleepwalking), via Freud's free association to Breton's dictation of thought.</li>
+<li>André Breton &amp; Philippe Soupault. <em>The Magnetic Fields</em> (<em>Les Champs Magnétiques</em>), 1919. — the first automatic text.</li>
+<li>André Masson, Joan Miró, Max Ernst — automatic drawing, frottage, grattage, and the method of producing automatically then looking.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.artsper.com/en/a-closer-look/art-movements-en/automatic-drawing/">Astonishing Examples of Automatic Drawing</a>, Artsper Magazine. — the drawing-side companion to the automatic writings: the practice of bypassing conscious control, with examples.</li>
+<li>Jackson Pollock. <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Jackson_Pollock">My Painting</a>. <em>Possibilities I</em> (1947–48), ed. Harold Rosenberg. — the get-acquainted period; &quot;the painting has a life of its own&quot;; &quot;it is only when I lose contact with the painting that the result is a mess.&quot;</li>
+<li>Pollock, &quot;I deny the accident. I can control the flow of paint&quot; — interview with William Wright, 1950 (recorded for radio, aired posthumously).</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Jackson_Pollock_by_Hans_Namuth.jpg">Hans Namuth photograph of Pollock painting on glass, 1950</a> — public domain; embedded at the top of this post.</li>
+<li>Jackson Pollock, <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/No._5,_1948">No. 5, 1948</a>, 1948 — oil and enamel on fiberboard, 121.9 × 243.8 cm, private collection. Embedded above; low-resolution fair-use reproduction via Wikipedia, upscaled for display.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#finding-david-in-the-marble">Finding David in the Marble</a> — the strike-assess loop, and the same act-then-look rhythm.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#ai-impacts-skill-formation">You Don't Learn What You Delegate</a> — what delegation costs the actor's judgment.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-fowler">Harness Engineering (Martin Fowler)</a> — the harness as the editing table.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agent-harnesses-need-tasks-that-fight-back">Agent Harnesses Need Tasks That Fight Back</a> — the automatic needs resistance to mean anything.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#codebases-in-the-era-of-agentic-software-engineering">Codebases in the Era of Agentic Software Engineering</a> — the spec is the architect, the agents are the builders.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#brooks-design-conceptual-integrity">Conceptual Integrity and the One-Mind Rule</a> — coherence imposed on multi-authored output from outside.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#openworker-outcome-layer">OpenWorker: Outcome Layer</a> — the record of the making as a first-class artifact.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#llms-cant-jump">LLMs Can't Jump</a> — what the automatic cannot do: the leap from experience to axioms.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="agentic-first-cli-design">
         <link rel="canonical" href="https://blog.hackspree.com/entries/agentic-first-cli-design/">
         <header class="post-header">
@@ -16015,6 +16086,7 @@ type Logger interface {
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#automatism-and-code">Automatism and Code</a>
               <a href="#agentic-first-cli-design">Agentic-First CLI</a>
               <a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a>
               <a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a>

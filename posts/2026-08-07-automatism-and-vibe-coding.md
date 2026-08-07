@@ -1,9 +1,9 @@
 ---
-title: Automatism and Code
+title: Automatism and Vibe Coding
 date: 2026-08-07
-slug: automatism-and-code
-summary: "André Breton defined Surrealism as 'psychic automatism' — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation. This post follows the automatist tradition — from Breton and Soupault's automatic writing through Masson's automatic drawing and Pollock's action painting — to the practice problem at the heart of agentic coding: what you do with the automatic output is the whole craft."
-tags: agents, agentic-software-engineering, automatism, surrealism, automatic-writing, jackson-pollock, andre-breton, art-history, curation, harness-engineering
+slug: automatism-and-vibe-coding
+summary: "André Breton defined Surrealism as 'psychic automatism' — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation — which is what the culture calls vibe coding. This post follows the automatist tradition — from Breton and Soupault's automatic writing through Masson's automatic drawing and Pollock's action painting — to the practice problem at the heart of vibe coding: what you do with the automatic output is the whole craft."
+tags: agents, agentic-software-engineering, vibe-coding, automatism, surrealism, automatic-writing, jackson-pollock, andre-breton, art-history, curation, harness-engineering
 ---
 
 In 1924, André Breton published the *Manifesto of Surrealism* and defined the movement with a single phrase:
@@ -12,9 +12,9 @@ In 1924, André Breton published the *Manifesto of Surrealism* and defined the m
 
 Breton meant writing without deliberation — letting the mind speak in its own currents, then seeing what had been said. The Surrealists called it automatic writing, and they treated the results as messages from a deeper agency: the unconscious, the irrational, the "real functioning of the mind."
 
-A century later, the same idea has become the most consequential mode of software production on earth. A coding agent is an automatic writer: it generates code by sampling from a latent distribution of everything it has read, without deliberation, without a plan in the way a programmer plans — and certainly "beyond any aesthetic or moral preoccupation." Automatic writing, automatic code.
+A century later, the same idea has become the most consequential mode of software production on earth. A coding agent is an automatic writer: it generates code by sampling from a latent distribution of everything it has read, without deliberation, without a plan in the way a programmer plans — and certainly "beyond any aesthetic or moral preoccupation." The culture already has a name for the purest form of this, and it is an automatist's name: vibe coding — describe what you want, accept what comes back, don't read it too closely. Automatic writing, automatic code.
 
-**Agentic coding is automatism industrialized.** Everything strange about working with agents — the wonder, the unreliability, the editing, the anxiety — is the strangeness the Surrealists met a hundred years ago. Their answer to it is the most useful theory of agentic engineering I know.
+**Agentic coding is automatism industrialized, and vibe coding is automatism at its most literal.** Everything strange about working with agents — the wonder, the unreliability, the editing, the anxiety — is the strangeness the Surrealists met a hundred years ago. Their answer to it is the most useful theory of vibe coding I know.
 
 ![Jackson Pollock painting on glass, photographed by Hans Namuth (1950). The automatic method, made physical — produce first, then look.](/images/pollock-namuth.jpg)
 
@@ -46,13 +46,13 @@ A coding agent is the most literal automatic writer ever built, because its gene
 
 The "dictation of thought" is literal too, and the thought being dictated is not the engineer's. It is the training distribution's — the aggregate of every repository, every discussion, every pattern the model absorbed. The agent is an unconscious at scale, and it writes.
 
-This is why agentic coding feels the way automatic writing felt. The output is real, sometimes astonishing, and consistently unreliable in ways that defeat introspection. The model cannot tell you why it wrote what it wrote. Neither could Masson's hand. The interesting part is what you do next.
+This is why vibe coding feels the way automatic writing felt. The output is real, sometimes astonishing, and consistently unreliable in ways that defeat introspection. The model cannot tell you why it wrote what it wrote. Neither could Masson's hand. The interesting part is what you do next.
 
 ## The editor's craft
 
 The Surrealists discovered within a decade that pure automatism produces mostly mediocrity. *The Magnetic Fields* was astonishing; the practice of magnetic fields, repeated, was not. What saved the movement was editing: Breton curated relentlessly — cut, revised, chose which dictations to keep — and the painters composed and corrected after the automatic pass. The art lived in the relation between the automatic and the deliberate.
 
-The same discovery is being made, at industrial scale, about agents. The prompt is the séance — the conditions under which the dictation happens. The harness is the editing table: the tests that cut what fails, the evals that rank what survives, the sandbox that keeps the automatic from doing damage while it works. The engineer's craft has moved entirely into that relation. **You cannot make the automatic better by staring at it. You make it better by changing its conditions and editing its output.**
+The same discovery is being made, at industrial scale, about agents. The pure-automatist version of the practice — accept the output, skip the looking — is vibe coding in its purest form, and it is *The Magnetic Fields* repeated: astonishing once, mediocre as a method. The prompt is the séance — the conditions under which the dictation happens. The harness is the editing table: the tests that cut what fails, the evals that rank what survives, the sandbox that keeps the automatic from doing damage while it works. The engineer's craft has moved entirely into that relation. **You cannot make the automatic better by staring at it. You make it better by changing its conditions and editing its output.**
 
 Automatic output also has no single author and no single intention — a dense web of small choices that no one deliberately made. Coherence has to be imposed from outside, by the spec, the contract, the harness. The spec is the architect; the agents are the automatic; the editor is you.
 
@@ -66,11 +66,11 @@ Code has the advantage that its external test is sharper: does it run, does it p
 
 The Surrealists' history is a caution about what happens when the relation degrades. Automatism hardened into a style; Breton spent the 1930s excommunicating members over how much control the method allowed. When the automatic is trusted wholesale, the output becomes mannerist — fluent, plausible, empty. When it is distrusted wholesale, the source dries up.
 
-The equivalent failure in agentic coding is delegation without judgment: the engineer who accepts whatever the agent produces stops exercising judgment, and judgment, once unused, decays. The trial covered on this blog found exactly this — programmers who delegated their learning to an AI scored 17% lower on what they were supposed to learn. Pollock's rule is the law of the whole practice: *the result is a mess when you lose contact with the painting.* The automatic needs the contact.
+The equivalent failure in agentic coding is delegation without judgment — vibe coding practiced without the looking half. Vibe coding is fine for throwaway scripts, the automatist sketch, the one-session *Magnetic Fields*; as a permanent mode it is the loss of contact. The engineer who accepts whatever the agent produces stops exercising judgment, and judgment, once unused, decays. The trial covered on this blog found exactly this — programmers who delegated their learning to an AI scored 17% lower on what they were supposed to learn. Pollock's rule is the law of the whole practice: *the result is a mess when you lose contact with the painting.* The automatic needs the contact.
 
 ## Conclusion
 
-Breton wanted to hear the mind speak without the interference of reason. A century later, we have built a machine that does it — at the scale of whole codebases. Automatic writing has become automatic code, and the discipline that makes it work is the discipline the Surrealists spent a decade learning: produce automatically, then look; control the conditions, edit the output, judge by external criteria, keep the surprises worth keeping, and never lose contact.
+Breton wanted to hear the mind speak without the interference of reason. A century later, we have built a machine that does it — at the scale of whole codebases. Automatic writing has become automatic code — vibe coding, in the culture's word — and the discipline that makes it work is the discipline the Surrealists spent a decade learning: produce automatically, then look; control the conditions, edit the output, judge by external criteria, keep the surprises worth keeping, and never lose contact.
 
 The dictation is automatic. The engineering is not. That is the whole art.
 
@@ -83,6 +83,7 @@ The dictation is automatic. The engineering is not. That is the whole art.
 - André Breton & Philippe Soupault. *The Magnetic Fields* (*Les Champs Magnétiques*), 1919. — the first automatic text.
 - André Masson, Joan Miró, Max Ernst — automatic drawing, frottage, grattage, and the method of producing automatically then looking.
 - [Astonishing Examples of Automatic Drawing](https://blog.artsper.com/en/a-closer-look/art-movements-en/automatic-drawing/), Artsper Magazine. — the drawing-side companion to the automatic writings: the practice of bypassing conscious control, with examples.
+- Andrej Karpathy. [Vibe coding](https://en.wikipedia.org/wiki/Vibe_coding), February 2025. — the coinage of the practice this post reads as automatism's purest form: describe intent in natural language, accept the output without reading it closely.
 - Jackson Pollock. [My Painting](https://en.wikipedia.org/wiki/Jackson_Pollock). *Possibilities I* (1947–48), ed. Harold Rosenberg. — the get-acquainted period; "the painting has a life of its own"; "it is only when I lose contact with the painting that the result is a mess."
 - Pollock, "I deny the accident. I can control the flow of paint" — interview with William Wright, 1950 (recorded for radio, aired posthumously).
 - [Hans Namuth photograph of Pollock painting on glass, 1950](https://commons.wikimedia.org/wiki/File:Jackson_Pollock_by_Hans_Namuth.jpg) — public domain; embedded at the top of this post.
@@ -95,3 +96,5 @@ The dictation is automatic. The engineering is not. That is the whole art.
 - Related: [Conceptual Integrity and the One-Mind Rule](https://blog.hackspree.com/#brooks-design-conceptual-integrity) — coherence imposed on multi-authored output from outside.
 - Related: [OpenWorker: Outcome Layer](https://blog.hackspree.com/#openworker-outcome-layer) — the record of the making as a first-class artifact.
 - Related: [LLMs Can't Jump](https://blog.hackspree.com/#llms-cant-jump) — what the automatic cannot do: the leap from experience to axioms.
+- Related: [Sandboxing AI Agents](https://blog.hackspree.com/#sandboxing-ai-agents) — securing the vibe coding stack, in Replit's phrase.
+- Related: [Harness Engineering Best Practices for AI Agents](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — tests are better than vibes: the looking half, made explicit.

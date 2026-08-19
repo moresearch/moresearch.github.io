@@ -84,6 +84,7 @@ But the direction of travel is set. The dark factory is not science fiction. It 
 **References:**
 
 - Dan Shapiro, [The Five Levels: from spicy autocomplete to the software factory](https://danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/) (January 2026)
+- The "software factory" term itself predates the AI era: Robert W. Bemer's *Machine-controlled production environment* at the 1968 NATO Software Engineering Conference (Garmisch), with his *Checklist for planning software system production* dated August 1966 in the same report — one of the earliest explicit formulations of the concept. See [The Factory Is Not Dead](https://blog.hackspree.com/#factory-is-not-dead) for the full history and qualification.
 - Dark Factory, [What is dark factory software development?](https://darkfactory.dev/blog/what-is-dark-factory-software-development)
 - Simon Willison's commentary on the StrongDM dark factory approach (referenced in the Dark Factory post above)
 - FANUC's lights-out factory — the manufacturing origin of the "dark factory" term

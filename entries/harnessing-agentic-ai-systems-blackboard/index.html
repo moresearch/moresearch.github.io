@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Problem 13 of 15 in the Harnessing Agentic AI Systems pattern-language series: coordinating through shared state without corruption. One table — the Blackboard (Shared Workspace) pattern, the State Race Conditions anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="description" content="Problem 13 of 15: coordinating through shared state without corruption. The Blackboard (Shared Workspace) pattern vs the State Race Conditions anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-blackboard/">
   <title>Harnessing Agentic AI Systems: Blackboard Pattern — hackspree</title>
   <meta property="og:title" content="Harnessing Agentic AI Systems: Blackboard Pattern">
-  <meta property="og:description" content="Problem 13 of 15 in the Harnessing Agentic AI Systems pattern-language series: coordinating through shared state without corruption. One table — the Blackboard (Shared Workspace) pattern, the State Race Conditions anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta property="og:description" content="Problem 13 of 15: coordinating through shared state without corruption. The Blackboard (Shared Workspace) pattern vs the State Race Conditions anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-blackboard/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Harnessing Agentic AI Systems: Blackboard Pattern">
-  <meta name="twitter:description" content="Problem 13 of 15 in the Harnessing Agentic AI Systems pattern-language series: coordinating through shared state without corruption. One table — the Blackboard (Shared Workspace) pattern, the State Race Conditions anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="twitter:description" content="Problem 13 of 15: coordinating through shared state without corruption. The Blackboard (Shared Workspace) pattern vs the State Race Conditions anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,11 +85,11 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-09-05">2026-09-05</time></p>
-          <h1>Harnessing Agentic AI Systems: Blackboard Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-blackboard.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Blackboard Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 13 of 15 in the Harnessing Agentic AI Systems pattern-language series: coordinating through shared state without corruption. One table — the Blackboard (Shared Workspace) pattern, the State Race Conditions anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.</p>
+          <h1>Harnessing Agentic AI Systems: Blackboard Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-blackboard.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Blackboard Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 13 of 15: coordinating through shared state without corruption. The Blackboard (Shared Workspace) pattern vs the State Race Conditions anti-pattern — one table, a short discussion, the key insight, and the important references.</p>
           <div class="tags"><span class="tag">harness</span><span class="tag">pattern-language</span><span class="tag">agentic-ai</span><span class="tag">series</span><span class="tag">orchestration</span><span class="tag">shared-state</span><span class="tag">choreography</span></div>
           
         </header>
-        <div class="post-body"><p>This is <strong>Problem 13 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> pattern-language series — read the index for the framing and the map. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-orchestrator-worker">Orchestrator-Worker Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-sequential-pipeline-routing">Sequential Pipeline Routing Pattern</a>.</p>
+        <div class="post-body"><p><strong>Problem 13 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> series — read the index for the framing. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-orchestrator-worker">Orchestrator-Worker Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-sequential-pipeline-routing">Sequential Pipeline Routing Pattern</a>.</p>
 <h2 id="the-problem--coordinating-through-shared-state-without-corruption">The Problem — Coordinating through shared state without corruption</h2>
 <p>Multiple agents need a shared working memory, and unsynchronized writes corrupt it. The board must be shared and safe at once.</p>
 <table>
@@ -104,7 +104,7 @@
 <tr>
 <td><strong>Forces / Smell</strong></td>
 <td>Unified schema vs per-agent scopes; parallel writes vs ordered consistency; coordinator vs choreography.</td>
-<td>Asynchronous multi-agent writes to shared memory with no transactional locks; state corruption that appears &quot;random.&quot;</td>
+<td>Async multi-agent writes to shared memory with no transactional locks; corruption that appears &quot;random.&quot;</td>
 </tr>
 <tr>
 <td><strong>Solution / Anti-solution</strong></td>
@@ -113,33 +113,32 @@
 </tr>
 <tr>
 <td><strong>Consequences / Failure</strong></td>
-<td>Choreography without an orchestrator — &quot;each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state.&quot; Conflicts detected at write time, not merge time (GitButler's virtual branches).</td>
-<td>Two agents writing the same ledger, one overwriting the other's checkpoint, the state corrupting silently — the blackboard without its harness.</td>
+<td>Choreography without an orchestrator — &quot;No orchestrator. Just state.&quot; Conflicts detected at write time, not merge time (GitButler's virtual branches).</td>
+<td>Two agents writing the same ledger, one overwriting the other's checkpoint — the blackboard without its harness.</td>
 </tr>
 <tr>
 <td><strong>Tradeoffs / Refactoring</strong></td>
-<td>Shared state is shared risk; the board concentrates A12 and fights per-agent scope; the resolution is explicit scope discipline — a blackboard without an owner is a tragedy of the commons for state.</td>
-<td>P7 with the durability discipline: writes through a single ordered log, exactly-once within the control boundary, idempotency keys, transactional ownership.</td>
+<td>Shared state is shared risk; the board fights per-agent scope; the resolution is explicit scope discipline — an ownerless board is a tragedy of the commons for state.</td>
+<td>P7 with the durability discipline: writes through a single ordered log, exactly-once, idempotency keys, transactional ownership.</td>
 </tr>
 <tr>
 <td><strong>Evidence</strong></td>
-<td>CrewAI's Flows (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); the durable-daemons choreography (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>); GitButler's seven collaboration patterns (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>).</td>
+<td>CrewAI's Flows (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); the durable-daemons choreography (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>); GitButler's collaboration patterns (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>).</td>
 <td>Temporal's event-sourced, deterministic execution (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>).</td>
 </tr>
 <tr>
 <td><strong>Related</strong></td>
 <td>Composes with P7 (the board must be snapshotable) and P10 (the board's slow writers).</td>
-<td>Is the absence of P7 and P14's ownership discipline; is the async risk of P10.</td>
+<td>Is the absence of P7 and P14's ownership discipline; the async risk of P10.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="discussion">Discussion</h2>
-<p>The blackboard is choreography made concrete — one of the oldest ideas in AI (the Hearsay-II speech architecture, 1970s), reinvented by the agent era as shared state with no orchestrator. The risk is that shared state is shared risk: the board concentrates races, and its durability decides whether corruption is recoverable, which is why P7 (snapshots) composes with it. The anti-pattern is the board without its harness — unsynchronized writes, silent corruption — and the fix is the durable-daemons discipline: &quot;no RPC. No message bus. No central orchestrator&quot; is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>). The ownership question — which state is shared, who owns the boundary — is the least-solved governance problem in the catalog.</p>
+<p>The blackboard is choreography made concrete — shared state with no orchestrator. Shared state is shared risk: the board concentrates races, and its durability decides whether corruption is recoverable, which is why snapshots (P7) compose with it. The fix is the durable-daemons discipline: &quot;no RPC. No message bus. No central orchestrator&quot; is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional.</p>
 <h2 id="key-insight">Key Insight</h2>
-<p><strong>Shared state is shared risk.</strong> Choreography without an orchestrator requires transactional ownership: writes through a single ordered log, exactly-once within the control boundary, idempotency keys for external effects — &quot;no RPC. No message bus. No central orchestrator&quot; is only safe when the shared state itself is the coordination mechanism. An ownerless board is a tragedy of the commons for state, and the ownership question — which state is shared, who owns the boundary — is the least-solved governance problem in the catalog.</p>
+<p><strong>Shared state is shared risk.</strong> Choreography without an orchestrator requires transactional ownership — writes through a single ordered log, exactly-once, idempotency keys — and the ownership question, which state is shared and who owns the boundary, is the least-solved governance problem in the catalog.</p>
 <h2 id="references">References</h2>
-<p>CrewAI Flows (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); Temporal (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons series</a> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">execution</a>), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz and the Identity Problem</a> (GitButler virtual branches), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (per-agent scope), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
-<p>Next in the series: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-sequential-pipeline-routing">Problem 14 — Sequential Pipeline Routing Pattern</a>.</p>
+<p>CrewAI Flows (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); Temporal (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons series</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz and the Identity Problem</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
 </div>
       </article>
     </div>

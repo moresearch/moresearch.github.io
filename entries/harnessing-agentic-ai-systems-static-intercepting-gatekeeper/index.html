@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Problem 2 of 15 in the Harnessing Agentic AI Systems pattern-language series: refusing a tool call before it happens. One table — the Static Intercepting Gatekeeper pattern, the Prompt-Driven Authorization anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="description" content="Problem 2 of 15: refusing a tool call before it happens. The Static Intercepting Gatekeeper pattern vs the Prompt-Driven Authorization anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-static-intercepting-gatekeeper/">
   <title>Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern — hackspree</title>
   <meta property="og:title" content="Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern">
-  <meta property="og:description" content="Problem 2 of 15 in the Harnessing Agentic AI Systems pattern-language series: refusing a tool call before it happens. One table — the Static Intercepting Gatekeeper pattern, the Prompt-Driven Authorization anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta property="og:description" content="Problem 2 of 15: refusing a tool call before it happens. The Static Intercepting Gatekeeper pattern vs the Prompt-Driven Authorization anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-static-intercepting-gatekeeper/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern">
-  <meta name="twitter:description" content="Problem 2 of 15 in the Harnessing Agentic AI Systems pattern-language series: refusing a tool call before it happens. One table — the Static Intercepting Gatekeeper pattern, the Prompt-Driven Authorization anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="twitter:description" content="Problem 2 of 15: refusing a tool call before it happens. The Static Intercepting Gatekeeper pattern vs the Prompt-Driven Authorization anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,13 +85,13 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-08-25">2026-08-25</time></p>
-          <h1>Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-static-intercepting-gatekeeper.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 2 of 15 in the Harnessing Agentic AI Systems pattern-language series: refusing a tool call before it happens. One table — the Static Intercepting Gatekeeper pattern, the Prompt-Driven Authorization anti-pattern — followed by the discussion, the key insight, and the problem&#39;s references.</p>
+          <h1>Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-static-intercepting-gatekeeper.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 2 of 15: refusing a tool call before it happens. The Static Intercepting Gatekeeper pattern vs the Prompt-Driven Authorization anti-pattern — one table, a short discussion, the key insight, and the important references.</p>
           <div class="tags"><span class="tag">harness</span><span class="tag">pattern-language</span><span class="tag">agentic-ai</span><span class="tag">series</span><span class="tag">safety</span><span class="tag">authorization</span><span class="tag">interception</span></div>
           
         </header>
-        <div class="post-body"><p>This is <strong>Problem 2 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> pattern-language series — read the index for the framing and the map. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-ephemeral-sandbox-wrapper">Ephemeral Sandbox Wrapper Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-hitl-breakpoint">Human-in-the-Loop Breakpoint Pattern</a>.</p>
+        <div class="post-body"><p><strong>Problem 2 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> series — read the index for the framing. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-ephemeral-sandbox-wrapper">Ephemeral Sandbox Wrapper Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-hitl-breakpoint">Human-in-the-Loop Breakpoint Pattern</a>.</p>
 <h2 id="the-problem--refusing-a-tool-call-before-it-happens">The Problem — Refusing a tool call before it happens</h2>
-<p>The system's hands must be able to say no before anything reaches an external API — and the denial must be final: structural, not prose. This is the &quot;who may act&quot; problem: interception and authorization are the same seam.</p>
+<p>The system's hands must be able to say no before anything reaches an external API — and the denial must be final: structural, not prose. Interception and authorization are the same seam.</p>
 <table>
 <thead>
 <tr>
@@ -103,7 +103,7 @@
 <tbody>
 <tr>
 <td><strong>Forces / Smell</strong></td>
-<td>Security wants denial to be final; usability wants appeals. Determinism vs adaptivity; audit vs latency.</td>
+<td>Security wants denial final; usability wants appeals. Determinism vs adaptivity; audit vs latency.</td>
 <td>&quot;Do not delete user data&quot; in the system prompt; permission checks that are sentences, not code.</td>
 </tr>
 <tr>
@@ -114,32 +114,31 @@
 <tr>
 <td><strong>Consequences / Failure</strong></td>
 <td>A deterministic, auditable floor that cannot be argued around — the system's <code>pledge(2)</code>: a restricted interface where the wrong thing is unexpressible.</td>
-<td>Instructions are data; prompt injection is the mechanism; a system prompt is a document the model may be instructed to ignore.</td>
+<td>Instructions are data; a system prompt is a document the model may be instructed to ignore.</td>
 </tr>
 <tr>
 <td><strong>Tradeoffs / Refactoring</strong></td>
-<td>Llama Guard is <em>not</em> static — it is itself a model that can be fooled or prompted around; a true blocklist catches only what it enumerates; the pattern works when the static floor does the denial and the model adds judgment above, never below.</td>
-<td>Authorization must be monotonic, structural, and fail-closed: monotonic guards &quot;deny or abstain and can never force-allow, so owner policy that must not be reordered cannot be argued around.&quot;</td>
+<td>Llama Guard is <em>not</em> static — it is a model that can be fooled; a true blocklist catches only what it enumerates; static floor for denial, model judgment above, never below.</td>
+<td>Authorization must be monotonic, structural, and fail-closed: monotonic guards &quot;deny or abstain and can never force-allow.&quot;</td>
 </tr>
 <tr>
 <td><strong>Evidence</strong></td>
 <td>Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); DeepSeek tool pipeline — waterfalls, monotonic guards, <code>allowed-once</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
-<td>Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); the DeepSeek monotonic-guard doctrine (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>); <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a> (authority axis).</td>
+<td>Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); the DeepSeek monotonic-guard doctrine (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
 </tr>
 <tr>
 <td><strong>Related</strong></td>
-<td>Composes with P1 (the wrapper contains what the gatekeeper misses) and P3 (the breakpoint is the gatekeeper with a human in it); refactoring for A3.</td>
-<td>Is the deeper form of A1; is fixed by P2.</td>
+<td>Composes with P1 and P3; refactoring for A3.</td>
+<td>Is the deeper form of A1; fixed by P2.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="discussion">Discussion</h2>
-<p>Interception and authorization are the same seam, and the gatekeeper is where denial becomes a system property rather than a model preference. The honest caveat is that the reference classifier is itself a model — the pattern works when the static floor does the deterministic denial and the model-based layer adds judgment <em>above</em> it, never below, which is exactly the DeepSeek ordering doctrine: &quot;pre-execute listeners, approval, and guards must never observe — or worse, approve — a call that can only fail&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The anti-pattern inverts the seam: policy as prose asks the model to remember and obey a rule it can be told to ignore, and the refactoring is never to write a better instruction — it is to move the check into the tool, where injection cannot reach it. The DSL idea from Fowler's retreat is this problem's constructive form: restrict the vocabulary until the wrong thing is unexpressible (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a>).</p>
+<p>The gatekeeper makes denial a system property rather than a model preference: the static floor does the deterministic denial, and the model-based layer adds judgment <em>above</em> it, never below — the DeepSeek ordering doctrine. The anti-pattern inverts the seam: policy as prose asks the model to obey a rule it can be told to ignore, so the refactoring is never a better instruction — it is moving the check into the tool, where injection cannot reach it.</p>
 <h2 id="key-insight">Key Insight</h2>
-<p><strong>Denial must be structural to be final.</strong> The blocklist decides before the model can be persuaded — deny by default, allow by exception, never let policy be argued around — and authorization belongs in the tool, not the prompt. The systems view names the mechanism: who may modify the system's state is a property of the harness, which is the authority axis of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on survey</a> made concrete. The anti-pattern fails because a system prompt is a document the model may be instructed to ignore; the gatekeeper succeeds because it is a check the model cannot reach.</p>
+<p><strong>Denial must be structural to be final.</strong> The blocklist decides before the model can be persuaded — deny by default, allow by exception — and authorization belongs in the tool, not the prompt: who may modify the system's state is a property of the harness.</p>
 <h2 id="references">References</h2>
-<p>Meta's Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); OWASP Top 10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (monotonic guards, approval seam), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a> (DSLs as the pledge(2) bridge), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a> (authority axis).</p>
-<p>Next in the series: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-hitl-breakpoint">Problem 3 — Human-in-the-Loop Breakpoint Pattern</a>.</p>
+<p>Meta's Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); OWASP Top 10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
 </div>
       </article>
     </div>

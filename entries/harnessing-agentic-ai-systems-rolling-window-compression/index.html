@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Problem 5 of 15 in the Harnessing Agentic AI Systems pattern-language series: keeping a long session in a lean window. One table — the Rolling Window Compression pattern, the Context Avalanche anti-pattern, the Context Resets and Context Engineering frontiers — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-rolling-window-compression/">
+  <title>Harnessing Agentic AI Systems: Rolling Window Compression Pattern — hackspree</title>
+  <meta property="og:title" content="Harnessing Agentic AI Systems: Rolling Window Compression Pattern">
+  <meta property="og:description" content="Problem 5 of 15 in the Harnessing Agentic AI Systems pattern-language series: keeping a long session in a lean window. One table — the Rolling Window Compression pattern, the Context Avalanche anti-pattern, the Context Resets and Context Engineering frontiers — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-rolling-window-compression/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Harnessing Agentic AI Systems: Rolling Window Compression Pattern">
+  <meta name="twitter:description" content="Problem 5 of 15 in the Harnessing Agentic AI Systems pattern-language series: keeping a long session in a lean window. One table — the Rolling Window Compression pattern, the Context Avalanche anti-pattern, the Context Resets and Context Engineering frontiers — followed by the discussion, the key insight, and the problem&#39;s references.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-28">2026-08-28</time></p>
+          <h1>Harnessing Agentic AI Systems: Rolling Window Compression Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-rolling-window-compression.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Rolling Window Compression Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 5 of 15 in the Harnessing Agentic AI Systems pattern-language series: keeping a long session in a lean window. One table — the Rolling Window Compression pattern, the Context Avalanche anti-pattern, the Context Resets and Context Engineering frontiers — followed by the discussion, the key insight, and the problem&#39;s references.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">pattern-language</span><span class="tag">agentic-ai</span><span class="tag">series</span><span class="tag">memory</span><span class="tag">context</span><span class="tag">compression</span></div>
+          
+        </header>
+        <div class="post-body"><p>This is <strong>Problem 5 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> pattern-language series — read the index for the framing and the map. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-budget-throttler">Token &amp; Time Budget Throttler Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-semantic-memory-router">Semantic Memory Router Pattern</a>.</p>
+<h2 id="the-problem--keeping-a-long-session-in-a-lean-window">The Problem — Keeping a long session in a lean window</h2>
+<p>Context is finite and conversation is not; raw dumps degrade reasoning. The system must keep the session inside the window — and the frontier has split the answer into three: compression (P5), resets (F3), and the umbrella discipline of context engineering (F6).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>P5 — Rolling Window Compression (pattern)</th>
+<th>A4 — The Context Avalanche (anti-pattern)</th>
+<th>F3 — Context Resets (frontier)</th>
+<th>F6 — Context Engineering (frontier)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces / Smell</strong></td>
+<td>Fidelity vs summary; continuity vs clean slate; stable cache prefix vs rewrites.</td>
+<td>Raw logs and full transcripts in the history; context perpetually near capacity; performance degrading as the session grows.</td>
+<td>Continuity wants compaction; clarity wants a reset. State wants to survive; the window wants to be emptied.</td>
+<td>Prompting wants the right words; context wants the right state.</td>
+</tr>
+<tr>
+<td><strong>Solution / Anti-solution</strong></td>
+<td>Automatically summarize older conversation histories in background threads; keep the active window lean.</td>
+<td>&quot;Long context solves it&quot; — dump everything and let the model sort it out.</td>
+<td>Distinguish compaction from resets: clear the context entirely and hand state to a fresh agent through a structured artifact. Use the reset when the model exhibits context anxiety.</td>
+<td>Engineer the whole context state — instructions, tools, MCP servers, data, history — toward &quot;what configuration of context is most likely to generate our model's desired behavior?&quot;</td>
+</tr>
+<tr>
+<td><strong>Consequences / Failure</strong></td>
+<td>Long sessions at bounded cost; a paging discipline — window is RAM, log is disk, summary is the page table.</td>
+<td>Lost in the Middle: performance highest at the ends, degrades in the middle; a filled context is a degraded one that reads the middle worst exactly when the middle holds the answer.</td>
+<td>&quot;A reset provides a clean slate, at the cost of the handoff artifact having enough state for the next agent to pick up the work cleanly.&quot; The log never rewrites — the artifact is a new prefix, not an edit.</td>
+<td>The unit of design becomes the system's context state — the systems argument in one sentence.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs / Refactoring</strong></td>
+<td>Summary loss is permanent unless the log is preserved; compaction alone does not fix context anxiety; every compaction must be a genuine prefix-extension of the warm request.</td>
+<td>P5 over a derived view: 44 event types in the DeepSeek log, exactly three visible to the model.</td>
+<td>Resets add orchestration complexity, token overhead, latency; the need is a function of the model generation (Opus 4.5 removed the behavior).</td>
+<td>Every refinement risks a cache-prefix violation and a governance gap.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>MemGPT (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">paper</a>); DeepSeek's compaction fix (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>); Anthropic's context anxiety (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+<td>Liu et al., Lost in the Middle (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">paper</a>); DeepSeek's logged-surface invariant (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+<td>Anthropic's harness work (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+<td>Anthropic, Effective context engineering for AI agents (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A4; conflicts with and composes with the append-only log (first edition); pairs with F3.</td>
+<td>Is the absence of P5 and P8; is the substrate of A11 and the retrieval form of A6.</td>
+<td>Companion of P5; composes with P13 (the reset is the delegation handoff); umbrella is F6.</td>
+<td>Umbrella over P5, P6, F3; the memory problem's frontier expression of &quot;the system, not the agent.&quot;</td>
+</tr>
+</tbody>
+</table>
+<h2 id="discussion">Discussion</h2>
+<p>The memory problem contains the catalog's most honest war: the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">append-only log</a> (first edition) says the past is immutable, compression rewrites it as a projection, and tiers store it in parallel — the resolution is layering, and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">compaction prefix bug</a> is what happens when the layers touch. The pattern's boundary is context anxiety: compaction preserves continuity but not a clean slate, models &quot;begin wrapping up work prematurely as they approach what they believe is their context limit,&quot; and for Sonnet 4.5 compaction alone was insufficient — which is why the frontier added resets, and why the frontier's frontier twist is the most honest statement in this catalog about the model/system boundary: whether resets are needed is a function of the model generation. F6 is the umbrella that coordinates all three answers against the two constraints every one of them must respect — the cache prefix and the governance gap.</p>
+<h2 id="key-insight">Key Insight</h2>
+<p><strong>The past is immutable and the view is derived.</strong> Compression is a projection over the log — the window is RAM, the log is disk, the summary is the page table — and if the summarizer rewrites history, the past becomes negotiable and the cache prefix dies. Context anxiety is a model property the system must adapt to: compaction preserves continuity but not a clean slate, which is why resets exist, and why whether you need them is a function of the model generation. The harness is coupled to the model's psychology, and the harness must be re-examined every time the model changes.</p>
+<h2 id="references">References</h2>
+<p>MemGPT (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">arXiv:2310.08560</a>); Liu et al., Lost in the Middle (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a>); Anthropic, Effective context engineering for AI agents (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">post</a>); Anthropic, Harness design for long-running application development (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (compaction, logged-surface invariant), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
+<p>Next in the series: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-semantic-memory-router">Problem 6 — Semantic Memory Router Pattern</a>.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

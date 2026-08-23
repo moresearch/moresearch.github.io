@@ -2,7 +2,7 @@
 title: "Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems"
 date: 2026-08-23
 slug: harness-patterns-for-agentic-ai-systems
-summary: "A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns — with references grouped per problem. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design. Every pattern and anti-pattern is stated in a fixed, consistent form (Forces, Solution, Consequences, Tradeoffs, Evidence, Related / Smell, Anti-solution, Failure, Refactoring, Evidence, Related)."
+summary: "A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns. Every pattern and anti-pattern is presented as a table summary followed by a discussion — the table is the pattern language proper (fixed fields, stated identically for every entry), the discussion is the narrative of why it works and where the guarantee stops. Each problem unit ends with its own references. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design."
 tags: harness, harness-engineering, agent-harness, pattern-language, patterns, anti-patterns, agents, agentic-ai, agentic-systems, security, sandboxing, memory, orchestration, tool-binding, verification, token-economics, emerging-patterns
 ---
 
@@ -39,23 +39,10 @@ The pattern language that follows treats the whole agentic AI system as the subj
 
 The pattern language is organized **by problem, not by component**. Each unit of the language is one recurring engineering problem that every agentic AI system eventually faces; inside each problem unit live the *pattern* that solves it, the *anti-pattern* that fails it, and — where the frontier has moved — the *frontier pattern* that is evolving it. This is the structure of Christopher Alexander's *A Pattern Language* (1977): the pattern is "a set of problems and documented solutions," each one "our current best guess as to what arrangement... will work to solve the problem presented," cross-referenced into a network. The linear order matters: read top to bottom, and the problems build — first make the system safe (problems 1–4), then make it remember (5–7), then make it act (8–11), then make it scale (12–14), then make it trustworthy (15).
 
-Each **pattern** is stated in exactly this form, in this order:
+**Every entry is presented in two parts: a table summary, then a discussion.**
 
-- **Forces** — the competing pressures that make the problem hard.
-- **Solution** — what to build.
-- **Consequences** — what the pattern buys.
-- **Tradeoffs** — what it costs.
-- **Evidence** — the primary sources and where it shows up.
-- **Related** — the other entries it composes with or contradicts.
-
-Each **anti-pattern** is stated in exactly this form, in this order:
-
-- **Smell** — how to recognize it in a system.
-- **Anti-solution** — what teams reach for.
-- **Failure** — why it breaks, with evidence.
-- **Refactoring** — the pattern in this language that fixes it.
-- **Evidence** — the sources that document the failure.
-- **Related** — the entries it leads to.
+- The **table** is the pattern language proper. Each pattern has the same six rows, in the same order: **Forces** (the competing pressures), **Solution** (what to build), **Consequences** (what it buys), **Tradeoffs** (what it costs), **Evidence** (the sources), **Related** (the other entries it composes with or contradicts). Each anti-pattern has the same six rows, in the same order: **Smell** (how to recognize it), **Anti-solution** (what teams reach for), **Failure** (why it breaks), **Refactoring** (the pattern that fixes it), **Evidence**, **Related**. Because the rows are identical across every entry, entries can be compared across problems and combined by cross-reference — this is what makes it a *language* rather than a list.
+- The **discussion** is the narrative: the mechanism, the tradeoff reasoning, where the guarantee stops, and how the entry connects to this blog's archive. The table is what you steal; the discussion is why it works.
 
 Each problem unit ends with **References for this problem** — the sources for that unit alone, so the language can be read as a sequence of self-contained decisions. The catalog as a whole:
 
@@ -85,31 +72,29 @@ An agentic system executes code and commands that are untrusted by construction 
 
 ### Pattern 1 — Ephemeral Sandbox Wrapper
 
-**Forces.** Isolation wants a real boundary; performance wants none. Ephemerality wants nothing to survive; long-running work wants persistence. Teardown wants completeness; cleanup wants to be free.
+| Field | Summary |
+|---|---|
+| **Forces** | Isolation wants a real boundary; performance wants none. Ephemerality wants nothing to survive; long-running work wants persistence. Teardown wants completeness; cleanup wants to be free. |
+| **Solution** | Spawn isolated, short-lived virtual environments (e.g., Docker, WASM) for safe, untrusted agent code execution. Create per task, mutate freely, destroy on completion. |
+| **Consequences** | Blast radius is bounded by lifetime, not by trust. Training trajectories come out clean because the RL environment is an ephemeral shell. The wrapper is where the system reifies the outside world, which is what makes recovery promises possible. |
+| **Tradeoffs** | Ephemerality costs startup latency and state loss — an agent that needs a persistent filesystem across steps fights the wrapper, which is why the pattern is usually paired with a persistent-but-isolated volume. Real isolation is heavy; WASM is light but constrains what the agent can do. The wrapper is only as good as its teardown. |
+| **Evidence** | LangChain lists sandboxing as a first-class integration component ([docs](https://python.langchain.com/docs/integrations/)); Replit's thirteen-layer stack is the production-grade instance ([Sandboxes Are Hard](https://blog.hackspree.com/#sandboxing-ai-agents)); the DeepSeek harness ships a file-effects-only sandbox vocabulary with enforcement reported `full` or `partial` ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Composes with P2 (the gatekeeper runs outside the wrapper); cousin of the sandbox-stack pattern from the first edition; refactoring for A1. |
 
-**Solution.** Spawn isolated, short-lived virtual environments (e.g., Docker, WASM) for safe, untrusted agent code execution. Create per task, mutate freely, destroy on completion.
-
-**Consequences.** Blast radius is bounded by lifetime, not by trust. Training trajectories come out clean because the RL environment is an ephemeral shell. The wrapper is where the system reifies the outside world, which is what makes recovery promises possible.
-
-**Tradeoffs.** Ephemerality costs startup latency and state loss — an agent that needs a persistent filesystem across steps fights the wrapper, which is why the pattern is usually paired with a persistent-but-isolated volume. Real isolation (hypervisor, OS-level) is heavy; WASM is light and fast but constrains what the agent can do. The wrapper is only as good as its teardown: if the environment survives, the "ephemeral" claim is marketing — teardown must be [derived from the load, not remembered](https://blog.hackspree.com/#spatiotemporal-composability).
-
-**Evidence.** LangChain now lists sandboxing as a first-class integration component ([Sandbox integrations](https://python.langchain.com/docs/integrations/)); Replit's thirteen-layer stack is the production-grade instance ([Sandboxes Are Hard](https://blog.hackspree.com/#sandboxing-ai-agents)); the DeepSeek harness ships a file-effects-only sandbox vocabulary with enforcement reported `full` or `partial` ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Composes with P2 (the gatekeeper runs outside the wrapper); the sandbox-stack pattern from the first edition ([Sandboxes Are Hard](https://blog.hackspree.com/#sandboxing-ai-agents)) is this pattern's defense-in-depth cousin; it is the refactoring for A1.
+**Discussion.** The wrapper is the containment problem in its purest form: it converts trust into lifetime. The system does not need to believe the code is safe — it needs the code to die with the task. That is why the DeepSeek RL composition ships an ephemeral shell as its training environment: teardown derived from load makes trajectories clean, and "the harness produces the trajectories; the trajectories feed post-training" ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The honest-teardown rule comes from the composability calculus — if the environment survives, the "ephemeral" claim is marketing; teardown must be [derived from the load, not remembered](https://blog.hackspree.com/#spatiotemporal-composability). Where the guarantee stops: the wrapper bounds the *process*, not the *world* — network and process visibility are out of scope by declaration, which is why P2 must sit outside the wrapper and why the sandbox stack (first edition) remains the defense-in-depth layer underneath.
 
 ### Anti-Pattern 1 — The Naked Prompt (Implicit Trust)
 
-**Smell.** API keys in the prompt or environment; the model told to "be careful"; no sanitization, parsing, or proxy layer between the model and the credentials.
+| Field | Summary |
+|---|---|
+| **Smell** | API keys in the prompt or environment; the model told to "be careful"; no sanitization, parsing, or proxy layer between the model and the credentials. |
+| **Anti-solution** | Treat the model as an application boundary and the prompt as an access control list. |
+| **Failure** | The model is an untrusted input processor; prompt injection converts instructions into actions; system prompts leak; credentials exfiltrate (OWASP LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, LLM07 System Prompt Leakage in the 2025 numbering; LLM06 in 2023/24). |
+| **Refactoring** | P1 (the wrapper), P2 (the gatekeeper), and a transparent secrets proxy so the agent never sees the credentials — the Replit pattern. |
+| **Evidence** | OWASP Top 10 ([2025](https://genai.owasp.org/llm-top-10/)); Simon Willison's prompt injection series ([series](https://simonwillison.net/series/prompt-injection/)). |
+| **Related** | Leads to A3 (the same error one level down); is fixed by P1 and P2. |
 
-**Anti-solution.** Treat the model as an application boundary and the prompt as an access control list.
-
-**Failure.** The model is an untrusted input processor; prompt injection converts instructions into actions; system prompts leak; credentials exfiltrate. OWASP's relevant entries are LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, and LLM07 System Prompt Leakage in the 2025 numbering (LLM06 Sensitive Information Disclosure in the 2023/24 numbering, where the classic citation lives) ([OWASP Top 10](https://genai.owasp.org/llm-top-10/)).
-
-**Refactoring.** P1 (the sandbox wrapper), P2 (the gatekeeper), and a transparent secrets proxy so the agent never sees the credentials — the Replit pattern ([Sandboxes Are Hard](https://blog.hackspree.com/#sandboxing-ai-agents)). The xz lesson applies: the tool that executes arbitrary code with your credentials is the highest-value target in your supply chain, and "an agent with a thousand dependencies is a thousand doors" ([Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface)).
-
-**Evidence.** OWASP ([LLM Top 10](https://genai.owasp.org/llm-top-10/)); Simon Willison's running documentation of the threat model ([prompt injection series](https://simonwillison.net/series/prompt-injection/)).
-
-**Related.** Leads to A3 (prompt-driven authorization is the same error one level down).
+**Discussion.** The naked prompt is the containment problem skipped: the system trusts the least trustworthy component with its most valuable secrets. The mechanism of failure is that instructions are data — the model cannot distinguish the operator's policy from an attacker's — so the only fixes are structural, which is the recurring thesis of the safety family. The xz lesson applies at the supply-chain level: the tool that executes arbitrary code with your credentials is the highest-value target in your supply chain, and "an agent with a thousand dependencies is a thousand doors" ([Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface)).
 
 **References for this problem.** LangChain sandbox integrations ([docs](https://python.langchain.com/docs/integrations/)); Meta's Llama Guard ([publication](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/)); OWASP Top 10 for LLM Applications ([2025](https://genai.owasp.org/llm-top-10/)); Willison's prompt injection series ([series](https://simonwillison.net/series/prompt-injection/)); archive: [Sandboxes Are Hard](https://blog.hackspree.com/#sandboxing-ai-agents), [Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness), [spatiotemporal composability](https://blog.hackspree.com/#spatiotemporal-composability).
 
@@ -119,31 +104,29 @@ The system's hands must be able to say no before anything reaches an external AP
 
 ### Pattern 2 — Static Intercepting Gatekeeper
 
-**Forces.** Security wants denial to be final; usability wants appeals. Determinism wants a fixed rule; the threat surface wants adaptivity. Auditing wants every decision recorded; latency wants none.
+| Field | Summary |
+|---|---|
+| **Forces** | Security wants denial to be final; usability wants appeals. Determinism wants a fixed rule; the threat surface wants adaptivity. Auditing wants every decision recorded; latency wants none. |
+| **Solution** | Intercept model-generated tool calls against a strict blocklist before passing them to external APIs. |
+| **Consequences** | A deterministic floor that is fast, auditable, and cannot be argued around. The gatekeeper is the system's version of [`pledge(2)`](https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering): a restricted interface where the wrong thing is unexpressible. |
+| **Tradeoffs** | Llama Guard is *not* static — it is itself an LLM that can be fooled or prompted around, and it adds a model call to every invocation. A true static blocklist catches only what it enumerates. The pattern works when the blocklist is the floor and the model-based classifier is the next layer up. |
+| **Evidence** | Llama Guard, the LLM-based input-output safeguard ([publication](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/)); the DeepSeek tool pipeline — pre-execute waterfalls, monotonic guards, fail-closed approval with `allowed-once` as the only granting outcome ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Composes with P1 (the wrapper contains what the gatekeeper misses) and P3 (the breakpoint is the gatekeeper with a human in it); refactoring for A3. |
 
-**Solution.** Intercept model-generated tool calls against a strict blocklist before passing them to external APIs.
-
-**Consequences.** A deterministic floor that is fast, auditable, and cannot be argued around. The gatekeeper is the system's version of [`pledge(2)`](https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering): a restricted interface where the wrong thing is unexpressible.
-
-**Tradeoffs.** The honest caveat is in the name: [Llama Guard](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/) is *not* static — it is itself an LLM, which means it can be fooled, bypassed, or prompted around, and it adds a model call to every tool invocation. A true static blocklist catches only what it enumerates. The pattern works when the blocklist is the floor and the model-based classifier is the next layer up — the [monotonic guard ordering](https://blog.hackspree.com/#deepseek-harness): deny by default, allow by exception, never let policy be argued around.
-
-**Evidence.** Llama Guard, the LLM-based input-output safeguard (Meta AI, 2023), is the reference classifier ([publication](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/)); the DeepSeek tool pipeline encodes the ordering — pre-execute waterfalls, monotonic guards, fail-closed approval with `allowed-once` as the only granting outcome ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Composes with P1 (the wrapper contains what the gatekeeper misses) and P3 (the breakpoint is the gatekeeper with a human in it); it is the refactoring for A3.
+**Discussion.** The gatekeeper is where denial becomes a system property rather than a model preference: the blocklist is deterministic, auditable, and cannot be argued around. The honest caveat is that the reference classifier is itself a model — the pattern works when the static floor does the deterministic denial and the model-based layer adds judgment *above* it, never below, which is exactly the DeepSeek ordering doctrine: "pre-execute listeners, approval, and guards must never observe — or worse, approve — a call that can only fail" ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The gatekeeper is also the verification pattern's first cousin: the DSL idea from Fowler's retreat is this pattern with the vocabulary restricted until the wrong thing is unexpressible ([Verification Is the Bottleneck](https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering)).
 
 ### Anti-Pattern 3 — Prompt-Driven Authorization
 
-**Smell.** "Do not delete user data" in the system prompt; permission checks that are sentences, not code.
+| Field | Summary |
+|---|---|
+| **Smell** | "Do not delete user data" in the system prompt; permission checks that are sentences, not code. |
+| **Anti-solution** | Policy as prose — the belief that the model will read and obey the instructions. |
+| **Failure** | Instructions are data; prompt injection is the mechanism; "you can't solve AI security problems with more AI." A system prompt is a document the model may be instructed to ignore. |
+| **Refactoring** | Authorization must be monotonic, structural, and fail-closed: monotonic guards "deny or abstain and can never force-allow, so owner policy that must not be reordered cannot be argued around." |
+| **Evidence** | Willison's prompt injection series ([series](https://simonwillison.net/series/prompt-injection/)); the DeepSeek monotonic-guard doctrine ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Is the deeper form of A1; is fixed by P2. |
 
-**Anti-solution.** Policy as prose — the belief that the model will read and obey the instructions.
-
-**Failure.** Instructions are data; prompt injection is the mechanism; "you can't solve AI security problems with more AI" ([Willison](https://simonwillison.net/series/prompt-injection/)). A system prompt is a document the model may be instructed to ignore.
-
-**Refactoring.** Authorization must be [monotonic, structural, and fail-closed](https://blog.hackspree.com/#deepseek-harness): monotonic guards "deny or abstain and can never force-allow, so owner policy that must not be reordered cannot be argued around." Who can modify the agent's state is a property of the system, not of the model's reading comprehension ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Evidence.** Willison's prompt injection series ([series](https://simonwillison.net/series/prompt-injection/)); the DeepSeek tool pipeline's monotonic-guard doctrine ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Is the deeper form of A1; is fixed by P2 (the gatekeeper).
+**Discussion.** Policy as prose inverts the gatekeeper: instead of the system owning denial, the model is asked to remember and obey a rule it can be told to ignore. The DeepSeek formulation is the standard precisely because it is structural — who may modify the agent's state is a property of the system, not of the model's reading comprehension, which is the authority axis of the [always-on survey](https://blog.hackspree.com/#always-on-agents). The refactoring is never to write a better instruction; it is to move the check into the tool, where injection cannot reach it.
 
 **References for this problem.** Meta's Llama Guard ([publication](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/)); OWASP Top 10 ([2025](https://genai.owasp.org/llm-top-10/)); Willison's prompt injection series ([series](https://simonwillison.net/series/prompt-injection/)); archive: [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (monotonic guards, approval seam), [Verification Is the Bottleneck](https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering) (DSLs as the pledge(2) bridge), [always-on agents](https://blog.hackspree.com/#always-on-agents) (authority axis).
 
@@ -153,17 +136,16 @@ Some mutations — financial transactions, deletions, releases — must not happ
 
 ### Pattern 3 — Human-in-the-Loop (HITL) Breakpoint
 
-**Forces.** Autonomy wants the loop to run; safety wants it to stop. Latency wants no pauses; accountability wants a record of every pause. Approval wants to be meaningful; convenience wants it to be fast.
+| Field | Summary |
+|---|---|
+| **Forces** | Autonomy wants the loop to run; safety wants it to stop. Latency wants no pauses; accountability wants a record of every pause. Approval wants to be meaningful; convenience wants it to be fast. |
+| **Solution** | Freeze the harness execution loop to demand manual approval for high-risk mutations like financial transactions. Persist the exact state at the pause, then resume from that checkpoint after a human approves, edits, or rejects. |
+| **Consequences** | Authority becomes a property of the system — a state-machine primitive, not a prompt: the loop does not merely ask permission, it persists where it paused. Every human decision is recorded in the state, making the breakpoint an audit seam. |
+| **Tradeoffs** | An agent that must stop for every risky action cannot run unattended — the pattern must be paired with an explicit automation path or the harness drowns in approvals and humans rubber-stamp everything, which is worse than no approval. A breakpoint that can be swallowed is a breakpoint that does not exist. |
+| **Evidence** | LangGraph's `interrupt()` primitive makes HITL a first-class graph construct ([docs](https://docs.langchain.com/oss/python/langgraph/interrupts)); OpenWorker ships approval gates before every consequential action ([OpenWorker outcome layer](https://blog.hackspree.com/#openworker-outcome-layer)); the DeepSeek approval seam is fail-closed — a missing answerer resolves to `unavailable` ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Composes with P2 (the gatekeeper decides what is routine, the breakpoint what is consequential); the automation path it needs is P4's discipline. |
 
-**Solution.** Freeze the harness execution loop to demand manual approval for high-risk mutations like financial transactions. Persist the exact state at the pause, then resume from that checkpoint after a human approves, edits, or rejects.
-
-**Consequences.** Authority becomes a property of the system — a state-machine primitive, not a prompt: the loop does not merely ask permission, it persists where it paused. Every human decision is recorded in the state, which makes the breakpoint an audit seam ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Tradeoffs.** An agent that must stop for every risky action cannot run unattended — the pattern must be paired with an explicit automation path (permission presets, scoped allowlists) or the harness drowns in approvals and humans rubber-stamp everything, which is worse than no approval at all. A breakpoint that can be swallowed is a breakpoint that does not exist: the LangGraph guidance is explicit that interrupts must not be wrapped in try/except ([LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)). And the breakpoint protects the mutation, not the model's intent behind it.
-
-**Evidence.** LangGraph's `interrupt()` primitive makes HITL a first-class graph construct ([state management & breakpoints](https://docs.langchain.com/oss/python/langgraph/interrupts)); OpenWorker ships approval gates before every consequential action ([OpenWorker outcome layer](https://blog.hackspree.com/#openworker-outcome-layer)); the DeepSeek approval seam is fail-closed — a missing answerer resolves to `unavailable` ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Composes with P2 (the gatekeeper decides what is routine, the breakpoint what is consequential); the automation path it needs is P4's discipline; it is the governance seam the [always-on survey](https://blog.hackspree.com/#always-on-agents) names as authority and scope.
+**Discussion.** The breakpoint makes authority a resumable property of the state machine: the loop persists exactly where it paused, so approval is a checkpoint, not a moment. Its two failure modes are both failures of attention — the rubber-stamp (approval without review) and the swallowed breakpoint (interrupts wrapped in try/except, which LangGraph explicitly forbids). The automation path is not an exception to the pattern; it is the pattern's other half, and its discipline is P4's: the system decides what is consequential and what is routine, never the model.
 
 **References for this problem.** LangGraph interrupts ([docs](https://docs.langchain.com/oss/python/langgraph/interrupts)); archive: [OpenWorker and the Outcome Layer](https://blog.hackspree.com/#openworker-outcome-layer) (approval gates), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (approval seam, `allowed-once`), [always-on agents](https://blog.hackspree.com/#always-on-agents) (authority and scope axes).
 
@@ -173,31 +155,29 @@ Loops can burn unbounded tokens, wall-clock, and money retrying a broken step. T
 
 ### Pattern 4 — Token & Time Budget Throttler
 
-**Forces.** Long-horizon work wants room; unbounded consumption wants none. Enforcement wants to be structural; convenience wants to be prompt-based. The bill wants a shape; the work wants a budget.
+| Field | Summary |
+|---|---|
+| **Forces** | Long-horizon work wants room; unbounded consumption wants none. Enforcement wants to be structural; convenience wants to be prompt-based. The bill wants a shape; the work wants a budget. |
+| **Solution** | Monitor continuous tool loops to forcefully terminate agents exceeding maximum token costs or time boundaries. Enforce in the harness, never in the prompt. |
+| **Consequences** | The vortex cannot happen: the bill is bounded by construction, and the system — not the model — owns the ceiling. "Make the cache hit a CI gate, make the bill a test." |
+| **Tradeoffs** | A budget that is too tight kills legitimate long-horizon work; too loose is theater. The throttler interacts with prefix caching: a reset mid-session can invalidate the warm prefix and *increase* the bill it was meant to cap. The throttler must decide what "exceeded" means — spend, per-step, wall-clock, or iterations. |
+| **Evidence** | AutoGPT shipped iteration and cost limits as first-class settings in 2023 ([docs](https://docs.agpt.co/classic/configuration/)); OWASP names it a first-class risk — [LLM10:2025 Unbounded Consumption](https://genai.owasp.org/llm-top-10/); the token economics post computed the shape — prices down 98%, consumption up ~150x, bills tripled ([Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag)). |
+| **Related** | Refactoring for A2; composes with P3 (the breakpoint stops the loop, the throttler ends it); connects to the bill-as-assertion pattern from the first edition. |
 
-**Solution.** Monitor continuous tool loops to forcefully terminate agents exceeding maximum token costs or time boundaries. Enforce in the harness, never in the prompt.
-
-**Consequences.** The vortex cannot happen: the bill is bounded by construction, and the system — not the model — owns the ceiling. "Make the cache hit a CI gate, make the bill a test."
-
-**Tradeoffs.** A budget that is too tight kills legitimate long-horizon work; too loose is theater. The throttler interacts with [prefix caching](https://blog.hackspree.com/#deepseek-harness): a reset mid-session can invalidate the warm prefix and *increase* the bill it was meant to cap. And the throttler must decide what "exceeded" means — total spend, per-step spend, wall-clock, or loop iterations — because each catches a different failure mode. The honest limit is documented: DeepSeek's runaway-loop guard "only sends reminders and eventually goes quiet" — reminders are not enforcement ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Evidence.** AutoGPT shipped iteration and cost limits as first-class settings in 2023 precisely because its loop demonstrated the failure ([AutoGPT — maximum loop & cost control](https://docs.agpt.co/classic/configuration/)); OWASP names it a first-class risk — [LLM10:2025 Unbounded Consumption](https://genai.owasp.org/llm-top-10/); the token economics post computed the shape — prices down 98%, consumption up ~150x, bills tripled, and "the caps were about the shape of the bill" ([Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag)).
-
-**Related.** Is the refactoring for A2; composes with P3 (the breakpoint stops the loop, the throttler ends it); connects to the bill-as-assertion pattern from the first edition ([Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag)).
+**Discussion.** The throttler is the economic face of the harness: it enforces the shape of the bill when the model cannot be trusted to. The token post's arithmetic is the context — "the caps were about the shape of the bill, not the money" — and the only structural response is a ceiling in code. The subtle interaction is the one that distinguishes a good throttler: it must not invalidate the warm prefix it exists to protect. And the honest limit is documented: DeepSeek's runaway-loop guard "only sends reminders and eventually goes quiet" — reminders are not enforcement ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
 
 ### Anti-Pattern 2 — The Infinite Execution Vortex (Uncapped Loops)
 
-**Smell.** No ceiling on iterations, tokens, time, or money; the same failing step retried; the loop "working on it."
+| Field | Summary |
+|---|---|
+| **Smell** | No ceiling on iterations, tokens, time, or money; the same failing step retried; the loop "working on it." |
+| **Anti-solution** | "It'll converge" — trust the model to stop. |
+| **Failure** | Unbounded token drain and wall-clock burn; an economic failure before a technical one — the tragedy of the commons staged inside one run. |
+| **Refactoring** | P4 (the throttler), enforced in code — OWASP LLM10, loop-iteration limits, and the honest caveat that reminders are not enforcement. |
+| **Evidence** | AutoGPT's open issue tracker is a museum of the failure ([issues](https://github.com/Significant-Gravitas/AutoGPT/issues)); the token economics post computed the shape of the bill ([Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag)). |
+| **Related** | Is the absence of P4; composes with A1 (naked prompts make vortices more dangerous); is the single-loop form of A10. |
 
-**Anti-solution.** "It'll converge" — trust the model to stop.
-
-**Failure.** Unbounded token drain and wall-clock burn; an economic failure before a technical one — the [tragedy of the commons](https://blog.hackspree.com/#every-token-has-a-price-tag) staged inside one run.
-
-**Refactoring.** P4 (the token & time budget throttler), enforced in code — OWASP [LLM10:2025 Unbounded Consumption](https://genai.owasp.org/llm-top-10/), loop-iteration limits, and the honest caveat that reminders are not enforcement ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Evidence.** AutoGPT's open issue tracker is a museum of the failure ([issue tracker](https://github.com/Significant-Gravitas/AutoGPT/issues)); the token economics post computed the shape of the bill ([Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag)).
-
-**Related.** Is the absence of P4; composes with A1 (naked prompts make vortices more dangerous); is the single-loop form of A10 (the committee paradox).
+**Discussion.** The vortex is the throttler's absence made visible — the [tragedy of the commons](https://blog.hackspree.com/#every-token-has-a-price-tag) staged inside one run, where the tokens are free at the point of use and the bill goes to the division. The refactoring is structural, never prompt-based: the ceiling is a property of the harness, and the meter is what makes any mechanism possible.
 
 **References for this problem.** AutoGPT configuration ([docs](https://docs.agpt.co/classic/configuration/)) and issue tracker ([issues](https://github.com/Significant-Gravitas/AutoGPT/issues)); OWASP Top 10 — LLM10 Unbounded Consumption ([2025](https://genai.owasp.org/llm-top-10/)); archive: [Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (runaway-loop guard, prefix caching).
 
@@ -207,63 +187,55 @@ Context is finite and conversation is not; raw dumps degrade reasoning. The syst
 
 ### Pattern 5 — Rolling Window Compression
 
-**Forces.** Fidelity wants the full history; the window wants a summary. Continuity wants in-place compaction; clarity wants a clean slate. The cache wants a stable prefix; the summarizer wants to rewrite it.
+| Field | Summary |
+|---|---|
+| **Forces** | Fidelity wants the full history; the window wants a summary. Continuity wants in-place compaction; clarity wants a clean slate. The cache wants a stable prefix; the summarizer wants to rewrite it. |
+| **Solution** | Automatically summarize older conversation histories in background threads to keep the active context window lean. |
+| **Consequences** | Long sessions become possible at bounded cost. The pattern is a paging discipline: the context window is RAM, the log is disk, the summary is the page table. It is the practical implementation of MemGPT's virtual context management. |
+| **Tradeoffs** | Summaries lose detail, and the loss is permanent unless the source log is preserved — which is why compression and the append-only log must be separate layers. Compaction preserves continuity but not a clean slate: models exhibit "context anxiety" and compaction alone does not fix it. Every compaction is a billing event unless it is a genuine prefix-extension of the warm request. |
+| **Evidence** | MemGPT formalized virtual context management ([paper](https://arxiv.org/abs/2310.08560)); DeepSeek's compaction engine produces the Claude-shaped eight-section checkpoint as a trailing prefix-extension, with the rejected alternative (a fresh system prompt at the front) documented as a bug ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)); Anthropic documents the context-anxiety failure mode and the reset alternative ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)). |
+| **Related** | Refactoring for A4; conflicts with and composes with the append-only log (first edition); pairs with F3 as the two answers to the filling window. |
 
-**Solution.** Automatically summarize older conversation histories in background threads to keep the active context window lean.
-
-**Consequences.** Long sessions become possible at bounded cost. The pattern is a paging discipline: the context window is RAM, the log is disk, the summary is the page table. It is the practical implementation of MemGPT's virtual context management ([MemGPT](https://arxiv.org/abs/2310.08560)).
-
-**Tradeoffs.** Summaries lose detail, and the loss is permanent unless the source log is preserved — which is why compression and the [append-only log](https://blog.hackspree.com/#deepseek-harness) must be separate layers. Compaction preserves continuity but not a clean slate: Anthropic's 2026 harness work found models exhibit "context anxiety" — "beginning to wrap up work prematurely as they approach what they believe is their context limit" — and compaction alone did not fix it ([harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)). And every compaction is a billing event: if the summarization call is not a genuine prefix-extension of the warm request, it pays full price for the whole replayed history — the exact bug DeepSeek's compaction fix corrected ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Evidence.** MemGPT formalized virtual context management with OS-style memory tiers ([paper](https://arxiv.org/abs/2310.08560)); DeepSeek's compaction engine produces the Claude-shaped eight-section checkpoint as a trailing prefix-extension message ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)); Anthropic documents the context-anxiety failure mode and the reset alternative ([frontier](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Related.** Is the refactoring for A4; conflicts with and composes with the append-only log (first edition); pairs with F3 (context resets) as the two answers to the filling window.
+**Discussion.** Compression is a paging discipline — the window is RAM, the log is disk, the summary is the page table — and it works only as a *projection over an immutable log*. If the summarizer rewrites history, the past becomes negotiable and the cache prefix dies; that is the boundary the append-only log exists to hold. Anthropic's context-anxiety finding is the other boundary: compaction preserves continuity but not a clean slate, which is why the frontier pair F3 (resets) exists, and why F6 (context engineering) is the umbrella that decides which one to use when.
 
 ### Anti-Pattern 4 — The Context Avalanche (Memory Dumping)
 
-**Smell.** Raw logs, every tool output, and full transcripts in the history; context perpetually near capacity; performance degrading as the session grows.
+| Field | Summary |
+|---|---|
+| **Smell** | Raw logs, every tool output, and full transcripts in the history; context perpetually near capacity; performance degrading as the session grows. |
+| **Anti-solution** | "Long context solves it" — dump everything and let the model sort it out. |
+| **Failure** | Model performance degrades significantly when relevant information sits in the middle of a long input context; performance is highest at the beginning and end. A filled context is a degraded one that reads the middle worst exactly when the middle holds the answer. |
+| **Refactoring** | P5 over a derived view: 44 event types in the DeepSeek log, exactly three visible to the model — "the system never stores the conversation it sends; it recomputes the model's context from the log." |
+| **Evidence** | Liu et al., *Lost in the Middle* (Stanford, 2023) ([paper](https://arxiv.org/abs/2307.03172)); the DeepSeek logged-surface invariant ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Is the absence of P5 and P8; is the substrate of A11 and the retrieval form of A6. |
 
-**Anti-solution.** "Long context solves it" — dump everything and let the model sort it out.
-
-**Failure.** Model performance degrades significantly when relevant information sits in the middle of a long input context; performance is highest at the beginning and end ([Lost in the Middle](https://arxiv.org/abs/2307.03172)). A filled context is not a well-informed agent — it is a degraded one that reads the middle worst exactly when the middle holds the answer.
-
-**Refactoring.** P5 (rolling window compression) over a [derived view](https://blog.hackspree.com/#deepseek-harness): 44 event types in the DeepSeek log, exactly three visible to the model — "the system never stores the conversation it sends; it recomputes the model's context from the log."
-
-**Evidence.** Liu et al., *Lost in the Middle* (Stanford, 2023) ([paper](https://arxiv.org/abs/2307.03172)); the DeepSeek logged-surface invariant ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Is the absence of P5 and P8; is the substrate of A11 (the god agent) and the retrieval form of A6.
+**Discussion.** The avalanche is the claim that long context solves everything, falsified by [Lost in the Middle](https://arxiv.org/abs/2307.03172): performance is highest at the ends and degrades in the middle, so a filled context is not a well-informed system — it is a degraded one. The fix is the derived view, and the derived view is the systems argument in miniature: the model never sees the raw stream, only what the harness derives from it.
 
 ### Frontier 3 — Context Resets with Handoff Artifacts
 
-**Problem.** Models lose coherence as the context window fills — "context anxiety": "beginning to wrap up work prematurely as they approach what they believe is their context limit." Compaction preserves continuity but not a clean slate, and for Sonnet 4.5 compaction alone was insufficient.
+| Field | Summary |
+|---|---|
+| **Forces** | Continuity wants compaction; clarity wants a reset. State wants to survive; the window wants to be emptied. Cost wants fewer calls; quality wants the clean slate. |
+| **Solution** | Distinguish *compaction* (summarize in place, same agent continues) from *context resets* (clear the context entirely, hand state to a fresh agent through a structured artifact). Use the reset when the model exhibits context anxiety. |
+| **Consequences** | "A reset provides a clean slate, at the cost of the handoff artifact having enough state for the next agent to pick up the work cleanly." This is the append-only-log argument at the session boundary: the log never rewrites, and the handoff artifact is a new prefix, not an edit. |
+| **Tradeoffs** | Resets add orchestration complexity, token overhead, and latency. The frontier twist: Opus 4.5 "largely removed that behavior on its own," so the harness could drop resets entirely — the pattern is a function of the model, not just the system. |
+| **Evidence** | Anthropic's harness work ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)). |
+| **Related** | Companion of P5; composes with P13 (the reset is the delegation handoff); umbrella is F6. |
 
-**Forces.** Continuity wants compaction; clarity wants a reset. State wants to survive; the window wants to be emptied. Cost wants fewer calls; quality wants the clean slate.
-
-**Solution.** Distinguish *compaction* (summarize in place, same agent continues) from *context resets* (clear the context entirely, hand state to a fresh agent through a structured artifact). Use the reset when the model exhibits context anxiety.
-
-**Consequences.** "A reset provides a clean slate, at the cost of the handoff artifact having enough state for the next agent to pick up the work cleanly." This is the [append-only log](https://blog.hackspree.com/#deepseek-harness) argument at the session boundary: the log never rewrites, and the handoff artifact is a new prefix, not an edit.
-
-**Tradeoffs.** Resets add "orchestration complexity, token overhead, and latency to each harness run." And the frontier twist: Opus 4.5 "largely removed that behavior on its own," so the harness could drop resets entirely — the pattern is a function of the model, not just the system.
-
-**Evidence.** Anthropic's harness work ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Related.** Is the companion of P5 (compression); composes with P13 (the reset is the delegation handoff); its umbrella is F6.
+**Discussion.** Resets are the stronger answer to the filling window: they trade continuity for a clean slate, and they exist because of context anxiety — models "begin wrapping up work prematurely as they approach what they believe is their context limit." The pattern's frontier twist is the most honest statement in this catalog about the boundary between model and system: whether resets are needed is a function of the model generation, which means the harness design is coupled to the model's psychology, and the harness must be re-examined every time the model changes.
 
 ### Frontier 6 — Context Engineering
 
-**Problem.** The system's behavior is decided by the configuration of tokens at inference time — the entire context state, not the prompt. Prompt engineering optimizes the wrong unit.
+| Field | Summary |
+|---|---|
+| **Forces** | Prompting wants the right words; context wants the right state. The window wants curation; the loop wants accumulation. |
+| **Solution** | Treat context engineering as answering "what configuration of context is most likely to generate our model's desired behavior?" — curating the entire context state (system instructions, tools, MCP servers, external data, message history) as it evolves over turns. |
+| **Consequences** | The unit of design becomes the system's context state — the systems argument of this post in one sentence. Context engineering spans the whole runtime: P5, P6, and F3 unified under one discipline. |
+| **Tradeoffs** | The context is a moving target that must be "cyclically refined" — and every refinement is a potential cache-prefix violation and a potential governance gap. |
+| **Evidence** | Anthropic, *Effective context engineering for AI agents* (September 2025) ([post](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)). |
+| **Related** | Umbrella over P5, P6, F3; the memory family's frontier expression of "the system, not the agent." |
 
-**Forces.** Prompting wants the right words; context wants the right state. The window wants curation; the loop wants accumulation.
-
-**Solution.** Treat context engineering as the discipline of answering "what configuration of context is most likely to generate our model's desired behavior?" — curating the entire context state (system instructions, tools, MCP servers, external data, message history) as it evolves over turns ([Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)).
-
-**Consequences.** The unit of design becomes the system's context state — which is the systems argument of this post in one sentence. "In contrast to the discrete task of writing a prompt, context engineering is iterative" and spans the whole runtime: this is P5, P6, and F3 unified under one discipline.
-
-**Tradeoffs.** The context is a moving target that must be "cyclically refined" — and every refinement is a potential cache-prefix violation and a potential governance gap ([token economics](https://blog.hackspree.com/#every-token-has-a-price-tag), [always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Evidence.** Anthropic, *Effective context engineering for AI agents* (September 2025) ([post](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)).
-
-**Related.** Is the umbrella over P5, P6, F3; is the memory family's frontier expression of "the system, not the agent."
+**Discussion.** Context engineering is prompt engineering's successor, and it is the systems argument in one sentence: the unit of design is the entire context state — not the words of the prompt but the configuration of everything the model sees. That is why it belongs in this catalog as the umbrella over the memory problem: P5 decides what gets compressed, P6 decides what gets injected, F3 decides when to reset, and F6 is the discipline that coordinates all three against the two constraints every one of them must respect — the cache prefix and the governance gap.
 
 **References for this problem.** MemGPT ([arXiv:2310.08560](https://arxiv.org/abs/2310.08560)); Liu et al., Lost in the Middle ([arXiv:2307.03172](https://arxiv.org/abs/2307.03172)); Anthropic, Effective context engineering for AI agents ([post](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)); Anthropic, Harness design for long-running application development ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)); archive: [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (compaction, logged-surface invariant), [always-on agents](https://blog.hackspree.com/#always-on-agents).
 
@@ -273,31 +245,29 @@ Not every retrieved fact belongs in every prompt. Retrieval without judgment dro
 
 ### Pattern 6 — Semantic Memory Router
 
-**Forces.** Grounding wants relevant facts; focus wants them selected. Freshness wants live retrieval; the cache wants a stable prefix. Utility wants injected context; security wants retrieved content treated as untrusted input.
+| Field | Summary |
+|---|---|
+| **Forces** | Grounding wants relevant facts; focus wants them selected. Freshness wants live retrieval; the cache wants a stable prefix. Utility wants injected context; security wants retrieved content treated as untrusted input. |
+| **Solution** | Intercept ongoing tasks, query vector stores, and inject context fragments just-in-time into the agent's prompt. |
+| **Consequences** | Answers get grounded; the prompt stays lean; attention is curated by the system rather than dumped by default. Injected context is the highest-leverage observation there is. |
+| **Tradeoffs** | The router is a point of failure and a point of attack: prompt injection through a vector store is the vector of choice (OWASP LLM08). Just-in-time injection competes with prefix-cache discipline. Retrieval quality is decided by chunking, metadata filtering, and reranking, not top-K volume. |
+| **Evidence** | Pinecone's RAG guides are the reference architecture ([Retrieval-Augmented Generation](https://www.pinecone.io/learn/retrieval-augmented-generation/)); the always-on survey's provenance and authority axes define what the router must track about the state it injects ([always-on agents](https://blog.hackspree.com/#always-on-agents)). |
+| **Related** | Refactoring for A6; composes with P8 (the tiers are the router's stores). |
 
-**Solution.** Intercept ongoing tasks, query vector stores, and inject context fragments just-in-time into the agent's prompt.
-
-**Consequences.** Answers get grounded; the prompt stays lean; attention is curated by the system rather than dumped by default. Injected context is the highest-leverage observation there is — "every line your CLI emits is an observation your agent reasons over" ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)).
-
-**Tradeoffs.** The router is a point of failure and a point of attack: retrieved content is untrusted input, and prompt injection through a vector store is the vector of choice ([LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llm-top-10/)). Just-in-time injection competes with [prefix-cache discipline](https://blog.hackspree.com/#deepseek-harness) — context that changes every turn destroys the cache bookmark unless the injected region sits outside the prefix. And retrieval quality is decided by chunking, metadata filtering, and reranking, not by top-K volume — which is the difference between this pattern and its anti-pattern A6.
-
-**Evidence.** Pinecone's RAG guides are the reference architecture ([Retrieval-Augmented Generation](https://www.pinecone.io/learn/retrieval-augmented-generation/)); the always-on survey's provenance and authority axes define what the router must track about the state it injects ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Related.** Is the refactoring for A6; composes with P8 (the tiers are the router's stores); the governance it inherits is the [always-on](https://blog.hackspree.com/#always-on-agents) authority question.
+**Discussion.** The router is the decision layer RAG was missing: not every retrieved fact belongs in every prompt, and the decision cannot be the model's because the model cannot see what it was not shown. The mechanism is curation — chunking, metadata filtering, reranking — and the security corollary is that retrieved content is untrusted input, which makes the router both the grounding layer and the injection surface. "Every line your CLI emits is an observation your agent reasons over" ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)); injected context is the highest-leverage observation there is, and the highest-leverage attack.
 
 ### Anti-Pattern 6 — The RAG Firehose
 
-**Smell.** Top-K chunks injected by raw keyword match; the user instruction buried; retrieval results dominating the prompt.
+| Field | Summary |
+|---|---|
+| **Smell** | Top-K chunks injected by raw keyword match; the user instruction buried; retrieval results dominating the prompt. |
+| **Anti-solution** | "More chunks equals better grounding." |
+| **Failure** | Retrieval without judgment drowns the instruction — and the instruction sits in the middle, exactly where Lost in the Middle predicts degradation. Every injected chunk is untrusted input, making the firehose an injection vector. |
+| **Refactoring** | P6 with chunking, metadata filtering, and reranking deciding what is injected. |
+| **Evidence** | Pinecone's advanced RAG guide ([chunking & metadata filtering](https://www.pinecone.io/learn/advanced-rag/)); OWASP LLM08 ([2025](https://genai.owasp.org/llm-top-10/)). |
+| **Related** | Is the absence of P6; composes with A4 (the firehose is the avalanche's retrieval form). |
 
-**Anti-solution.** "More chunks equals better grounding."
-
-**Failure.** Retrieval without judgment drowns the instruction — and the instruction sits in the middle, which is exactly where [Lost in the Middle](https://arxiv.org/abs/2307.03172) predicts degradation. Every injected chunk is untrusted input, making the firehose an injection vector ([LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llm-top-10/)).
-
-**Refactoring.** P6 (the semantic memory router) with chunking, metadata filtering, and reranking deciding what is injected ([Pinecone advanced RAG](https://www.pinecone.io/learn/advanced-rag/)).
-
-**Evidence.** Pinecone's advanced RAG guide is the counter-documentation ([chunking & metadata filtering](https://www.pinecone.io/learn/advanced-rag/)); OWASP's vector-and-embedding entry documents the attack ([LLM Top 10](https://genai.owasp.org/llm-top-10/)).
-
-**Related.** Is the absence of P6; composes with A4 (the firehose is the avalanche's retrieval form).
+**Discussion.** The firehose is retrieval without judgment: top-K by raw keyword match, drowning the instruction. [Lost in the Middle](https://arxiv.org/abs/2307.03172) predicts exactly where the failure lands — the instruction sits in the middle of the injected flood — and OWASP LLM08 names the attack: every injected chunk is untrusted, so the firehose is also an injection vector. The refactoring is P6, and the discipline is the same one the whole catalog keeps returning to: the system curates what the model sees.
 
 **References for this problem.** Pinecone RAG guide ([learn](https://www.pinecone.io/learn/retrieval-augmented-generation/)) and advanced RAG ([learn](https://www.pinecone.io/learn/advanced-rag/)); OWASP Top 10 — LLM08 Vector and Embedding Weaknesses ([2025](https://genai.owasp.org/llm-top-10/)); Liu et al., Lost in the Middle ([arXiv:2307.03172](https://arxiv.org/abs/2307.03172)); archive: [Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design), [always-on agents](https://blog.hackspree.com/#always-on-agents), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (prefix caching).
 
@@ -307,45 +277,42 @@ State must survive crashes and error loops, and different state types need diffe
 
 ### Pattern 7 — State Snapshot & Rollback
 
-**Forces.** Durability wants every step persisted; latency wants none. Exactly-once wants no re-execution; replay wants determinism. The conversation wants to be saved; the world wants to be left alone.
+| Field | Summary |
+|---|---|
+| **Forces** | Durability wants every step persisted; latency wants none. Exactly-once wants no re-execution; replay wants determinism. The conversation wants to be saved; the world wants to be left alone. |
+| **Solution** | Save complete system state snapshots at checkpoint N, allowing recovery if an agent hits an error loop at step N+3. Completed steps never re-execute; in-flight steps resume from the last checkpoint. |
+| **Consequences** | Crash-proof execution, audit by construction, and the agentic equivalent of a database transaction — condition 4 of the durable-daemons pattern made operational. |
+| **Tradeoffs** | Snapshots are only as good as their granularity: a snapshot of the conversation does not capture the world. Recovery is promised exactly as wide as the reification; external side effects still require idempotency keys. The rollback itself can be the failure: removal must be invoked. |
+| **Evidence** | Temporal — durable execution, workflow state, and deterministic replay ([docs](https://docs.temporal.io/)); DBOS turns a single Postgres write into a 1-2 ms checkpoint ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)); the DeepSeek session log makes replay the everyday debugging tool ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Refactoring for A12; composes with P14 (the blackboard needs the snapshot to be safe); its boundary is the spatiotemporal system boundary. |
 
-**Solution.** Save complete system state snapshots at checkpoint N, allowing recovery if an agent hits an error loop at step N+3. Completed steps never re-execute; in-flight steps resume from the last checkpoint.
-
-**Consequences.** Crash-proof execution, audit by construction, and the agentic equivalent of a database transaction. This is condition 4 of the durable-daemons pattern made operational ([durable daemons](https://blog.hackspree.com/#durable-daemons-definition)).
-
-**Tradeoffs.** Snapshots are only as good as their granularity: a snapshot of the *conversation* does not capture the *world* — an email sent, a payment moved, a file written outside the boundary. The [system boundary](https://blog.hackspree.com/#spatiotemporal-composability) argument applies with double force: recovery is promised exactly as wide as the reification. External side effects still require [idempotency keys](https://blog.hackspree.com/#durable-daemons-execution), because replay will re-fire them and only the external system can deduplicate — "a duplicate order loses capital. A duplicate email is embarrassing." And the rollback itself can be the failure: "recovery guarantees clean removal, but removal still has to be invoked."
-
-**Evidence.** Temporal is the platform-grade instance — durable execution, workflow state, and deterministic replay ([Temporal](https://docs.temporal.io/)); DBOS turns a single Postgres write into a 1-2 ms checkpoint ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)); the DeepSeek session log makes replay the everyday debugging tool — crash at step 80, recompute and continue from the same log ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Is the refactoring for A12 (state race conditions); composes with P14 (the blackboard needs the snapshot to be safe); its boundary is the [spatiotemporal](https://blog.hackspree.com/#spatiotemporal-composability) system boundary.
+**Discussion.** Snapshots are the agentic equivalent of a database transaction, and the boundary is the composability calculus: recovery is promised exactly as wide as the reification ([spatiotemporal composability](https://blog.hackspree.com/#spatiotemporal-composability)). A snapshot of the conversation does not capture the world — an email sent, a payment moved — which is why external side effects need [idempotency keys](https://blog.hackspree.com/#durable-daemons-execution): replay will re-fire them and only the external system can deduplicate. "A duplicate order loses capital. A duplicate email is embarrassing." And the deepest caveat: "recovery guarantees clean removal, but removal still has to be invoked" — the rollback is a system operation, and the system must be able to run it.
 
 ### Pattern 8 — Tiered Hierarchical Memory
 
-**Forces.** Speed wants RAM; capacity wants disk. Currency wants the hot path; provenance wants the archive. Governance wants per-tier authority; simplicity wants one store.
+| Field | Summary |
+|---|---|
+| **Forces** | Speed wants RAM; capacity wants disk. Currency wants the hot path; provenance wants the archive. Governance wants per-tier authority; simplicity wants one store. |
+| **Solution** | Divide storage into immediate short-term context, scratchpad workspace, and long-term historical database storage. |
+| **Consequences** | State has homes with different lifetimes — task ledgers, permissions, commitments, provenance, and triggers each fit a tier — and recall happens at the right latency. Modern frameworks formalize the tiers as thread state plus a store, with semantic, episodic, and procedural memory as distinct stores. |
+| **Tradeoffs** | More tiers mean more consistency work, and — the hard one — forgetting must be possible from all tiers including cached contexts and fine-tuned weights. Tiering fights the append-only discipline: a tier that rewrites itself is a tier where the past is negotiable. Recall failures are silent. |
+| **Evidence** | Lilian Weng's canonical essay — short-term memory is in-context learning, long-term memory is an external vector store with fast retrieval ([post](https://lilianweng.github.io/posts/2023-06-23-agent/)); the always-on survey's six axes are exactly the questions a tiered design must answer per tier ([always-on agents](https://blog.hackspree.com/#always-on-agents)). |
+| **Related** | Refactoring for A5; supplies the stores for P6. |
 
-**Solution.** Divide storage into immediate short-term context, scratchpad workspace, and long-term historical database storage.
-
-**Consequences.** State has homes with different lifetimes — task ledgers, permissions, commitments, provenance, and triggers each fit a tier — and recall happens at the right latency. Modern frameworks formalize the tiers as thread state (short-term) plus a store (long-term), with semantic, episodic, and procedural memory as distinct stores ([LangGraph memory overview](https://docs.langchain.com/oss/python/langgraph/memory)).
-
-**Tradeoffs.** More tiers mean more consistency work: what lives in the scratchpad that should have been promoted, what was deleted from short-term that the long-term still references, and — the hard one — what must be *forgotten* from all tiers including cached contexts and fine-tuned weights. Tiering fights the [append-only discipline](https://blog.hackspree.com/#deepseek-harness): a tier that rewrites itself is a tier where the past is negotiable. And the memory is only as good as its index: recall failures are silent, which is why the tiered pattern's most common degeneration is A5.
-
-**Evidence.** Lilian Weng's canonical essay — short-term memory is in-context learning, long-term memory is an external vector store with fast retrieval ([LLM Powered Autonomous Agents](https://lilianweng.github.io/posts/2023-06-23-agent/)); the always-on survey's six axes — authority, scope, mutability, provenance, recoverability, actionability — are exactly the questions a tiered design must answer per tier ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Related.** Is the refactoring for A5; supplies the stores for P6 (the router); the governance gap it exposes is the [always-on](https://blog.hackspree.com/#always-on-agents) lifecycle.
+**Discussion.** Tiers give state homes with different lifetimes — the substrate for the always-on survey's ledgers, permissions, commitments, and provenance. The governance gap is the hard half: forgetting across all tiers, including cached contexts and fine-tuned weights, is the least-solved stage of the state lifecycle ([always-on agents](https://blog.hackspree.com/#always-on-agents)). The tiered pattern's discipline is the same as the append-only log's: the tiers are projections, the log is the truth, and any tier that rewrites itself is a tier where the past is negotiable.
 
 ### Anti-Pattern 5 — Goldfish Amnesia (State Blindness)
 
-**Smell.** A multi-turn loop with no persisted state; identical tool calls repeated; the high-level goal forgotten mid-task.
+| Field | Summary |
+|---|---|
+| **Smell** | A multi-turn loop with no persisted state; identical tool calls repeated; the high-level goal forgotten mid-task. |
+| **Anti-solution** | "The prompt has the goal" — statelessness as simplicity. |
+| **Failure** | A stateless loop is not an agent; it is a request-response function with a longer prompt. Nothing records what was tried, so everything is tried again. |
+| **Refactoring** | P8 with the state lifecycle made real — write, validate, retrieve, update, forget — and the ledger of what was tried as the minimum viable memory. The durable daemons' conditions 2 and 3 are the specification. |
+| **Evidence** | LangGraph's persistent-state architecture ([docs](https://docs.langchain.com/oss/python/langgraph/memory)); the always-on survey codes 435 papers and finds the governance half missing ([always-on agents](https://blog.hackspree.com/#always-on-agents)). |
+| **Related** | Is the absence of P8; is the delegation risk of P13. |
 
-**Anti-solution.** "The prompt has the goal" — statelessness as simplicity.
-
-**Failure.** A stateless loop is not an agent; it is a request-response function with a longer prompt. Nothing records what was tried, so everything is tried again. The always-on survey's finding is the diagnosis: agents "accumulate state aggressively and have almost no machinery for unwinding it" — and the opposite failure, no state at all, repeats the same tool call ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Refactoring.** P8 (tiered memory) with the state lifecycle made real — write, validate, retrieve, update, forget — and the ledger of what was tried as the minimum viable memory. The durable daemons' conditions 2 and 3 are the specification: "A chatbot fails all three. An always-on agent satisfies them" ([durable daemons definition](https://blog.hackspree.com/#durable-daemons-definition)).
-
-**Evidence.** LangGraph's persistent-state architecture is documented as the thing statelessness is the absence of ([LangGraph memory](https://docs.langchain.com/oss/python/langgraph/memory)); the always-on survey codes 435 papers and finds the governance half missing ([always-on agents](https://blog.hackspree.com/#always-on-agents)).
-
-**Related.** Is the absence of P8; is the delegation risk of P13 (handoffs lose state).
+**Discussion.** Statelessness is not simplicity; it is a request-response function with a longer prompt. The failure mechanism is the absence of a ledger — nothing records what was tried, so everything is tried again, and the agent "forgets its high-level goal" because the goal lives only in the prompt, competing with everything else in it. The durable daemons' specification is the fix: stateful memory and autonomous action are conditions, not features — "A chatbot fails all three. An always-on agent satisfies them" ([durable daemons definition](https://blog.hackspree.com/#durable-daemons-definition)).
 
 **References for this problem.** Temporal ([docs](https://docs.temporal.io/)); Lilian Weng, LLM Powered Autonomous Agents ([post](https://lilianweng.github.io/posts/2023-06-23-agent/)); LangGraph memory overview ([docs](https://docs.langchain.com/oss/python/langgraph/memory)); archive: [durable daemons series](https://blog.hackspree.com/#durable-daemons) ([definition](https://blog.hackspree.com/#durable-daemons-definition), [execution](https://blog.hackspree.com/#durable-daemons-execution)), [always-on agents](https://blog.hackspree.com/#always-on-agents), [spatiotemporal composability](https://blog.hackspree.com/#spatiotemporal-composability) (system boundary).
 
@@ -355,45 +322,42 @@ Model output is text; tools and downstream systems need types. Malformed values 
 
 ### Pattern 9 — Schema Enforcement & Self-Correction
 
-**Forces.** Flexibility wants free text; correctness wants types. Retry wants bounded cost; passing bad data wants none. The log wants append-only corrections; the loop wants no re-requests.
+| Field | Summary |
+|---|---|
+| **Forces** | Flexibility wants free text; correctness wants types. Retry wants bounded cost; passing bad data wants none. The log wants append-only corrections; the loop wants no re-requests. |
+| **Solution** | Force raw LLM text into JSON Schema, catching parsing failures and feeding structural fixes back internally. |
+| **Consequences** | A typed contract at the harness boundary — the same contract as `--json` and exit codes on the way out. Validation failures become part of the log: the correction is an append, not a rewrite. |
+| **Tradeoffs** | Schema enforcement costs tokens: every failed parse is a retry, which is why a cumulative retry budget is part of the pattern. Strict schemas over-constrain open-ended output; loose schemas under-catch. The retry loop is only as good as the error message: it must say *which field* failed. |
+| **Evidence** | Instructor is the reference implementation — Pydantic validation with `max_retries` and `token_budget` bounding the correction cost ([Instructor](https://python.useinstructor.com/), [retry logic](https://python.useinstructor.com/concepts/retrying/)). |
+| **Related** | Refactoring for A9 and A7; composes with the frozen-request pattern from the first edition. |
 
-**Solution.** Force raw LLM text into JSON Schema, catching parsing failures and feeding structural fixes back internally.
-
-**Consequences.** A typed contract at the harness boundary — the same contract as `--json` and exit codes on the way out ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)). Validation failures become part of the log: the correction is an append, not a rewrite, which is exactly what the [append-only model](https://blog.hackspree.com/#deepseek-harness) wants.
-
-**Tradeoffs.** Schema enforcement costs tokens: every failed parse is a retry, and retries are where the bill grows — which is why the pattern must be paired with a cumulative retry budget. Strict schemas over-constrain open-ended output; loose schemas under-catch. And the retry loop is only as good as the error message: a validation error that does not tell the model *which field* failed produces the same failure again — A7 with extra steps.
-
-**Evidence.** Instructor is the reference implementation — Pydantic validation with `max_retries` and `token_budget` bounding the correction cost ([Instructor](https://python.useinstructor.com/), [retry logic](https://python.useinstructor.com/concepts/retrying/)).
-
-**Related.** Is the refactoring for A9 and A7; composes with the frozen-request pattern from the first edition ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
+**Discussion.** The schema is the grammar of the contract: it converts model output from text to structure at the boundary where the model is still in the loop to fix it — and it does so in the append-only spirit, because the correction is a new log entry, not a rewrite ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The cost is retries, and the retry budget is not an afterthought but a core part of the pattern: unbounded self-correction is the schema version of the vortex, which is why Instructor's `token_budget` exists.
 
 ### Anti-Pattern 7 — The Silent Crash (Exception Swallowing)
 
-**Smell.** API errors caught in the background; blank or generic strings returned to the agent; no stderr, no exit-code verdict.
+| Field | Summary |
+|---|---|
+| **Smell** | API errors caught in the background; blank or generic strings returned to the agent; no stderr, no exit-code verdict. |
+| **Anti-solution** | Catch-and-continue: "the agent doesn't need to know about the error." |
+| **Failure** | A real error becomes a hallucinated success: the agent receives `""` or `"ok"`, cannot see the error, and confidently proceeds on a false premise. Swallowing errors destroys the stdout/stderr/exit-code contract. |
+| **Refactoring** | P9 with errors surfaced to the model with the details needed to correct, bounded by retry and token budgets; layered checks so failures stay legible — "the planner chose the wrong tool" instead of "the agent failed." |
+| **Evidence** | Instructor's retry mechanics are the documented counter-pattern ([retrying](https://python.useinstructor.com/concepts/retrying/)). |
+| **Related** | Is the absence of P9; feeds A9. |
 
-**Anti-solution.** Catch-and-continue: "the agent doesn't need to know about the error."
-
-**Failure.** A real error becomes a hallucinated success: the agent receives `""` or `"ok"`, cannot see the error, and confidently proceeds on a false premise. The three channels — stdout data, stderr diagnostics, exit code verdict — exist precisely so failures are legible, and swallowing them destroys the contract ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)).
-
-**Refactoring.** P9 (schema enforcement & self-correction) with errors surfaced to the model with the details needed to correct, bounded by retry and token budgets ([Instructor error handling](https://python.useinstructor.com/concepts/retrying/)); layered checks so failures stay legible — "the planner chose the wrong tool" instead of "the agent failed" ([harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents)).
-
-**Evidence.** Instructor's retry mechanics are the documented counter-pattern ([retrying](https://python.useinstructor.com/concepts/retrying/)).
-
-**Related.** Is the absence of P9; feeds A9 (swallowed errors become malformed downstream values).
+**Discussion.** The silent crash converts a real error into a hallucinated success: the agent cannot see the failure, so it confidently proceeds on a false premise. The three channels — stdout data, stderr diagnostics, exit code verdict — exist precisely so failures are legible ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)); swallowing them destroys the contract, and the harness canon's layered checks are the refactoring because failures must be legible at the layer where they occurred.
 
 ### Anti-Pattern 9 — The Schema Free-for-All
 
-**Smell.** Complex arguments passed as raw strings; parsing deferred to the consumer; "the model formats it."
+| Field | Summary |
+|---|---|
+| **Smell** | Complex arguments passed as raw strings; parsing deferred to the consumer; "the model formats it." |
+| **Anti-solution** | Trust the model's output format. |
+| **Failure** | The parsing problem moves downstream where there is no model to correct it: a malformed date fails in a database insert, a truncated JSON fails in a deserializer, and the error surfaces far from the agent that produced it. |
+| **Refactoring** | P9 at the harness boundary, with validation errors fed back while the model is still in the loop and the corrections recorded in the append-only log. |
+| **Evidence** | Pydantic exists because unvalidated strings become runtime failures one layer down ([docs](https://docs.pydantic.dev/)). |
+| **Related** | Is the absence of P9; feeds A7's downstream. |
 
-**Anti-solution.** Trust the model's output format.
-
-**Failure.** The parsing problem moves downstream where there is no model to correct it: a malformed date fails in a database insert, a truncated JSON fails in a deserializer, and the error surfaces far from the agent that produced it — A7 with more steps.
-
-**Refactoring.** P9 (schema enforcement at the harness boundary) with validation errors fed back while the model is still in the loop, and the corrections recorded in the append-only log.
-
-**Evidence.** Pydantic exists because unvalidated strings become runtime failures one layer down ([Pydantic — core validation](https://docs.pydantic.dev/)).
-
-**Related.** Is the absence of P9; feeds A7's downstream.
+**Discussion.** The free-for-all moves the parsing problem downstream, where there is no model to correct it and the error surfaces far from its cause — the silent crash with more steps. Pydantic's existence is the evidence: unvalidated strings become runtime failures one layer down. The refactoring is enforcement at the boundary, where the model is still in the loop and the correction can be an append rather than a post-mortem.
 
 **References for this problem.** Instructor ([docs](https://python.useinstructor.com/), [retry logic](https://python.useinstructor.com/concepts/retrying/)); Pydantic core validation ([docs](https://docs.pydantic.dev/)); archive: [Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design) (stdout/stderr/exit-code contract), [harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) (layered checks), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (frozen request).
 
@@ -403,17 +367,16 @@ Some tools take minutes. The loop must stay live while the work happens elsewher
 
 ### Pattern 10 — Asynchronous Tool Worker Queue
 
-**Forces.** Responsiveness wants the loop unblocked; correctness wants the result. Asynchrony wants a tracking ID; consistency wants the work done. Cancellation wants a contract; the worker wants to finish.
+| Field | Summary |
+|---|---|
+| **Forces** | Responsiveness wants the loop unblocked; correctness wants the result. Asynchrony wants a tracking ID; consistency wants the work done. Cancellation wants a contract; the worker wants to finish. |
+| **Solution** | Offload long-running processes to background task workers and hand a tracking ID to the looping agent. |
+| **Consequences** | The loop stays live; the context holds a tracking ID instead of a worker's output, so the output does not occupy the window until it is ready. A worker queue is a daemon that satisfies all four durable-daemon conditions. |
+| **Tradeoffs** | Asynchrony introduces the consistency problems of A12. Cancellation must be a contract — the DeepSeek distinction between `ABORTED_BEFORE_DISPATCH` and `ABORTED`, so "cancellation never abandons the body." Workers must be exactly-once or idempotent. And every queue is infrastructure the system team owns forever. |
+| **Evidence** | Celery is the production standard for background task execution ([docs](https://docs.celeryq.dev/en/stable/getting-started/introduction.html)); DeepSeek's cancellation contract is the harness-side discipline ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Composes with P7 (the queue's workers need durability) and P14 (the blackboard's slow writers); its consistency risk is A12. |
 
-**Solution.** Offload long-running processes to background task workers and hand a tracking ID to the looping agent.
-
-**Consequences.** The loop stays live; the context holds a tracking ID instead of a worker's output, so the output does not occupy the window until it is ready. A worker queue is a daemon that satisfies all four durable-daemon conditions, and the tracking ID is the shared state another daemon observes ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)).
-
-**Tradeoffs.** Asynchrony introduces the consistency problems of A12: the agent may finish before the worker does, may poll the wrong ID, or may be torn down while the worker is still running — which is why cancellation must be a contract (the DeepSeek distinction between `ABORTED_BEFORE_DISPATCH` and `ABORTED`, so "cancellation never abandons the body"). The queue needs exactly-once or idempotent workers, because a retried task can double-execute. And every queue is infrastructure: brokers, workers, visibility timeouts, and dead-letter handling that the system team owns forever.
-
-**Evidence.** Celery is the production standard for background task execution ([Celery — distributed task queue](https://docs.celeryq.dev/en/stable/getting-started/introduction.html)); DeepSeek's cancellation contract is the harness-side discipline ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Composes with P7 (the queue's workers need durability) and P14 (the blackboard's slow writers); its consistency risk is A12.
+**Discussion.** The queue decouples the loop from the tool: the agent holds a tracking ID, not the worker's output, so the window stays lean and the loop stays live — the context-budgeting benefit is as important as the latency one. The cost is consistency: cancellation must be a contract because an abandoned worker is a silent side effect, workers must be idempotent because a retried task double-executes, and the queue is infrastructure — brokers, visibility timeouts, dead-letter handling — that the team owns forever, which is exactly the kind of boring, reliable pipeline the harness canon recommends.
 
 **References for this problem.** Celery — distributed task queue ([docs](https://docs.celeryq.dev/en/stable/getting-started/introduction.html)); archive: [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (cancellation contract, around-dispatch wrappers), [durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution) (exactly-once, choreography).
 
@@ -423,17 +386,16 @@ Real APIs are slow, flaky, and costly; the system needs deterministic replay at 
 
 ### Pattern 11 — Mock Tool Virtualization
 
-**Forces.** Fidelity wants the real API; repeatability wants it frozen. Speed wants mocks; honesty wants drift detection. Determinism wants replay; realism wants live.
+| Field | Summary |
+|---|---|
+| **Forces** | Fidelity wants the real API; repeatability wants it frozen. Speed wants mocks; honesty wants drift detection. Determinism wants replay; realism wants live. |
+| **Solution** | Swap production APIs out for lightweight mock responses inside development environments during multi-agent unit testing routines. |
+| **Consequences** | Deterministic replay becomes possible — "a harness that cannot reproduce a run cannot measure a change" — and the sample sizes data-driven design demands become affordable. This is the enabling condition for the tasks-that-fight-back fast loop. |
+| **Tradeoffs** | A mock that drifts from production teaches the agent the wrong lessons. Mocks hide latency, nondeterminism, and rate limits; an agent trained only against mocks fails the first time it meets a 429. The honesty rule: mock for the unit test, record for the integration test, real for the eval. |
+| **Evidence** | VCR.py is the record-and-replay reference ([docs](https://vcrpy.readthedocs.io/)); the harness canon codifies the layering — eval harnesses for fast filtering, task harnesses for realism, agent harnesses for integration ([harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents)). |
+| **Related** | Composes with P10 (mocks are the workers' test doubles); fast-loop complement to F5 (the slow loop). |
 
-**Solution.** Swap production APIs out for lightweight mock responses inside development environments during multi-agent unit testing routines.
-
-**Consequences.** Deterministic replay becomes possible — "a harness that cannot reproduce a run cannot measure a change" ([data-driven design](https://blog.hackspree.com/#data-driven-design-swe-agents)) — and the sample sizes data-driven design demands become affordable. This is the enabling condition for the [tasks-that-fight-back](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) fast loop.
-
-**Tradeoffs.** A mock that drifts from production teaches the agent the wrong lessons — "if every test can be passed by pattern-matching the prompt, you are not measuring the assistant; you are measuring prompt luck." Mocks hide latency, nondeterminism, and rate limits; an agent trained only against mocks fails the first time it meets a 429. The pattern's honesty rule: mock for the unit test, record for the integration test, real for the eval.
-
-**Evidence.** VCR.py is the record-and-replay reference — the first real call is recorded to cassette, subsequent runs replay it ([VCR.py](https://vcrpy.readthedocs.io/)); the harness canon codifies the layering — eval harnesses for fast filtering, task harnesses for realism, agent harnesses for integration ([harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents)).
-
-**Related.** Composes with P10 (mocks are the workers' test doubles); is the fast-loop complement to F5 (live-environment evaluators, the slow loop).
+**Discussion.** Mocks are how the fast loop gets deterministic replay at the sample sizes data-driven design demands — "a single run is a data point; a thousand runs is a distribution" ([data-driven design](https://blog.hackspree.com/#data-driven-design-swe-agents)). The honesty rule is the whole pattern: a mock that drifts from production teaches the agent the wrong lessons, which is why the cassette must be re-recorded on a schedule and why the final gate must always be real — F5's live environment is this pattern's slow-loop counterpart, and the two are the two ends of the eval → task → agent harness taxonomy.
 
 **References for this problem.** VCR.py ([docs](https://vcrpy.readthedocs.io/)); archive: [harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) (tasks that fight back, real repos and browsers), [Agents Are Too Stochastic for Intuition](https://blog.hackspree.com/#data-driven-design-swe-agents) (deterministic replay, sample size).
 
@@ -443,47 +405,42 @@ Tool spaces grow, and static lists bloat the prompt and confuse selection. Capab
 
 ### Pattern 12 — Dynamic Tool Discovery / Registry
 
-**Forces.** Discoverability wants a catalog; the prompt wants it small. Dynamism wants reordering; the cache wants it fixed. Discovery wants open access; authorization wants a separate gate.
+| Field | Summary |
+|---|---|
+| **Forces** | Discoverability wants a catalog; the prompt wants it small. Dynamism wants reordering; the cache wants it fixed. Discovery wants open access; authorization wants a separate gate. |
+| **Solution** | Store tool specs in databases, matching and surfacing capabilities dynamically to the agent based on semantic text queries. |
+| **Consequences** | Many tools can exist behind small prompts; the registry becomes the single source of truth for what the system can do, and the type-graph mirror keeps specs from drifting from implementations. The registry is also the interop seam: MCP standardizes how tools declare themselves. |
+| **Tradeoffs** | The registry is a new attack surface — every registered tool is a target for prompt injection through tool descriptions. Dynamic discovery fights prefix stability: tool lists that reorder by relevance invalidate the cache prefix. Discovery and authorization are separate seams. |
+| **Evidence** | Toolformer showed models can learn tool selection ([paper](https://arxiv.org/abs/2302.04761)); the DeepSeek capability seam — Service Definition, Providers, Consumer behind a stable context key ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)) — is the canonical form; MCP is the protocol face ([architecture](https://modelcontextprotocol.io/docs/learn/architecture)). |
+| **Related** | Refactoring for A8; composes with P2 (the gatekeeper authorizes what the registry discovered). |
 
-**Solution.** Store tool specs in databases, matching and surfacing capabilities dynamically to the agent based on semantic text queries.
-
-**Consequences.** Many tools can exist behind small prompts; the registry becomes the single source of truth for what the system can do — and the type-graph mirror from the DeepSeek design keeps specs from drifting from implementations ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The registry is also the interop seam: MCP standardizes how tools declare themselves, and the system serves the catalog to the agent mid-session ([Model Context Protocol](https://modelcontextprotocol.io/docs/learn/architecture)).
-
-**Tradeoffs.** The registry is a new attack surface: every registered tool is a target for [prompt injection through tool descriptions](https://genai.owasp.org/llm-top-10/), and a registry that surfaces too many tools produces A8. Dynamic discovery fights prefix stability — tool lists that reorder by relevance invalidate the cache prefix (the DeepSeek cache trio includes "sort tool descriptions in one fixed order"). And the Toolformer lesson is the boundary: the model should learn *which* tool, but the system should not trust it with *all* tools — discovery and authorization are separate seams.
-
-**Evidence.** Toolformer showed models can learn tool selection ([Toolformer](https://arxiv.org/abs/2302.04761)); the DeepSeek capability seam — Service Definition, Providers, Consumer behind a stable context key, with static start-time capability advertisement ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)) — is the pattern's canonical form; MCP is the protocol face ([architecture](https://modelcontextprotocol.io/docs/learn/architecture)).
-
-**Related.** Is the refactoring for A8; composes with P2 (the gatekeeper authorizes what the registry discovered); is the runtime face of the capability-seam pattern from the first edition.
+**Discussion.** The registry is the capability seam made discoverable: many tools behind small prompts, with the type-graph mirror keeping specs from drifting from implementations — the DeepSeek Typert mechanism is the enforcement half of this pattern ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The two boundaries are the interesting parts: discovery is not authorization (the gatekeeper still decides what the registry surfaced may do), and the tool list must not reorder, or the cache prefix dies — the registry and the bill are the same seam.
 
 ### Anti-Pattern 8 — Bloated Utility Belt (Tool Over-Provisioning)
 
-**Smell.** Dozens of complex tools per agent; incorrect tool selection; the model "forgetting" tools exist.
+| Field | Summary |
+|---|---|
+| **Smell** | Dozens of complex tools per agent; incorrect tool selection; the model "forgetting" tools exist. |
+| **Anti-solution** | "More tools equals more capable." |
+| **Failure** | Every tool in the prompt is a decision the model must make; a bloated registry turns tool selection into a needle-in-a-haystack retrieval problem that models lose. Fewer, better-shaped tools beat more tools. |
+| **Refactoring** | P12 with per-session tool compositions — DeepSeek's presets are per-session compositions, and code mode replaces the tool list with a generated SDK entirely. |
+| **Evidence** | Toolformer ([paper](https://arxiv.org/abs/2302.04761)); SWE-agent's ACI ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)). |
+| **Related** | Is the absence of P12; is the tool-scale form of A11. |
 
-**Anti-solution.** "More tools equals more capable."
-
-**Failure.** Every tool in the prompt is a decision the model must make; a bloated registry turns tool selection into a needle-in-a-haystack retrieval problem that models lose. Toolformer's research line and SWE-agent's ACI work both found the same thing: fewer, better-shaped tools beat more tools.
-
-**Refactoring.** P12 (the registry) with per-session tool compositions — DeepSeek's presets are per-session compositions, and code mode replaces the tool list with a generated SDK entirely ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). The SWE-agent result is the anchor: with the same model, a minimal well-designed ACI more than doubled state-of-the-art ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)).
-
-**Evidence.** Toolformer ([paper](https://arxiv.org/abs/2302.04761)); SWE-agent's ACI ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)).
-
-**Related.** Is the absence of P12; is the tool-scale form of A11 (the god agent).
+**Discussion.** Every tool in the prompt is a decision the model must make, and a bloated registry turns selection into a needle-in-a-haystack retrieval problem that models lose — the SWE-agent result is the anchor: with the same model, a minimal, well-designed interface more than doubled state-of-the-art ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)). The refactoring is the registry plus per-session composition: present only what the task needs, let discovery find the rest, and never dump the whole catalog into the context.
 
 ### Frontier 4 — The Interop Layer: MCP, ACP, AGENTS.md
 
-**Problem.** Every harness re-implements the same seams: how tools declare themselves, how editors and agents connect, where agent instructions live. The system needs the seams to be standard.
+| Field | Summary |
+|---|---|
+| **Forces** | Interoperability wants open protocols; vendors want moats. Portability wants standards; integration wants control. |
+| **Solution** | Adopt the emerging protocol layer: MCP for tool declaration and execution, ACP for editor-agent connection, and AGENTS.md — "a README for agents," used by over 60,000 open-source projects — for where agent instructions live. |
+| **Consequences** | The seam becomes the ecosystem: DeepSeek runs unmodified Claude Code hooks and mounts rival harnesses as subagent providers rather than reimplementing them. When a vendor adopts its rivals' formats, your files become portable, whichever harness you run. |
+| **Tradeoffs** | Every protocol you adopt is a contract you do not control, and every standard is a boundary where a substitution can hide. |
+| **Evidence** | MCP architecture ([docs](https://modelcontextprotocol.io/docs/learn/architecture)); ACP ([agentclientprotocol.com](https://agentclientprotocol.com/)); AGENTS.md ([agents.md](https://agents.md/)). |
+| **Related** | Protocol face of P12; interop layer for P13. |
 
-**Forces.** Interoperability wants open protocols; vendors want moats. Portability wants standards; integration wants control.
-
-**Solution.** Adopt the emerging protocol layer: [MCP](https://modelcontextprotocol.io/docs/learn/architecture) for tool declaration and execution, [ACP](https://agentclientprotocol.com/) for editor-agent connection ("each editor must build custom integrations for every agent" stops being the default), and [AGENTS.md](https://agents.md/) — "a README for agents," used by over 60,000 open-source projects — for where agent instructions live.
-
-**Consequences.** The seam becomes the ecosystem: DeepSeek runs unmodified Claude Code hooks and mounts rival harnesses as subagent providers rather than reimplementing them ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). This blog's DeepSeek teardown named the strategy [interop-as-product-strategy](https://blog.hackspree.com/#deepseek-harness): "when a vendor adopts its rivals' formats, your files become portable, whichever harness you run."
-
-**Tradeoffs.** Every protocol you adopt is a contract you do not control, and every standard is a boundary where a substitution can hide — the supply-chain argument from [Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface).
-
-**Evidence.** MCP architecture ([docs](https://modelcontextprotocol.io/docs/learn/architecture)); ACP ([agentclientprotocol.com](https://agentclientprotocol.com/)); AGENTS.md ([agents.md](https://agents.md/)).
-
-**Related.** Is the protocol face of P12 (the registry); is the interop layer for P13 (providers mount by standard).
+**Discussion.** The interop layer is the seam becoming the ecosystem: when the community standardizes the protocol, the harness that implements the standard inherits the ecosystem. DeepSeek's interop-as-product-strategy is the individual case — "when a vendor adopts its rivals' formats, your files become portable, whichever harness you run" ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)) — and MCP, ACP, and AGENTS.md are the collective ones. The tradeoff is the supply chain: every standard is a boundary where a substitution can hide ([Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface)), which is the price of the seam.
 
 **References for this problem.** Toolformer ([arXiv:2302.04761](https://arxiv.org/abs/2302.04761)); Model Context Protocol ([architecture](https://modelcontextprotocol.io/docs/learn/architecture)); Agent Client Protocol ([agentclientprotocol.com](https://agentclientprotocol.com/)); AGENTS.md ([agents.md](https://agents.md/)); archive: [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (capability seams, Typert, interop-as-strategy), [Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design) (tool-selection research), [Zero Overhead Is Zero Attack Surface](https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface).
 
@@ -493,47 +450,42 @@ No single context can hold a whole workflow. The work must be divided, delegated
 
 ### Pattern 13 — Orchestrator-Worker (Boss-Worker)
 
-**Forces.** Context limits want decomposition; coherence wants a single plan. Delegation wants specialists; control wants oversight. Termination wants a rule; conversation wants to continue.
+| Field | Summary |
+|---|---|
+| **Forces** | Context limits want decomposition; coherence wants a single plan. Delegation wants specialists; control wants oversight. Termination wants a rule; conversation wants to continue. |
+| **Solution** | Direct traffic using a highly capable central agent that delegates atomic sub-tasks to smaller, faster, specialized agents. |
+| **Consequences** | Bounded contexts, parallelizable work, and a plan-then-execute shape. The orchestrator is the delegation tree curator — the workflow seam where the model writes orchestration scripts with `agent()` calls under caps — and the topology of the distillation pattern. |
+| **Tradeoffs** | The orchestrator is a single point of failure: if it mis-delegates, the error cascades downstream. Every delegation is a context handoff that can lose state (the A5 risk), and every worker is a new surface for A10 if the delegation loop has no termination condition. The exit condition must be part of the system, not the conversation. |
+| **Evidence** | AutoGen ([paper](https://arxiv.org/abs/2308.08155)); Anthropic's three-agent architecture — planner, generator, evaluator ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)); DeepSeek's subagent registry mounts providers by name ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)). |
+| **Related** | Refactoring for A11; composes with P16 and F2. |
 
-**Solution.** Direct traffic using a highly capable central agent that delegates atomic sub-tasks to smaller, faster, specialized agents.
-
-**Consequences.** Bounded contexts, parallelizable work, and a plan-then-execute shape. The orchestrator is the system's delegation tree curator — the workflow seam where the model writes orchestration scripts with `agent()` calls under caps ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)) — and the topology of the distillation pattern: a swarm of [tiny specialists coordinated by a router](https://blog.hackspree.com/#agents-are-distillation-at-scale).
-
-**Tradeoffs.** The orchestrator is a single point of failure: if it mis-delegates, the error cascades downstream — Anthropic deliberately kept its planner's spec high-level because "if the planner tried to specify granular technical details upfront and got something wrong, the errors in the spec would cascade" ([harness design](https://www.anthropic.com/engineering/harness-design-long-running-apps)). Every delegation is a context handoff that can lose state (the A5 risk), and every worker is a new surface for A10 if the delegation loop has no termination condition. The exit condition must be part of the system, not the conversation.
-
-**Evidence.** AutoGen is the reference framework — conversable, customizable agents composed into conversation patterns ([AutoGen](https://arxiv.org/abs/2308.08155)); Anthropic's three-agent architecture — planner, generator, evaluator — is the strongest recent instance ([harness design](https://www.anthropic.com/engineering/harness-design-long-running-apps)); DeepSeek's subagent registry mounts providers by name, including rival harnesses' own binaries ([DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness)).
-
-**Related.** Is the refactoring for A11; composes with P16 (the ensemble as the delegator's judge) and F2 (sprint contracts as the delegation's contract).
+**Discussion.** Delegation is how a system outgrows one context window: the orchestrator curates a delegation tree instead of drowning in context — a swarm of [tiny specialists coordinated by a router](https://blog.hackspree.com/#agents-are-distillation-at-scale). The single point of failure is the orchestrator, which is why the spec must stay high-level (Anthropic's planner deliberately avoids granular detail because "errors in the spec would cascade") and why termination must be a system property. The Anthropic planner-generator-evaluator is the modern template, and F2 is the contract that makes each delegation safe.
 
 ### Anti-Pattern 11 — The God Agent (Monolithic Orchestration)
 
-**Smell.** One massive agent with an immense prompt managing every phase of a business workflow; every tool, every rule, every stage in one context window.
+| Field | Summary |
+|---|---|
+| **Smell** | One massive agent with an immense prompt managing every phase of a business workflow; every tool, every rule, every stage in one context window. |
+| **Anti-solution** | "One agent, all context, total control." |
+| **Failure** | The context avalanche and lost-in-the-middle degradation are guaranteed by construction: one window holding every phase, every tool, and every rule degrades exactly as the middle fills. |
+| **Refactoring** | P13 with decomposition and handoff: one feature at a time, structured artifacts carrying state between sessions. |
+| **Evidence** | CrewAI's core argument for crews is that role-specialized agents with focused prompts beat one agent doing everything ([docs](https://docs.crewai.com/en/concepts/crews)). |
+| **Related** | Is the absence of P13; composes A4 and A8. |
 
-**Anti-solution.** "One agent, all context, total control."
-
-**Failure.** The context avalanche and lost-in-the-middle degradation are guaranteed by construction: one window holding every phase, every tool, and every rule degrades exactly as the middle fills. The bloated utility belt is the tool-scale version of the same error.
-
-**Refactoring.** P13 (orchestrator-worker) with decomposition and handoff: one feature at a time, structured artifacts carrying state between sessions. Anthropic's three-agent architecture — planner, generator, evaluator — is the modern template, and its planner deliberately stays high-level because "errors in the spec would cascade into the downstream implementation" ([harness design](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Evidence.** CrewAI's core argument for crews is that role-specialized agents with focused prompts beat one agent doing everything ([CrewAI — crews](https://docs.crewai.com/en/concepts/crews)).
-
-**Related.** Is the absence of P13; composes A4 and A8.
+**Discussion.** The god agent is the belief that one context can hold everything, falsified by construction: lost-in-the-middle degradation as the window fills, with the bloated utility belt as its tool-scale form. The refactoring is decomposition with handoff — one feature at a time, structured artifacts between sessions — and CrewAI's crews argument is the same claim from the framework side: focused prompts beat one giant prompt. The systems view names the mechanism: the workflow is a system property; one agent's context is a component limit.
 
 ### Frontier 2 — Sprint Contracts
 
-**Problem.** Under-specified specs produce over- and under-built artifacts; "done" is discovered after the work, not before.
+| Field | Summary |
+|---|---|
+| **Forces** | Specification wants precision; agility wants latitude. Verification wants criteria; creativity wants freedom. |
+| **Solution** | Before each sprint, the generator and evaluator "negotiated a sprint contract: agreeing on what 'done' looked like for that chunk of work before any code was written." The generator proposes what it will build and how success will be verified; the evaluator reviews; they iterate until they agree; only then does the generator build. |
+| **Consequences** | The spec's ambiguity is resolved at the moment of maximum leverage — before the work exists. The agent defines the verifier before it defines the artifact: the tasks-that-fight-back principle applied to the contract itself. |
+| **Tradeoffs** | Negotiation overhead — two agents spending tokens agreeing on "done" before any code is written — which is why the contract is bounded to a sprint-sized chunk, not the whole project. |
+| **Evidence** | Anthropic's harness ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)). |
+| **Related** | Composes with P13 (the delegation's contract) and F1 (the evaluator grades against the contract). |
 
-**Forces.** Specification wants precision; agility wants latitude. Verification wants criteria; creativity wants freedom.
-
-**Solution.** Before each sprint, the generator and evaluator "negotiated a sprint contract: agreeing on what 'done' looked like for that chunk of work before any code was written." The generator proposes what it will build and how success will be verified; the evaluator reviews the proposal; the two iterate until they agree; only then does the generator build against the contract.
-
-**Consequences.** The spec's ambiguity is resolved at the moment of maximum leverage — before the work exists — and the agent defines the verifier before it defines the artifact, which is the [tasks-that-fight-back](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) principle applied to the contract itself.
-
-**Tradeoffs.** Negotiation overhead — two agents spending tokens agreeing on "done" before any code is written — which is why the contract is bounded to a sprint-sized chunk, not the whole project.
-
-**Evidence.** Anthropic's harness ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Related.** Composes with P13 (the delegation's contract) and F1 (the evaluator grades against the contract).
+**Discussion.** Sprint contracts resolve the spec's ambiguity at the moment of maximum leverage — before the work exists — by having the agent define the verifier before it defines the artifact. This is the [tasks-that-fight-back](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) principle applied to the contract itself: "done" agreed in advance beats "done" discovered after, and the negotiation overhead is the price of the leverage, bounded by keeping the contract to a sprint-sized chunk.
 
 **References for this problem.** AutoGen ([arXiv:2308.08155](https://arxiv.org/abs/2308.08155)); CrewAI crews ([docs](https://docs.crewai.com/en/concepts/crews)); Anthropic, Harness design for long-running application development ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)); archive: [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (workflow seam, subagent registry), [Agents Aren't Magic. They're Distillation at Scale.](https://blog.hackspree.com/#agents-are-distillation-at-scale), [harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents).
 
@@ -543,31 +495,29 @@ Multiple agents need a shared working memory, and unsynchronized writes corrupt 
 
 ### Pattern 14 — Blackboard (Shared Workspace)
 
-**Forces.** Sharing wants a unified schema; isolation wants per-agent scopes. Concurrency wants parallel writes; consistency wants ordered ones. Ownership wants a coordinator; choreography wants none.
+| Field | Summary |
+|---|---|
+| **Forces** | Sharing wants a unified schema; isolation wants per-agent scopes. Concurrency wants parallel writes; consistency wants ordered ones. Ownership wants a coordinator; choreography wants none. |
+| **Solution** | Connect disjointed agents to a unified state schema where the harness coordinates simultaneous data writes and events. |
+| **Consequences** | Choreography without an orchestrator — "each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state." Conflicts can be detected at write time rather than merge time — GitButler's virtual branches are the version-control face. |
+| **Tradeoffs** | Shared state is shared risk: the board concentrates A12. It also fights per-agent scope — the resolution is explicit scope discipline: which state is shared, which is scoped, who owns the boundary. A blackboard without an owner is a tragedy of the commons for state. |
+| **Evidence** | CrewAI's Flows layer formalizes the event-driven, state-managed workflow ([docs](https://docs.crewai.com/en/concepts/flows)); the durable-daemons series specifies choreography through shared state ([definition](https://blog.hackspree.com/#durable-daemons-definition)); GitButler documents seven multi-agent collaboration patterns on virtual branches ([Buzz](https://blog.hackspree.com/#buzz-block-agents)). |
+| **Related** | Composes with P7 (the board must be snapshotable) and P10 (the board's slow writers). |
 
-**Solution.** Connect disjointed agents to a unified state schema where the harness coordinates simultaneous data writes and events.
-
-**Consequences.** Choreography without an orchestrator — "each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state" ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)). Conflicts can be detected at write time rather than merge time — GitButler's virtual branches are the version-control face ([Buzz](https://blog.hackspree.com/#buzz-block-agents)). The blackboard is one of the oldest ideas in AI — the Hearsay-II speech architecture (1970s) — and the agent era reinvented it.
-
-**Tradeoffs.** Shared state is shared risk. The blackboard concentrates A12: simultaneous writes without transactional locks corrupt the state, and the durability of the board decides whether the corruption is recoverable. The blackboard also fights [per-agent scope](https://blog.hackspree.com/#deepseek-harness) — the tension between isolation and choreography — and the resolution is explicit scope discipline: which state is shared, which is scoped, who owns the boundary. A blackboard without an owner is a tragedy of the commons for state.
-
-**Evidence.** CrewAI's Flows layer formalizes the event-driven, state-managed workflow ([CrewAI — Flows](https://docs.crewai.com/en/concepts/flows)); the durable-daemons series specifies the choreography through shared state ([pattern specification](https://blog.hackspree.com/#durable-daemons-definition)); GitButler documents seven multi-agent collaboration patterns on virtual branches ([Buzz](https://blog.hackspree.com/#buzz-block-agents)).
-
-**Related.** Composes with P7 (the board must be snapshotable) and P10 (the board's slow writers); its ownership question is the [always-on](https://blog.hackspree.com/#always-on-agents) authority axis.
+**Discussion.** The blackboard is choreography made concrete — one of the oldest ideas in AI (the Hearsay-II speech architecture, 1970s), reinvented by the agent era as shared state with no orchestrator. The risk is that shared state is shared risk: the board concentrates races, and its durability decides whether corruption is recoverable, which is why P7 (snapshots) composes with it. The ownership question — which state is shared, who owns the boundary — is the least-solved governance problem in the catalog, and the always-on survey's authority axis is the specification.
 
 ### Anti-Pattern 12 — State Race Conditions
 
-**Smell.** Asynchronous multi-agent writes to shared memory with no transactional locks; state corruption that appears "random."
+| Field | Summary |
+|---|---|
+| **Smell** | Asynchronous multi-agent writes to shared memory with no transactional locks; state corruption that appears "random." |
+| **Anti-solution** | "It usually works" — hope as a concurrency strategy. |
+| **Failure** | Two agents writing the same ledger, one overwriting the other's checkpoint, the state corrupting silently. The blackboard without its harness. |
+| **Refactoring** | P7 with the durability discipline: writes through a single ordered log, exactly-once within the control boundary, idempotency keys for external effects, transactional ownership. GitButler's virtual branches detect conflicts at write time. |
+| **Evidence** | Temporal's event-sourced, deterministic execution is the standard answer to the race ([docs](https://docs.temporal.io/)). |
+| **Related** | Is the absence of P7 and P14's ownership discipline; is the async risk of P10. |
 
-**Anti-solution.** "It usually works" — hope as a concurrency strategy.
-
-**Failure.** Two agents writing the same ledger, one overwriting the other's checkpoint, the state corrupting silently. The blackboard without its harness.
-
-**Refactoring.** P7 (snapshots) with the durability discipline from the durable daemons: writes through a single ordered log, exactly-once within the control boundary, idempotency keys for external effects, and choreography through shared state with clear ownership — "no RPC. No message bus. No central orchestrator" is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)). GitButler's virtual branches detect conflicts at write time, not merge time ([Buzz](https://blog.hackspree.com/#buzz-block-agents)).
-
-**Evidence.** Temporal's event-sourced, deterministic execution is the standard answer to the race ([Temporal](https://docs.temporal.io/)).
-
-**Related.** Is the absence of P7 and P14's ownership discipline; is the async risk of P10.
+**Discussion.** The race is the blackboard without its harness: unsynchronized writes to shared memory, corrupting state silently. The fix is the durable-daemons discipline — "no RPC. No message bus. No central orchestrator" is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional ([durable daemons execution](https://blog.hackspree.com/#durable-daemons-execution)). GitButler's virtual branches are the version-control face of the same idea: conflicts detected at write time, not merge time.
 
 **References for this problem.** CrewAI Flows ([docs](https://docs.crewai.com/en/concepts/flows)); Temporal ([docs](https://docs.temporal.io/)); archive: [durable daemons series](https://blog.hackspree.com/#durable-daemons) ([definition](https://blog.hackspree.com/#durable-daemons-definition), [execution](https://blog.hackspree.com/#durable-daemons-execution)), [Buzz and the Identity Problem](https://blog.hackspree.com/#buzz-block-agents) (GitButler virtual branches), [DeepSeek teardown](https://blog.hackspree.com/#deepseek-harness) (per-agent scope), [always-on agents](https://blog.hackspree.com/#always-on-agents).
 
@@ -577,17 +527,16 @@ Some flows are genuinely linear — classify, transform, emit — and the simple
 
 ### Pattern 15 — Sequential Pipeline Routing
 
-**Forces.** Simplicity wants rigid stages; adaptivity wants branching. Determinism wants fixed routing; robustness wants recovery. Billing wants few calls; quality wants specialized hops.
+| Field | Summary |
+|---|---|
+| **Forces** | Simplicity wants rigid stages; adaptivity wants branching. Determinism wants fixed routing; robustness wants recovery. Billing wants few calls; quality wants specialized hops. |
+| **Solution** | Pass analytical payloads through rigid linear stages, using LLMs solely for classification or transformation tasks at each hop. |
+| **Consequences** | The easiest harness to verify, replay, and bill: a linear stage where each hop has one job and a deterministic contract, in the spirit of "the most successful implementations use simple, composable patterns rather than complex frameworks." Each hop is a tool with a `--json` contract, exit codes, and honest `--help`. |
+| **Tradeoffs** | Rigid pipelines cannot route around failure: a stage that misclassifies poisons every downstream stage. Pipelines serialize — the whole flow runs at the speed of its slowest hop, and each hop is a full request. Chains are right when the flow is linear, wrong when it needs to branch, loop, or recover. |
+| **Evidence** | LangChain's chains are the canonical instance, and the migration-era docs are explicit about when the rigid linear form is right and when it is not ([docs](https://python.langchain.com/docs/versions/migrating_chains/overview/)). |
+| **Related** | Is the disciplined baseline; the opposite of A11 at orchestration scale; composes with P9. |
 
-**Solution.** Pass analytical payloads through rigid linear stages, using LLMs solely for classification or transformation tasks at each hop.
-
-**Consequences.** The easiest harness to verify, replay, and bill: a linear stage where each hop has one job and a deterministic contract, in the spirit of "the most successful implementations use simple, composable patterns rather than complex frameworks" ([Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)). Each hop is a tool with a `--json` contract, exit codes, and honest `--help` ([Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design)).
-
-**Tradeoffs.** Rigid pipelines cannot route around failure: a stage that misclassifies poisons every downstream stage, and there is no re-planning. Pipelines serialize — the whole flow runs at the speed of its slowest LLM hop, and each hop is a full request ([token economics](https://blog.hackspree.com/#every-token-has-a-price-tag)). The pattern's own lineage is explicit about the boundary: chains are right when the flow is genuinely linear, wrong when it needs to branch, loop, or recover — which is when P13 or a graph shape wins.
-
-**Evidence.** LangChain's chains are the canonical instance, and the migration-era docs are explicit about when the rigid linear form is right and when it is not ([LangChain Chains](https://python.langchain.com/docs/versions/migrating_chains/overview/)).
-
-**Related.** Is the disciplined baseline; is the opposite of A11 at orchestration scale; composes with P9 (each hop's output is schema-enforced).
+**Discussion.** The pipeline is the disciplined baseline for genuinely linear flows: each hop has one job and a deterministic contract, which makes the system verifiable, replayable, and billable — the [loop engineering](https://blog.hackspree.com/#loop-engineering) answer to "simple, composable patterns rather than complex frameworks." The boundary is explicit in the pattern's own lineage: chains are right when the flow is linear, wrong when it needs to branch or recover, which is when P13 or a graph shape wins. The pipeline is not the default for everything; it is the default for the flows that are already linear.
 
 **References for this problem.** LangChain chains ([docs](https://python.langchain.com/docs/versions/migrating_chains/overview/)); Anthropic, Building Effective Agents ([post](https://www.anthropic.com/engineering/building-effective-agents)); archive: [Agentic-First CLI](https://blog.hackspree.com/#agentic-first-cli-design), [Loop Engineering](https://blog.hackspree.com/#loop-engineering), [Every Token Has a Price Tag](https://blog.hackspree.com/#every-token-has-a-price-tag).
 
@@ -597,63 +546,55 @@ One judgment is unreliable, and self-evaluation is reliably lenient. The system 
 
 ### Pattern 16 — Voting / Consensual Ensemble
 
-**Forces.** Reliability wants multiple judgments; cost wants one call. Independence wants diverse members; convenience wants one family. Agreement wants a signal; correctness wants ground truth.
+| Field | Summary |
+|---|---|
+| **Forces** | Reliability wants multiple judgments; cost wants one call. Independence wants diverse members; convenience wants one family. Agreement wants a signal; correctness wants ground truth. |
+| **Solution** | Query multiple independent model setups with identical prompts, using harness code to calculate majority agreement on outputs. |
+| **Consequences** | A statistical signal where verifiers are king: multiple independent judgments aggregated by system code instead of one verdict from one model. Majority agreement is a distribution over independent samples — "a single run is a data point; a thousand runs is a distribution." |
+| **Tradeoffs** | Ensembles multiply cost linearly and can multiply latency. Majority agreement is only a strong signal when the members are independent — correlated members vote as one and add nothing. Agreement measures preference, not correctness: the ensemble is a signal, not a ground truth. |
+| **Evidence** | LMArena is the reference for agreement-based evaluation at scale ([leaderboard](https://lmarena.ai/leaderboard)); the mob post's self-review datum motivates it — 79% of 25,264 agent PRs reviewed by the prompting developer ([mob programming remastered](https://blog.hackspree.com/#mob-programming-reimagined)). |
+| **Related** | Composes with P13 (the ensemble as the delegator's judge); is the aggregation answer to A10; statistical cousin of F1. |
 
-**Solution.** Query multiple independent model setups with identical prompts, using harness code to calculate majority agreement on outputs.
-
-**Consequences.** A statistical signal where [verifiers are king](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc): multiple independent judgments aggregated by system code instead of one verdict from one model. Majority agreement is a distribution over independent samples — "a single run is a data point; a thousand runs is a distribution" ([data-driven design](https://blog.hackspree.com/#data-driven-design-swe-agents)) — and it replaces self-review with cross-review.
-
-**Tradeoffs.** Ensembles multiply cost linearly and can multiply latency; the [cost per finished task varies 7x across harnesses](https://blog.hackspree.com/#deepseek-harness) before you add an ensemble. Majority agreement is only a strong signal when the members are *independent* — correlated members (same family, same prompt shape, same failure mode) vote as one and add nothing. And the reference is honest about the limit: human-vote consensus measures preference, not correctness, and an LLM-judge ensemble inherits every bias of its members — "algorithmic verification misses context. Agentic verification hallucinates." The ensemble is a signal, not a ground truth.
-
-**Evidence.** LMSYS Chatbot Arena / LMArena is the reference for agreement-based evaluation at scale — millions of pairwise votes forming the consensus signal ([LMArena leaderboard](https://lmarena.ai/leaderboard)); the mob post's self-review datum motivates it — 79% of 25,264 agent PRs reviewed by the prompting developer ([mob programming remastered](https://blog.hackspree.com/#mob-programming-reimagined)).
-
-**Related.** Composes with P13 (the ensemble as the delegator's judge); is the aggregation answer to A10; is the statistical cousin of F1.
+**Discussion.** The ensemble is verification made statistical: independent judgments aggregated by code instead of one verdict from one model, replacing self-review with cross-review. The independence requirement is the whole game — correlated members vote as one and add nothing — and the honest limit is that agreement measures preference, not correctness: "algorithmic verification misses context. Agentic verification hallucinates" ([verifiers are king](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc)). The ensemble is a signal, never a ground truth, which is why it composes with P13 as the delegator's judge and with F1 as the iterative form of the same separation.
 
 ### Anti-Pattern 10 — The Committee Paradox (Infinite Multi-Agent Debates)
 
-**Smell.** Two or more autonomous agents reviewing each other's work; no exit condition; the conversation "making progress" without converging.
+| Field | Summary |
+|---|---|
+| **Smell** | Two or more autonomous agents reviewing each other's work; no exit condition; the conversation "making progress" without converging. |
+| **Anti-solution** | "More debate equals better decisions." |
+| **Failure** | Two agents reviewing each other with no exit condition is an infinite loop with a nicer name. Tokens burn, no verdict arrives, and the system never terminates. |
+| **Refactoring** | Termination as a system property: a termination condition, a verdict threshold, a budget, or a human breakpoint — and P16's aggregation rule as the shape of disagreement resolution. Review without independence is theater, and review without termination is waste. |
+| **Evidence** | AutoGen's framework treats termination as a first-class design concern of multi-agent conversation ([paper](https://arxiv.org/abs/2308.08155)). |
+| **Related** | Is the absence of P13 and P16's termination discipline; is the orchestration form of A2. |
 
-**Anti-solution.** "More debate equals better decisions."
-
-**Failure.** Two agents reviewing each other with no exit condition is an infinite loop with a nicer name ([Loop Engineering](https://blog.hackspree.com/#loop-engineering)). Tokens burn, no verdict arrives, and the system never terminates.
-
-**Refactoring.** Termination as a system property: a termination condition, a verdict threshold, a budget, or a human breakpoint — and P16's aggregation rule as the shape of disagreement resolution. Review without independence is theater, and review without termination is waste ([mob programming remastered](https://blog.hackspree.com/#mob-programming-reimagined)).
-
-**Evidence.** AutoGen's framework treats termination as a first-class design concern of multi-agent conversation; the community's infinite-loop reports are the empirical record ([AutoGen](https://arxiv.org/abs/2308.08155)).
-
-**Related.** Is the absence of P13 and P16's termination discipline; is the orchestration form of A2 (the vortex).
+**Discussion.** The committee is the ensemble without its aggregation rule: agents reviewing each other with no exit condition is an infinite loop with a nicer name ([Loop Engineering](https://blog.hackspree.com/#loop-engineering)). Termination must be a system property — a threshold, a budget, a breakpoint — because conversation will not terminate itself; that is the difference between a debate and a decision. Review without independence is theater, and review without termination is waste.
 
 ### Frontier 1 — The Generator–Evaluator Loop
 
-**Problem.** Self-evaluation is reliably lenient: "when asked to evaluate work they've produced, agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre" ([Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
+| Field | Summary |
+|---|---|
+| **Forces** | Feedback wants independence; convenience wants self-review. Iteration wants speed; quality wants depth. Cost wants few cycles; taste wants many. |
+| **Solution** | Separate the agent doing the work from the agent judging it — a GAN-inspired generator-evaluator loop where the evaluator grades against explicit criteria and the critique flows back as the next iteration's input. |
+| **Consequences** | "Tuning a standalone evaluator to be skeptical turns out to be far more tractable than making a generator critical of its own work." The frontend experiment ran 5-15 iterations per generation; the full-stack version produced an application the solo run could not approach. |
+| **Tradeoffs** | The harness was "over 20x more expensive" — $200 for six hours against $9 for twenty minutes, same model — and the pattern is only worth it when the output-quality difference justifies the bill. |
+| **Evidence** | Anthropic, *Harness design for long-running application development* (March 2026) ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)). |
+| **Related** | Composes with P16; pairs with F2 (the contract the evaluator grades against). |
 
-**Forces.** Feedback wants independence; convenience wants self-review. Iteration wants speed; quality wants depth. Cost wants few cycles; taste wants many.
-
-**Solution.** Separate the agent doing the work from the agent judging it — a GAN-inspired generator-evaluator loop where the evaluator grades against explicit criteria and the critique flows back as the next iteration's input.
-
-**Consequences.** "The separation doesn't immediately eliminate that leniency on its own; the evaluator is still an LLM that is inclined to be generous towards LLM-generated outputs. But tuning a standalone evaluator to be skeptical turns out to be far more tractable than making a generator critical of its own work." The frontend experiment ran 5-15 iterations per generation; the full-stack version ran a planner, a generator, and an evaluator for six hours and produced an application the solo run could not approach.
-
-**Tradeoffs.** The harness was "over 20x more expensive" — $200 for six hours against $9 for twenty minutes, same model — and the pattern is only worth it when the output-quality difference justifies the bill. This is the [verifiers are king](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc) argument with the verifier given agency: not a gate that blocks, but a critic that iterates.
-
-**Evidence.** Anthropic, *Harness design for long-running application development* (March 2026) ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Related.** Composes with P16 (the ensemble as the evaluator); pairs with F2 (the contract the evaluator grades against).
+**Discussion.** The generator-evaluator loop is the verifier given agency: not a gate that blocks, but a critic that iterates. Its founding observation is self-evaluation leniency — "agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre" — and its structural fix is separation: tuning a standalone skeptical evaluator is tractable where making a generator self-critical is not. The 20x price tag is the pattern's honest boundary: it is only justified when output quality justifies the bill, which is the same cost-benefit the whole verification family lives under.
 
 ### Frontier 5 — Live-Environment Evaluators
 
-**Problem.** Static verification misses what only use reveals: the artifact "looks impressive but still has real bugs when you actually try to use them" ([Anthropic](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
+| Field | Summary |
+|---|---|
+| **Forces** | Depth wants live interaction; cost wants static scoring. Reality wants the real system; CI wants speed. |
+| **Solution** | Give the evaluator hands: in Anthropic's harness the evaluator was given the Playwright MCP, "which let it interact with the live page directly before scoring each criterion and writing a detailed critique" — navigating the app, testing UI features, API endpoints, and database states "the way a user would." |
+| **Consequences** | The verifier does not read the artifact, it *uses* it — the frontier version of "harnesses should observe the whole system." Only a verifier with hands finds the solo run's broken entity wiring. |
+| **Tradeoffs** | Wall-clock: "each cycle took real wall-clock time. Full runs stretched up to four hours." The pattern belongs in the slow loop, reserved for the final gate. |
+| **Evidence** | Anthropic's harness ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)). |
+| **Related** | Is the slow-loop complement of P11; composes with F1. |
 
-**Forces.** Depth wants live interaction; cost wants static scoring. Reality wants the real system; CI wants speed.
-
-**Solution.** Give the evaluator hands: in Anthropic's harness the evaluator was given the Playwright MCP, "which let it interact with the live page directly before scoring each criterion and writing a detailed critique" — navigating the app, clicking through UI features, testing API endpoints and database states "the way a user would."
-
-**Consequences.** The verifier does not read the artifact, it *uses* it — the frontier version of this blog's [harnesses should observe the whole system](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) principle. Only a verifier with hands finds the solo run's broken entity wiring.
-
-**Tradeoffs.** Wall-clock: "because the evaluator was actively navigating the page rather than scoring a static screenshot, each cycle took real wall-clock time. Full runs stretched up to four hours." The pattern belongs in the slow loop of the [eval → task → agent harness taxonomy](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents), reserved for the final gate.
-
-**Evidence.** Anthropic's harness ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)).
-
-**Related.** Is the slow-loop complement of P11 (mocks); composes with F1 (the evaluator's tools).
+**Discussion.** Live evaluation is the verifier with hands: it does not read the artifact, it uses it — the frontier version of this blog's [harnesses should observe the whole system](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) principle. The tradeoff is wall-clock — four-hour runs — which is why it belongs in the slow loop of the [eval → task → agent harness taxonomy](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents), reserved for the final gate. It catches what static verification cannot: the artifact that looks impressive is not the artifact that works, and only a verifier with hands finds the difference.
 
 **References for this problem.** LMArena leaderboard ([lmarena.ai](https://lmarena.ai/leaderboard)); AutoGen ([arXiv:2308.08155](https://arxiv.org/abs/2308.08155)); Anthropic, Harness design for long-running application development ([post](https://www.anthropic.com/engineering/harness-design-long-running-apps)); archive: [In the Land of AI Agents, the Verifiers Are King](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc), [Zuill's Mob Programming, Remastered](https://blog.hackspree.com/#mob-programming-reimagined) (self-review), [Agents Are Too Stochastic for Intuition](https://blog.hackspree.com/#data-driven-design-swe-agents), [harness canon](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents), [Loop Engineering](https://blog.hackspree.com/#loop-engineering).
 

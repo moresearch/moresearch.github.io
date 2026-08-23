@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns — with references grouped per problem. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design. Every pattern and anti-pattern is stated in a fixed, consistent form (Forces, Solution, Consequences, Tradeoffs, Evidence, Related / Smell, Anti-solution, Failure, Refactoring, Evidence, Related).">
+  <meta name="description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns. Every pattern and anti-pattern is presented as a table summary followed by a discussion — the table is the pattern language proper (fixed fields, stated identically for every entry), the discussion is the narrative of why it works and where the guarantee stops. Each problem unit ends with its own references. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/harness-patterns-for-agentic-ai-systems/">
   <title>Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems — hackspree</title>
   <meta property="og:title" content="Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems">
-  <meta property="og:description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns — with references grouped per problem. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design. Every pattern and anti-pattern is stated in a fixed, consistent form (Forces, Solution, Consequences, Tradeoffs, Evidence, Related / Smell, Anti-solution, Failure, Refactoring, Evidence, Related).">
+  <meta property="og:description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns. Every pattern and anti-pattern is presented as a table summary followed by a discussion — the table is the pattern language proper (fixed fields, stated identically for every entry), the discussion is the narrative of why it works and where the guarantee stops. Each problem unit ends with its own references. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/harness-patterns-for-agentic-ai-systems/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems">
-  <meta name="twitter:description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns — with references grouped per problem. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design. Every pattern and anti-pattern is stated in a fixed, consistent form (Forces, Solution, Consequences, Tradeoffs, Evidence, Related / Smell, Anti-solution, Failure, Refactoring, Evidence, Related).">
+  <meta name="twitter:description" content="A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns. Every pattern and anti-pattern is presented as a table summary followed by a discussion — the table is the pattern language proper (fixed fields, stated identically for every entry), the discussion is the narrative of why it works and where the guarantee stops. Each problem unit ends with its own references. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,11 @@
     .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
     .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
     .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
-    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
     .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
     .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
     .post-body a:hover{color:#d1d5db}
@@ -81,7 +85,7 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-08-23">2026-08-23</time></p>
-          <h1>Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems<a class="raw-link" href="https://blog.hackspree.com/raw/harness-patterns-for-agentic-ai-systems.md" title="Raw markdown source" aria-label="Raw markdown source of Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns — with references grouped per problem. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design. Every pattern and anti-pattern is stated in a fixed, consistent form (Forces, Solution, Consequences, Tradeoffs, Evidence, Related / Smell, Anti-solution, Failure, Refactoring, Evidence, Related).</p>
+          <h1>Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems<a class="raw-link" href="https://blog.hackspree.com/raw/harness-patterns-for-agentic-ai-systems.md" title="Raw markdown source" aria-label="Raw markdown source of Emerging Harness Patterns and Anti-Patterns for Agentic AI Systems" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A problem-first pattern language for agentic AI systems: fifteen problems, each solved by one or more harness patterns, failed by one or more anti-patterns, and advanced by frontier patterns. Every pattern and anti-pattern is presented as a table summary followed by a discussion — the table is the pattern language proper (fixed fields, stated identically for every entry), the discussion is the narrative of why it works and where the guarantee stops. Each problem unit ends with its own references. The intro argues the central technical insight with evidence: the unit of design is the agentic AI system, not the agent — we harness the whole system, including the agent(s), because the agent is the one component you cannot design.</p>
           <div class="tags"><span class="tag">harness</span><span class="tag">harness-engineering</span><span class="tag">agent-harness</span><span class="tag">pattern-language</span><span class="tag">patterns</span><span class="tag">anti-patterns</span><span class="tag">agents</span><span class="tag">agentic-ai</span><span class="tag">agentic-systems</span><span class="tag">security</span><span class="tag">sandboxing</span><span class="tag">memory</span><span class="tag">orchestration</span><span class="tag">tool-binding</span><span class="tag">verification</span><span class="tag">token-economics</span><span class="tag">emerging-patterns</span></div>
           
         </header>
@@ -106,23 +110,10 @@
 <p>The pattern language that follows treats the whole agentic AI system as the subject. Every pattern below names a decision about the system — the loop, the memory, the interface, the policy, the verifier, the orchestration — never about the model. The model is a socket you plug into the system. The system is what you build.</p>
 <h2 id="how-to-read-this-pattern-language">How to read this pattern language</h2>
 <p>The pattern language is organized <strong>by problem, not by component</strong>. Each unit of the language is one recurring engineering problem that every agentic AI system eventually faces; inside each problem unit live the <em>pattern</em> that solves it, the <em>anti-pattern</em> that fails it, and — where the frontier has moved — the <em>frontier pattern</em> that is evolving it. This is the structure of Christopher Alexander's <em>A Pattern Language</em> (1977): the pattern is &quot;a set of problems and documented solutions,&quot; each one &quot;our current best guess as to what arrangement... will work to solve the problem presented,&quot; cross-referenced into a network. The linear order matters: read top to bottom, and the problems build — first make the system safe (problems 1–4), then make it remember (5–7), then make it act (8–11), then make it scale (12–14), then make it trustworthy (15).</p>
-<p>Each <strong>pattern</strong> is stated in exactly this form, in this order:</p>
+<p><strong>Every entry is presented in two parts: a table summary, then a discussion.</strong></p>
 <ul>
-<li><strong>Forces</strong> — the competing pressures that make the problem hard.</li>
-<li><strong>Solution</strong> — what to build.</li>
-<li><strong>Consequences</strong> — what the pattern buys.</li>
-<li><strong>Tradeoffs</strong> — what it costs.</li>
-<li><strong>Evidence</strong> — the primary sources and where it shows up.</li>
-<li><strong>Related</strong> — the other entries it composes with or contradicts.</li>
-</ul>
-<p>Each <strong>anti-pattern</strong> is stated in exactly this form, in this order:</p>
-<ul>
-<li><strong>Smell</strong> — how to recognize it in a system.</li>
-<li><strong>Anti-solution</strong> — what teams reach for.</li>
-<li><strong>Failure</strong> — why it breaks, with evidence.</li>
-<li><strong>Refactoring</strong> — the pattern in this language that fixes it.</li>
-<li><strong>Evidence</strong> — the sources that document the failure.</li>
-<li><strong>Related</strong> — the entries it leads to.</li>
+<li>The <strong>table</strong> is the pattern language proper. Each pattern has the same six rows, in the same order: <strong>Forces</strong> (the competing pressures), <strong>Solution</strong> (what to build), <strong>Consequences</strong> (what it buys), <strong>Tradeoffs</strong> (what it costs), <strong>Evidence</strong> (the sources), <strong>Related</strong> (the other entries it composes with or contradicts). Each anti-pattern has the same six rows, in the same order: <strong>Smell</strong> (how to recognize it), <strong>Anti-solution</strong> (what teams reach for), <strong>Failure</strong> (why it breaks), <strong>Refactoring</strong> (the pattern that fixes it), <strong>Evidence</strong>, <strong>Related</strong>. Because the rows are identical across every entry, entries can be compared across problems and combined by cross-reference — this is what makes it a <em>language</em> rather than a list.</li>
+<li>The <strong>discussion</strong> is the narrative: the mechanism, the tradeoff reasoning, where the guarantee stops, and how the entry connects to this blog's archive. The table is what you steal; the discussion is why it works.</li>
 </ul>
 <p>Each problem unit ends with <strong>References for this problem</strong> — the sources for that unit alone, so the language can be read as a sequence of self-contained decisions. The catalog as a whole:</p>
 <table>
@@ -231,291 +222,1271 @@
 <h2 id="problem-1--containing-untrusted-execution">Problem 1 — Containing untrusted execution</h2>
 <p>An agentic system executes code and commands that are untrusted by construction — written by a model, possibly steered by injected instructions. A mistake or an attack must die with the task that produced it. This problem is where the harness earns its name: it is the operational translation of defense in depth from <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>, fail-closed policy from the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>, and subtraction from <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>.</p>
 <h3 id="pattern-1--ephemeral-sandbox-wrapper">Pattern 1 — Ephemeral Sandbox Wrapper</h3>
-<p><strong>Forces.</strong> Isolation wants a real boundary; performance wants none. Ephemerality wants nothing to survive; long-running work wants persistence. Teardown wants completeness; cleanup wants to be free.</p>
-<p><strong>Solution.</strong> Spawn isolated, short-lived virtual environments (e.g., Docker, WASM) for safe, untrusted agent code execution. Create per task, mutate freely, destroy on completion.</p>
-<p><strong>Consequences.</strong> Blast radius is bounded by lifetime, not by trust. Training trajectories come out clean because the RL environment is an ephemeral shell. The wrapper is where the system reifies the outside world, which is what makes recovery promises possible.</p>
-<p><strong>Tradeoffs.</strong> Ephemerality costs startup latency and state loss — an agent that needs a persistent filesystem across steps fights the wrapper, which is why the pattern is usually paired with a persistent-but-isolated volume. Real isolation (hypervisor, OS-level) is heavy; WASM is light and fast but constrains what the agent can do. The wrapper is only as good as its teardown: if the environment survives, the &quot;ephemeral&quot; claim is marketing — teardown must be <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">derived from the load, not remembered</a>.</p>
-<p><strong>Evidence.</strong> LangChain now lists sandboxing as a first-class integration component (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/integrations/">Sandbox integrations</a>); Replit's thirteen-layer stack is the production-grade instance (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>); the DeepSeek harness ships a file-effects-only sandbox vocabulary with enforcement reported <code>full</code> or <code>partial</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Composes with P2 (the gatekeeper runs outside the wrapper); the sandbox-stack pattern from the first edition (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>) is this pattern's defense-in-depth cousin; it is the refactoring for A1.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Isolation wants a real boundary; performance wants none. Ephemerality wants nothing to survive; long-running work wants persistence. Teardown wants completeness; cleanup wants to be free.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Spawn isolated, short-lived virtual environments (e.g., Docker, WASM) for safe, untrusted agent code execution. Create per task, mutate freely, destroy on completion.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Blast radius is bounded by lifetime, not by trust. Training trajectories come out clean because the RL environment is an ephemeral shell. The wrapper is where the system reifies the outside world, which is what makes recovery promises possible.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Ephemerality costs startup latency and state loss — an agent that needs a persistent filesystem across steps fights the wrapper, which is why the pattern is usually paired with a persistent-but-isolated volume. Real isolation is heavy; WASM is light but constrains what the agent can do. The wrapper is only as good as its teardown.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>LangChain lists sandboxing as a first-class integration component (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/integrations/">docs</a>); Replit's thirteen-layer stack is the production-grade instance (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>); the DeepSeek harness ships a file-effects-only sandbox vocabulary with enforcement reported <code>full</code> or <code>partial</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P2 (the gatekeeper runs outside the wrapper); cousin of the sandbox-stack pattern from the first edition; refactoring for A1.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The wrapper is the containment problem in its purest form: it converts trust into lifetime. The system does not need to believe the code is safe — it needs the code to die with the task. That is why the DeepSeek RL composition ships an ephemeral shell as its training environment: teardown derived from load makes trajectories clean, and &quot;the harness produces the trajectories; the trajectories feed post-training&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The honest-teardown rule comes from the composability calculus — if the environment survives, the &quot;ephemeral&quot; claim is marketing; teardown must be <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">derived from the load, not remembered</a>. Where the guarantee stops: the wrapper bounds the <em>process</em>, not the <em>world</em> — network and process visibility are out of scope by declaration, which is why P2 must sit outside the wrapper and why the sandbox stack (first edition) remains the defense-in-depth layer underneath.</p>
 <h3 id="anti-pattern-1--the-naked-prompt-implicit-trust">Anti-Pattern 1 — The Naked Prompt (Implicit Trust)</h3>
-<p><strong>Smell.</strong> API keys in the prompt or environment; the model told to &quot;be careful&quot;; no sanitization, parsing, or proxy layer between the model and the credentials.</p>
-<p><strong>Anti-solution.</strong> Treat the model as an application boundary and the prompt as an access control list.</p>
-<p><strong>Failure.</strong> The model is an untrusted input processor; prompt injection converts instructions into actions; system prompts leak; credentials exfiltrate. OWASP's relevant entries are LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, and LLM07 System Prompt Leakage in the 2025 numbering (LLM06 Sensitive Information Disclosure in the 2023/24 numbering, where the classic citation lives) (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">OWASP Top 10</a>).</p>
-<p><strong>Refactoring.</strong> P1 (the sandbox wrapper), P2 (the gatekeeper), and a transparent secrets proxy so the agent never sees the credentials — the Replit pattern (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>). The xz lesson applies: the tool that executes arbitrary code with your credentials is the highest-value target in your supply chain, and &quot;an agent with a thousand dependencies is a thousand doors&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>).</p>
-<p><strong>Evidence.</strong> OWASP (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM Top 10</a>); Simon Willison's running documentation of the threat model (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">prompt injection series</a>).</p>
-<p><strong>Related.</strong> Leads to A3 (prompt-driven authorization is the same error one level down).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>API keys in the prompt or environment; the model told to &quot;be careful&quot;; no sanitization, parsing, or proxy layer between the model and the credentials.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>Treat the model as an application boundary and the prompt as an access control list.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>The model is an untrusted input processor; prompt injection converts instructions into actions; system prompts leak; credentials exfiltrate (OWASP LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, LLM07 System Prompt Leakage in the 2025 numbering; LLM06 in 2023/24).</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P1 (the wrapper), P2 (the gatekeeper), and a transparent secrets proxy so the agent never sees the credentials — the Replit pattern.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>OWASP Top 10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Simon Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Leads to A3 (the same error one level down); is fixed by P1 and P2.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The naked prompt is the containment problem skipped: the system trusts the least trustworthy component with its most valuable secrets. The mechanism of failure is that instructions are data — the model cannot distinguish the operator's policy from an attacker's — so the only fixes are structural, which is the recurring thesis of the safety family. The xz lesson applies at the supply-chain level: the tool that executes arbitrary code with your credentials is the highest-value target in your supply chain, and &quot;an agent with a thousand dependencies is a thousand doors&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>).</p>
 <p><strong>References for this problem.</strong> LangChain sandbox integrations (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/integrations/">docs</a>); Meta's Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); OWASP Top 10 for LLM Applications (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxes Are Hard</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal composability</a>.</p>
 <h2 id="problem-2--refusing-a-tool-call-before-it-happens">Problem 2 — Refusing a tool call before it happens</h2>
 <p>The system's hands must be able to say no before anything reaches an external API — and the denial must be final: structural, not prose. This is the &quot;who may act&quot; problem: interception and authorization are the same seam.</p>
 <h3 id="pattern-2--static-intercepting-gatekeeper">Pattern 2 — Static Intercepting Gatekeeper</h3>
-<p><strong>Forces.</strong> Security wants denial to be final; usability wants appeals. Determinism wants a fixed rule; the threat surface wants adaptivity. Auditing wants every decision recorded; latency wants none.</p>
-<p><strong>Solution.</strong> Intercept model-generated tool calls against a strict blocklist before passing them to external APIs.</p>
-<p><strong>Consequences.</strong> A deterministic floor that is fast, auditable, and cannot be argued around. The gatekeeper is the system's version of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering"><code>pledge(2)</code></a>: a restricted interface where the wrong thing is unexpressible.</p>
-<p><strong>Tradeoffs.</strong> The honest caveat is in the name: <a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">Llama Guard</a> is <em>not</em> static — it is itself an LLM, which means it can be fooled, bypassed, or prompted around, and it adds a model call to every tool invocation. A true static blocklist catches only what it enumerates. The pattern works when the blocklist is the floor and the model-based classifier is the next layer up — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">monotonic guard ordering</a>: deny by default, allow by exception, never let policy be argued around.</p>
-<p><strong>Evidence.</strong> Llama Guard, the LLM-based input-output safeguard (Meta AI, 2023), is the reference classifier (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); the DeepSeek tool pipeline encodes the ordering — pre-execute waterfalls, monotonic guards, fail-closed approval with <code>allowed-once</code> as the only granting outcome (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Composes with P1 (the wrapper contains what the gatekeeper misses) and P3 (the breakpoint is the gatekeeper with a human in it); it is the refactoring for A3.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Security wants denial to be final; usability wants appeals. Determinism wants a fixed rule; the threat surface wants adaptivity. Auditing wants every decision recorded; latency wants none.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Intercept model-generated tool calls against a strict blocklist before passing them to external APIs.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>A deterministic floor that is fast, auditable, and cannot be argued around. The gatekeeper is the system's version of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering"><code>pledge(2)</code></a>: a restricted interface where the wrong thing is unexpressible.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Llama Guard is <em>not</em> static — it is itself an LLM that can be fooled or prompted around, and it adds a model call to every invocation. A true static blocklist catches only what it enumerates. The pattern works when the blocklist is the floor and the model-based classifier is the next layer up.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Llama Guard, the LLM-based input-output safeguard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); the DeepSeek tool pipeline — pre-execute waterfalls, monotonic guards, fail-closed approval with <code>allowed-once</code> as the only granting outcome (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P1 (the wrapper contains what the gatekeeper misses) and P3 (the breakpoint is the gatekeeper with a human in it); refactoring for A3.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The gatekeeper is where denial becomes a system property rather than a model preference: the blocklist is deterministic, auditable, and cannot be argued around. The honest caveat is that the reference classifier is itself a model — the pattern works when the static floor does the deterministic denial and the model-based layer adds judgment <em>above</em> it, never below, which is exactly the DeepSeek ordering doctrine: &quot;pre-execute listeners, approval, and guards must never observe — or worse, approve — a call that can only fail&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The gatekeeper is also the verification pattern's first cousin: the DSL idea from Fowler's retreat is this pattern with the vocabulary restricted until the wrong thing is unexpressible (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a>).</p>
 <h3 id="anti-pattern-3--prompt-driven-authorization">Anti-Pattern 3 — Prompt-Driven Authorization</h3>
-<p><strong>Smell.</strong> &quot;Do not delete user data&quot; in the system prompt; permission checks that are sentences, not code.</p>
-<p><strong>Anti-solution.</strong> Policy as prose — the belief that the model will read and obey the instructions.</p>
-<p><strong>Failure.</strong> Instructions are data; prompt injection is the mechanism; &quot;you can't solve AI security problems with more AI&quot; (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">Willison</a>). A system prompt is a document the model may be instructed to ignore.</p>
-<p><strong>Refactoring.</strong> Authorization must be <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">monotonic, structural, and fail-closed</a>: monotonic guards &quot;deny or abstain and can never force-allow, so owner policy that must not be reordered cannot be argued around.&quot; Who can modify the agent's state is a property of the system, not of the model's reading comprehension (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Evidence.</strong> Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); the DeepSeek tool pipeline's monotonic-guard doctrine (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Is the deeper form of A1; is fixed by P2 (the gatekeeper).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>&quot;Do not delete user data&quot; in the system prompt; permission checks that are sentences, not code.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>Policy as prose — the belief that the model will read and obey the instructions.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Instructions are data; prompt injection is the mechanism; &quot;you can't solve AI security problems with more AI.&quot; A system prompt is a document the model may be instructed to ignore.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>Authorization must be monotonic, structural, and fail-closed: monotonic guards &quot;deny or abstain and can never force-allow, so owner policy that must not be reordered cannot be argued around.&quot;</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); the DeepSeek monotonic-guard doctrine (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the deeper form of A1; is fixed by P2.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Policy as prose inverts the gatekeeper: instead of the system owning denial, the model is asked to remember and obey a rule it can be told to ignore. The DeepSeek formulation is the standard precisely because it is structural — who may modify the agent's state is a property of the system, not of the model's reading comprehension, which is the authority axis of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on survey</a>. The refactoring is never to write a better instruction; it is to move the check into the tool, where injection cannot reach it.</p>
 <p><strong>References for this problem.</strong> Meta's Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); OWASP Top 10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (monotonic guards, approval seam), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a> (DSLs as the pledge(2) bridge), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a> (authority axis).</p>
 <h2 id="problem-3--stopping-the-loop-for-a-human">Problem 3 — Stopping the loop for a human</h2>
 <p>Some mutations — financial transactions, deletions, releases — must not happen without human authority. The loop must stop, persist exactly where it paused, and resume only after a person decides. There is no named anti-pattern for this problem; its failure modes are the rubber-stamp (approval without attention) and the swallowed breakpoint, both covered in the tradeoffs.</p>
 <h3 id="pattern-3--human-in-the-loop-hitl-breakpoint">Pattern 3 — Human-in-the-Loop (HITL) Breakpoint</h3>
-<p><strong>Forces.</strong> Autonomy wants the loop to run; safety wants it to stop. Latency wants no pauses; accountability wants a record of every pause. Approval wants to be meaningful; convenience wants it to be fast.</p>
-<p><strong>Solution.</strong> Freeze the harness execution loop to demand manual approval for high-risk mutations like financial transactions. Persist the exact state at the pause, then resume from that checkpoint after a human approves, edits, or rejects.</p>
-<p><strong>Consequences.</strong> Authority becomes a property of the system — a state-machine primitive, not a prompt: the loop does not merely ask permission, it persists where it paused. Every human decision is recorded in the state, which makes the breakpoint an audit seam (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Tradeoffs.</strong> An agent that must stop for every risky action cannot run unattended — the pattern must be paired with an explicit automation path (permission presets, scoped allowlists) or the harness drowns in approvals and humans rubber-stamp everything, which is worse than no approval at all. A breakpoint that can be swallowed is a breakpoint that does not exist: the LangGraph guidance is explicit that interrupts must not be wrapped in try/except (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/interrupts">LangGraph interrupts</a>). And the breakpoint protects the mutation, not the model's intent behind it.</p>
-<p><strong>Evidence.</strong> LangGraph's <code>interrupt()</code> primitive makes HITL a first-class graph construct (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/interrupts">state management &amp; breakpoints</a>); OpenWorker ships approval gates before every consequential action (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#openworker-outcome-layer">OpenWorker outcome layer</a>); the DeepSeek approval seam is fail-closed — a missing answerer resolves to <code>unavailable</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Composes with P2 (the gatekeeper decides what is routine, the breakpoint what is consequential); the automation path it needs is P4's discipline; it is the governance seam the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on survey</a> names as authority and scope.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Autonomy wants the loop to run; safety wants it to stop. Latency wants no pauses; accountability wants a record of every pause. Approval wants to be meaningful; convenience wants it to be fast.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Freeze the harness execution loop to demand manual approval for high-risk mutations like financial transactions. Persist the exact state at the pause, then resume from that checkpoint after a human approves, edits, or rejects.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Authority becomes a property of the system — a state-machine primitive, not a prompt: the loop does not merely ask permission, it persists where it paused. Every human decision is recorded in the state, making the breakpoint an audit seam.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>An agent that must stop for every risky action cannot run unattended — the pattern must be paired with an explicit automation path or the harness drowns in approvals and humans rubber-stamp everything, which is worse than no approval. A breakpoint that can be swallowed is a breakpoint that does not exist.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>LangGraph's <code>interrupt()</code> primitive makes HITL a first-class graph construct (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/interrupts">docs</a>); OpenWorker ships approval gates before every consequential action (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#openworker-outcome-layer">OpenWorker outcome layer</a>); the DeepSeek approval seam is fail-closed — a missing answerer resolves to <code>unavailable</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P2 (the gatekeeper decides what is routine, the breakpoint what is consequential); the automation path it needs is P4's discipline.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The breakpoint makes authority a resumable property of the state machine: the loop persists exactly where it paused, so approval is a checkpoint, not a moment. Its two failure modes are both failures of attention — the rubber-stamp (approval without review) and the swallowed breakpoint (interrupts wrapped in try/except, which LangGraph explicitly forbids). The automation path is not an exception to the pattern; it is the pattern's other half, and its discipline is P4's: the system decides what is consequential and what is routine, never the model.</p>
 <p><strong>References for this problem.</strong> LangGraph interrupts (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/interrupts">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#openworker-outcome-layer">OpenWorker and the Outcome Layer</a> (approval gates), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (approval seam, <code>allowed-once</code>), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a> (authority and scope axes).</p>
 <h2 id="problem-4--bounding-the-loop">Problem 4 — Bounding the loop</h2>
 <p>Loops can burn unbounded tokens, wall-clock, and money retrying a broken step. The ceiling must be enforced by the system, never requested of the model — this is the enforcement half of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Bill as Assertion</a>.</p>
 <h3 id="pattern-4--token--time-budget-throttler">Pattern 4 — Token &amp; Time Budget Throttler</h3>
-<p><strong>Forces.</strong> Long-horizon work wants room; unbounded consumption wants none. Enforcement wants to be structural; convenience wants to be prompt-based. The bill wants a shape; the work wants a budget.</p>
-<p><strong>Solution.</strong> Monitor continuous tool loops to forcefully terminate agents exceeding maximum token costs or time boundaries. Enforce in the harness, never in the prompt.</p>
-<p><strong>Consequences.</strong> The vortex cannot happen: the bill is bounded by construction, and the system — not the model — owns the ceiling. &quot;Make the cache hit a CI gate, make the bill a test.&quot;</p>
-<p><strong>Tradeoffs.</strong> A budget that is too tight kills legitimate long-horizon work; too loose is theater. The throttler interacts with <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">prefix caching</a>: a reset mid-session can invalidate the warm prefix and <em>increase</em> the bill it was meant to cap. And the throttler must decide what &quot;exceeded&quot; means — total spend, per-step spend, wall-clock, or loop iterations — because each catches a different failure mode. The honest limit is documented: DeepSeek's runaway-loop guard &quot;only sends reminders and eventually goes quiet&quot; — reminders are not enforcement (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Evidence.</strong> AutoGPT shipped iteration and cost limits as first-class settings in 2023 precisely because its loop demonstrated the failure (<a target="_blank" rel="noopener noreferrer" href="https://docs.agpt.co/classic/configuration/">AutoGPT — maximum loop &amp; cost control</a>); OWASP names it a first-class risk — <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM10:2025 Unbounded Consumption</a>; the token economics post computed the shape — prices down 98%, consumption up ~150x, bills tripled, and &quot;the caps were about the shape of the bill&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A2; composes with P3 (the breakpoint stops the loop, the throttler ends it); connects to the bill-as-assertion pattern from the first edition (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Long-horizon work wants room; unbounded consumption wants none. Enforcement wants to be structural; convenience wants to be prompt-based. The bill wants a shape; the work wants a budget.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Monitor continuous tool loops to forcefully terminate agents exceeding maximum token costs or time boundaries. Enforce in the harness, never in the prompt.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The vortex cannot happen: the bill is bounded by construction, and the system — not the model — owns the ceiling. &quot;Make the cache hit a CI gate, make the bill a test.&quot;</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>A budget that is too tight kills legitimate long-horizon work; too loose is theater. The throttler interacts with prefix caching: a reset mid-session can invalidate the warm prefix and <em>increase</em> the bill it was meant to cap. The throttler must decide what &quot;exceeded&quot; means — spend, per-step, wall-clock, or iterations.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>AutoGPT shipped iteration and cost limits as first-class settings in 2023 (<a target="_blank" rel="noopener noreferrer" href="https://docs.agpt.co/classic/configuration/">docs</a>); OWASP names it a first-class risk — <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM10:2025 Unbounded Consumption</a>; the token economics post computed the shape — prices down 98%, consumption up ~150x, bills tripled (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A2; composes with P3 (the breakpoint stops the loop, the throttler ends it); connects to the bill-as-assertion pattern from the first edition.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The throttler is the economic face of the harness: it enforces the shape of the bill when the model cannot be trusted to. The token post's arithmetic is the context — &quot;the caps were about the shape of the bill, not the money&quot; — and the only structural response is a ceiling in code. The subtle interaction is the one that distinguishes a good throttler: it must not invalidate the warm prefix it exists to protect. And the honest limit is documented: DeepSeek's runaway-loop guard &quot;only sends reminders and eventually goes quiet&quot; — reminders are not enforcement (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
 <h3 id="anti-pattern-2--the-infinite-execution-vortex-uncapped-loops">Anti-Pattern 2 — The Infinite Execution Vortex (Uncapped Loops)</h3>
-<p><strong>Smell.</strong> No ceiling on iterations, tokens, time, or money; the same failing step retried; the loop &quot;working on it.&quot;</p>
-<p><strong>Anti-solution.</strong> &quot;It'll converge&quot; — trust the model to stop.</p>
-<p><strong>Failure.</strong> Unbounded token drain and wall-clock burn; an economic failure before a technical one — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">tragedy of the commons</a> staged inside one run.</p>
-<p><strong>Refactoring.</strong> P4 (the token &amp; time budget throttler), enforced in code — OWASP <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM10:2025 Unbounded Consumption</a>, loop-iteration limits, and the honest caveat that reminders are not enforcement (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Evidence.</strong> AutoGPT's open issue tracker is a museum of the failure (<a target="_blank" rel="noopener noreferrer" href="https://github.com/Significant-Gravitas/AutoGPT/issues">issue tracker</a>); the token economics post computed the shape of the bill (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>).</p>
-<p><strong>Related.</strong> Is the absence of P4; composes with A1 (naked prompts make vortices more dangerous); is the single-loop form of A10 (the committee paradox).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>No ceiling on iterations, tokens, time, or money; the same failing step retried; the loop &quot;working on it.&quot;</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;It'll converge&quot; — trust the model to stop.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Unbounded token drain and wall-clock burn; an economic failure before a technical one — the tragedy of the commons staged inside one run.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P4 (the throttler), enforced in code — OWASP LLM10, loop-iteration limits, and the honest caveat that reminders are not enforcement.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>AutoGPT's open issue tracker is a museum of the failure (<a target="_blank" rel="noopener noreferrer" href="https://github.com/Significant-Gravitas/AutoGPT/issues">issues</a>); the token economics post computed the shape of the bill (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P4; composes with A1 (naked prompts make vortices more dangerous); is the single-loop form of A10.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The vortex is the throttler's absence made visible — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">tragedy of the commons</a> staged inside one run, where the tokens are free at the point of use and the bill goes to the division. The refactoring is structural, never prompt-based: the ceiling is a property of the harness, and the meter is what makes any mechanism possible.</p>
 <p><strong>References for this problem.</strong> AutoGPT configuration (<a target="_blank" rel="noopener noreferrer" href="https://docs.agpt.co/classic/configuration/">docs</a>) and issue tracker (<a target="_blank" rel="noopener noreferrer" href="https://github.com/Significant-Gravitas/AutoGPT/issues">issues</a>); OWASP Top 10 — LLM10 Unbounded Consumption (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (runaway-loop guard, prefix caching).</p>
 <h2 id="problem-5--keeping-a-long-session-in-a-lean-window">Problem 5 — Keeping a long session in a lean window</h2>
 <p>Context is finite and conversation is not; raw dumps degrade reasoning. The system must keep the session inside the window — and the frontier has split the answer into three: compression (P5), resets (F3), and the umbrella discipline of context engineering (F6).</p>
 <h3 id="pattern-5--rolling-window-compression">Pattern 5 — Rolling Window Compression</h3>
-<p><strong>Forces.</strong> Fidelity wants the full history; the window wants a summary. Continuity wants in-place compaction; clarity wants a clean slate. The cache wants a stable prefix; the summarizer wants to rewrite it.</p>
-<p><strong>Solution.</strong> Automatically summarize older conversation histories in background threads to keep the active context window lean.</p>
-<p><strong>Consequences.</strong> Long sessions become possible at bounded cost. The pattern is a paging discipline: the context window is RAM, the log is disk, the summary is the page table. It is the practical implementation of MemGPT's virtual context management (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">MemGPT</a>).</p>
-<p><strong>Tradeoffs.</strong> Summaries lose detail, and the loss is permanent unless the source log is preserved — which is why compression and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">append-only log</a> must be separate layers. Compaction preserves continuity but not a clean slate: Anthropic's 2026 harness work found models exhibit &quot;context anxiety&quot; — &quot;beginning to wrap up work prematurely as they approach what they believe is their context limit&quot; — and compaction alone did not fix it (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">harness design for long-running application development</a>). And every compaction is a billing event: if the summarization call is not a genuine prefix-extension of the warm request, it pays full price for the whole replayed history — the exact bug DeepSeek's compaction fix corrected (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Evidence.</strong> MemGPT formalized virtual context management with OS-style memory tiers (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">paper</a>); DeepSeek's compaction engine produces the Claude-shaped eight-section checkpoint as a trailing prefix-extension message (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>); Anthropic documents the context-anxiety failure mode and the reset alternative (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">frontier</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A4; conflicts with and composes with the append-only log (first edition); pairs with F3 (context resets) as the two answers to the filling window.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Fidelity wants the full history; the window wants a summary. Continuity wants in-place compaction; clarity wants a clean slate. The cache wants a stable prefix; the summarizer wants to rewrite it.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Automatically summarize older conversation histories in background threads to keep the active context window lean.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Long sessions become possible at bounded cost. The pattern is a paging discipline: the context window is RAM, the log is disk, the summary is the page table. It is the practical implementation of MemGPT's virtual context management.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Summaries lose detail, and the loss is permanent unless the source log is preserved — which is why compression and the append-only log must be separate layers. Compaction preserves continuity but not a clean slate: models exhibit &quot;context anxiety&quot; and compaction alone does not fix it. Every compaction is a billing event unless it is a genuine prefix-extension of the warm request.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>MemGPT formalized virtual context management (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">paper</a>); DeepSeek's compaction engine produces the Claude-shaped eight-section checkpoint as a trailing prefix-extension, with the rejected alternative (a fresh system prompt at the front) documented as a bug (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>); Anthropic documents the context-anxiety failure mode and the reset alternative (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A4; conflicts with and composes with the append-only log (first edition); pairs with F3 as the two answers to the filling window.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Compression is a paging discipline — the window is RAM, the log is disk, the summary is the page table — and it works only as a <em>projection over an immutable log</em>. If the summarizer rewrites history, the past becomes negotiable and the cache prefix dies; that is the boundary the append-only log exists to hold. Anthropic's context-anxiety finding is the other boundary: compaction preserves continuity but not a clean slate, which is why the frontier pair F3 (resets) exists, and why F6 (context engineering) is the umbrella that decides which one to use when.</p>
 <h3 id="anti-pattern-4--the-context-avalanche-memory-dumping">Anti-Pattern 4 — The Context Avalanche (Memory Dumping)</h3>
-<p><strong>Smell.</strong> Raw logs, every tool output, and full transcripts in the history; context perpetually near capacity; performance degrading as the session grows.</p>
-<p><strong>Anti-solution.</strong> &quot;Long context solves it&quot; — dump everything and let the model sort it out.</p>
-<p><strong>Failure.</strong> Model performance degrades significantly when relevant information sits in the middle of a long input context; performance is highest at the beginning and end (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a>). A filled context is not a well-informed agent — it is a degraded one that reads the middle worst exactly when the middle holds the answer.</p>
-<p><strong>Refactoring.</strong> P5 (rolling window compression) over a <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">derived view</a>: 44 event types in the DeepSeek log, exactly three visible to the model — &quot;the system never stores the conversation it sends; it recomputes the model's context from the log.&quot;</p>
-<p><strong>Evidence.</strong> Liu et al., <em>Lost in the Middle</em> (Stanford, 2023) (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">paper</a>); the DeepSeek logged-surface invariant (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Is the absence of P5 and P8; is the substrate of A11 (the god agent) and the retrieval form of A6.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Raw logs, every tool output, and full transcripts in the history; context perpetually near capacity; performance degrading as the session grows.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;Long context solves it&quot; — dump everything and let the model sort it out.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Model performance degrades significantly when relevant information sits in the middle of a long input context; performance is highest at the beginning and end. A filled context is a degraded one that reads the middle worst exactly when the middle holds the answer.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P5 over a derived view: 44 event types in the DeepSeek log, exactly three visible to the model — &quot;the system never stores the conversation it sends; it recomputes the model's context from the log.&quot;</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Liu et al., <em>Lost in the Middle</em> (Stanford, 2023) (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">paper</a>); the DeepSeek logged-surface invariant (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P5 and P8; is the substrate of A11 and the retrieval form of A6.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The avalanche is the claim that long context solves everything, falsified by <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a>: performance is highest at the ends and degrades in the middle, so a filled context is not a well-informed system — it is a degraded one. The fix is the derived view, and the derived view is the systems argument in miniature: the model never sees the raw stream, only what the harness derives from it.</p>
 <h3 id="frontier-3--context-resets-with-handoff-artifacts">Frontier 3 — Context Resets with Handoff Artifacts</h3>
-<p><strong>Problem.</strong> Models lose coherence as the context window fills — &quot;context anxiety&quot;: &quot;beginning to wrap up work prematurely as they approach what they believe is their context limit.&quot; Compaction preserves continuity but not a clean slate, and for Sonnet 4.5 compaction alone was insufficient.</p>
-<p><strong>Forces.</strong> Continuity wants compaction; clarity wants a reset. State wants to survive; the window wants to be emptied. Cost wants fewer calls; quality wants the clean slate.</p>
-<p><strong>Solution.</strong> Distinguish <em>compaction</em> (summarize in place, same agent continues) from <em>context resets</em> (clear the context entirely, hand state to a fresh agent through a structured artifact). Use the reset when the model exhibits context anxiety.</p>
-<p><strong>Consequences.</strong> &quot;A reset provides a clean slate, at the cost of the handoff artifact having enough state for the next agent to pick up the work cleanly.&quot; This is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">append-only log</a> argument at the session boundary: the log never rewrites, and the handoff artifact is a new prefix, not an edit.</p>
-<p><strong>Tradeoffs.</strong> Resets add &quot;orchestration complexity, token overhead, and latency to each harness run.&quot; And the frontier twist: Opus 4.5 &quot;largely removed that behavior on its own,&quot; so the harness could drop resets entirely — the pattern is a function of the model, not just the system.</p>
-<p><strong>Evidence.</strong> Anthropic's harness work (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</p>
-<p><strong>Related.</strong> Is the companion of P5 (compression); composes with P13 (the reset is the delegation handoff); its umbrella is F6.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Continuity wants compaction; clarity wants a reset. State wants to survive; the window wants to be emptied. Cost wants fewer calls; quality wants the clean slate.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Distinguish <em>compaction</em> (summarize in place, same agent continues) from <em>context resets</em> (clear the context entirely, hand state to a fresh agent through a structured artifact). Use the reset when the model exhibits context anxiety.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>&quot;A reset provides a clean slate, at the cost of the handoff artifact having enough state for the next agent to pick up the work cleanly.&quot; This is the append-only-log argument at the session boundary: the log never rewrites, and the handoff artifact is a new prefix, not an edit.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Resets add orchestration complexity, token overhead, and latency. The frontier twist: Opus 4.5 &quot;largely removed that behavior on its own,&quot; so the harness could drop resets entirely — the pattern is a function of the model, not just the system.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Anthropic's harness work (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Companion of P5; composes with P13 (the reset is the delegation handoff); umbrella is F6.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Resets are the stronger answer to the filling window: they trade continuity for a clean slate, and they exist because of context anxiety — models &quot;begin wrapping up work prematurely as they approach what they believe is their context limit.&quot; The pattern's frontier twist is the most honest statement in this catalog about the boundary between model and system: whether resets are needed is a function of the model generation, which means the harness design is coupled to the model's psychology, and the harness must be re-examined every time the model changes.</p>
 <h3 id="frontier-6--context-engineering">Frontier 6 — Context Engineering</h3>
-<p><strong>Problem.</strong> The system's behavior is decided by the configuration of tokens at inference time — the entire context state, not the prompt. Prompt engineering optimizes the wrong unit.</p>
-<p><strong>Forces.</strong> Prompting wants the right words; context wants the right state. The window wants curation; the loop wants accumulation.</p>
-<p><strong>Solution.</strong> Treat context engineering as the discipline of answering &quot;what configuration of context is most likely to generate our model's desired behavior?&quot; — curating the entire context state (system instructions, tools, MCP servers, external data, message history) as it evolves over turns (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic — Effective context engineering for AI agents</a>).</p>
-<p><strong>Consequences.</strong> The unit of design becomes the system's context state — which is the systems argument of this post in one sentence. &quot;In contrast to the discrete task of writing a prompt, context engineering is iterative&quot; and spans the whole runtime: this is P5, P6, and F3 unified under one discipline.</p>
-<p><strong>Tradeoffs.</strong> The context is a moving target that must be &quot;cyclically refined&quot; — and every refinement is a potential cache-prefix violation and a potential governance gap (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">token economics</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Evidence.</strong> Anthropic, <em>Effective context engineering for AI agents</em> (September 2025) (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">post</a>).</p>
-<p><strong>Related.</strong> Is the umbrella over P5, P6, F3; is the memory family's frontier expression of &quot;the system, not the agent.&quot;</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Prompting wants the right words; context wants the right state. The window wants curation; the loop wants accumulation.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Treat context engineering as answering &quot;what configuration of context is most likely to generate our model's desired behavior?&quot; — curating the entire context state (system instructions, tools, MCP servers, external data, message history) as it evolves over turns.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The unit of design becomes the system's context state — the systems argument of this post in one sentence. Context engineering spans the whole runtime: P5, P6, and F3 unified under one discipline.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>The context is a moving target that must be &quot;cyclically refined&quot; — and every refinement is a potential cache-prefix violation and a potential governance gap.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Anthropic, <em>Effective context engineering for AI agents</em> (September 2025) (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Umbrella over P5, P6, F3; the memory family's frontier expression of &quot;the system, not the agent.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Context engineering is prompt engineering's successor, and it is the systems argument in one sentence: the unit of design is the entire context state — not the words of the prompt but the configuration of everything the model sees. That is why it belongs in this catalog as the umbrella over the memory problem: P5 decides what gets compressed, P6 decides what gets injected, F3 decides when to reset, and F6 is the discipline that coordinates all three against the two constraints every one of them must respect — the cache prefix and the governance gap.</p>
 <p><strong>References for this problem.</strong> MemGPT (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">arXiv:2310.08560</a>); Liu et al., Lost in the Middle (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a>); Anthropic, Effective context engineering for AI agents (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">post</a>); Anthropic, Harness design for long-running application development (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (compaction, logged-surface invariant), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
 <h2 id="problem-6--choosing-what-context-to-inject">Problem 6 — Choosing what context to inject</h2>
 <p>Not every retrieved fact belongs in every prompt. Retrieval without judgment drowns the instruction — and every injected chunk is untrusted input. The system must decide, and the decision cannot be the model's.</p>
 <h3 id="pattern-6--semantic-memory-router">Pattern 6 — Semantic Memory Router</h3>
-<p><strong>Forces.</strong> Grounding wants relevant facts; focus wants them selected. Freshness wants live retrieval; the cache wants a stable prefix. Utility wants injected context; security wants retrieved content treated as untrusted input.</p>
-<p><strong>Solution.</strong> Intercept ongoing tasks, query vector stores, and inject context fragments just-in-time into the agent's prompt.</p>
-<p><strong>Consequences.</strong> Answers get grounded; the prompt stays lean; attention is curated by the system rather than dumped by default. Injected context is the highest-leverage observation there is — &quot;every line your CLI emits is an observation your agent reasons over&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</p>
-<p><strong>Tradeoffs.</strong> The router is a point of failure and a point of attack: retrieved content is untrusted input, and prompt injection through a vector store is the vector of choice (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM08:2025 Vector and Embedding Weaknesses</a>). Just-in-time injection competes with <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">prefix-cache discipline</a> — context that changes every turn destroys the cache bookmark unless the injected region sits outside the prefix. And retrieval quality is decided by chunking, metadata filtering, and reranking, not by top-K volume — which is the difference between this pattern and its anti-pattern A6.</p>
-<p><strong>Evidence.</strong> Pinecone's RAG guides are the reference architecture (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/retrieval-augmented-generation/">Retrieval-Augmented Generation</a>); the always-on survey's provenance and authority axes define what the router must track about the state it injects (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A6; composes with P8 (the tiers are the router's stores); the governance it inherits is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on</a> authority question.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Grounding wants relevant facts; focus wants them selected. Freshness wants live retrieval; the cache wants a stable prefix. Utility wants injected context; security wants retrieved content treated as untrusted input.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Intercept ongoing tasks, query vector stores, and inject context fragments just-in-time into the agent's prompt.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Answers get grounded; the prompt stays lean; attention is curated by the system rather than dumped by default. Injected context is the highest-leverage observation there is.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>The router is a point of failure and a point of attack: prompt injection through a vector store is the vector of choice (OWASP LLM08). Just-in-time injection competes with prefix-cache discipline. Retrieval quality is decided by chunking, metadata filtering, and reranking, not top-K volume.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Pinecone's RAG guides are the reference architecture (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/retrieval-augmented-generation/">Retrieval-Augmented Generation</a>); the always-on survey's provenance and authority axes define what the router must track about the state it injects (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A6; composes with P8 (the tiers are the router's stores).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The router is the decision layer RAG was missing: not every retrieved fact belongs in every prompt, and the decision cannot be the model's because the model cannot see what it was not shown. The mechanism is curation — chunking, metadata filtering, reranking — and the security corollary is that retrieved content is untrusted input, which makes the router both the grounding layer and the injection surface. &quot;Every line your CLI emits is an observation your agent reasons over&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>); injected context is the highest-leverage observation there is, and the highest-leverage attack.</p>
 <h3 id="anti-pattern-6--the-rag-firehose">Anti-Pattern 6 — The RAG Firehose</h3>
-<p><strong>Smell.</strong> Top-K chunks injected by raw keyword match; the user instruction buried; retrieval results dominating the prompt.</p>
-<p><strong>Anti-solution.</strong> &quot;More chunks equals better grounding.&quot;</p>
-<p><strong>Failure.</strong> Retrieval without judgment drowns the instruction — and the instruction sits in the middle, which is exactly where <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a> predicts degradation. Every injected chunk is untrusted input, making the firehose an injection vector (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM08:2025 Vector and Embedding Weaknesses</a>).</p>
-<p><strong>Refactoring.</strong> P6 (the semantic memory router) with chunking, metadata filtering, and reranking deciding what is injected (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">Pinecone advanced RAG</a>).</p>
-<p><strong>Evidence.</strong> Pinecone's advanced RAG guide is the counter-documentation (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">chunking &amp; metadata filtering</a>); OWASP's vector-and-embedding entry documents the attack (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM Top 10</a>).</p>
-<p><strong>Related.</strong> Is the absence of P6; composes with A4 (the firehose is the avalanche's retrieval form).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Top-K chunks injected by raw keyword match; the user instruction buried; retrieval results dominating the prompt.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;More chunks equals better grounding.&quot;</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Retrieval without judgment drowns the instruction — and the instruction sits in the middle, exactly where Lost in the Middle predicts degradation. Every injected chunk is untrusted input, making the firehose an injection vector.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P6 with chunking, metadata filtering, and reranking deciding what is injected.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Pinecone's advanced RAG guide (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">chunking &amp; metadata filtering</a>); OWASP LLM08 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P6; composes with A4 (the firehose is the avalanche's retrieval form).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The firehose is retrieval without judgment: top-K by raw keyword match, drowning the instruction. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a> predicts exactly where the failure lands — the instruction sits in the middle of the injected flood — and OWASP LLM08 names the attack: every injected chunk is untrusted, so the firehose is also an injection vector. The refactoring is P6, and the discipline is the same one the whole catalog keeps returning to: the system curates what the model sees.</p>
 <p><strong>References for this problem.</strong> Pinecone RAG guide (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/retrieval-augmented-generation/">learn</a>) and advanced RAG (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">learn</a>); OWASP Top 10 — LLM08 Vector and Embedding Weaknesses (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Liu et al., Lost in the Middle (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (prefix caching).</p>
 <h2 id="problem-7--making-state-survive-and-giving-it-homes">Problem 7 — Making state survive and giving it homes</h2>
 <p>State must survive crashes and error loops, and different state types need different lifetimes. The system must remember across turns, crashes, and sessions — the survival half (P7) and the organization half (P8) are two patterns for one problem.</p>
 <h3 id="pattern-7--state-snapshot--rollback">Pattern 7 — State Snapshot &amp; Rollback</h3>
-<p><strong>Forces.</strong> Durability wants every step persisted; latency wants none. Exactly-once wants no re-execution; replay wants determinism. The conversation wants to be saved; the world wants to be left alone.</p>
-<p><strong>Solution.</strong> Save complete system state snapshots at checkpoint N, allowing recovery if an agent hits an error loop at step N+3. Completed steps never re-execute; in-flight steps resume from the last checkpoint.</p>
-<p><strong>Consequences.</strong> Crash-proof execution, audit by construction, and the agentic equivalent of a database transaction. This is condition 4 of the durable-daemons pattern made operational (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">durable daemons</a>).</p>
-<p><strong>Tradeoffs.</strong> Snapshots are only as good as their granularity: a snapshot of the <em>conversation</em> does not capture the <em>world</em> — an email sent, a payment moved, a file written outside the boundary. The <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">system boundary</a> argument applies with double force: recovery is promised exactly as wide as the reification. External side effects still require <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">idempotency keys</a>, because replay will re-fire them and only the external system can deduplicate — &quot;a duplicate order loses capital. A duplicate email is embarrassing.&quot; And the rollback itself can be the failure: &quot;recovery guarantees clean removal, but removal still has to be invoked.&quot;</p>
-<p><strong>Evidence.</strong> Temporal is the platform-grade instance — durable execution, workflow state, and deterministic replay (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">Temporal</a>); DBOS turns a single Postgres write into a 1-2 ms checkpoint (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>); the DeepSeek session log makes replay the everyday debugging tool — crash at step 80, recompute and continue from the same log (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A12 (state race conditions); composes with P14 (the blackboard needs the snapshot to be safe); its boundary is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal</a> system boundary.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Durability wants every step persisted; latency wants none. Exactly-once wants no re-execution; replay wants determinism. The conversation wants to be saved; the world wants to be left alone.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Save complete system state snapshots at checkpoint N, allowing recovery if an agent hits an error loop at step N+3. Completed steps never re-execute; in-flight steps resume from the last checkpoint.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Crash-proof execution, audit by construction, and the agentic equivalent of a database transaction — condition 4 of the durable-daemons pattern made operational.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Snapshots are only as good as their granularity: a snapshot of the conversation does not capture the world. Recovery is promised exactly as wide as the reification; external side effects still require idempotency keys. The rollback itself can be the failure: removal must be invoked.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Temporal — durable execution, workflow state, and deterministic replay (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); DBOS turns a single Postgres write into a 1-2 ms checkpoint (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>); the DeepSeek session log makes replay the everyday debugging tool (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A12; composes with P14 (the blackboard needs the snapshot to be safe); its boundary is the spatiotemporal system boundary.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Snapshots are the agentic equivalent of a database transaction, and the boundary is the composability calculus: recovery is promised exactly as wide as the reification (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal composability</a>). A snapshot of the conversation does not capture the world — an email sent, a payment moved — which is why external side effects need <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">idempotency keys</a>: replay will re-fire them and only the external system can deduplicate. &quot;A duplicate order loses capital. A duplicate email is embarrassing.&quot; And the deepest caveat: &quot;recovery guarantees clean removal, but removal still has to be invoked&quot; — the rollback is a system operation, and the system must be able to run it.</p>
 <h3 id="pattern-8--tiered-hierarchical-memory">Pattern 8 — Tiered Hierarchical Memory</h3>
-<p><strong>Forces.</strong> Speed wants RAM; capacity wants disk. Currency wants the hot path; provenance wants the archive. Governance wants per-tier authority; simplicity wants one store.</p>
-<p><strong>Solution.</strong> Divide storage into immediate short-term context, scratchpad workspace, and long-term historical database storage.</p>
-<p><strong>Consequences.</strong> State has homes with different lifetimes — task ledgers, permissions, commitments, provenance, and triggers each fit a tier — and recall happens at the right latency. Modern frameworks formalize the tiers as thread state (short-term) plus a store (long-term), with semantic, episodic, and procedural memory as distinct stores (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/memory">LangGraph memory overview</a>).</p>
-<p><strong>Tradeoffs.</strong> More tiers mean more consistency work: what lives in the scratchpad that should have been promoted, what was deleted from short-term that the long-term still references, and — the hard one — what must be <em>forgotten</em> from all tiers including cached contexts and fine-tuned weights. Tiering fights the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">append-only discipline</a>: a tier that rewrites itself is a tier where the past is negotiable. And the memory is only as good as its index: recall failures are silent, which is why the tiered pattern's most common degeneration is A5.</p>
-<p><strong>Evidence.</strong> Lilian Weng's canonical essay — short-term memory is in-context learning, long-term memory is an external vector store with fast retrieval (<a target="_blank" rel="noopener noreferrer" href="https://lilianweng.github.io/posts/2023-06-23-agent/">LLM Powered Autonomous Agents</a>); the always-on survey's six axes — authority, scope, mutability, provenance, recoverability, actionability — are exactly the questions a tiered design must answer per tier (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A5; supplies the stores for P6 (the router); the governance gap it exposes is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on</a> lifecycle.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Speed wants RAM; capacity wants disk. Currency wants the hot path; provenance wants the archive. Governance wants per-tier authority; simplicity wants one store.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Divide storage into immediate short-term context, scratchpad workspace, and long-term historical database storage.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>State has homes with different lifetimes — task ledgers, permissions, commitments, provenance, and triggers each fit a tier — and recall happens at the right latency. Modern frameworks formalize the tiers as thread state plus a store, with semantic, episodic, and procedural memory as distinct stores.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>More tiers mean more consistency work, and — the hard one — forgetting must be possible from all tiers including cached contexts and fine-tuned weights. Tiering fights the append-only discipline: a tier that rewrites itself is a tier where the past is negotiable. Recall failures are silent.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Lilian Weng's canonical essay — short-term memory is in-context learning, long-term memory is an external vector store with fast retrieval (<a target="_blank" rel="noopener noreferrer" href="https://lilianweng.github.io/posts/2023-06-23-agent/">post</a>); the always-on survey's six axes are exactly the questions a tiered design must answer per tier (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A5; supplies the stores for P6.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Tiers give state homes with different lifetimes — the substrate for the always-on survey's ledgers, permissions, commitments, and provenance. The governance gap is the hard half: forgetting across all tiers, including cached contexts and fine-tuned weights, is the least-solved stage of the state lifecycle (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>). The tiered pattern's discipline is the same as the append-only log's: the tiers are projections, the log is the truth, and any tier that rewrites itself is a tier where the past is negotiable.</p>
 <h3 id="anti-pattern-5--goldfish-amnesia-state-blindness">Anti-Pattern 5 — Goldfish Amnesia (State Blindness)</h3>
-<p><strong>Smell.</strong> A multi-turn loop with no persisted state; identical tool calls repeated; the high-level goal forgotten mid-task.</p>
-<p><strong>Anti-solution.</strong> &quot;The prompt has the goal&quot; — statelessness as simplicity.</p>
-<p><strong>Failure.</strong> A stateless loop is not an agent; it is a request-response function with a longer prompt. Nothing records what was tried, so everything is tried again. The always-on survey's finding is the diagnosis: agents &quot;accumulate state aggressively and have almost no machinery for unwinding it&quot; — and the opposite failure, no state at all, repeats the same tool call (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Refactoring.</strong> P8 (tiered memory) with the state lifecycle made real — write, validate, retrieve, update, forget — and the ledger of what was tried as the minimum viable memory. The durable daemons' conditions 2 and 3 are the specification: &quot;A chatbot fails all three. An always-on agent satisfies them&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">durable daemons definition</a>).</p>
-<p><strong>Evidence.</strong> LangGraph's persistent-state architecture is documented as the thing statelessness is the absence of (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/memory">LangGraph memory</a>); the always-on survey codes 435 papers and finds the governance half missing (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</p>
-<p><strong>Related.</strong> Is the absence of P8; is the delegation risk of P13 (handoffs lose state).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>A multi-turn loop with no persisted state; identical tool calls repeated; the high-level goal forgotten mid-task.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;The prompt has the goal&quot; — statelessness as simplicity.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>A stateless loop is not an agent; it is a request-response function with a longer prompt. Nothing records what was tried, so everything is tried again.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P8 with the state lifecycle made real — write, validate, retrieve, update, forget — and the ledger of what was tried as the minimum viable memory. The durable daemons' conditions 2 and 3 are the specification.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>LangGraph's persistent-state architecture (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/memory">docs</a>); the always-on survey codes 435 papers and finds the governance half missing (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P8; is the delegation risk of P13.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Statelessness is not simplicity; it is a request-response function with a longer prompt. The failure mechanism is the absence of a ledger — nothing records what was tried, so everything is tried again, and the agent &quot;forgets its high-level goal&quot; because the goal lives only in the prompt, competing with everything else in it. The durable daemons' specification is the fix: stateful memory and autonomous action are conditions, not features — &quot;A chatbot fails all three. An always-on agent satisfies them&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">durable daemons definition</a>).</p>
 <p><strong>References for this problem.</strong> Temporal (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); Lilian Weng, LLM Powered Autonomous Agents (<a target="_blank" rel="noopener noreferrer" href="https://lilianweng.github.io/posts/2023-06-23-agent/">post</a>); LangGraph memory overview (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/memory">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons series</a> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">execution</a>), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal composability</a> (system boundary).</p>
 <h2 id="problem-8--typing-tool-output-and-keeping-errors-legible">Problem 8 — Typing tool output and keeping errors legible</h2>
 <p>Model output is text; tools and downstream systems need types. Malformed values fail far from their cause, and swallowed errors become hallucinated successes. The boundary must be typed, and failures must stay legible.</p>
 <h3 id="pattern-9--schema-enforcement--self-correction">Pattern 9 — Schema Enforcement &amp; Self-Correction</h3>
-<p><strong>Forces.</strong> Flexibility wants free text; correctness wants types. Retry wants bounded cost; passing bad data wants none. The log wants append-only corrections; the loop wants no re-requests.</p>
-<p><strong>Solution.</strong> Force raw LLM text into JSON Schema, catching parsing failures and feeding structural fixes back internally.</p>
-<p><strong>Consequences.</strong> A typed contract at the harness boundary — the same contract as <code>--json</code> and exit codes on the way out (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>). Validation failures become part of the log: the correction is an append, not a rewrite, which is exactly what the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">append-only model</a> wants.</p>
-<p><strong>Tradeoffs.</strong> Schema enforcement costs tokens: every failed parse is a retry, and retries are where the bill grows — which is why the pattern must be paired with a cumulative retry budget. Strict schemas over-constrain open-ended output; loose schemas under-catch. And the retry loop is only as good as the error message: a validation error that does not tell the model <em>which field</em> failed produces the same failure again — A7 with extra steps.</p>
-<p><strong>Evidence.</strong> Instructor is the reference implementation — Pydantic validation with <code>max_retries</code> and <code>token_budget</code> bounding the correction cost (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/">Instructor</a>, <a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">retry logic</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A9 and A7; composes with the frozen-request pattern from the first edition (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Flexibility wants free text; correctness wants types. Retry wants bounded cost; passing bad data wants none. The log wants append-only corrections; the loop wants no re-requests.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Force raw LLM text into JSON Schema, catching parsing failures and feeding structural fixes back internally.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>A typed contract at the harness boundary — the same contract as <code>--json</code> and exit codes on the way out. Validation failures become part of the log: the correction is an append, not a rewrite.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Schema enforcement costs tokens: every failed parse is a retry, which is why a cumulative retry budget is part of the pattern. Strict schemas over-constrain open-ended output; loose schemas under-catch. The retry loop is only as good as the error message: it must say <em>which field</em> failed.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Instructor is the reference implementation — Pydantic validation with <code>max_retries</code> and <code>token_budget</code> bounding the correction cost (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/">Instructor</a>, <a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">retry logic</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A9 and A7; composes with the frozen-request pattern from the first edition.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The schema is the grammar of the contract: it converts model output from text to structure at the boundary where the model is still in the loop to fix it — and it does so in the append-only spirit, because the correction is a new log entry, not a rewrite (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The cost is retries, and the retry budget is not an afterthought but a core part of the pattern: unbounded self-correction is the schema version of the vortex, which is why Instructor's <code>token_budget</code> exists.</p>
 <h3 id="anti-pattern-7--the-silent-crash-exception-swallowing">Anti-Pattern 7 — The Silent Crash (Exception Swallowing)</h3>
-<p><strong>Smell.</strong> API errors caught in the background; blank or generic strings returned to the agent; no stderr, no exit-code verdict.</p>
-<p><strong>Anti-solution.</strong> Catch-and-continue: &quot;the agent doesn't need to know about the error.&quot;</p>
-<p><strong>Failure.</strong> A real error becomes a hallucinated success: the agent receives <code>&quot;&quot;</code> or <code>&quot;ok&quot;</code>, cannot see the error, and confidently proceeds on a false premise. The three channels — stdout data, stderr diagnostics, exit code verdict — exist precisely so failures are legible, and swallowing them destroys the contract (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</p>
-<p><strong>Refactoring.</strong> P9 (schema enforcement &amp; self-correction) with errors surfaced to the model with the details needed to correct, bounded by retry and token budgets (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">Instructor error handling</a>); layered checks so failures stay legible — &quot;the planner chose the wrong tool&quot; instead of &quot;the agent failed&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>).</p>
-<p><strong>Evidence.</strong> Instructor's retry mechanics are the documented counter-pattern (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">retrying</a>).</p>
-<p><strong>Related.</strong> Is the absence of P9; feeds A9 (swallowed errors become malformed downstream values).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>API errors caught in the background; blank or generic strings returned to the agent; no stderr, no exit-code verdict.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>Catch-and-continue: &quot;the agent doesn't need to know about the error.&quot;</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>A real error becomes a hallucinated success: the agent receives <code>&quot;&quot;</code> or <code>&quot;ok&quot;</code>, cannot see the error, and confidently proceeds on a false premise. Swallowing errors destroys the stdout/stderr/exit-code contract.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P9 with errors surfaced to the model with the details needed to correct, bounded by retry and token budgets; layered checks so failures stay legible — &quot;the planner chose the wrong tool&quot; instead of &quot;the agent failed.&quot;</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Instructor's retry mechanics are the documented counter-pattern (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">retrying</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P9; feeds A9.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The silent crash converts a real error into a hallucinated success: the agent cannot see the failure, so it confidently proceeds on a false premise. The three channels — stdout data, stderr diagnostics, exit code verdict — exist precisely so failures are legible (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>); swallowing them destroys the contract, and the harness canon's layered checks are the refactoring because failures must be legible at the layer where they occurred.</p>
 <h3 id="anti-pattern-9--the-schema-free-for-all">Anti-Pattern 9 — The Schema Free-for-All</h3>
-<p><strong>Smell.</strong> Complex arguments passed as raw strings; parsing deferred to the consumer; &quot;the model formats it.&quot;</p>
-<p><strong>Anti-solution.</strong> Trust the model's output format.</p>
-<p><strong>Failure.</strong> The parsing problem moves downstream where there is no model to correct it: a malformed date fails in a database insert, a truncated JSON fails in a deserializer, and the error surfaces far from the agent that produced it — A7 with more steps.</p>
-<p><strong>Refactoring.</strong> P9 (schema enforcement at the harness boundary) with validation errors fed back while the model is still in the loop, and the corrections recorded in the append-only log.</p>
-<p><strong>Evidence.</strong> Pydantic exists because unvalidated strings become runtime failures one layer down (<a target="_blank" rel="noopener noreferrer" href="https://docs.pydantic.dev/">Pydantic — core validation</a>).</p>
-<p><strong>Related.</strong> Is the absence of P9; feeds A7's downstream.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Complex arguments passed as raw strings; parsing deferred to the consumer; &quot;the model formats it.&quot;</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>Trust the model's output format.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>The parsing problem moves downstream where there is no model to correct it: a malformed date fails in a database insert, a truncated JSON fails in a deserializer, and the error surfaces far from the agent that produced it.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P9 at the harness boundary, with validation errors fed back while the model is still in the loop and the corrections recorded in the append-only log.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Pydantic exists because unvalidated strings become runtime failures one layer down (<a target="_blank" rel="noopener noreferrer" href="https://docs.pydantic.dev/">docs</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P9; feeds A7's downstream.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The free-for-all moves the parsing problem downstream, where there is no model to correct it and the error surfaces far from its cause — the silent crash with more steps. Pydantic's existence is the evidence: unvalidated strings become runtime failures one layer down. The refactoring is enforcement at the boundary, where the model is still in the loop and the correction can be an append rather than a post-mortem.</p>
 <p><strong>References for this problem.</strong> Instructor (<a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/">docs</a>, <a target="_blank" rel="noopener noreferrer" href="https://python.useinstructor.com/concepts/retrying/">retry logic</a>); Pydantic core validation (<a target="_blank" rel="noopener noreferrer" href="https://docs.pydantic.dev/">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a> (stdout/stderr/exit-code contract), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a> (layered checks), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (frozen request).</p>
 <h2 id="problem-9--not-blocking-the-loop-on-long-tools">Problem 9 — Not blocking the loop on long tools</h2>
 <p>Some tools take minutes. The loop must stay live while the work happens elsewhere, and cancellation must be a contract. There is no named anti-pattern for this problem; its failure modes — the blocking loop and the abandoned worker — are covered in the tradeoffs.</p>
 <h3 id="pattern-10--asynchronous-tool-worker-queue">Pattern 10 — Asynchronous Tool Worker Queue</h3>
-<p><strong>Forces.</strong> Responsiveness wants the loop unblocked; correctness wants the result. Asynchrony wants a tracking ID; consistency wants the work done. Cancellation wants a contract; the worker wants to finish.</p>
-<p><strong>Solution.</strong> Offload long-running processes to background task workers and hand a tracking ID to the looping agent.</p>
-<p><strong>Consequences.</strong> The loop stays live; the context holds a tracking ID instead of a worker's output, so the output does not occupy the window until it is ready. A worker queue is a daemon that satisfies all four durable-daemon conditions, and the tracking ID is the shared state another daemon observes (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>).</p>
-<p><strong>Tradeoffs.</strong> Asynchrony introduces the consistency problems of A12: the agent may finish before the worker does, may poll the wrong ID, or may be torn down while the worker is still running — which is why cancellation must be a contract (the DeepSeek distinction between <code>ABORTED_BEFORE_DISPATCH</code> and <code>ABORTED</code>, so &quot;cancellation never abandons the body&quot;). The queue needs exactly-once or idempotent workers, because a retried task can double-execute. And every queue is infrastructure: brokers, workers, visibility timeouts, and dead-letter handling that the system team owns forever.</p>
-<p><strong>Evidence.</strong> Celery is the production standard for background task execution (<a target="_blank" rel="noopener noreferrer" href="https://docs.celeryq.dev/en/stable/getting-started/introduction.html">Celery — distributed task queue</a>); DeepSeek's cancellation contract is the harness-side discipline (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Composes with P7 (the queue's workers need durability) and P14 (the blackboard's slow writers); its consistency risk is A12.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Responsiveness wants the loop unblocked; correctness wants the result. Asynchrony wants a tracking ID; consistency wants the work done. Cancellation wants a contract; the worker wants to finish.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Offload long-running processes to background task workers and hand a tracking ID to the looping agent.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The loop stays live; the context holds a tracking ID instead of a worker's output, so the output does not occupy the window until it is ready. A worker queue is a daemon that satisfies all four durable-daemon conditions.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Asynchrony introduces the consistency problems of A12. Cancellation must be a contract — the DeepSeek distinction between <code>ABORTED_BEFORE_DISPATCH</code> and <code>ABORTED</code>, so &quot;cancellation never abandons the body.&quot; Workers must be exactly-once or idempotent. And every queue is infrastructure the system team owns forever.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Celery is the production standard for background task execution (<a target="_blank" rel="noopener noreferrer" href="https://docs.celeryq.dev/en/stable/getting-started/introduction.html">docs</a>); DeepSeek's cancellation contract is the harness-side discipline (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P7 (the queue's workers need durability) and P14 (the blackboard's slow writers); its consistency risk is A12.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The queue decouples the loop from the tool: the agent holds a tracking ID, not the worker's output, so the window stays lean and the loop stays live — the context-budgeting benefit is as important as the latency one. The cost is consistency: cancellation must be a contract because an abandoned worker is a silent side effect, workers must be idempotent because a retried task double-executes, and the queue is infrastructure — brokers, visibility timeouts, dead-letter handling — that the team owns forever, which is exactly the kind of boring, reliable pipeline the harness canon recommends.</p>
 <p><strong>References for this problem.</strong> Celery — distributed task queue (<a target="_blank" rel="noopener noreferrer" href="https://docs.celeryq.dev/en/stable/getting-started/introduction.html">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (cancellation contract, around-dispatch wrappers), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a> (exactly-once, choreography).</p>
 <h2 id="problem-10--making-the-fast-loop-repeatable">Problem 10 — Making the fast loop repeatable</h2>
 <p>Real APIs are slow, flaky, and costly; the system needs deterministic replay at scale. There is no named anti-pattern for this problem; its failure mode — the mock that drifts from production — is covered in the tradeoffs.</p>
 <h3 id="pattern-11--mock-tool-virtualization">Pattern 11 — Mock Tool Virtualization</h3>
-<p><strong>Forces.</strong> Fidelity wants the real API; repeatability wants it frozen. Speed wants mocks; honesty wants drift detection. Determinism wants replay; realism wants live.</p>
-<p><strong>Solution.</strong> Swap production APIs out for lightweight mock responses inside development environments during multi-agent unit testing routines.</p>
-<p><strong>Consequences.</strong> Deterministic replay becomes possible — &quot;a harness that cannot reproduce a run cannot measure a change&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">data-driven design</a>) — and the sample sizes data-driven design demands become affordable. This is the enabling condition for the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">tasks-that-fight-back</a> fast loop.</p>
-<p><strong>Tradeoffs.</strong> A mock that drifts from production teaches the agent the wrong lessons — &quot;if every test can be passed by pattern-matching the prompt, you are not measuring the assistant; you are measuring prompt luck.&quot; Mocks hide latency, nondeterminism, and rate limits; an agent trained only against mocks fails the first time it meets a 429. The pattern's honesty rule: mock for the unit test, record for the integration test, real for the eval.</p>
-<p><strong>Evidence.</strong> VCR.py is the record-and-replay reference — the first real call is recorded to cassette, subsequent runs replay it (<a target="_blank" rel="noopener noreferrer" href="https://vcrpy.readthedocs.io/">VCR.py</a>); the harness canon codifies the layering — eval harnesses for fast filtering, task harnesses for realism, agent harnesses for integration (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>).</p>
-<p><strong>Related.</strong> Composes with P10 (mocks are the workers' test doubles); is the fast-loop complement to F5 (live-environment evaluators, the slow loop).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Fidelity wants the real API; repeatability wants it frozen. Speed wants mocks; honesty wants drift detection. Determinism wants replay; realism wants live.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Swap production APIs out for lightweight mock responses inside development environments during multi-agent unit testing routines.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Deterministic replay becomes possible — &quot;a harness that cannot reproduce a run cannot measure a change&quot; — and the sample sizes data-driven design demands become affordable. This is the enabling condition for the tasks-that-fight-back fast loop.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>A mock that drifts from production teaches the agent the wrong lessons. Mocks hide latency, nondeterminism, and rate limits; an agent trained only against mocks fails the first time it meets a 429. The honesty rule: mock for the unit test, record for the integration test, real for the eval.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>VCR.py is the record-and-replay reference (<a target="_blank" rel="noopener noreferrer" href="https://vcrpy.readthedocs.io/">docs</a>); the harness canon codifies the layering — eval harnesses for fast filtering, task harnesses for realism, agent harnesses for integration (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P10 (mocks are the workers' test doubles); fast-loop complement to F5 (the slow loop).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Mocks are how the fast loop gets deterministic replay at the sample sizes data-driven design demands — &quot;a single run is a data point; a thousand runs is a distribution&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">data-driven design</a>). The honesty rule is the whole pattern: a mock that drifts from production teaches the agent the wrong lessons, which is why the cassette must be re-recorded on a schedule and why the final gate must always be real — F5's live environment is this pattern's slow-loop counterpart, and the two are the two ends of the eval → task → agent harness taxonomy.</p>
 <p><strong>References for this problem.</strong> VCR.py (<a target="_blank" rel="noopener noreferrer" href="https://vcrpy.readthedocs.io/">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a> (tasks that fight back, real repos and browsers), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a> (deterministic replay, sample size).</p>
 <h2 id="problem-11--discovering-capabilities-without-bloating-the-prompt">Problem 11 — Discovering capabilities without bloating the prompt</h2>
 <p>Tool spaces grow, and static lists bloat the prompt and confuse selection. Capabilities must be discoverable — and the frontier has standardized the discovery seam itself (F4).</p>
 <h3 id="pattern-12--dynamic-tool-discovery--registry">Pattern 12 — Dynamic Tool Discovery / Registry</h3>
-<p><strong>Forces.</strong> Discoverability wants a catalog; the prompt wants it small. Dynamism wants reordering; the cache wants it fixed. Discovery wants open access; authorization wants a separate gate.</p>
-<p><strong>Solution.</strong> Store tool specs in databases, matching and surfacing capabilities dynamically to the agent based on semantic text queries.</p>
-<p><strong>Consequences.</strong> Many tools can exist behind small prompts; the registry becomes the single source of truth for what the system can do — and the type-graph mirror from the DeepSeek design keeps specs from drifting from implementations (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The registry is also the interop seam: MCP standardizes how tools declare themselves, and the system serves the catalog to the agent mid-session (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">Model Context Protocol</a>).</p>
-<p><strong>Tradeoffs.</strong> The registry is a new attack surface: every registered tool is a target for <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">prompt injection through tool descriptions</a>, and a registry that surfaces too many tools produces A8. Dynamic discovery fights prefix stability — tool lists that reorder by relevance invalidate the cache prefix (the DeepSeek cache trio includes &quot;sort tool descriptions in one fixed order&quot;). And the Toolformer lesson is the boundary: the model should learn <em>which</em> tool, but the system should not trust it with <em>all</em> tools — discovery and authorization are separate seams.</p>
-<p><strong>Evidence.</strong> Toolformer showed models can learn tool selection (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.04761">Toolformer</a>); the DeepSeek capability seam — Service Definition, Providers, Consumer behind a stable context key, with static start-time capability advertisement (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>) — is the pattern's canonical form; MCP is the protocol face (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">architecture</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A8; composes with P2 (the gatekeeper authorizes what the registry discovered); is the runtime face of the capability-seam pattern from the first edition.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Discoverability wants a catalog; the prompt wants it small. Dynamism wants reordering; the cache wants it fixed. Discovery wants open access; authorization wants a separate gate.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Store tool specs in databases, matching and surfacing capabilities dynamically to the agent based on semantic text queries.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Many tools can exist behind small prompts; the registry becomes the single source of truth for what the system can do, and the type-graph mirror keeps specs from drifting from implementations. The registry is also the interop seam: MCP standardizes how tools declare themselves.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>The registry is a new attack surface — every registered tool is a target for prompt injection through tool descriptions. Dynamic discovery fights prefix stability: tool lists that reorder by relevance invalidate the cache prefix. Discovery and authorization are separate seams.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Toolformer showed models can learn tool selection (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.04761">paper</a>); the DeepSeek capability seam — Service Definition, Providers, Consumer behind a stable context key (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>) — is the canonical form; MCP is the protocol face (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">architecture</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A8; composes with P2 (the gatekeeper authorizes what the registry discovered).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The registry is the capability seam made discoverable: many tools behind small prompts, with the type-graph mirror keeping specs from drifting from implementations — the DeepSeek Typert mechanism is the enforcement half of this pattern (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The two boundaries are the interesting parts: discovery is not authorization (the gatekeeper still decides what the registry surfaced may do), and the tool list must not reorder, or the cache prefix dies — the registry and the bill are the same seam.</p>
 <h3 id="anti-pattern-8--bloated-utility-belt-tool-over-provisioning">Anti-Pattern 8 — Bloated Utility Belt (Tool Over-Provisioning)</h3>
-<p><strong>Smell.</strong> Dozens of complex tools per agent; incorrect tool selection; the model &quot;forgetting&quot; tools exist.</p>
-<p><strong>Anti-solution.</strong> &quot;More tools equals more capable.&quot;</p>
-<p><strong>Failure.</strong> Every tool in the prompt is a decision the model must make; a bloated registry turns tool selection into a needle-in-a-haystack retrieval problem that models lose. Toolformer's research line and SWE-agent's ACI work both found the same thing: fewer, better-shaped tools beat more tools.</p>
-<p><strong>Refactoring.</strong> P12 (the registry) with per-session tool compositions — DeepSeek's presets are per-session compositions, and code mode replaces the tool list with a generated SDK entirely (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). The SWE-agent result is the anchor: with the same model, a minimal well-designed ACI more than doubled state-of-the-art (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</p>
-<p><strong>Evidence.</strong> Toolformer (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.04761">paper</a>); SWE-agent's ACI (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</p>
-<p><strong>Related.</strong> Is the absence of P12; is the tool-scale form of A11 (the god agent).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Dozens of complex tools per agent; incorrect tool selection; the model &quot;forgetting&quot; tools exist.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;More tools equals more capable.&quot;</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Every tool in the prompt is a decision the model must make; a bloated registry turns tool selection into a needle-in-a-haystack retrieval problem that models lose. Fewer, better-shaped tools beat more tools.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P12 with per-session tool compositions — DeepSeek's presets are per-session compositions, and code mode replaces the tool list with a generated SDK entirely.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Toolformer (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.04761">paper</a>); SWE-agent's ACI (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P12; is the tool-scale form of A11.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Every tool in the prompt is a decision the model must make, and a bloated registry turns selection into a needle-in-a-haystack retrieval problem that models lose — the SWE-agent result is the anchor: with the same model, a minimal, well-designed interface more than doubled state-of-the-art (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>). The refactoring is the registry plus per-session composition: present only what the task needs, let discovery find the rest, and never dump the whole catalog into the context.</p>
 <h3 id="frontier-4--the-interop-layer-mcp-acp-agentsmd">Frontier 4 — The Interop Layer: MCP, ACP, AGENTS.md</h3>
-<p><strong>Problem.</strong> Every harness re-implements the same seams: how tools declare themselves, how editors and agents connect, where agent instructions live. The system needs the seams to be standard.</p>
-<p><strong>Forces.</strong> Interoperability wants open protocols; vendors want moats. Portability wants standards; integration wants control.</p>
-<p><strong>Solution.</strong> Adopt the emerging protocol layer: <a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">MCP</a> for tool declaration and execution, <a target="_blank" rel="noopener noreferrer" href="https://agentclientprotocol.com/">ACP</a> for editor-agent connection (&quot;each editor must build custom integrations for every agent&quot; stops being the default), and <a target="_blank" rel="noopener noreferrer" href="https://agents.md/">AGENTS.md</a> — &quot;a README for agents,&quot; used by over 60,000 open-source projects — for where agent instructions live.</p>
-<p><strong>Consequences.</strong> The seam becomes the ecosystem: DeepSeek runs unmodified Claude Code hooks and mounts rival harnesses as subagent providers rather than reimplementing them (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>). This blog's DeepSeek teardown named the strategy <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">interop-as-product-strategy</a>: &quot;when a vendor adopts its rivals' formats, your files become portable, whichever harness you run.&quot;</p>
-<p><strong>Tradeoffs.</strong> Every protocol you adopt is a contract you do not control, and every standard is a boundary where a substitution can hide — the supply-chain argument from <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>.</p>
-<p><strong>Evidence.</strong> MCP architecture (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">docs</a>); ACP (<a target="_blank" rel="noopener noreferrer" href="https://agentclientprotocol.com/">agentclientprotocol.com</a>); AGENTS.md (<a target="_blank" rel="noopener noreferrer" href="https://agents.md/">agents.md</a>).</p>
-<p><strong>Related.</strong> Is the protocol face of P12 (the registry); is the interop layer for P13 (providers mount by standard).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Interoperability wants open protocols; vendors want moats. Portability wants standards; integration wants control.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Adopt the emerging protocol layer: MCP for tool declaration and execution, ACP for editor-agent connection, and AGENTS.md — &quot;a README for agents,&quot; used by over 60,000 open-source projects — for where agent instructions live.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The seam becomes the ecosystem: DeepSeek runs unmodified Claude Code hooks and mounts rival harnesses as subagent providers rather than reimplementing them. When a vendor adopts its rivals' formats, your files become portable, whichever harness you run.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Every protocol you adopt is a contract you do not control, and every standard is a boundary where a substitution can hide.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>MCP architecture (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">docs</a>); ACP (<a target="_blank" rel="noopener noreferrer" href="https://agentclientprotocol.com/">agentclientprotocol.com</a>); AGENTS.md (<a target="_blank" rel="noopener noreferrer" href="https://agents.md/">agents.md</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Protocol face of P12; interop layer for P13.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The interop layer is the seam becoming the ecosystem: when the community standardizes the protocol, the harness that implements the standard inherits the ecosystem. DeepSeek's interop-as-product-strategy is the individual case — &quot;when a vendor adopts its rivals' formats, your files become portable, whichever harness you run&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>) — and MCP, ACP, and AGENTS.md are the collective ones. The tradeoff is the supply chain: every standard is a boundary where a substitution can hide (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>), which is the price of the seam.</p>
 <p><strong>References for this problem.</strong> Toolformer (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.04761">arXiv:2302.04761</a>); Model Context Protocol (<a target="_blank" rel="noopener noreferrer" href="https://modelcontextprotocol.io/docs/learn/architecture">architecture</a>); Agent Client Protocol (<a target="_blank" rel="noopener noreferrer" href="https://agentclientprotocol.com/">agentclientprotocol.com</a>); AGENTS.md (<a target="_blank" rel="noopener noreferrer" href="https://agents.md/">agents.md</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (capability seams, Typert, interop-as-strategy), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a> (tool-selection research), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#zero-overhead-is-zero-attack-surface">Zero Overhead Is Zero Attack Surface</a>.</p>
 <h2 id="problem-12--dividing-a-workflow-across-agents">Problem 12 — Dividing a workflow across agents</h2>
 <p>No single context can hold a whole workflow. The work must be divided, delegated, and handed off — and the frontier has added the contract that makes delegation safe (F2).</p>
 <h3 id="pattern-13--orchestrator-worker-boss-worker">Pattern 13 — Orchestrator-Worker (Boss-Worker)</h3>
-<p><strong>Forces.</strong> Context limits want decomposition; coherence wants a single plan. Delegation wants specialists; control wants oversight. Termination wants a rule; conversation wants to continue.</p>
-<p><strong>Solution.</strong> Direct traffic using a highly capable central agent that delegates atomic sub-tasks to smaller, faster, specialized agents.</p>
-<p><strong>Consequences.</strong> Bounded contexts, parallelizable work, and a plan-then-execute shape. The orchestrator is the system's delegation tree curator — the workflow seam where the model writes orchestration scripts with <code>agent()</code> calls under caps (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>) — and the topology of the distillation pattern: a swarm of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">tiny specialists coordinated by a router</a>.</p>
-<p><strong>Tradeoffs.</strong> The orchestrator is a single point of failure: if it mis-delegates, the error cascades downstream — Anthropic deliberately kept its planner's spec high-level because &quot;if the planner tried to specify granular technical details upfront and got something wrong, the errors in the spec would cascade&quot; (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">harness design</a>). Every delegation is a context handoff that can lose state (the A5 risk), and every worker is a new surface for A10 if the delegation loop has no termination condition. The exit condition must be part of the system, not the conversation.</p>
-<p><strong>Evidence.</strong> AutoGen is the reference framework — conversable, customizable agents composed into conversation patterns (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">AutoGen</a>); Anthropic's three-agent architecture — planner, generator, evaluator — is the strongest recent instance (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">harness design</a>); DeepSeek's subagent registry mounts providers by name, including rival harnesses' own binaries (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</p>
-<p><strong>Related.</strong> Is the refactoring for A11; composes with P16 (the ensemble as the delegator's judge) and F2 (sprint contracts as the delegation's contract).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Context limits want decomposition; coherence wants a single plan. Delegation wants specialists; control wants oversight. Termination wants a rule; conversation wants to continue.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Direct traffic using a highly capable central agent that delegates atomic sub-tasks to smaller, faster, specialized agents.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Bounded contexts, parallelizable work, and a plan-then-execute shape. The orchestrator is the delegation tree curator — the workflow seam where the model writes orchestration scripts with <code>agent()</code> calls under caps — and the topology of the distillation pattern.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>The orchestrator is a single point of failure: if it mis-delegates, the error cascades downstream. Every delegation is a context handoff that can lose state (the A5 risk), and every worker is a new surface for A10 if the delegation loop has no termination condition. The exit condition must be part of the system, not the conversation.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>AutoGen (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">paper</a>); Anthropic's three-agent architecture — planner, generator, evaluator (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>); DeepSeek's subagent registry mounts providers by name (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A11; composes with P16 and F2.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Delegation is how a system outgrows one context window: the orchestrator curates a delegation tree instead of drowning in context — a swarm of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">tiny specialists coordinated by a router</a>. The single point of failure is the orchestrator, which is why the spec must stay high-level (Anthropic's planner deliberately avoids granular detail because &quot;errors in the spec would cascade&quot;) and why termination must be a system property. The Anthropic planner-generator-evaluator is the modern template, and F2 is the contract that makes each delegation safe.</p>
 <h3 id="anti-pattern-11--the-god-agent-monolithic-orchestration">Anti-Pattern 11 — The God Agent (Monolithic Orchestration)</h3>
-<p><strong>Smell.</strong> One massive agent with an immense prompt managing every phase of a business workflow; every tool, every rule, every stage in one context window.</p>
-<p><strong>Anti-solution.</strong> &quot;One agent, all context, total control.&quot;</p>
-<p><strong>Failure.</strong> The context avalanche and lost-in-the-middle degradation are guaranteed by construction: one window holding every phase, every tool, and every rule degrades exactly as the middle fills. The bloated utility belt is the tool-scale version of the same error.</p>
-<p><strong>Refactoring.</strong> P13 (orchestrator-worker) with decomposition and handoff: one feature at a time, structured artifacts carrying state between sessions. Anthropic's three-agent architecture — planner, generator, evaluator — is the modern template, and its planner deliberately stays high-level because &quot;errors in the spec would cascade into the downstream implementation&quot; (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">harness design</a>).</p>
-<p><strong>Evidence.</strong> CrewAI's core argument for crews is that role-specialized agents with focused prompts beat one agent doing everything (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/crews">CrewAI — crews</a>).</p>
-<p><strong>Related.</strong> Is the absence of P13; composes A4 and A8.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>One massive agent with an immense prompt managing every phase of a business workflow; every tool, every rule, every stage in one context window.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;One agent, all context, total control.&quot;</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>The context avalanche and lost-in-the-middle degradation are guaranteed by construction: one window holding every phase, every tool, and every rule degrades exactly as the middle fills.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P13 with decomposition and handoff: one feature at a time, structured artifacts carrying state between sessions.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>CrewAI's core argument for crews is that role-specialized agents with focused prompts beat one agent doing everything (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/crews">docs</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P13; composes A4 and A8.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The god agent is the belief that one context can hold everything, falsified by construction: lost-in-the-middle degradation as the window fills, with the bloated utility belt as its tool-scale form. The refactoring is decomposition with handoff — one feature at a time, structured artifacts between sessions — and CrewAI's crews argument is the same claim from the framework side: focused prompts beat one giant prompt. The systems view names the mechanism: the workflow is a system property; one agent's context is a component limit.</p>
 <h3 id="frontier-2--sprint-contracts">Frontier 2 — Sprint Contracts</h3>
-<p><strong>Problem.</strong> Under-specified specs produce over- and under-built artifacts; &quot;done&quot; is discovered after the work, not before.</p>
-<p><strong>Forces.</strong> Specification wants precision; agility wants latitude. Verification wants criteria; creativity wants freedom.</p>
-<p><strong>Solution.</strong> Before each sprint, the generator and evaluator &quot;negotiated a sprint contract: agreeing on what 'done' looked like for that chunk of work before any code was written.&quot; The generator proposes what it will build and how success will be verified; the evaluator reviews the proposal; the two iterate until they agree; only then does the generator build against the contract.</p>
-<p><strong>Consequences.</strong> The spec's ambiguity is resolved at the moment of maximum leverage — before the work exists — and the agent defines the verifier before it defines the artifact, which is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">tasks-that-fight-back</a> principle applied to the contract itself.</p>
-<p><strong>Tradeoffs.</strong> Negotiation overhead — two agents spending tokens agreeing on &quot;done&quot; before any code is written — which is why the contract is bounded to a sprint-sized chunk, not the whole project.</p>
-<p><strong>Evidence.</strong> Anthropic's harness (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</p>
-<p><strong>Related.</strong> Composes with P13 (the delegation's contract) and F1 (the evaluator grades against the contract).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Specification wants precision; agility wants latitude. Verification wants criteria; creativity wants freedom.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Before each sprint, the generator and evaluator &quot;negotiated a sprint contract: agreeing on what 'done' looked like for that chunk of work before any code was written.&quot; The generator proposes what it will build and how success will be verified; the evaluator reviews; they iterate until they agree; only then does the generator build.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The spec's ambiguity is resolved at the moment of maximum leverage — before the work exists. The agent defines the verifier before it defines the artifact: the tasks-that-fight-back principle applied to the contract itself.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Negotiation overhead — two agents spending tokens agreeing on &quot;done&quot; before any code is written — which is why the contract is bounded to a sprint-sized chunk, not the whole project.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Anthropic's harness (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P13 (the delegation's contract) and F1 (the evaluator grades against the contract).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Sprint contracts resolve the spec's ambiguity at the moment of maximum leverage — before the work exists — by having the agent define the verifier before it defines the artifact. This is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">tasks-that-fight-back</a> principle applied to the contract itself: &quot;done&quot; agreed in advance beats &quot;done&quot; discovered after, and the negotiation overhead is the price of the leverage, bounded by keeping the contract to a sprint-sized chunk.</p>
 <p><strong>References for this problem.</strong> AutoGen (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">arXiv:2308.08155</a>); CrewAI crews (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/crews">docs</a>); Anthropic, Harness design for long-running application development (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (workflow seam, subagent registry), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">Agents Aren't Magic. They're Distillation at Scale.</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>.</p>
 <h2 id="problem-13--coordinating-through-shared-state-without-corruption">Problem 13 — Coordinating through shared state without corruption</h2>
 <p>Multiple agents need a shared working memory, and unsynchronized writes corrupt it. The board must be shared and safe at once.</p>
 <h3 id="pattern-14--blackboard-shared-workspace">Pattern 14 — Blackboard (Shared Workspace)</h3>
-<p><strong>Forces.</strong> Sharing wants a unified schema; isolation wants per-agent scopes. Concurrency wants parallel writes; consistency wants ordered ones. Ownership wants a coordinator; choreography wants none.</p>
-<p><strong>Solution.</strong> Connect disjointed agents to a unified state schema where the harness coordinates simultaneous data writes and events.</p>
-<p><strong>Consequences.</strong> Choreography without an orchestrator — &quot;each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>). Conflicts can be detected at write time rather than merge time — GitButler's virtual branches are the version-control face (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>). The blackboard is one of the oldest ideas in AI — the Hearsay-II speech architecture (1970s) — and the agent era reinvented it.</p>
-<p><strong>Tradeoffs.</strong> Shared state is shared risk. The blackboard concentrates A12: simultaneous writes without transactional locks corrupt the state, and the durability of the board decides whether the corruption is recoverable. The blackboard also fights <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">per-agent scope</a> — the tension between isolation and choreography — and the resolution is explicit scope discipline: which state is shared, which is scoped, who owns the boundary. A blackboard without an owner is a tragedy of the commons for state.</p>
-<p><strong>Evidence.</strong> CrewAI's Flows layer formalizes the event-driven, state-managed workflow (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">CrewAI — Flows</a>); the durable-daemons series specifies the choreography through shared state (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">pattern specification</a>); GitButler documents seven multi-agent collaboration patterns on virtual branches (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>).</p>
-<p><strong>Related.</strong> Composes with P7 (the board must be snapshotable) and P10 (the board's slow writers); its ownership question is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on</a> authority axis.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Sharing wants a unified schema; isolation wants per-agent scopes. Concurrency wants parallel writes; consistency wants ordered ones. Ownership wants a coordinator; choreography wants none.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Connect disjointed agents to a unified state schema where the harness coordinates simultaneous data writes and events.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>Choreography without an orchestrator — &quot;each daemon is a process. Each daemon is durable. The choreography is the composition. No orchestrator. Just state.&quot; Conflicts can be detected at write time rather than merge time — GitButler's virtual branches are the version-control face.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Shared state is shared risk: the board concentrates A12. It also fights per-agent scope — the resolution is explicit scope discipline: which state is shared, which is scoped, who owns the boundary. A blackboard without an owner is a tragedy of the commons for state.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>CrewAI's Flows layer formalizes the event-driven, state-managed workflow (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); the durable-daemons series specifies choreography through shared state (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>); GitButler documents seven multi-agent collaboration patterns on virtual branches (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P7 (the board must be snapshotable) and P10 (the board's slow writers).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The blackboard is choreography made concrete — one of the oldest ideas in AI (the Hearsay-II speech architecture, 1970s), reinvented by the agent era as shared state with no orchestrator. The risk is that shared state is shared risk: the board concentrates races, and its durability decides whether corruption is recoverable, which is why P7 (snapshots) composes with it. The ownership question — which state is shared, who owns the boundary — is the least-solved governance problem in the catalog, and the always-on survey's authority axis is the specification.</p>
 <h3 id="anti-pattern-12--state-race-conditions">Anti-Pattern 12 — State Race Conditions</h3>
-<p><strong>Smell.</strong> Asynchronous multi-agent writes to shared memory with no transactional locks; state corruption that appears &quot;random.&quot;</p>
-<p><strong>Anti-solution.</strong> &quot;It usually works&quot; — hope as a concurrency strategy.</p>
-<p><strong>Failure.</strong> Two agents writing the same ledger, one overwriting the other's checkpoint, the state corrupting silently. The blackboard without its harness.</p>
-<p><strong>Refactoring.</strong> P7 (snapshots) with the durability discipline from the durable daemons: writes through a single ordered log, exactly-once within the control boundary, idempotency keys for external effects, and choreography through shared state with clear ownership — &quot;no RPC. No message bus. No central orchestrator&quot; is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>). GitButler's virtual branches detect conflicts at write time, not merge time (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz</a>).</p>
-<p><strong>Evidence.</strong> Temporal's event-sourced, deterministic execution is the standard answer to the race (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">Temporal</a>).</p>
-<p><strong>Related.</strong> Is the absence of P7 and P14's ownership discipline; is the async risk of P10.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Asynchronous multi-agent writes to shared memory with no transactional locks; state corruption that appears &quot;random.&quot;</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;It usually works&quot; — hope as a concurrency strategy.</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Two agents writing the same ledger, one overwriting the other's checkpoint, the state corrupting silently. The blackboard without its harness.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>P7 with the durability discipline: writes through a single ordered log, exactly-once within the control boundary, idempotency keys for external effects, transactional ownership. GitButler's virtual branches detect conflicts at write time.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Temporal's event-sourced, deterministic execution is the standard answer to the race (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P7 and P14's ownership discipline; is the async risk of P10.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The race is the blackboard without its harness: unsynchronized writes to shared memory, corrupting state silently. The fix is the durable-daemons discipline — &quot;no RPC. No message bus. No central orchestrator&quot; is only safe when the shared state itself is the coordination mechanism, and the coordination mechanism must be transactional (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">durable daemons execution</a>). GitButler's virtual branches are the version-control face of the same idea: conflicts detected at write time, not merge time.</p>
 <p><strong>References for this problem.</strong> CrewAI Flows (<a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/en/concepts/flows">docs</a>); Temporal (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons series</a> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-definition">definition</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons-execution">execution</a>), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#buzz-block-agents">Buzz and the Identity Problem</a> (GitButler virtual branches), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a> (per-agent scope), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
 <h2 id="problem-14--keeping-linear-flows-linear">Problem 14 — Keeping linear flows linear</h2>
 <p>Some flows are genuinely linear — classify, transform, emit — and the simplest verifiable shape is the right one. There is no named anti-pattern for this problem; its failure mode — forcing non-linear flows into pipelines — is covered in the tradeoffs.</p>
 <h3 id="pattern-15--sequential-pipeline-routing">Pattern 15 — Sequential Pipeline Routing</h3>
-<p><strong>Forces.</strong> Simplicity wants rigid stages; adaptivity wants branching. Determinism wants fixed routing; robustness wants recovery. Billing wants few calls; quality wants specialized hops.</p>
-<p><strong>Solution.</strong> Pass analytical payloads through rigid linear stages, using LLMs solely for classification or transformation tasks at each hop.</p>
-<p><strong>Consequences.</strong> The easiest harness to verify, replay, and bill: a linear stage where each hop has one job and a deterministic contract, in the spirit of &quot;the most successful implementations use simple, composable patterns rather than complex frameworks&quot; (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/building-effective-agents">Building Effective Agents</a>). Each hop is a tool with a <code>--json</code> contract, exit codes, and honest <code>--help</code> (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>).</p>
-<p><strong>Tradeoffs.</strong> Rigid pipelines cannot route around failure: a stage that misclassifies poisons every downstream stage, and there is no re-planning. Pipelines serialize — the whole flow runs at the speed of its slowest LLM hop, and each hop is a full request (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">token economics</a>). The pattern's own lineage is explicit about the boundary: chains are right when the flow is genuinely linear, wrong when it needs to branch, loop, or recover — which is when P13 or a graph shape wins.</p>
-<p><strong>Evidence.</strong> LangChain's chains are the canonical instance, and the migration-era docs are explicit about when the rigid linear form is right and when it is not (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/versions/migrating_chains/overview/">LangChain Chains</a>).</p>
-<p><strong>Related.</strong> Is the disciplined baseline; is the opposite of A11 at orchestration scale; composes with P9 (each hop's output is schema-enforced).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Simplicity wants rigid stages; adaptivity wants branching. Determinism wants fixed routing; robustness wants recovery. Billing wants few calls; quality wants specialized hops.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Pass analytical payloads through rigid linear stages, using LLMs solely for classification or transformation tasks at each hop.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The easiest harness to verify, replay, and bill: a linear stage where each hop has one job and a deterministic contract, in the spirit of &quot;the most successful implementations use simple, composable patterns rather than complex frameworks.&quot; Each hop is a tool with a <code>--json</code> contract, exit codes, and honest <code>--help</code>.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Rigid pipelines cannot route around failure: a stage that misclassifies poisons every downstream stage. Pipelines serialize — the whole flow runs at the speed of its slowest hop, and each hop is a full request. Chains are right when the flow is linear, wrong when it needs to branch, loop, or recover.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>LangChain's chains are the canonical instance, and the migration-era docs are explicit about when the rigid linear form is right and when it is not (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/versions/migrating_chains/overview/">docs</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the disciplined baseline; the opposite of A11 at orchestration scale; composes with P9.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The pipeline is the disciplined baseline for genuinely linear flows: each hop has one job and a deterministic contract, which makes the system verifiable, replayable, and billable — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#loop-engineering">loop engineering</a> answer to &quot;simple, composable patterns rather than complex frameworks.&quot; The boundary is explicit in the pattern's own lineage: chains are right when the flow is linear, wrong when it needs to branch or recover, which is when P13 or a graph shape wins. The pipeline is not the default for everything; it is the default for the flows that are already linear.</p>
 <p><strong>References for this problem.</strong> LangChain chains (<a target="_blank" rel="noopener noreferrer" href="https://python.langchain.com/docs/versions/migrating_chains/overview/">docs</a>); Anthropic, Building Effective Agents (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/building-effective-agents">post</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#loop-engineering">Loop Engineering</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>.</p>
 <h2 id="problem-15--producing-a-verdict-no-single-model-can-fake">Problem 15 — Producing a verdict no single model can fake</h2>
 <p>One judgment is unreliable, and self-evaluation is reliably lenient. The system must decide what is good without depending on a single model's opinion — and the frontier has evolved the gate into an iterative critic (F1) with hands (F5).</p>
 <h3 id="pattern-16--voting--consensual-ensemble">Pattern 16 — Voting / Consensual Ensemble</h3>
-<p><strong>Forces.</strong> Reliability wants multiple judgments; cost wants one call. Independence wants diverse members; convenience wants one family. Agreement wants a signal; correctness wants ground truth.</p>
-<p><strong>Solution.</strong> Query multiple independent model setups with identical prompts, using harness code to calculate majority agreement on outputs.</p>
-<p><strong>Consequences.</strong> A statistical signal where <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">verifiers are king</a>: multiple independent judgments aggregated by system code instead of one verdict from one model. Majority agreement is a distribution over independent samples — &quot;a single run is a data point; a thousand runs is a distribution&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">data-driven design</a>) — and it replaces self-review with cross-review.</p>
-<p><strong>Tradeoffs.</strong> Ensembles multiply cost linearly and can multiply latency; the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">cost per finished task varies 7x across harnesses</a> before you add an ensemble. Majority agreement is only a strong signal when the members are <em>independent</em> — correlated members (same family, same prompt shape, same failure mode) vote as one and add nothing. And the reference is honest about the limit: human-vote consensus measures preference, not correctness, and an LLM-judge ensemble inherits every bias of its members — &quot;algorithmic verification misses context. Agentic verification hallucinates.&quot; The ensemble is a signal, not a ground truth.</p>
-<p><strong>Evidence.</strong> LMSYS Chatbot Arena / LMArena is the reference for agreement-based evaluation at scale — millions of pairwise votes forming the consensus signal (<a target="_blank" rel="noopener noreferrer" href="https://lmarena.ai/leaderboard">LMArena leaderboard</a>); the mob post's self-review datum motivates it — 79% of 25,264 agent PRs reviewed by the prompting developer (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mob-programming-reimagined">mob programming remastered</a>).</p>
-<p><strong>Related.</strong> Composes with P13 (the ensemble as the delegator's judge); is the aggregation answer to A10; is the statistical cousin of F1.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Reliability wants multiple judgments; cost wants one call. Independence wants diverse members; convenience wants one family. Agreement wants a signal; correctness wants ground truth.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Query multiple independent model setups with identical prompts, using harness code to calculate majority agreement on outputs.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>A statistical signal where verifiers are king: multiple independent judgments aggregated by system code instead of one verdict from one model. Majority agreement is a distribution over independent samples — &quot;a single run is a data point; a thousand runs is a distribution.&quot;</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Ensembles multiply cost linearly and can multiply latency. Majority agreement is only a strong signal when the members are independent — correlated members vote as one and add nothing. Agreement measures preference, not correctness: the ensemble is a signal, not a ground truth.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>LMArena is the reference for agreement-based evaluation at scale (<a target="_blank" rel="noopener noreferrer" href="https://lmarena.ai/leaderboard">leaderboard</a>); the mob post's self-review datum motivates it — 79% of 25,264 agent PRs reviewed by the prompting developer (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mob-programming-reimagined">mob programming remastered</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P13 (the ensemble as the delegator's judge); is the aggregation answer to A10; statistical cousin of F1.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The ensemble is verification made statistical: independent judgments aggregated by code instead of one verdict from one model, replacing self-review with cross-review. The independence requirement is the whole game — correlated members vote as one and add nothing — and the honest limit is that agreement measures preference, not correctness: &quot;algorithmic verification misses context. Agentic verification hallucinates&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">verifiers are king</a>). The ensemble is a signal, never a ground truth, which is why it composes with P13 as the delegator's judge and with F1 as the iterative form of the same separation.</p>
 <h3 id="anti-pattern-10--the-committee-paradox-infinite-multi-agent-debates">Anti-Pattern 10 — The Committee Paradox (Infinite Multi-Agent Debates)</h3>
-<p><strong>Smell.</strong> Two or more autonomous agents reviewing each other's work; no exit condition; the conversation &quot;making progress&quot; without converging.</p>
-<p><strong>Anti-solution.</strong> &quot;More debate equals better decisions.&quot;</p>
-<p><strong>Failure.</strong> Two agents reviewing each other with no exit condition is an infinite loop with a nicer name (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#loop-engineering">Loop Engineering</a>). Tokens burn, no verdict arrives, and the system never terminates.</p>
-<p><strong>Refactoring.</strong> Termination as a system property: a termination condition, a verdict threshold, a budget, or a human breakpoint — and P16's aggregation rule as the shape of disagreement resolution. Review without independence is theater, and review without termination is waste (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mob-programming-reimagined">mob programming remastered</a>).</p>
-<p><strong>Evidence.</strong> AutoGen's framework treats termination as a first-class design concern of multi-agent conversation; the community's infinite-loop reports are the empirical record (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">AutoGen</a>).</p>
-<p><strong>Related.</strong> Is the absence of P13 and P16's termination discipline; is the orchestration form of A2 (the vortex).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smell</strong></td>
+<td>Two or more autonomous agents reviewing each other's work; no exit condition; the conversation &quot;making progress&quot; without converging.</td>
+</tr>
+<tr>
+<td><strong>Anti-solution</strong></td>
+<td>&quot;More debate equals better decisions.&quot;</td>
+</tr>
+<tr>
+<td><strong>Failure</strong></td>
+<td>Two agents reviewing each other with no exit condition is an infinite loop with a nicer name. Tokens burn, no verdict arrives, and the system never terminates.</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>Termination as a system property: a termination condition, a verdict threshold, a budget, or a human breakpoint — and P16's aggregation rule as the shape of disagreement resolution. Review without independence is theater, and review without termination is waste.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>AutoGen's framework treats termination as a first-class design concern of multi-agent conversation (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">paper</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the absence of P13 and P16's termination discipline; is the orchestration form of A2.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The committee is the ensemble without its aggregation rule: agents reviewing each other with no exit condition is an infinite loop with a nicer name (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#loop-engineering">Loop Engineering</a>). Termination must be a system property — a threshold, a budget, a breakpoint — because conversation will not terminate itself; that is the difference between a debate and a decision. Review without independence is theater, and review without termination is waste.</p>
 <h3 id="frontier-1--the-generatorevaluator-loop">Frontier 1 — The Generator–Evaluator Loop</h3>
-<p><strong>Problem.</strong> Self-evaluation is reliably lenient: &quot;when asked to evaluate work they've produced, agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre&quot; (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Anthropic</a>).</p>
-<p><strong>Forces.</strong> Feedback wants independence; convenience wants self-review. Iteration wants speed; quality wants depth. Cost wants few cycles; taste wants many.</p>
-<p><strong>Solution.</strong> Separate the agent doing the work from the agent judging it — a GAN-inspired generator-evaluator loop where the evaluator grades against explicit criteria and the critique flows back as the next iteration's input.</p>
-<p><strong>Consequences.</strong> &quot;The separation doesn't immediately eliminate that leniency on its own; the evaluator is still an LLM that is inclined to be generous towards LLM-generated outputs. But tuning a standalone evaluator to be skeptical turns out to be far more tractable than making a generator critical of its own work.&quot; The frontend experiment ran 5-15 iterations per generation; the full-stack version ran a planner, a generator, and an evaluator for six hours and produced an application the solo run could not approach.</p>
-<p><strong>Tradeoffs.</strong> The harness was &quot;over 20x more expensive&quot; — $200 for six hours against $9 for twenty minutes, same model — and the pattern is only worth it when the output-quality difference justifies the bill. This is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">verifiers are king</a> argument with the verifier given agency: not a gate that blocks, but a critic that iterates.</p>
-<p><strong>Evidence.</strong> Anthropic, <em>Harness design for long-running application development</em> (March 2026) (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</p>
-<p><strong>Related.</strong> Composes with P16 (the ensemble as the evaluator); pairs with F2 (the contract the evaluator grades against).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Feedback wants independence; convenience wants self-review. Iteration wants speed; quality wants depth. Cost wants few cycles; taste wants many.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Separate the agent doing the work from the agent judging it — a GAN-inspired generator-evaluator loop where the evaluator grades against explicit criteria and the critique flows back as the next iteration's input.</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>&quot;Tuning a standalone evaluator to be skeptical turns out to be far more tractable than making a generator critical of its own work.&quot; The frontend experiment ran 5-15 iterations per generation; the full-stack version produced an application the solo run could not approach.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>The harness was &quot;over 20x more expensive&quot; — $200 for six hours against $9 for twenty minutes, same model — and the pattern is only worth it when the output-quality difference justifies the bill.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Anthropic, <em>Harness design for long-running application development</em> (March 2026) (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Composes with P16; pairs with F2 (the contract the evaluator grades against).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> The generator-evaluator loop is the verifier given agency: not a gate that blocks, but a critic that iterates. Its founding observation is self-evaluation leniency — &quot;agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre&quot; — and its structural fix is separation: tuning a standalone skeptical evaluator is tractable where making a generator self-critical is not. The 20x price tag is the pattern's honest boundary: it is only justified when output quality justifies the bill, which is the same cost-benefit the whole verification family lives under.</p>
 <h3 id="frontier-5--live-environment-evaluators">Frontier 5 — Live-Environment Evaluators</h3>
-<p><strong>Problem.</strong> Static verification misses what only use reveals: the artifact &quot;looks impressive but still has real bugs when you actually try to use them&quot; (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Anthropic</a>).</p>
-<p><strong>Forces.</strong> Depth wants live interaction; cost wants static scoring. Reality wants the real system; CI wants speed.</p>
-<p><strong>Solution.</strong> Give the evaluator hands: in Anthropic's harness the evaluator was given the Playwright MCP, &quot;which let it interact with the live page directly before scoring each criterion and writing a detailed critique&quot; — navigating the app, clicking through UI features, testing API endpoints and database states &quot;the way a user would.&quot;</p>
-<p><strong>Consequences.</strong> The verifier does not read the artifact, it <em>uses</em> it — the frontier version of this blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harnesses should observe the whole system</a> principle. Only a verifier with hands finds the solo run's broken entity wiring.</p>
-<p><strong>Tradeoffs.</strong> Wall-clock: &quot;because the evaluator was actively navigating the page rather than scoring a static screenshot, each cycle took real wall-clock time. Full runs stretched up to four hours.&quot; The pattern belongs in the slow loop of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">eval → task → agent harness taxonomy</a>, reserved for the final gate.</p>
-<p><strong>Evidence.</strong> Anthropic's harness (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</p>
-<p><strong>Related.</strong> Is the slow-loop complement of P11 (mocks); composes with F1 (the evaluator's tools).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces</strong></td>
+<td>Depth wants live interaction; cost wants static scoring. Reality wants the real system; CI wants speed.</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>Give the evaluator hands: in Anthropic's harness the evaluator was given the Playwright MCP, &quot;which let it interact with the live page directly before scoring each criterion and writing a detailed critique&quot; — navigating the app, testing UI features, API endpoints, and database states &quot;the way a user would.&quot;</td>
+</tr>
+<tr>
+<td><strong>Consequences</strong></td>
+<td>The verifier does not read the artifact, it <em>uses</em> it — the frontier version of &quot;harnesses should observe the whole system.&quot; Only a verifier with hands finds the solo run's broken entity wiring.</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs</strong></td>
+<td>Wall-clock: &quot;each cycle took real wall-clock time. Full runs stretched up to four hours.&quot; The pattern belongs in the slow loop, reserved for the final gate.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Anthropic's harness (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>).</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Is the slow-loop complement of P11; composes with F1.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion.</strong> Live evaluation is the verifier with hands: it does not read the artifact, it uses it — the frontier version of this blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harnesses should observe the whole system</a> principle. The tradeoff is wall-clock — four-hour runs — which is why it belongs in the slow loop of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">eval → task → agent harness taxonomy</a>, reserved for the final gate. It catches what static verification cannot: the artifact that looks impressive is not the artifact that works, and only a verifier with hands finds the difference.</p>
 <p><strong>References for this problem.</strong> LMArena leaderboard (<a target="_blank" rel="noopener noreferrer" href="https://lmarena.ai/leaderboard">lmarena.ai</a>); AutoGen (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2308.08155">arXiv:2308.08155</a>); Anthropic, Harness design for long-running application development (<a target="_blank" rel="noopener noreferrer" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">post</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#verifiers-are-king-sonar-acdc">In the Land of AI Agents, the Verifiers Are King</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mob-programming-reimagined">Zuill's Mob Programming, Remastered</a> (self-review), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#loop-engineering">Loop Engineering</a>.</p>
 <h1 id="part-ii--how-the-patterns-compose--and-where-they-conflict">Part II — How the patterns compose — and where they conflict</h1>
 <p>The catalog is not a menu; the patterns interact across problems, and some of the interactions are contradictions that have to be managed explicitly.</p>

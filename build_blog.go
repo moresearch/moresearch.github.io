@@ -455,8 +455,36 @@ var (
     .post-body blockquote,
     .post-body pre,
     .post-body h2,
-    .post-body h3 {
+    .post-body h3,
+    .post-body table {
       margin: 0 0 20px;
+    }
+
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.62rem;
+      line-height: 1.6;
+    }
+
+    .post-body table th,
+    .post-body table td {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .post-body table th {
+      color: #c0c8d2;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .post-body table tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .post-body h2,

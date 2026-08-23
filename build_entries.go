@@ -59,7 +59,11 @@ var postPageTemplate = template.Must(template.New("post").Parse(`<!doctype html>
     .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
     .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
     .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
-    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
     .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
     .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
     .post-body a:hover{color:#d1d5db}

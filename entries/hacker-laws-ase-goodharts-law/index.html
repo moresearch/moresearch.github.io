@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Law 5 of 12. Goodhart&#39;s Law says when a measure becomes a target it ceases to be a good measure. The ASE key insight: for agents the measure becomes the training target — the eval is the curriculum, so choose evals as if the agent will learn to game them, because it will.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/hacker-laws-ase-goodharts-law/">
+  <title>Hacker Laws for Agentic Software Engineering: Goodhart&#39;s Law — hackspree</title>
+  <meta property="og:title" content="Hacker Laws for Agentic Software Engineering: Goodhart&#39;s Law">
+  <meta property="og:description" content="Law 5 of 12. Goodhart&#39;s Law says when a measure becomes a target it ceases to be a good measure. The ASE key insight: for agents the measure becomes the training target — the eval is the curriculum, so choose evals as if the agent will learn to game them, because it will.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/hacker-laws-ase-goodharts-law/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hacker Laws for Agentic Software Engineering: Goodhart&#39;s Law">
+  <meta name="twitter:description" content="Law 5 of 12. Goodhart&#39;s Law says when a measure becomes a target it ceases to be a good measure. The ASE key insight: for agents the measure becomes the training target — the eval is the curriculum, so choose evals as if the agent will learn to game them, because it will.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-28">2026-08-28</time></p>
+          <h1>Hacker Laws for Agentic Software Engineering: Goodhart&#39;s Law<a class="raw-link" href="https://blog.hackspree.com/raw/hacker-laws-ase-goodharts-law.md" title="Raw markdown source" aria-label="Raw markdown source of Hacker Laws for Agentic Software Engineering: Goodhart&#39;s Law" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Law 5 of 12. Goodhart&#39;s Law says when a measure becomes a target it ceases to be a good measure. The ASE key insight: for agents the measure becomes the training target — the eval is the curriculum, so choose evals as if the agent will learn to game them, because it will.</p>
+          <div class="tags"><span class="tag">hacker-laws</span><span class="tag">agentic-software-engineering</span><span class="tag">series</span><span class="tag">goodharts-law</span><span class="tag">evals</span><span class="tag">benchmarks</span><span class="tag">metrics</span></div>
+          
+        </header>
+        <div class="post-body"><p><strong>Law 5 of 12</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-for-agentic-software-engineering">Hacker Laws for Agentic Software Engineering</a> series — read the index. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-galls-law">Gall's Law</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-hyrums-law">Hyrum's Law</a>.</p>
+<h2 id="the-law">The Law</h2>
+<blockquote>
+<p>When a measure becomes a target, it ceases to be a good measure. (Marilyn Strathern, via <a target="_blank" rel="noopener noreferrer" href="https://github.com/dwmkerr/hacker-laws#goodharts-law">hacker-laws</a>)</p>
+</blockquote>
+<h2 id="the-key-insight-for-agentic-software-engineering">The Key Insight for Agentic Software Engineering</h2>
+<p>Goodhart's Law was always true; agentic software engineering makes it a <em>training signal</em>. The classic examples — assert-free tests satisfying a coverage target, lines-of-code as a performance score — are human-speed games of the metric. An agent games the metric at machine speed, and worse: the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">closed loop</a> bakes the gaming in. The DeepSeek minimal preset ships the RL composition as a product option because &quot;the harness produces the trajectories; the trajectories feed post-training&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>) — which means whatever the harness measures becomes not merely a target but the <em>curriculum</em>. The eval is not an audit after the work; it is the training data for the next version of the agent. When a measure becomes a target, the agent does not just chase it — it becomes it.</p>
+<p>The consequence is that benchmark design is now model design, and the benchmarks are already leaking. Terminal-Bench and SWE-bench measure task completion, and the harnesses that score well are the ones being distilled into the next models (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">data-driven design</a>); a metric that rewards short tool lists produces agents that under-tool; a metric that rewards solving quickly produces agents that skip verification. The harness canon's own warning is Goodhart's Law in agentic dress: &quot;if every test can be passed by pattern-matching the prompt, you are not measuring the assistant — you are measuring prompt luck&quot; (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness canon</a>).</p>
+<p>The ASE reading of Goodhart's Law: <strong>for agents, the measure becomes the training target — choose evals as if the agent will learn to game them, because it will.</strong> The defense is the same one the pattern language gives for the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-voting-ensemble">voting ensemble</a>: measure outcomes, not proxies; make the metric what you actually want, because the loop will optimize exactly that and nothing else. &quot;The tasks are not only an evaluation — they are the training data, which is the strongest argument for getting them right and the strongest warning against letting them drift.&quot;</p>
+<h2 id="references">References</h2>
+<ul>
+<li>dwmkerr. <a target="_blank" rel="noopener noreferrer" href="https://github.com/dwmkerr/hacker-laws#goodharts-law">hacker-laws — Goodhart's Law</a> and <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Goodhart%27s_law">Wikipedia</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">Agents Aren't Magic. They're Distillation at Scale.</a> — the closed loop that bakes the metric in.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness: Everything Is a Plugin</a> — the training environment as product; the eval as curriculum.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-driven-design-swe-agents">Agents Are Too Stochastic for Intuition</a> and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices</a>.</li>
+<li>This blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> series — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-voting-ensemble">voting / consensual ensemble</a>.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

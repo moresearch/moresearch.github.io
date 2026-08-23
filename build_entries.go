@@ -55,6 +55,8 @@ var postPageTemplate = template.Must(template.New("post").Parse(`<!doctype html>
     h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
     .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
     .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
     .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
     .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
     .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3{margin:0 0 20px}
@@ -91,7 +93,7 @@ var postPageTemplate = template.Must(template.New("post").Parse(`<!doctype html>
       <article>
         <header>
           <p class="post-meta"><time datetime="{{.DateISO}}">{{.DateISO}}</time></p>
-          <h1>{{.Title}}</h1>
+          <h1>{{.Title}}<a class="raw-link" href="{{.RawURL}}" title="Raw markdown source" aria-label="Raw markdown source of {{.Title}}" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1>
           {{- if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
           {{- if .Tags}}
           <div class="tags">{{range .Tags}}<span class="tag">{{.}}</span>{{end}}</div>
@@ -105,6 +107,23 @@ var postPageTemplate = template.Must(template.New("post").Parse(`<!doctype html>
 </body>
 </html>
 `))
+
+func writeRawPosts(posts []post) error {
+	for _, p := range posts {
+		content, err := os.ReadFile(p.SourcePath)
+		if err != nil {
+			return fmt.Errorf("read raw %s: %w", p.SourcePath, err)
+		}
+		if err := os.MkdirAll("raw", 0o755); err != nil {
+			return fmt.Errorf("create raw dir: %w", err)
+		}
+		outPath := filepath.Join("raw", p.Slug+".md")
+		if err := os.WriteFile(outPath, content, 0o644); err != nil {
+			return fmt.Errorf("write %s: %w", outPath, err)
+		}
+	}
+	return nil
+}
 
 func writePostPages(posts []post) error {
 	for _, p := range posts {

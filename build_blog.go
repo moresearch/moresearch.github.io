@@ -211,6 +211,23 @@ var (
       line-height: 1.4;
     }
 
+    .raw-link {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 0.55em;
+      color: #6b7280;
+      vertical-align: middle;
+      text-decoration: none;
+      opacity: 0.9;
+      transition: color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .raw-link:hover,
+    .raw-link:focus-visible {
+      color: #ffffff;
+      opacity: 1;
+    }
+
     .post-meta time {
       position: relative;
       display: inline-flex;
@@ -732,7 +749,7 @@ var (
         <link rel="canonical" href="{{$.SiteURL}}entries/{{.Slug}}/">
         <header class="post-header">
           <p class="post-meta"><time datetime="{{.DateISO}}" data-utc="{{.DateHoverUTC}}" aria-label="{{.DateHoverUTC}}" tabindex="0">{{.DateUnix}}</time></p>
-          <h2><a href="#{{.Slug}}">{{.Title}}</a></h2>
+          <h2><a href="#{{.Slug}}">{{.Title}}</a><a class="raw-link" href="{{.RawURL}}" title="Raw markdown source" aria-label="Raw markdown source of {{.Title}}" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2>
           {{- if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
           {{- if .Tags}}
           <div class="tags">
@@ -893,6 +910,8 @@ type post struct {
 	BodyHTML     template.HTML
 	CanonicalURL string
 	ModTime      time.Time
+	RawURL       string
+	SourcePath   string
 }
 
 type pageData struct {
@@ -924,6 +943,9 @@ func main() {
 		exitf("%v", err)
 	}
 	if err := writePostPages(posts); err != nil {
+		exitf("%v", err)
+	}
+	if err := writeRawPosts(posts); err != nil {
 		exitf("%v", err)
 	}
 	if err := writeSitemap(posts); err != nil {
@@ -963,6 +985,8 @@ func loadPosts(inputDir string) ([]post, error) {
 		if err != nil {
 			return nil, err
 		}
+		post.SourcePath = path
+		post.RawURL = siteURL + "raw/" + post.Slug + ".md"
 
 		if info, statErr := os.Stat(path); statErr == nil {
 			post.ModTime = info.ModTime()

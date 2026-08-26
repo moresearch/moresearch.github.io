@@ -1728,17 +1728,61 @@
 <p>AutoGPT configuration (<a target="_blank" rel="noopener noreferrer" href="https://docs.agpt.co/classic/configuration/">docs</a>) and issue tracker (<a target="_blank" rel="noopener noreferrer" href="https://github.com/Significant-Gravitas/AutoGPT/issues">issues</a>); OWASP Top 10 — LLM10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>.</p>
 </div>
       </article>
+      <article class="post" id="better-harnesses-smaller-models">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/better-harnesses-smaller-models/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-26" data-utc="Aug 26, 2026 UTC" aria-label="Aug 26, 2026 UTC" tabindex="0">1787702400</time></p>
+          <h2><a href="#better-harnesses-smaller-models">Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation</a><a class="raw-link" href="https://blog.hackspree.com/raw/better-harnesses-smaller-models.md" title="Raw markdown source" aria-label="Raw markdown source of Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Five insights from the CMU paper (arXiv:2607.08938): the naive model-swap failure is a harness artifact, not a model property; the deployable unit is the model&#43;harness pair; shared task difficulty is the amortizable lever; harness design is a search problem; and diagnosis quality is the optimizer&#39;s bottleneck.</p>
+          <div class="tags"><span class="tag">slm</span><span class="tag">harness-engineering</span><span class="tag">harness-optimization</span><span class="tag">meta-agents</span><span class="tag">cost-efficiency</span><span class="tag">model-swap</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2607.08938">Better Harnesses, Smaller Models</a> (Yang, Zhao, Wu, Kästner — Carnegie Mellon, July 2026) starts from the null result every deployment engineer believes and inverts it. Swap a small model into a harness designed for a frontier LLM and it collapses; the paper shows the collapse is a <strong>harness artifact, not a model property</strong>. Adapt the harness automatically, and a 4B-parameter model matches the frontier model at a fraction of the cost.</p>
+<p>The opening example is the whole argument. A budget-approval agent with <code>gemini-3.1-pro</code> hits 97.3% at $0.22 per query. Swap in <code>gemma-4-26b-a4b</code> unchanged and accuracy drops to 75.0%. After automated harness adaptation — a step-by-step workflow in the system prompt, a filtered tool set, and a hook that blocks the agent from sending the same message twice — the same SLM hits 98.3%, beating the frontier model at 8% of the cost. Five insights follow.</p>
+<h2 id="insight-1--the-deployable-unit-is-the-modelharness-pair-not-the-model">Insight 1 — The deployable unit is the model+harness pair, not the model</h2>
+<p>The &quot;model swap&quot; mental model — replace one model, re-validate, ship — is wrong. Across seven business tasks and three SLMs, a generic harness averages 31.4% / 26.9% / 9.5% accuracy (gemma / qwen3-coder / ministral); the optimized harnesses reach 80.2% / 74.8% / 25.0%. <strong>16 of 21 task-model pairs improved significantly, and seven closed the SLM-LLM gap entirely</strong> — the best SLM recovering 89.7% of frontier performance at 4% of the cost, with 25% lower latency than the frontier agent.</p>
+<p>The entanglement runs both ways. Harness adaptations don't transfer across models: <code>ministral3-8b</code> needs workarounds for its file-editing failures, <code>qwen3-coder</code> occasionally emits raw XML where the protocol demands JSON tool calls. Each model needs its own harness, so the optimization is part of every deployment and every model upgrade — the pair is the unit of deployment.</p>
+<h2 id="insight-2--shared-task-difficulty-is-the-lever-and-it-defines-the-boundary">Insight 2 — Shared task difficulty is the lever, and it defines the boundary</h2>
+<p>Why does this work at all? Routine business tasks have structure shared across instances: every budget request hits the same policy lookup, the same pricing table, the same reserve accounting. A frontier LLM privately reconstructs that structure on every run, token by token, at frontier prices; an SLM reconstructs it worse. The fix is to <strong>lift the shared difficulty out of the model and into the harness — once, offline, and amortize it over every instance.</strong> The $20 one-time optimization per task is recovered after 13 production runs on average.</p>
+<p>The same logic defines where the lever stops working:</p>
+<ul>
+<li><strong>Repetitive tasks adapt; diverse tasks resist.</strong> Task diversity (average Levenshtein distance between tool-call sequences) correlates with optimized performance at ρ = −0.96. Controlled: going from 3 workflow templates to 20 drops accuracy from 89.1% to 68.0%. Low-entropy tasks are exactly the ones where a harness can win the fight — the quantitative version of this blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#tasks-that-fight-back">tasks that fight back</a> argument.</li>
+<li><strong>Capable SLMs benefit more.</strong> Stronger models gain +48.8% from adaptation vs. +15.5% for the weakest — the harness offloads the repetitive parts; the model must still handle what can't be delegated.</li>
+<li><strong>Harnesses can't manufacture capability.</strong> The weakest model stays at 0.0% on two of seven tasks no matter what the harness does; website-management resists at 45.6% even for the best SLM.</li>
+</ul>
+<h2 id="insight-3--harness-design-is-a-search-problem-not-a-craft">Insight 3 — Harness design is a search problem, not a craft</h2>
+<p>The paper's methodological bet, in the spirit of the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-bitter-lesson">bitter lesson</a>: harness design should be <strong>automated as a search problem driven by data and evaluation</strong>, not manual trial and error. The optimizer is a meta-agent running an evolutionary loop over the SDK's design space — system prompts, skills, tools, hooks, context management, sub-agents:</p>
+<ol>
+<li><strong>Sample and evaluate</strong> — pick a candidate GEPA-style from the Pareto front of tried harnesses; run it on a batch of training instances, logging full trajectories.</li>
+<li><strong>Diagnose and propose</strong> — the meta-agent reads trajectories plus the harness code and edits it, guided by a search memory of past proposals (so it stops re-proposing dead ends) and design-space documentation. Proposals pass a cheap sanity check with a repair loop.</li>
+<li><strong>Validate and keep</strong> — full validation-set run if the edit improved the batch; add to the pool.</li>
+</ol>
+<p>The loop is cheap by design: $20 per task-model pair, three runs each — $1,260 for the entire study.</p>
+<h2 id="insight-4--the-meta-agents-moves-are-legible">Insight 4 — The meta-agent's moves are legible</h2>
+<p>The paper maps failures to adaptations so the search isn't a black box. Failures are indexed by capability — tool-use, instruction-following, knowledge, long-context, planning — and adaptations by harness component: contexts (add or manage), tools (create or manage), agent loops (instrument or orchestrate).</p>
+<p>The winning moves are consistent. The dominant addressed failure modes are <strong>instruction-following (81%) and knowledge (81%)</strong>; the dominant strategies are <strong>adding contexts (86%), creating tools (43%), and managing tools (29%)</strong>. The best anomaly-detection harness combines all three: a custom <code>query_mock_bigquery</code> tool that sidesteps the default tool's long-context behavior, a filter from 40+ MCP tools down to seven, and the environment's table-naming convention externalized into the system prompt.</p>
+<p>One negative result deserves emphasis: <strong>no optimized harness successfully used sub-agents</strong> — current SLMs can't track and coordinate sub-agent work. That is a bracing counterpoint to the industry reflex that answers every SLM weakness with a multi-agent topology.</p>
+<h2 id="insight-5--diagnosis-quality-is-the-optimizers-bottleneck">Insight 5 — Diagnosis quality is the optimizer's bottleneck</h2>
+<p>The meta-agent loop is itself a system, and its developers learned where the leverage is:</p>
+<ul>
+<li><strong>Evidence beats summaries.</strong> Raw JSON trajectories made the meta-agent diagnose better than post-processed markdown — less human-friendly, richer evidence.</li>
+<li><strong>Intelligence beats iteration count.</strong> A cheaper meta-agent afforded more search steps but produced worse harnesses; lower-quality diagnoses outweighed the extra exploration. Hand-written heuristics (successful frontier trajectories, manual failure→fix maps) didn't help at all — given faithful evidence and an editable harness, the meta-agent infers repairs on its own.</li>
+<li><strong>Explore diverse regions, not one long trajectory.</strong> Search memory prevents rediscovering the same fixes; several independent short searches beat one long search.</li>
+</ul>
+<h2 id="what-this-means">What this means</h2>
+<p>The decision rule for practitioners is clean: for repetitive business workflows where the frontier-token bill is the constraint, take the best cheap MoE SLM you can find, spend a few dozen dollars on automated harness search, and expect to recover most of the frontier model's accuracy at ~5% of the cost — provided you treat &quot;re-optimize the harness&quot; as a normal part of every model upgrade.</p>
+<p>Economically, this is a distillation story. A frontier meta-agent spends $20 once, compresses the shared structure of a task into a harness, and every subsequent run of the cheap model executes that structure nearly free — the expensive intelligence is amortized away, the same economics as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">agents as distillation at scale</a>. The cheap agent is not a model you buy; it is a system you build. The harness is the product — and as the next post shows, it is now a product you can build on top of: the OpenHands SDK is the substrate this optimizer searched, and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#openhands-software-agent-sdk">the harness is the product</a>.</p>
+</div>
+      </article>
       <article class="post" id="openhands-software-agent-sdk">
         <link rel="canonical" href="https://blog.hackspree.com/entries/openhands-software-agent-sdk/">
         <header class="post-header">
           <p class="post-meta"><time datetime="2026-08-26" data-utc="Aug 26, 2026 UTC" aria-label="Aug 26, 2026 UTC" tabindex="0">1787702400</time></p>
-          <h2><a href="#openhands-software-agent-sdk">The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents</a><a class="raw-link" href="https://blog.hackspree.com/raw/openhands-software-agent-sdk.md" title="Raw markdown source" aria-label="Raw markdown source of The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A close reading of the MLSys 2026 paper (arXiv:2511.03690) that redesigned OpenHands into a four-package SDK: optional sandboxing, immutable config with a single event-sourced source of truth, the Action-Execution-Observation tool contract, security in the loop, and a local-to-remote workspace factory — validated by 61% fewer production failures and SOTA on 3 of 5 benchmarks.</p>
-          <div class="tags"><span class="tag">openhands</span><span class="tag">agent-sdk</span><span class="tag">event-sourcing</span><span class="tag">harness-engineering</span><span class="tag">agent-architecture</span><span class="tag">mlsys</span><span class="tag">mcp</span><span class="tag">sandboxing</span><span class="tag">security-analyzer</span><span class="tag">multi-llm-routing</span><span class="tag">software-agents</span><span class="tag">production-agents</span>
+          <h2><a href="#openhands-software-agent-sdk">The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents</a><a class="raw-link" href="https://blog.hackspree.com/raw/openhands-software-agent-sdk.md" title="Raw markdown source" aria-label="Raw markdown source of The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Six insights from the MLSys 2026 paper (arXiv:2511.03690): architectural debt drove the redesign; event-sourced state is the consensus spine; local-first beats sandbox-first; serializability is the composability engine; security belongs inside the loop; and the harness is the product.</p>
+          <div class="tags"><span class="tag">openhands</span><span class="tag">agent-sdk</span><span class="tag">event-sourcing</span><span class="tag">harness-engineering</span><span class="tag">agent-architecture</span><span class="tag">mlsys</span><span class="tag">mcp</span><span class="tag">sandboxing</span>
           </div>
         </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2511.03690">The OpenHands Software Agent SDK: A Composable and Extensible Foundation for Production Agents</a> (Xingyao Wang, Simon Rosenberg, Juan Michelini, Calvin Smith, Hoang Tran, Engel Nyst, Rohit Malhotra, Xuhui Zhou, Valerie Chen, Robert Brennan, Graham Neubig; accepted at MLSys 2026) is a rare thing in the agent literature: an architecture paper that ships. It documents the complete redesign of the most popular open-source software-engineering agent — OpenHands, 64k+ GitHub stars in 18 months — into a modular SDK, and it defends the redesign with production telemetry rather than vibes. Repos: <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/software-agent-sdk">software-agent-sdk</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/benchmarks">benchmarks</a>.</p>
-<p>This is also the substrate this blog wrote about yesterday: the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">Better Harnesses, Smaller Models</a> paper built its harness-optimizer search space on the SDK's API surface — system prompts, tools, hooks, context management, sub-agents. Reading the SDK paper explains <em>why</em> that search space worked: it is the parts catalog of a production agent harness, deliberately factored so components can be swapped, serialized, and recomposed.</p>
-<p>The paper's own framing is a design problem: <em>&quot;no consensus exists on how to architect these foundations.&quot;</em> OpenAI's SDK, Claude's Agent SDK, Google ADK, and LangGraph all differ wildly in isolation models, state management, and deployment assumptions. The paper's contribution is a well-validated reference design. The SDK works in six lines:</p>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2511.03690">The OpenHands Software Agent SDK</a> (Wang et al., MLSys 2026) is a rare thing in the agent literature: an architecture paper that ships. It documents the redesign of the most popular open-source software-engineering agent — OpenHands, 64k+ GitHub stars in 18 months — into a modular SDK, and defends it with production telemetry: <strong>61% fewer system-attributable failures</strong> in a 15-day live comparison, and state-of-the-art results on 3 of 5 benchmarks. Repos: <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/software-agent-sdk">software-agent-sdk</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/benchmarks">benchmarks</a>.</p>
+<p>It is also the substrate this blog wrote about yesterday: the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">harness optimizer</a> in &quot;Better Harnesses, Smaller Models&quot; searches this SDK's design space — system prompts, tools, hooks, context management, sub-agents. The SDK paper explains why that space was searchable at all. A complete agent runs in six lines:</p>
 <pre><code class="language-python">from openhands.sdk import LLM, Conversation
 from openhands.tools.preset.default import get_default_agent
 llm = LLM(model=&quot;openhands/claude-sonnet-4-5-20250929&quot;, api_key=&quot;...&quot;)
@@ -1747,223 +1791,60 @@ conversation = Conversation(agent=agent, workspace=&quot;/path/to/project&quot;)
 conversation.send_message(&quot;Write 3 facts about this project into FACTS.txt.&quot;)
 conversation.run()
 </code></pre>
-<h2 id="the-redesign-is-the-story-four-principles-from-v0s-debt">The redesign is the story: four principles from V0's debt</h2>
-<p>The SDK is not a greenfield design; it is the answer to architectural debt accumulated in the original monolithic OpenHands (V0). Four pain points, four principles:</p>
+<h2 id="insight-1--the-redesign-is-the-story-four-principles-from-v0s-debt">Insight 1 — The redesign is the story: four principles from V0's debt</h2>
+<p>The SDK is not a greenfield design; it is the answer to four failures of the original monolithic OpenHands (V0):</p>
 <table>
 <thead>
 <tr>
 <th>V0 pain</th>
-<th>V1 design principle</th>
+<th>V1 principle</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Universal sandboxing</strong> — every tool call ran in a Docker container; two processes (agent + sandbox) with divergent states; local workflows needed duplicated MCP/tool implementations; one tenant's heavy actions could crash shared containers</td>
-<td><strong>Optional isolation</strong> — agent and tools run in one process by default (aligning with MCP's local-first assumptions); sandboxing is opt-in for production</td>
+<td>Universal sandboxing: two processes with divergent state; local workflows needed duplicated tool/MCP code</td>
+<td>Optional isolation: one process by default, containers opt-in for production</td>
 </tr>
 <tr>
-<td><strong>Mutable config sprawl</strong> — 140+ fields, 15 classes, 2.8K lines of configuration across parallel hierarchies (CLI, web UI, GitHub App, SaaS), each with its own precedence rules; identical parameters could diverge</td>
-<td><strong>Stateless by default, one source of truth</strong> — every component is an immutable, validated Pydantic model; the only mutable entity is <code>ConversationState</code>, which records all state in an append-only event log</td>
+<td>Config sprawl: 140+ fields, 15 classes, 2.8K lines across parallel hierarchies; identical parameters diverging</td>
+<td>Stateless by default: immutable validated components; one source of truth for state</td>
 </tr>
 <tr>
-<td><strong>Monorepo coupling</strong> — agent core, evaluation suite, frontend, CLI, and GitHub integrations in one repository; benchmark dependencies and version conflicts leaked into production</td>
-<td><strong>Strict separation of concerns</strong> — the agent core is a shared library; applications (CLI, GUI, GitHub App) consume it via APIs</td>
+<td>Monorepo coupling: agent core, eval suite, apps, and benchmarks in one repo; version conflicts leaking into production</td>
+<td>Strict separation: the core is a shared library consumed via APIs</td>
 </tr>
 <tr>
-<td><strong>Monolith logic</strong> — new behaviors required editing core logic or branching per entry point</td>
-<td><strong>Two-layer composability</strong> — four independent deployment packages (sdk, tools, workspace, server) plus a typed component model for safe extension</td>
+<td>Monolith logic: new behaviors required editing core or branching per entry point</td>
+<td>Two-layer composability: four deployable packages plus a typed component model</td>
 </tr>
 </tbody>
 </table>
-<p>Each principle is a decision with a rejected alternative, and the paper is honest about the tradeoffs: event sourcing beat a database-backed model because a DB couples the SDK to a storage backend and breaks offline replay; optional isolation beat both mandatory containerization (V0's fragility) and fully-local-only execution (production safety needs).</p>
-<h2 id="the-spine-event-sourced-state-as-single-source-of-truth">The spine: event-sourced state as single source of truth</h2>
-<p>The architectural centerpiece is the event model. All interactions are immutable events appended to a log, organized in a two-tier hierarchy:</p>
-<ul>
-<li><strong>LLM-convertible events</strong> — <code>MessageEvent</code>, <code>ActionEvent</code> (tool calls), <code>SystemPromptEvent</code>, <code>CondensationSummaryEvent</code>, and <code>ObservationBaseEvent</code> subclasses (tool results, user rejections, agent errors) — these are what the model sees.</li>
-<li><strong>Internal events</strong> — <code>ConversationStateUpdateEvent</code>, <code>CondensationRequest</code>, <code>Condensation</code>, <code>PauseEvent</code> — bookkeeping that never reaches the LLM.</li>
-</ul>
-<p>Components (Agent, Tool, LLM) are immutable and serializable; <em>all</em> mutable variables live in <code>ConversationState</code>, which combines metadata fields with the append-only <code>EventLog</code> behind a FIFO lock. Persistence is dual-path: metadata serializes to a single <code>state.json</code>, events write as individual JSON files — so resuming a conversation means loading <code>state.json</code> and replaying the event directory, with automatic detection of incomplete conversations.</p>
-<p>The design's payoff is measurable and the paper measures it: replaying 39,870 events from 433 real SWE-Bench conversations, per-event persistence is a 0.20 ms median (0.40 ms per action+observation cycle), full state replay is 4.1 ms, and crash recovery completes in 7.4 ms (32.1 ms even for the longest observed conversation at 358 events). Against LLM round-trips of 1–30 s, event sourcing is free. This is the same family of design as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness's enforced append-only session log</a> and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal-composability</a> calculus — the durable-facts-on-a-log spine is becoming the consensus architecture for agent harnesses, and this paper is the largest-scale validation of it yet.</p>
-<h2 id="stateless-components-typed-contracts">Stateless components, typed contracts</h2>
-<p>The immutable-component principle shapes everything else.</p>
-<p><strong>The LLM abstraction</strong> is deliberately vendor-agnostic. Through LiteLLM it reaches 100+ providers over both the Chat Completions and the newer OpenAI Responses APIs; it natively consumes extended-thinking fields (<code>ThinkingBlock</code> for Anthropic, <code>ReasoningItemModel</code> for OpenAI); and it supports models <em>without</em> function calling at all via <code>NonNativeToolCallingMixin</code>, which converts tool schemas into text prompts and parses tool calls with regex extraction — dramatically expanding the usable model pool. On top sits <code>RouterLLM</code>, which routes different requests to different models while keeping a unified <code>LLM</code> interface:</p>
-<pre><code class="language-python">class MultimodalRouter(RouterLLM):
-    def select_llm(self, messages: list[Message]) -&gt; str:
-        has_images = any(m.contains_image for m in messages)
-        return &quot;primary&quot; if has_images else &quot;secondary&quot;
-
-# route text to cheaper model, images to multimodal model
-router = MultimodalRouter(llms_for_routing={
-    &quot;primary&quot;: LLM(model=&quot;claude-sonnet-4-5&quot;),
-    &quot;secondary&quot;: LLM(model=&quot;devstral-small&quot;)})
-agent = Agent(llm=router, tools=tools)
-</code></pre>
-<p>This is the harness as a cost-engineering surface — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every token has a price tag</a>, and the SDK lets you express the routing policy in a method.</p>
-<p><strong>The tool system</strong> follows an Action–Execution–Observation contract: the LLM proposes JSON tool calls, which are validated into typed <code>Action</code> schemas before execution; <code>ToolExecutor</code> runs the logic; <code>Observation</code> structures the result for the LLM. MCP tools are first-class citizens — their JSON schemas are auto-translated into <code>Action</code> models, so external MCP servers behave identically to native tools (validated, type-safe, serialized). The tool <em>registry</em> decouples specifications from implementations: Python executors aren't serializable, so tools travel across process or network boundaries as lightweight JSON specs, reconstructed lazily at runtime. That single mechanism enables distributed agent architectures — and it is exactly what made the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">harness optimizer</a> search space editable: harnesses are just compositions of serializable specs.</p>
-<h2 id="security-inside-the-loop">Security inside the loop</h2>
-<p>The SDK treats safety as part of the control loop rather than an afterthought, through two abstractions: <code>SecurityAnalyzer</code>, which rates each tool call low/medium/high/unknown risk, and <code>ConfirmationPolicy</code>, which decides whether approval is required. The built-in pair — <code>LLMSecurityAnalyzer</code> plus <code>ConfirmRisky</code> — blocks actions above a configurable threshold (default: high), pausing the agent in a <code>WAITING FOR CONFIRMATION</code> state until a human acts. Because risk assessment is separated from enforcement, policies can be adapted mid-session (e.g., relaxing restrictions for read-only <code>grep</code>), and custom analyzers slot in without touching tool executors. <code>SecretRegistry</code> complements it with late-bound secrets: tools fetch credentials only at execution time, and any secret that appears in output is masked as <code>&lt;secret-hidden&gt;</code>, with support for live rotation mid-conversation. These are precisely the features that are <em>absent</em> from the feature-comparison table's OpenAI/Claude/Google/LangChain columns — the security analyzer, confirmation policies, secrets with auto-masking, and agent stuck detection are OpenHands-unique.</p>
-<h2 id="local-first-deploy-anywhere">Local-first, deploy-anywhere</h2>
-<p>The paper's most immediately useful trick is the <code>Conversation</code> factory. Instantiate with a path or <code>LocalWorkspace</code> and you get a <code>LocalConversation</code> — the full agent loop (LLM calls, tool invocation, event callbacks, state updates) running in-process, perfect for notebooks and debugging, with pause/resume. Swap in a <code>RemoteWorkspace</code> and the <em>same code</em> transparently constructs a <code>RemoteConversation</code> that serializes the agent config and delegates execution to an agent server over HTTP/WebSocket. Going from prototype to production is a two-line diff:</p>
+<p>Each choice has a rejected alternative, stated honestly: event sourcing beat a database-backed model because a DB couples the SDK to a storage backend and breaks offline replay; optional isolation beat both mandatory containerization (V0's fragility) and fully-local-only execution (production needs safety).</p>
+<h2 id="insight-2--event-sourced-state-is-the-consensus-spine">Insight 2 — Event-sourced state is the consensus spine</h2>
+<p>The centerpiece is the state model. Every component (Agent, Tool, LLM) is an immutable, validated, serializable Pydantic model; <em>all</em> mutable variables live in <code>ConversationState</code>, which records interactions in an append-only <code>EventLog</code>. Events are two-tiered: LLM-convertible ones (messages, tool calls, observations, system prompts) are what the model sees; internal ones (<code>CondensationRequest</code>, <code>PauseEvent</code>, state updates) are pure bookkeeping. Persistence is dual-path — metadata in <code>state.json</code>, events as individual JSON files — so resuming a conversation means loading the file and replaying the log, with automatic detection of incomplete conversations.</p>
+<p>The overhead objection is empirically dead: replaying 39,870 events from 433 real SWE-Bench conversations, persistence costs 0.20 ms median per event, full state replay 4.1 ms, crash recovery 7.4 ms (32.1 ms worst case). Against LLM round-trips of 1–30 s, event sourcing is free.</p>
+<p>This is the third independent convergence this blog has covered on the same spine: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness's enforced append-only session log</a>, the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal-composability</a> calculus, and now OpenHands V1. Durable facts on a log, state as a pure derivation — that is the consensus architecture of the agent harness.</p>
+<h2 id="insight-3--local-first-beats-sandbox-first">Insight 3 — Local-first beats sandbox-first</h2>
+<p>V0's mandatory sandboxing wasn't just awkward; in production it was the dominant source of failure. The conversation manager and execution runtime talked over inter-pod HTTP, and the 15-day V0/V1 rollout shows what that bought: <code>HTTPStatusError</code> 401s at 43.0 per 1k conversations, runtime-not-ready races at 18.8 per 1k, connection timeouts at 3.1 per 1k. V1 runs the agent and tools co-located by default, which <strong>eliminated the entire infrastructure-error class (69.8 → 0.0 per 1k) and cut system-attributable failures 61% (78.0 → 30.0 per 1k)</strong>. The architecture removed a failure class structurally instead of patching its symptoms.</p>
+<p>The same principle drives the deployment story. <code>Conversation</code> is a factory: give it a path or <code>LocalWorkspace</code> and you get an in-process loop with pause/resume (perfect for notebooks and debugging); give it a <code>RemoteWorkspace</code> and the <em>same code</em> serializes the agent config and delegates execution to an agent server over REST/WebSocket. Prototype to production is a two-line diff:</p>
 <pre><code class="language-python">+from openhands.workspace import DockerWorkspace
 +with DockerWorkspace(...) as workspace:
 +    conversation = Conversation(agent=agent, workspace=workspace)
 +    conversation.send_message(&quot;Create hello.py&quot;)
 +    conversation.run()
 </code></pre>
-<p>The server itself is a first-class artifact: REST endpoints for conversation control, WebSocket for event streaming, session-based authentication, and official Docker images bundling the full stack (API server, VSCode Web, VNC desktop, Chromium). Each agent instance runs in an independent container with dedicated filesystem and resource limits — the containerized model that makes SaaS-style multi-tenancy tractable, with per-conversation event logs providing tenant isolation by construction.</p>
-<h2 id="the-numbers-that-validate-the-architecture">The numbers that validate the architecture</h2>
-<p><strong>Production reliability.</strong> A 15-day parallel rollout ran V0 and V1 against live users. System-attributable errors per 1k conversations fell from 78.0 to 30.0 — a 61% reduction. The entire V0 infrastructure-error class (69.8/1k) vanished: it was dominated by inter-pod HTTP failures between the conversation manager and execution runtime (<code>HTTPStatusError</code> 401 at 43.0/1k, <code>AgentRuntimeNotReadyError</code> at 18.8/1k, connection timeouts at 3.1/1k), all eliminated by V1's co-located execution model. The residual V1 SDK errors (29.7/1k) were dominated by one condensation bug exposed during the extended-thinking rollout — caught in production, fixed, and instructive: even a good architecture ships bugs, but co-location removed an entire failure class structurally rather than by patching symptoms.</p>
-<p><strong>Capability preservation.</strong> On SWE-Bench Verified with matched models, Claude Sonnet 4 scores an identical 68.0% on V0 and V1 — the redesign neither helped nor hurt. With Sonnet 4.5, V1 gains +8.2 points (64.6 → 72.8), attributed to extended-thinking support that the event-sourced architecture integrated naturally but would have been &quot;significant engineering effort&quot; to retrofit into V0.</p>
-<p><strong>Benchmark SOTA.</strong> Across 14 models (7 closed, 7 open) and five task categories — issue resolution (SWE-Bench Verified), greenfield development (Commit0), frontend development (SWE-Bench Multimodal), testing (SWT-Bench), and information gathering (GAIA) — the SDK hits state-of-the-art on <strong>3 of 5</strong>: Commit0 at 56.2% (published SOTA: 12.5%), SWE-Bench Multimodal at 44.1% (no published SOTA yet), and GAIA at 80.0% (SOTA: 74.6%). It remains within 2.6 points (SWE-Bench Verified, 76.6 vs 79.2) and 5.2 points (SWT-Bench, 78.8 vs 84.0) of SOTA on the other two — using a <em>single model per evaluation</em>, while several SOTA systems use multi-model orchestration. The uniform harness also surfaces model specialization that a model-agnostic substrate makes visible: Claude models dominate issue resolution and testing, while GPT-5.4 leads long-horizon greenfield development.</p>
-<p><strong>Three-tier QA.</strong> The engineering discipline extends to testing: programmatic tests with mocked LLM calls run on every commit (seconds, no API cost); LLM-based integration and example tests run daily and on-demand for PRs ($0.5–$3, under 5 minutes, real models); benchmark evaluations run on-demand at $100–$1000 for comprehensive capability checks. The integration-test framework — subclass, implement <code>setup()</code>, <code>tools()</code>, <code>verify_result()</code> — is itself a template for <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">harness QA</a>.</p>
+<h2 id="insight-4--serializability-is-the-composability-engine">Insight 4 — Serializability is the composability engine</h2>
+<p>The tool system runs on an Action–Execution–Observation contract: LLM tool calls validate into typed <code>Action</code> schemas before execution; <code>ToolExecutor</code> runs them; <code>Observation</code> structures results for the model. MCP tools are first-class — their schemas translate automatically into the same contract, so external servers behave identically to native tools.</p>
+<p>The key move is the <strong>tool registry</strong>: Python executors aren't serializable, so tools travel across process and network boundaries as lightweight JSON specs, reconstructed lazily at runtime. That single mechanism is what makes distributed architectures and editable harnesses possible — specs can be composed, swapped, and searched. It is exactly why the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">harness optimizer</a> could treat harnesses as a searchable space: a harness is just a composition of serializable specs.</p>
+<h2 id="insight-5--security-belongs-inside-the-loop">Insight 5 — Security belongs inside the loop</h2>
+<p>The SDK treats safety as a control-loop component, not an afterthought, with two abstractions: <code>SecurityAnalyzer</code>, which rates each tool call low/medium/high/unknown risk, and <code>ConfirmationPolicy</code>, which decides when approval is required — pausing the agent in a <code>WAITING FOR CONFIRMATION</code> state until a human responds. Because assessment is separated from enforcement, trust can adapt mid-session (relax restrictions for read-only <code>grep</code>) and custom analyzers slot in without touching tool executors. <code>SecretRegistry</code> completes the picture: late-bound secrets fetched only at execution time, masked as <code>&lt;secret-hidden&gt;</code> in any output, rotatable mid-conversation.</p>
+<p>These are precisely the features absent from the paper's comparison of the OpenAI, Claude, Google, and LangChain SDKs: the security analyzer, confirmation policies, secret auto-masking, and agent stuck detection are OpenHands-unique.</p>
+<h2 id="insight-6--the-harness-is-the-product-and-the-numbers-back-it">Insight 6 — The harness is the product (and the numbers back it)</h2>
+<p>Everything else follows the same logic. The LLM layer reaches 100+ providers, consumes native extended-thinking fields, and supports non-function-calling models via a text-prompt fallback — widening the usable model pool; <code>RouterLLM</code> lets routing policy (images to a multimodal model, text to a cheap one) live in a method, making the harness a <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">cost-engineering surface</a>. The <code>Condenser</code> halves API cost with no degradation by summarizing overflow.</p>
+<p>The redesign's capability claims hold up: matched models score an identical 68.0% on SWE-Bench Verified across V0 and V1 (parity — the redesign didn't hurt), while Sonnet 4.5 gains +8.2 points on V1 thanks to extended-thinking support the event-sourced architecture absorbed naturally. Across 14 models and five task categories, the SDK hits <strong>SOTA on 3 of 5</strong> — Commit0 at 56.2% vs. published SOTA 12.5%, GAIA at 80.0% vs. 74.6%, SWE-Bench Multimodal at 44.1% — using a single model per evaluation where several SOTA systems use multi-model orchestration. A three-tier QA pipeline (mocked-LLM tests on every commit, $0.5–3 LLM tests daily, $100–1000 benchmark runs on demand) keeps the whole thing honest.</p>
+<p>The stated limits are worth repeating: single-agent focus (multi-agent coordination is future work); and a security core that is probabilistic — <code>LLMSecurityAnalyzer</code> is itself a model, so the guardrail inherits the model's failure modes, exactly the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-leaky-abstractions">leaky abstraction</a> this blog keeps returning to.</p>
 <h2 id="what-this-means">What this means</h2>
-<p>Read as a reference architecture, the SDK codifies a specific set of bets, and the blog's prior coverage suggests they are the right ones:</p>
-<p><strong>The harness is the product.</strong> The minimal example is six lines because everything that matters — state, tools, security, context, deployment — lives in the foundation, not in the agent loop. This is the same conclusion as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">Better Harnesses, Smaller Models</a>: the agent's value is the software around the model, and now that software is a maintained, versioned, open-source artifact instead of bespoke glue.</p>
-<p><strong>Event-sourced state is the consensus spine.</strong> DeepSeek Harness's append-only session log, Cordis's composability calculus, and now OpenHands V1's <code>ConversationState</code> — three independent designs converging on immutable-event logs with derived state. The 0.2 ms persistence latency and 7.4 ms recovery numbers make the objection (&quot;event sourcing is too slow&quot;) an empirical dead end.</p>
-<p><strong>Local-first beats sandbox-first.</strong> The mandatory-sandbox assumption was the source of most of V0's production failures. Opt-in isolation — one process by default, containers when you need them — aligns with MCP's local-first reality and removes an entire infrastructure failure class. The lesson generalizes beyond OpenHands: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#terminal-agents-survey">terminal agents</a> live in the local substrate, and harnesses that treat local execution as the default rather than the exception are structurally simpler.</p>
-<p>The honest limits are stated: the SDK currently targets single-agent conversations (multi-agent coordination &quot;requires further design&quot;); LLM-based security analysis remains subject to adversarial prompts and inconsistent classification; and a comprehensive multi-tenant security audit is future work. The security architecture, in particular, is defense-in-depth with a probabilistic core — the <code>LLMSecurityAnalyzer</code> is itself a model, so the guardrail inherits the model's failure modes, which is exactly the kind of leak the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-leaky-abstractions">leaky-abstractions law</a> predicts.</p>
-<p>For anyone building software-engineering agents, this paper is the current best answer to &quot;what should the foundation look like&quot;: immutable validated components, one event-sourced source of truth, a typed tool contract with MCP as a first-class citizen, security inside the loop, and a workspace abstraction that makes the notebook-to-production journey a two-line diff. The architecture has now been validated twice over — by 61% fewer production failures on one axis, and by being the substrate the harness-optimization literature <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">builds on</a> on the other.</p>
-</div>
-      </article>
-      <article class="post" id="better-harnesses-smaller-models">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/better-harnesses-smaller-models/">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-08-26" data-utc="Aug 26, 2026 UTC" aria-label="Aug 26, 2026 UTC" tabindex="0">1787702400</time></p>
-          <h2><a href="#better-harnesses-smaller-models">Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation</a><a class="raw-link" href="https://blog.hackspree.com/raw/better-harnesses-smaller-models.md" title="Raw markdown source" aria-label="Raw markdown source of Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A close reading of the CMU paper (arXiv:2607.08938): the failure-mode→adaptation framework for harnesses, the meta-agent harness optimizer, why repetitive tasks and capable SLMs respond best, and what the &#39;model&#43;harness pair&#39; framing means for the economics of agent deployment.</p>
-          <div class="tags"><span class="tag">slm</span><span class="tag">small-language-models</span><span class="tag">harness-engineering</span><span class="tag">harness-optimization</span><span class="tag">meta-agents</span><span class="tag">agents</span><span class="tag">cost-efficiency</span><span class="tag">gemma</span><span class="tag">qwen</span><span class="tag">model-swap</span><span class="tag">automated-design</span><span class="tag">amortization</span>
-          </div>
-        </header>
-        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2607.08938">Better Harnesses, Smaller Models: Building 90% Cheaper Agents via Automated Harness Adaptation</a> (Chenyang Yang, Xinran Zhao, Tongshuang Wu, Christian Kästner, Carnegie Mellon University, arXiv:2607.08938, July 2026) is the paper this blog has been circling for months: it takes the harness — the software around the model — and treats it as the primary lever for making agents affordable. The title says it: keep the cheap model, fix the harness, and recover frontier-LLM performance at 4% of the cost. Companion code: <a target="_blank" rel="noopener noreferrer" href="https://github.com/malusamayo/migration-analysis">github.com/malusamayo/migration-analysis</a>.</p>
-<p>The setup is the null result every deployment engineer already believes. Take a budget-approval agent — collecting, reviewing, and communicating budget requests across departments. With a frontier model (<code>gemini-3.1-pro</code>), the generic harness hits 97.3% accuracy at $0.22 per query. Swap in a small open-weight model (<code>gemma-4-26b-a4b</code>, 4B active parameters) with no other changes, and accuracy collapses to 75.0%. That is the standard narrative: <em>SLMs just aren't good enough for agentic work.</em> The paper's bet is that the collapse is a harness artifact, not a model property. After automated harness adaptation — a step-by-step workflow skeleton in the system prompt, a filtered tool set, and an anti-loop hook — the same SLM hits <strong>98.3%</strong> on the same task, beating the frontier model, at 8% of the cost.</p>
-<h2 id="the-reframing-difficulty-is-shared-so-lift-it-into-the-harness">The reframing: difficulty is shared, so lift it into the harness</h2>
-<p>The paper's core claim is almost economic before it is technical: <strong>much of the difficulty of a routine business task is shared across instances.</strong> Every budget request in a company goes through the same policy lookup, the same pricing table, the same reserve-account handling. That shared structure is what a frontier LLM privately reconstructs on every single run, token by token, at frontier prices. An SLM does the same reconstruction worse.</p>
-<p>The fix: move that shared difficulty out of the model and into the harness — as tailored instructions, custom tools, and deterministic orchestration logic — once, offline, and amortize it over every instance. &quot;The key insight is that much of the task difficulty is shared across instances and can be lifted from the model into the harness.&quot;</p>
-<p>This is the same argument this blog has made about <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness engineering best practices</a> and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-harness-engineering">task-harness engineering</a>: the model is the part that burns money at runtime; everything stable about the task should be encoded where it is cheap. What this paper adds is the <em>automation</em> — nobody hand-engineers the harness, a meta-agent searches for it — and the <em>empirics</em>: seven tasks, three SLM families, 21 model-task pairs, with and without adaptation.</p>
-<h2 id="the-framework-failure-modes--adaptation-strategies">The framework: failure modes → adaptation strategies</h2>
-<p>Before automating anything, the authors build a diagnostic framework that maps <em>why</em> an agent fails to <em>what</em> the harness can do about it. Failures are indexed by the capability they implicate:</p>
-<table>
-<thead>
-<tr>
-<th>Failure mode</th>
-<th>What it looks like</th>
-<th>Harness adaptations that address it</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>tool-use</strong></td>
-<td>wrong tool, malformed calls, bad composition across tools</td>
-<td>demonstrate examples; wrap common sequences into simpler tools; filter the tool set; adapt schemas</td>
-</tr>
-<tr>
-<td><strong>instruction-following</strong></td>
-<td>violates task requirements, formats, workflow rules</td>
-<td>reinforce constraints in context; enforce them programmatically via hooks</td>
-</tr>
-<tr>
-<td><strong>knowledge</strong></td>
-<td>missing domain/environment/commonsense assumptions</td>
-<td>externalize knowledge into instructions; encode it into tool implementations</td>
-</tr>
-<tr>
-<td><strong>long-context</strong></td>
-<td>forgets earlier instructions, repeats failures, misses observations</td>
-<td>reveal/compress/prune context; reduce observations; split into sub-agents</td>
-</tr>
-<tr>
-<td><strong>planning/reasoning</strong></td>
-<td>no viable decomposition, premature answers, no backtracking</td>
-<td>provide plan skeletons; encode plans in tools; orchestrate agent flows</td>
-</tr>
-</tbody>
-</table>
-<p>Adaptation strategies are grouped by which harness component they change: <strong>context</strong> (add: examples, plan skeletons, externalized knowledge; manage: progressive reveal, compression, pruning), <strong>tools</strong> (create: wrap sequences, enforce constraints, encode knowledge; manage: filter, retune schemas), and <strong>agent loops</strong> (instrument code: deterministic checks, hooks, guardrails; orchestrate agents: multi-agent topologies).</p>
-<p>The framework is deliberately size-agnostic — capabilities live on a spectrum, and today's SLM is tomorrow's mid-tier model. But the authors note the mismatch the framework exists for is most common exactly where models are small: frontier models are often strong enough that a generic harness suffices; SLMs exhibit capability gaps that make specialized harnesses the difference between 5% and 99% accuracy.</p>
-<h2 id="the-optimizer-harness-search-as-a-meta-agent-loop">The optimizer: harness search as a meta-agent loop</h2>
-<p>The design space is the <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2511.03690">OpenHands Software Agent SDK</a>: system prompts, skills, dynamic contexts, primitive and custom tools, hooks triggered on tool use, context management (external file systems, condensers), and sub-agents. The optimizer is a <strong>meta-agent</strong> (<code>gemini-3.1-pro-preview</code>) running an evolutionary loop, in the spirit of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#self-improving-agent-workflows">self-improving agent workflows</a> and the <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.22954">Darwin Gödel machine</a>:</p>
-<ol>
-<li><strong>Sample and evaluate.</strong> Maintain a pool of harnesses with validation scores; select candidates GEPA-style from the Pareto front — a harness that is optimal on at least one training instance — and run it on a sampled batch, logging full trajectories and outcome signals.</li>
-<li><strong>Diagnose and propose.</strong> The meta-agent inspects trajectories plus the current harness code and edits it. It gets four inputs: annotated trajectories, the harness implementation, a <strong>search memory</strong> of past proposals and their effects (so it stops rediscovering the same dead-end fix), and design-space documentation of available components. Proposals pass a cheap sanity check before evaluation, with a repair loop.</li>
-<li><strong>Validate and keep.</strong> If the edited harness improves on the batch, it gets a full validation run and enters the pool.</li>
-</ol>
-<p>The loop is cheap by design: $20 of optimizer budget per task-model pair, three runs each, best validation harness kept — $1,260 total for the whole study. That number matters, because the entire economics of the paper rests on it: <strong>a one-time offline cost, amortized across every production run.</strong> The authors calculate the $20 is recovered after 13 runs on average.</p>
-<h2 id="what-the-numbers-say">What the numbers say</h2>
-<p>The headline table compares three SLMs — <code>gemma-4-26b-a4b</code> (MoE, 4B active), <code>qwen3-coder-30b-a3b</code> (MoE, 3B active), <code>ministral3-8b</code> (dense) — with a generic harness and an optimized harness, against the frontier baseline, across seven tasks: attendance-auditing, budget-approval, stock-alert, anomaly-detection, playwright-testing, website-management, and code-refactoring (grounded in TheAgentCompany, LOCA-Bench, WebGenBench, WebArena, and RefactorBench, 20/20/60 train/validation/test splits):</p>
-<table>
-<thead>
-<tr>
-<th>Configuration</th>
-<th>Avg. accuracy</th>
-<th>Avg. cost/instance</th>
-<th>Avg. latency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>gemini-3.1-pro-preview</code> (generic harness)</td>
-<td>89.7</td>
-<td>$1.735</td>
-<td>181s</td>
-</tr>
-<tr>
-<td><code>gemma-4-26b-a4b</code> generic</td>
-<td>31.4</td>
-<td>$0.043</td>
-<td>328s</td>
-</tr>
-<tr>
-<td><code>gemma-4-26b-a4b</code> <strong>optimized</strong></td>
-<td><strong>80.2</strong></td>
-<td>$0.071</td>
-<td><strong>135s</strong></td>
-</tr>
-<tr>
-<td><code>qwen3-coder-30b-a3b</code> generic</td>
-<td>26.9</td>
-<td>$0.085</td>
-<td>107s</td>
-</tr>
-<tr>
-<td><code>qwen3-coder-30b-a3b</code> <strong>optimized</strong></td>
-<td><strong>74.8</strong></td>
-<td>$0.064</td>
-<td><strong>76s</strong></td>
-</tr>
-<tr>
-<td><code>ministral3-8b</code> generic</td>
-<td>9.5</td>
-<td>$0.110</td>
-<td>194s</td>
-</tr>
-<tr>
-<td><code>ministral3-8b</code> <strong>optimized</strong></td>
-<td><strong>25.0</strong></td>
-<td>$0.099</td>
-<td>172s</td>
-</tr>
-</tbody>
-</table>
-<p><strong>16 of 21 task-SLM pairs improved significantly with an optimized harness; seven pairs closed the SLM-LLM gap entirely.</strong> The best result is <code>gemma-4-26b-a4b</code>: 89.7% of LLM performance at 4% of the cost, with 25% lower latency. The per-task numbers are wilder than the averages — the same SLM that scored 5.0% on anomaly-detection and 9.9% on playwright-testing with a generic harness hits <strong>99.4% and 98.1%</strong> optimized; <code>qwen3-coder</code> goes from 1.1% to 93.9% on anomaly-detection.</p>
-<p>Two subtleties worth noting before celebrating. First, the cost win is mostly <em>not</em> lower per-token prices — the adapted harness is sometimes slightly more expensive per instance (added context, more deterministic scaffolding: $0.043 → $0.071 for gemma). The win is that the agent <em>finishes the task</em>, in fewer, shorter loops: latency collapses from 328s to 135s, and failures (which in production mean human triage or re-runs) mostly disappear. Second, the remainders are instructive: website-management stays hard even optimized (45.6% gemma, 24.4% qwen), and <code>ministral3-8b</code> — the weakest model — stays at 0.0% on stock-alert and anomaly-detection no matter what the harness does. <strong>Harnesses can absorb task difficulty, but they cannot manufacture capability that isn't there.</strong></p>
-<h2 id="when-adaptation-works">When adaptation works</h2>
-<p>Two research questions pin down the boundary conditions, and both confirm the &quot;shared difficulty&quot; thesis:</p>
-<p><strong>Repetitive tasks adapt well (RQ2).</strong> The authors measure task diversity as the average pairwise Levenshtein distance between tool-call sequences across instances, and find a strong negative correlation with optimized performance (Spearman ρ = −0.96). A controlled experiment that varies the number of workflow templates in a task confirms causality: going from 3 templates to 20 drops optimized performance from 89.1% to 68.0%. A budget-approval agent where every instance follows the same procedure is a gift to harness adaptation; a code-refactoring task where every repository and query differs resists it. This is the quantitative version of this blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnesses-need-tasks-that-fight-back">harnesses need tasks that fight back</a> — low-entropy tasks are exactly the ones where a harness can win the fight.</p>
-<p><strong>Capable SLMs benefit more (RQ3).</strong> Using Artificial Analysis benchmark scores as a capability proxy, stronger models both perform better and improve <em>more</em> from adaptation (+48.8% vs +15.5% for the weakest). The harness offloads the <em>repetitive</em> parts of the task; the model must still follow the scaffolded instructions, use the tools correctly, and handle whatever cannot be delegated — and that residual is what separates SLMs.</p>
-<h2 id="what-the-adaptations-actually-are">What the adaptations actually are</h2>
-<p>Analyzing the optimized harnesses through the framework (RQ4): the dominant addressed failure modes are <strong>instruction-following (81%) and knowledge (81%)</strong>, followed by tool-use (62%) and long-context (33%). The dominant strategies are <strong>adding contexts (86%), creating tools (43%), and managing tools (29%)</strong>. The best anomaly-detection harness, for example, combines all three: a custom <code>query_mock_bigquery</code> tool that sidesteps the default tool's long-context behavior, a filter from 40+ MCP tools down to seven, and the environment's table-naming convention externalized into the system prompt. The budget-approval harness hands the SLM a fixed plan, a filtered tool set, and a hook that refuses to let the agent send the same message twice.</p>
-<p>Two findings here deserve emphasis. First, <strong>harness adaptations do not transfer across models.</strong> <code>ministral3-8b</code> struggles with file-editing tools; <code>qwen3-coder</code> occasionally emits raw XML where the protocol demands JSON tool calls. Each model's failure patterns demand tailored fixes — the playwright-testing harness for gemma adds contexts and pytest-enforcement hooks, while the one for ministral creates new tools to work around its editing failures. There is no universal SLM harness; optimization must be re-run per model (and, the paper's stance implies, per model <em>version</em>). Second, a notable negative result: <strong>no optimized harness successfully used sub-agents.</strong> The authors attribute this to current SLMs' limited ability to track and coordinate sub-agent work — which is a bracing counterpoint to the industry reflex that answers every SLM weakness with a multi-agent topology.</p>
-<h2 id="lessons-for-building-harness-optimizers">Lessons for building harness optimizers</h2>
-<p>The meta-agent loop is itself a system, and the paper's development log doubles as practical guidance:</p>
-<ul>
-<li><strong>Diagnosis quality is the bottleneck.</strong> Spending budget on evaluations or iterations only pays off if the meta-agent proposes good candidates. The authors found that passing <em>raw JSON</em> trajectories to the meta-agent beat post-processed markdown summaries — less human-friendly, but richer evidence for the frontier model to reason over.</li>
-<li><strong>The meta-agent's intelligence is worth its price.</strong> A cheaper meta-agent (<code>gemini-3.1-flash</code>) afforded more iterations but produced worse final harnesses; lower-quality diagnoses more than offset the extra exploration. Interestingly, hand-crafting heuristics (showing successful frontier trajectories, manually mapping failure modes to fixes) did <em>not</em> consistently help — a strong frontier meta-agent, given faithful evidence and an editable harness, infers targeted repairs on its own.</li>
-<li><strong>Explore diverse regions, not one long trajectory.</strong> Without search memory, the meta-agent rediscovers the same fixes and burns budget. And several independent shorter searches beat one long search: multiple runs cover more of the design space, raising the chance at least one discovers something strong.</li>
-</ul>
-<h2 id="what-this-means">What this means</h2>
-<p>The paper's reframing — <strong>the deployable unit is the model+harness pair, not the model</strong> — is the takeaway that matters most. The industry's &quot;model swap&quot; mental model says you replace one model with another and re-validate. This work says the harness is a derived artifact, entangled with the model it scaffolds: the same task, same SLM, generic vs. adapted harness, spans 31% → 80% average accuracy. Swap in a new SLM and you must re-derive the harness; the optimization is part of deployment, not a one-time event. This also reframes <em>which</em> SLM to buy: the paper's heuristic — small MoE models like <code>gemma-4-26b-a4b</code>, chosen by benchmark score as a capability proxy — is simple and, on this evidence, effective.</p>
-<p>Seen through the lens of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every token has a price tag</a> and this blog's running argument that harnesses are where agent economics are decided, the paper is a distillation story: a frontier meta-agent spends $20 once, compresses the shared structure of a task into a harness, and every subsequent run of the cheap model executes that structure nearly free. The expensive intelligence is amortized away; the cheap model becomes the run-time executor of distilled task knowledge. That is the same economics as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">agents are distillation at scale</a> — the harness is the distilled artifact and the frontier model is the teacher.</p>
-<p>The honest limits are stated by the authors themselves: seven tasks with clean, verifiable success metrics; one optimizer implementation; a closed-source meta-agent that may drift as APIs evolve; list-price cost accounting. And the paper's own suggestion for the diverse tasks it fails — <strong>mixtures of harnesses</strong>, collections of specialized harnesses paired with a router, plus online adaptation as task distributions drift — is an open research direction, not a delivered result.</p>
-<p>For practitioners the decision rule is clean. If you deploy agents on routine, repetitive business workflows and the bill for frontier tokens is the constraint, the paper's evidence says: take the best cheap MoE SLM you can find, spend a few dozen dollars on an automated harness search, and expect to recover most of the frontier model's accuracy at ~5% of the cost — provided you are willing to treat &quot;re-optimize the harness&quot; as a normal part of every model upgrade. The cheap agent is not a model you buy; it is a system you build. The harness is the product, and now it can be searched for automatically.</p>
+<p>Read as a reference architecture, the SDK codifies three bets that now look convergent across the field: <strong>event-sourced state is the spine</strong>, <strong>local-first execution is the default</strong>, and <strong>the harness is the product</strong> — everything that matters (state, tools, security, context, deployment) lives in the foundation, which is why the minimal agent is six lines and why the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">harness-optimization literature</a> builds directly on it. The architecture has been validated twice over: by 61% fewer production failures on one axis, and by being the substrate the next wave of agent research searches on the other.</p>
 </div>
       </article>
       <article class="post" id="hacker-laws-ase-amdahls-law">
@@ -18841,8 +18722,8 @@ type Logger interface {
               <a href="#harnessing-agentic-ai-systems-rolling-window-compression">Harnessing Agentic AI Systems: Rolling Window Compression Pattern</a>
               <a href="#hacker-laws-ase-galls-law">Hacker Laws for Agentic Software Engineering: Gall&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-budget-throttler">Harnessing Agentic AI Systems: Token &amp; Time Budget Throttler Pattern</a>
-              <a href="#openhands-software-agent-sdk">The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents</a>
               <a href="#better-harnesses-smaller-models">Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation</a>
+              <a href="#openhands-software-agent-sdk">The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents</a>
               <a href="#hacker-laws-ase-amdahls-law">Hacker Laws for Agentic Software Engineering: Amdahl&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-hitl-breakpoint">Harnessing Agentic AI Systems: Human-in-the-Loop Breakpoint Pattern</a>
               <a href="#hacker-laws-ase-brooks-law">Hacker Laws for Agentic Software Engineering: Brooks&#39; Law</a>

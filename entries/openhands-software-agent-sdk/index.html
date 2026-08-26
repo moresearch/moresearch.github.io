@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A close reading of the MLSys 2026 paper (arXiv:2511.03690) that redesigned OpenHands into a four-package SDK: optional sandboxing, immutable config with a single event-sourced source of truth, the Action-Execution-Observation tool contract, security in the loop, and a local-to-remote workspace factory — validated by 61% fewer production failures and SOTA on 3 of 5 benchmarks.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/openhands-software-agent-sdk/">
+  <title>The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents — hackspree</title>
+  <meta property="og:title" content="The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents">
+  <meta property="og:description" content="A close reading of the MLSys 2026 paper (arXiv:2511.03690) that redesigned OpenHands into a four-package SDK: optional sandboxing, immutable config with a single event-sourced source of truth, the Action-Execution-Observation tool contract, security in the loop, and a local-to-remote workspace factory — validated by 61% fewer production failures and SOTA on 3 of 5 benchmarks.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/openhands-software-agent-sdk/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents">
+  <meta name="twitter:description" content="A close reading of the MLSys 2026 paper (arXiv:2511.03690) that redesigned OpenHands into a four-package SDK: optional sandboxing, immutable config with a single event-sourced source of truth, the Action-Execution-Observation tool contract, security in the loop, and a local-to-remote workspace factory — validated by 61% fewer production failures and SOTA on 3 of 5 benchmarks.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-26">2026-08-26</time></p>
+          <h1>The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents<a class="raw-link" href="https://blog.hackspree.com/raw/openhands-software-agent-sdk.md" title="Raw markdown source" aria-label="Raw markdown source of The OpenHands Software Agent SDK: Event-Sourced Foundations for Production Agents" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A close reading of the MLSys 2026 paper (arXiv:2511.03690) that redesigned OpenHands into a four-package SDK: optional sandboxing, immutable config with a single event-sourced source of truth, the Action-Execution-Observation tool contract, security in the loop, and a local-to-remote workspace factory — validated by 61% fewer production failures and SOTA on 3 of 5 benchmarks.</p>
+          <div class="tags"><span class="tag">openhands</span><span class="tag">agent-sdk</span><span class="tag">event-sourcing</span><span class="tag">harness-engineering</span><span class="tag">agent-architecture</span><span class="tag">mlsys</span><span class="tag">mcp</span><span class="tag">sandboxing</span><span class="tag">security-analyzer</span><span class="tag">multi-llm-routing</span><span class="tag">software-agents</span><span class="tag">production-agents</span></div>
+          
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2511.03690">The OpenHands Software Agent SDK: A Composable and Extensible Foundation for Production Agents</a> (Xingyao Wang, Simon Rosenberg, Juan Michelini, Calvin Smith, Hoang Tran, Engel Nyst, Rohit Malhotra, Xuhui Zhou, Valerie Chen, Robert Brennan, Graham Neubig; accepted at MLSys 2026) is a rare thing in the agent literature: an architecture paper that ships. It documents the complete redesign of the most popular open-source software-engineering agent — OpenHands, 64k+ GitHub stars in 18 months — into a modular SDK, and it defends the redesign with production telemetry rather than vibes. Repos: <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/software-agent-sdk">software-agent-sdk</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/OpenHands/benchmarks">benchmarks</a>.</p>
+<p>This is also the substrate this blog wrote about yesterday: the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">Better Harnesses, Smaller Models</a> paper built its harness-optimizer search space on the SDK's API surface — system prompts, tools, hooks, context management, sub-agents. Reading the SDK paper explains <em>why</em> that search space worked: it is the parts catalog of a production agent harness, deliberately factored so components can be swapped, serialized, and recomposed.</p>
+<p>The paper's own framing is a design problem: <em>&quot;no consensus exists on how to architect these foundations.&quot;</em> OpenAI's SDK, Claude's Agent SDK, Google ADK, and LangGraph all differ wildly in isolation models, state management, and deployment assumptions. The paper's contribution is a well-validated reference design. The SDK works in six lines:</p>
+<pre><code class="language-python">from openhands.sdk import LLM, Conversation
+from openhands.tools.preset.default import get_default_agent
+llm = LLM(model=&quot;openhands/claude-sonnet-4-5-20250929&quot;, api_key=&quot;...&quot;)
+agent = get_default_agent(llm=llm)
+conversation = Conversation(agent=agent, workspace=&quot;/path/to/project&quot;)
+conversation.send_message(&quot;Write 3 facts about this project into FACTS.txt.&quot;)
+conversation.run()
+</code></pre>
+<h2 id="the-redesign-is-the-story-four-principles-from-v0s-debt">The redesign is the story: four principles from V0's debt</h2>
+<p>The SDK is not a greenfield design; it is the answer to architectural debt accumulated in the original monolithic OpenHands (V0). Four pain points, four principles:</p>
+<table>
+<thead>
+<tr>
+<th>V0 pain</th>
+<th>V1 design principle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Universal sandboxing</strong> — every tool call ran in a Docker container; two processes (agent + sandbox) with divergent states; local workflows needed duplicated MCP/tool implementations; one tenant's heavy actions could crash shared containers</td>
+<td><strong>Optional isolation</strong> — agent and tools run in one process by default (aligning with MCP's local-first assumptions); sandboxing is opt-in for production</td>
+</tr>
+<tr>
+<td><strong>Mutable config sprawl</strong> — 140+ fields, 15 classes, 2.8K lines of configuration across parallel hierarchies (CLI, web UI, GitHub App, SaaS), each with its own precedence rules; identical parameters could diverge</td>
+<td><strong>Stateless by default, one source of truth</strong> — every component is an immutable, validated Pydantic model; the only mutable entity is <code>ConversationState</code>, which records all state in an append-only event log</td>
+</tr>
+<tr>
+<td><strong>Monorepo coupling</strong> — agent core, evaluation suite, frontend, CLI, and GitHub integrations in one repository; benchmark dependencies and version conflicts leaked into production</td>
+<td><strong>Strict separation of concerns</strong> — the agent core is a shared library; applications (CLI, GUI, GitHub App) consume it via APIs</td>
+</tr>
+<tr>
+<td><strong>Monolith logic</strong> — new behaviors required editing core logic or branching per entry point</td>
+<td><strong>Two-layer composability</strong> — four independent deployment packages (sdk, tools, workspace, server) plus a typed component model for safe extension</td>
+</tr>
+</tbody>
+</table>
+<p>Each principle is a decision with a rejected alternative, and the paper is honest about the tradeoffs: event sourcing beat a database-backed model because a DB couples the SDK to a storage backend and breaks offline replay; optional isolation beat both mandatory containerization (V0's fragility) and fully-local-only execution (production safety needs).</p>
+<h2 id="the-spine-event-sourced-state-as-single-source-of-truth">The spine: event-sourced state as single source of truth</h2>
+<p>The architectural centerpiece is the event model. All interactions are immutable events appended to a log, organized in a two-tier hierarchy:</p>
+<ul>
+<li><strong>LLM-convertible events</strong> — <code>MessageEvent</code>, <code>ActionEvent</code> (tool calls), <code>SystemPromptEvent</code>, <code>CondensationSummaryEvent</code>, and <code>ObservationBaseEvent</code> subclasses (tool results, user rejections, agent errors) — these are what the model sees.</li>
+<li><strong>Internal events</strong> — <code>ConversationStateUpdateEvent</code>, <code>CondensationRequest</code>, <code>Condensation</code>, <code>PauseEvent</code> — bookkeeping that never reaches the LLM.</li>
+</ul>
+<p>Components (Agent, Tool, LLM) are immutable and serializable; <em>all</em> mutable variables live in <code>ConversationState</code>, which combines metadata fields with the append-only <code>EventLog</code> behind a FIFO lock. Persistence is dual-path: metadata serializes to a single <code>state.json</code>, events write as individual JSON files — so resuming a conversation means loading <code>state.json</code> and replaying the event directory, with automatic detection of incomplete conversations.</p>
+<p>The design's payoff is measurable and the paper measures it: replaying 39,870 events from 433 real SWE-Bench conversations, per-event persistence is a 0.20 ms median (0.40 ms per action+observation cycle), full state replay is 4.1 ms, and crash recovery completes in 7.4 ms (32.1 ms even for the longest observed conversation at 358 events). Against LLM round-trips of 1–30 s, event sourcing is free. This is the same family of design as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness's enforced append-only session log</a> and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal-composability</a> calculus — the durable-facts-on-a-log spine is becoming the consensus architecture for agent harnesses, and this paper is the largest-scale validation of it yet.</p>
+<h2 id="stateless-components-typed-contracts">Stateless components, typed contracts</h2>
+<p>The immutable-component principle shapes everything else.</p>
+<p><strong>The LLM abstraction</strong> is deliberately vendor-agnostic. Through LiteLLM it reaches 100+ providers over both the Chat Completions and the newer OpenAI Responses APIs; it natively consumes extended-thinking fields (<code>ThinkingBlock</code> for Anthropic, <code>ReasoningItemModel</code> for OpenAI); and it supports models <em>without</em> function calling at all via <code>NonNativeToolCallingMixin</code>, which converts tool schemas into text prompts and parses tool calls with regex extraction — dramatically expanding the usable model pool. On top sits <code>RouterLLM</code>, which routes different requests to different models while keeping a unified <code>LLM</code> interface:</p>
+<pre><code class="language-python">class MultimodalRouter(RouterLLM):
+    def select_llm(self, messages: list[Message]) -&gt; str:
+        has_images = any(m.contains_image for m in messages)
+        return &quot;primary&quot; if has_images else &quot;secondary&quot;
+
+# route text to cheaper model, images to multimodal model
+router = MultimodalRouter(llms_for_routing={
+    &quot;primary&quot;: LLM(model=&quot;claude-sonnet-4-5&quot;),
+    &quot;secondary&quot;: LLM(model=&quot;devstral-small&quot;)})
+agent = Agent(llm=router, tools=tools)
+</code></pre>
+<p>This is the harness as a cost-engineering surface — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every token has a price tag</a>, and the SDK lets you express the routing policy in a method.</p>
+<p><strong>The tool system</strong> follows an Action–Execution–Observation contract: the LLM proposes JSON tool calls, which are validated into typed <code>Action</code> schemas before execution; <code>ToolExecutor</code> runs the logic; <code>Observation</code> structures the result for the LLM. MCP tools are first-class citizens — their JSON schemas are auto-translated into <code>Action</code> models, so external MCP servers behave identically to native tools (validated, type-safe, serialized). The tool <em>registry</em> decouples specifications from implementations: Python executors aren't serializable, so tools travel across process or network boundaries as lightweight JSON specs, reconstructed lazily at runtime. That single mechanism enables distributed agent architectures — and it is exactly what made the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">harness optimizer</a> search space editable: harnesses are just compositions of serializable specs.</p>
+<h2 id="security-inside-the-loop">Security inside the loop</h2>
+<p>The SDK treats safety as part of the control loop rather than an afterthought, through two abstractions: <code>SecurityAnalyzer</code>, which rates each tool call low/medium/high/unknown risk, and <code>ConfirmationPolicy</code>, which decides whether approval is required. The built-in pair — <code>LLMSecurityAnalyzer</code> plus <code>ConfirmRisky</code> — blocks actions above a configurable threshold (default: high), pausing the agent in a <code>WAITING FOR CONFIRMATION</code> state until a human acts. Because risk assessment is separated from enforcement, policies can be adapted mid-session (e.g., relaxing restrictions for read-only <code>grep</code>), and custom analyzers slot in without touching tool executors. <code>SecretRegistry</code> complements it with late-bound secrets: tools fetch credentials only at execution time, and any secret that appears in output is masked as <code>&lt;secret-hidden&gt;</code>, with support for live rotation mid-conversation. These are precisely the features that are <em>absent</em> from the feature-comparison table's OpenAI/Claude/Google/LangChain columns — the security analyzer, confirmation policies, secrets with auto-masking, and agent stuck detection are OpenHands-unique.</p>
+<h2 id="local-first-deploy-anywhere">Local-first, deploy-anywhere</h2>
+<p>The paper's most immediately useful trick is the <code>Conversation</code> factory. Instantiate with a path or <code>LocalWorkspace</code> and you get a <code>LocalConversation</code> — the full agent loop (LLM calls, tool invocation, event callbacks, state updates) running in-process, perfect for notebooks and debugging, with pause/resume. Swap in a <code>RemoteWorkspace</code> and the <em>same code</em> transparently constructs a <code>RemoteConversation</code> that serializes the agent config and delegates execution to an agent server over HTTP/WebSocket. Going from prototype to production is a two-line diff:</p>
+<pre><code class="language-python">+from openhands.workspace import DockerWorkspace
++with DockerWorkspace(...) as workspace:
++    conversation = Conversation(agent=agent, workspace=workspace)
++    conversation.send_message(&quot;Create hello.py&quot;)
++    conversation.run()
+</code></pre>
+<p>The server itself is a first-class artifact: REST endpoints for conversation control, WebSocket for event streaming, session-based authentication, and official Docker images bundling the full stack (API server, VSCode Web, VNC desktop, Chromium). Each agent instance runs in an independent container with dedicated filesystem and resource limits — the containerized model that makes SaaS-style multi-tenancy tractable, with per-conversation event logs providing tenant isolation by construction.</p>
+<h2 id="the-numbers-that-validate-the-architecture">The numbers that validate the architecture</h2>
+<p><strong>Production reliability.</strong> A 15-day parallel rollout ran V0 and V1 against live users. System-attributable errors per 1k conversations fell from 78.0 to 30.0 — a 61% reduction. The entire V0 infrastructure-error class (69.8/1k) vanished: it was dominated by inter-pod HTTP failures between the conversation manager and execution runtime (<code>HTTPStatusError</code> 401 at 43.0/1k, <code>AgentRuntimeNotReadyError</code> at 18.8/1k, connection timeouts at 3.1/1k), all eliminated by V1's co-located execution model. The residual V1 SDK errors (29.7/1k) were dominated by one condensation bug exposed during the extended-thinking rollout — caught in production, fixed, and instructive: even a good architecture ships bugs, but co-location removed an entire failure class structurally rather than by patching symptoms.</p>
+<p><strong>Capability preservation.</strong> On SWE-Bench Verified with matched models, Claude Sonnet 4 scores an identical 68.0% on V0 and V1 — the redesign neither helped nor hurt. With Sonnet 4.5, V1 gains +8.2 points (64.6 → 72.8), attributed to extended-thinking support that the event-sourced architecture integrated naturally but would have been &quot;significant engineering effort&quot; to retrofit into V0.</p>
+<p><strong>Benchmark SOTA.</strong> Across 14 models (7 closed, 7 open) and five task categories — issue resolution (SWE-Bench Verified), greenfield development (Commit0), frontend development (SWE-Bench Multimodal), testing (SWT-Bench), and information gathering (GAIA) — the SDK hits state-of-the-art on <strong>3 of 5</strong>: Commit0 at 56.2% (published SOTA: 12.5%), SWE-Bench Multimodal at 44.1% (no published SOTA yet), and GAIA at 80.0% (SOTA: 74.6%). It remains within 2.6 points (SWE-Bench Verified, 76.6 vs 79.2) and 5.2 points (SWT-Bench, 78.8 vs 84.0) of SOTA on the other two — using a <em>single model per evaluation</em>, while several SOTA systems use multi-model orchestration. The uniform harness also surfaces model specialization that a model-agnostic substrate makes visible: Claude models dominate issue resolution and testing, while GPT-5.4 leads long-horizon greenfield development.</p>
+<p><strong>Three-tier QA.</strong> The engineering discipline extends to testing: programmatic tests with mocked LLM calls run on every commit (seconds, no API cost); LLM-based integration and example tests run daily and on-demand for PRs ($0.5–$3, under 5 minutes, real models); benchmark evaluations run on-demand at $100–$1000 for comprehensive capability checks. The integration-test framework — subclass, implement <code>setup()</code>, <code>tools()</code>, <code>verify_result()</code> — is itself a template for <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">harness QA</a>.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>Read as a reference architecture, the SDK codifies a specific set of bets, and the blog's prior coverage suggests they are the right ones:</p>
+<p><strong>The harness is the product.</strong> The minimal example is six lines because everything that matters — state, tools, security, context, deployment — lives in the foundation, not in the agent loop. This is the same conclusion as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">Better Harnesses, Smaller Models</a>: the agent's value is the software around the model, and now that software is a maintained, versioned, open-source artifact instead of bespoke glue.</p>
+<p><strong>Event-sourced state is the consensus spine.</strong> DeepSeek Harness's append-only session log, Cordis's composability calculus, and now OpenHands V1's <code>ConversationState</code> — three independent designs converging on immutable-event logs with derived state. The 0.2 ms persistence latency and 7.4 ms recovery numbers make the objection (&quot;event sourcing is too slow&quot;) an empirical dead end.</p>
+<p><strong>Local-first beats sandbox-first.</strong> The mandatory-sandbox assumption was the source of most of V0's production failures. Opt-in isolation — one process by default, containers when you need them — aligns with MCP's local-first reality and removes an entire infrastructure failure class. The lesson generalizes beyond OpenHands: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#terminal-agents-survey">terminal agents</a> live in the local substrate, and harnesses that treat local execution as the default rather than the exception are structurally simpler.</p>
+<p>The honest limits are stated: the SDK currently targets single-agent conversations (multi-agent coordination &quot;requires further design&quot;); LLM-based security analysis remains subject to adversarial prompts and inconsistent classification; and a comprehensive multi-tenant security audit is future work. The security architecture, in particular, is defense-in-depth with a probabilistic core — the <code>LLMSecurityAnalyzer</code> is itself a model, so the guardrail inherits the model's failure modes, which is exactly the kind of leak the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-leaky-abstractions">leaky-abstractions law</a> predicts.</p>
+<p>For anyone building software-engineering agents, this paper is the current best answer to &quot;what should the foundation look like&quot;: immutable validated components, one event-sourced source of truth, a typed tool contract with MCP as a first-class citizen, security inside the loop, and a workspace abstraction that makes the notebook-to-production journey a two-line diff. The architecture has now been validated twice over — by 61% fewer production failures on one axis, and by being the substrate the harness-optimization literature <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">builds on</a> on the other.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

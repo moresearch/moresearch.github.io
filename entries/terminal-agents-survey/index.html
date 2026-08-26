@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A close reading of the Terminal Agents survey (arXiv:2608.20485): the terminal as execution substrate, the seven-dimension competence profile, and why benchmark scores hide process quality.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/terminal-agents-survey/">
+  <title>Terminal Agents: The Terminal Is the Substrate — hackspree</title>
+  <meta property="og:title" content="Terminal Agents: The Terminal Is the Substrate">
+  <meta property="og:description" content="A close reading of the Terminal Agents survey (arXiv:2608.20485): the terminal as execution substrate, the seven-dimension competence profile, and why benchmark scores hide process quality.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/terminal-agents-survey/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Terminal Agents: The Terminal Is the Substrate">
+  <meta name="twitter:description" content="A close reading of the Terminal Agents survey (arXiv:2608.20485): the terminal as execution substrate, the seven-dimension competence profile, and why benchmark scores hide process quality.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-24">2026-08-24</time></p>
+          <h1>Terminal Agents: The Terminal Is the Substrate<a class="raw-link" href="https://blog.hackspree.com/raw/terminal-agents-survey.md" title="Raw markdown source" aria-label="Raw markdown source of Terminal Agents: The Terminal Is the Substrate" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A close reading of the Terminal Agents survey (arXiv:2608.20485): the terminal as execution substrate, the seven-dimension competence profile, and why benchmark scores hide process quality.</p>
+          <div class="tags"><span class="tag">terminal-agents</span><span class="tag">surveys</span><span class="tag">harness</span><span class="tag">evaluation</span><span class="tag">agents</span><span class="tag">swe-bench</span><span class="tag">cli</span></div>
+          
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2608.20485">Terminal Agents: A Survey of AI Agents in Command-Line Environments</a> (Yi Bin, Xiaoyang Yuan, Haoxi Zeng, Wencheng Ye, et al., arXiv:2608.20485, 52 pages) is the first survey that treats terminal-mediated execution as an object of study in its own right, rather than scattering it across software-engineering, tool-use, and computer-use literature. It is worth a close read because it formalizes a claim this blog has been circling for months: <strong>the terminal is not an interface the agent uses, it is the substrate the agent lives in</strong> (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI Design</a> and the canonical <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>).</p>
+<p>The companion repo is <a target="_blank" rel="noopener noreferrer" href="https://github.com/EnigmaYYYY/awesome-terminal-agents">awesome-terminal-agents</a>.</p>
+<h2 id="the-scope-move-substrate-not-surface">The scope move: substrate, not surface</h2>
+<p>The survey's organizing lens is deliberately narrow: a <em>terminal agent</em> is a system whose <strong>dominant progress-bearing action–observation loop is mediated by terminal command execution, textual feedback, and stateful environment interaction</strong>. Three workload-level boundary tests operationalize &quot;dominant&quot;:</p>
+<ol>
+<li><strong>Primary execution substrate</strong> — command execution is the workload's main means of progress.</li>
+<li><strong>Iterative command feedback</strong> — outputs, errors, logs, diffs, return codes, or state changes materially shape later actions.</li>
+<li><strong>Terminal dependence</strong> — removing terminal access would change the workload's core behavior.</li>
+</ol>
+<p>The consequences are sharp. SWE-agent is in scope; Agentless is not (static patch pipelines lack iterative execution); OSWorld is not (visual feedback is the progress-bearing substrate); a CLI-packaged assistant that forwards requests to a non-terminal workflow is not. The tests apply per-workload, not per-product — a platform can be in scope for repository repair and out of scope for its browser workloads.</p>
+<p>This matters for harness engineers because <strong>most &quot;terminal agents&quot; in industry are hybrid systems, and the boundary tests tell you which parts of them deserve terminal-specific evaluation</strong>.</p>
+<h2 id="seven-dimensions-of-terminal-competence">Seven dimensions of terminal competence</h2>
+<p>The survey's analytical backbone is a seven-dimensional competence profile. These are not model capabilities; they are <em>system-level responsibilities</em> distributed across the model, interface, harness, runtime, and environment:</p>
+<ol>
+<li><strong>Command and action formulation</strong> — translating goals into executable commands, edits, and build/test/run actions.</li>
+<li><strong>Feedback and artifact interpretation</strong> — extracting evidence from stdout, stderr, exit codes, logs, diffs, stack traces.</li>
+<li><strong>Runtime and environment management</strong> — preparing, configuring, and repairing dependencies, services, containers, remote machines.</li>
+<li><strong>State, task, and context tracking</strong> — maintaining environment state and interaction history across extended sessions.</li>
+<li><strong>Progress verification</strong> — designing checks of intermediate validity and completion conditions.</li>
+<li><strong>Recovery and adaptation</strong> — diagnosing failures, replanning, retrying from grounded evidence.</li>
+<li><strong>Governance and side-effect control</strong> — permissions, sandboxes, approvals, resource limits, destructive-action prevention.</li>
+</ol>
+<p>Two features of this list are worth internalizing. First, verification (5) is separated from recovery (6), and both from governance (7) — conflating them is why so many harnesses discover that &quot;it passed the tests&quot; and &quot;it did something terrible&quot; are simultaneous truths (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxing AI Agents</a> and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents</a>, which frames governing and recovering as first-class state concerns). Second, the dimensions are trace-observable in principle: planning appears as executable action sequences, memory is tested against persistent state, adaptation is grounded in external feedback. That traceability is the hook for everything that follows.</p>
+<h2 id="architecture-the-harness-is-a-performance-shaping-component">Architecture: the harness is a performance-shaping component</h2>
+<p>The survey traces four shifts in design emphasis: tool-augmented prompting (ReAct, Toolformer, CodeAct) → structured executable actions (SWE-agent's ACI primitives, OpenHands) → terminal-mediated agency as a first-class target (Terminal-Bench, CLI-Gym, Endless Terminals) → <strong>runtime- and harness-centered design</strong> (Meta-Harness, AutoHarness, Agentic Harness Engineering), where context compaction, approval rules, observation shaping, and observability-driven harness evolution are treated as first-class variables.</p>
+<p>Responsibilities are organized into four layers: interface and observation, runtime and workspace, control/verification/recovery/governance, and harness/context. The recurring tensions:</p>
+<ul>
+<li><strong>Expressiveness vs. recoverability</strong> — raw command access is expressive but noisy and hard to roll back; ACI mediation is reliable but narrows the task surface.</li>
+<li><strong>Generality vs. task discipline</strong> — platform runtimes span heterogeneous work but give less structured feedback.</li>
+<li><strong>Automation vs. inspectability</strong> — permission gates and approval checkpoints aid auditability but add latency; governance is the least systematically addressed dimension.</li>
+</ul>
+<p>And the one that should shape every comparison you publish: <strong>attribution difficulty</strong>. Controlled skill injection can add substantial token overhead without improving pass rate, and Agentless shows static pipelines rivaling interactive agents on some repository-repair tasks. Gains under an optimized harness may come from context management, observation shaping, retry policy, or injected procedural knowledge — not from a better model. <strong>The complete model–harness–runtime configuration is the unit of comparison, not the model.</strong></p>
+<h2 id="acquisition-trajectories-are-the-unit-failure-is-the-signal">Acquisition: trajectories are the unit, failure is the signal</h2>
+<p>The relevant learning unit is a <em>stateful trajectory</em> — actions, observations, state changes, verification, recovery — not a prompt–response pair. The survey maps the acquisition levers:</p>
+<ul>
+<li><strong>SFT on successful traces</strong> teaches common commands and workflows, but offers almost no supervision for diagnosis, rollback, or recovery after wrong assumptions.</li>
+<li><strong>RL with executable rewards</strong> (Endless Terminals, ECHO, SWE-Master, SWE-Gym, Tmax) aligns behavior with completion, but sparse rewards can reinforce brittle or unsafe behavior.</li>
+<li><strong>Process-aware / verifier-guided optimization</strong> supervises intermediate decisions via judgments, rankings, or hindsight validation (AgentHER is the key example — terminal failures usually appear early through stderr, failed tests, or inconsistent state).</li>
+<li><strong>Failure-conditioned training</strong> (TRACE, AgentHER, AgentForesight) preserves diagnosis and recovery, but suffers noisy labels and repair-loop overfit.</li>
+<li><strong>Synthetic generation</strong> broadens coverage of rare commands but risks teaching synthetic regularities; <strong>runtime memory</strong> (Memento, Context-Folding, TACO) sustains long horizons but risks persisting incorrect assumptions.</li>
+</ul>
+<p>The uncomfortable finding: <strong>recoverable failures remain underrepresented</strong>. Failed installs, version conflicts, rollback decisions, and dead-end repairs are exactly the interactions needed to learn recovery — and successful-trace filtering removes them. If your training pipeline only keeps traces that worked, you are training an agent that cannot diagnose.</p>
+<h2 id="evaluation-outcomes-are-the-floor-not-the-ceiling">Evaluation: outcomes are the floor, not the ceiling</h2>
+<p>The evaluation section is the most useful part of the paper for working engineers. Benchmark families expose <em>different things</em>:</p>
+<table>
+<thead>
+<tr>
+<th>Emphasis</th>
+<th>Representative examples</th>
+<th>Blind spot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repository repair</td>
+<td>SWE-bench, SWE-PolyBench</td>
+<td>Conflates repair with terminal competence</td>
+</tr>
+<tr>
+<td>CLI/terminal-centered</td>
+<td>Terminal-Bench, TerminalWorld, LongCLI-Bench</td>
+<td>Mixes terminal-native and repo-mediated tasks</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>SetupBench</td>
+<td>Isolated from end-to-end workflows</td>
+</tr>
+<tr>
+<td>Process</td>
+<td>OctoBench, ProcBench, AppWorld</td>
+<td>No standardized process scoring</td>
+</tr>
+<tr>
+<td>Long horizon</td>
+<td>SWE-Bench Pro, LoCoEval, LifelongAgentBench</td>
+<td>Costly, hard to reproduce</td>
+</tr>
+<tr>
+<td>Safety/governance</td>
+<td>BashArena, ClawSafety, AgentHazard</td>
+<td>Task success may conceal harmful actions</td>
+</tr>
+<tr>
+<td>Production</td>
+<td>ProdCodeBench</td>
+<td>Limited public access</td>
+</tr>
+</tbody>
+</table>
+<p>The evidence hierarchy goes beyond binary correctness: outcome evidence (task completion), process evidence (how execution happened), environment evidence (runtime validity), trace evidence (inspection/replay), and governance evidence (permissions, containment, side effects). Three protocol facts deserve wide circulation:</p>
+<ul>
+<li><strong>SWE-EVO-style long-horizon decay</strong>: 65–73% on SWE-Bench Verified drops to 21–25% on multi-file evolution in its reported setting. Short tasks hide failure.</li>
+<li><strong>Reward hacking is measurable</strong>: an audit reports 16% of tasks across five terminal-agent benchmarks are reward-hackable.</li>
+<li><strong>Harness effects dominate</strong>: WildClawBench reports an 18-point harness-conditioned gap; SWE-rebench finds evidence consistent with contamination inflation on static tasks.</li>
+</ul>
+<p><strong>Final success alone does not reveal whether an agent preserved state, recovered from failure, verified completion, or respected execution constraints.</strong></p>
+<h2 id="the-survey-runs-its-own-diagnostics">The survey runs its own diagnostics</h2>
+<p>Rather than stopping at synthesis, the survey contributes bounded fixed-condition experiments — and these are the most concrete part of the paper. On a fixed configuration (mini-SWE-agent + DeepSeek-V4-Flash), it computes seven trace-derived process indicators (P1–P7) across four benchmark families:</p>
+<table>
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Tasks</th>
+<th>Outcome</th>
+<th>Final-verify (P5)</th>
+<th>Gov. trigger (P7)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminal-Bench 2.1</td>
+<td>241</td>
+<td>52.6%</td>
+<td>29.5%</td>
+<td>0.5%</td>
+</tr>
+<tr>
+<td>SetupBench</td>
+<td>93</td>
+<td>59.1%</td>
+<td>36.6%</td>
+<td>1.4%</td>
+</tr>
+<tr>
+<td>LongCLI-Bench</td>
+<td>21</td>
+<td>23.8%</td>
+<td>23.8%</td>
+<td>4.5%</td>
+</tr>
+<tr>
+<td>BashArena</td>
+<td>640</td>
+<td>41.8%</td>
+<td>66.2%</td>
+<td>3.0%</td>
+</tr>
+</tbody>
+</table>
+<p>Key results: rule-matched invocation failures are rare (P1 ≈ 0.0%), local feedback use is high (76–82%), but <strong>final-window verification spans 23.8%–36.6% on three benchmarks versus 66.2% on BashArena</strong> — the same agent shows different process behavior because the benchmarks foreground different demands. The matched system comparison is even more pointed: SWE-agent wins every block, but the gap between systems ranges from at most 7.00 points on SWE-bench Lite to 21.25 points on Claw-SWE-Bench Lite, and the <em>ordering</em> of OpenHands and mini-SWE-agent <strong>reverses across benchmarks</strong>. Meanwhile the Flash-vs-Pro model variant never moves outcomes by more than 2.50 points. <strong>Benchmark choice changes what you can see, and system comparison without benchmark context is meaningless.</strong></p>
+<p>The trace cases ground the aggregates — the <code>magsac-install</code> case shows a dependency loop with a 38.5% environment-command non-zero-exit rate that never closes because the agent ends before an evaluator-relevant import check. Local feedback without verification and recovery leaves the loop unclosed.</p>
+<pre><code class="language-go">type TraceIndicators struct {
+	InvocationFailures  float64 // P1: rule-matched command failure rate
+	FeedbackUse         float64 // P2: helpful-use among feedback episodes
+	EnvironmentExits    float64 // P3: non-zero exit on env-management commands
+	StateErrors         float64 // P4: consequential state errors
+	FinalWindowVerify   float64 // P5: verification in final window
+	Recovery            float64 // P6: task-relevant recovery success
+	GovernanceTriggers  float64 // P7: irreversible/overprivileged/secret-handling actions
+}
+</code></pre>
+<p>This is the closest thing the survey offers to a portable process-evaluation schema — and it is exactly the shape of instrumentation this blog argues harnesses should ship with (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>).</p>
+<h2 id="what-to-take-away">What to take away</h2>
+<p>The survey's own conclusion is the one to steal for your evaluation practice: <strong>report system and runtime conditions explicitly, pair task outcomes with process evidence, and publish replayable traces.</strong> The four research priorities it derives — cross-domain competence, fresh and replayable process-level evaluation, runtime governability, and controlled model–harness attribution — map one-to-one onto the gaps that keep showing up in real agent deployments.</p>
+<p>For harness engineers the operative reading is: treat the terminal as substrate, instrument the seven dimensions, keep failure traces, and never publish a model comparison without pinning the harness, the runtime, and the benchmark. This is the survey version of &quot;tasks that fight back&quot; — except now the tasks are graded on process, not just outcomes, and the benchmark is treated as a measurement instrument that must resist gaming, the argument made in <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>. If you only track resolution rates, you are measuring the flattering version of your system. (Relevant adjacent reading: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness Notes</a> and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harness Patterns for Agentic AI Systems</a> index.)</p>
+<h2 id="references">References</h2>
+<ul>
+<li>Yi Bin, Xiaoyang Yuan, Haoxi Zeng, Wencheng Ye, Wenqi Shao, Chen Qian, Wei Ye, Yujuan Ding, Zheng Wang, Pengpeng Zeng, Jingkuan Song, Heng Tao Shen. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2608.20485">Terminal Agents: A Survey of AI Agents in Command-Line Environments</a>. arXiv:2608.20485, submitted 20 Aug 2026. <a target="_blank" rel="noopener noreferrer" href="https://github.com/EnigmaYYYY/awesome-terminal-agents">Companion repo</a>.</li>
+<li>Key benchmarks discussed: <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2601.11868">Terminal-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2507.09063">SetupBench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2512.15688">BashArena</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2602.14337">LongCLI-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.12344">Claw-SWE-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.01438">ClawSafety</a>.</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

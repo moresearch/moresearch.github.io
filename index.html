@@ -1728,6 +1728,147 @@
 <p>AutoGPT configuration (<a target="_blank" rel="noopener noreferrer" href="https://docs.agpt.co/classic/configuration/">docs</a>) and issue tracker (<a target="_blank" rel="noopener noreferrer" href="https://github.com/Significant-Gravitas/AutoGPT/issues">issues</a>); OWASP Top 10 — LLM10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">Every Token Has a Price Tag</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>.</p>
 </div>
       </article>
+      <article class="post" id="better-harnesses-smaller-models">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/better-harnesses-smaller-models/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-26" data-utc="Aug 26, 2026 UTC" aria-label="Aug 26, 2026 UTC" tabindex="0">1787702400</time></p>
+          <h2><a href="#better-harnesses-smaller-models">Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation</a><a class="raw-link" href="https://blog.hackspree.com/raw/better-harnesses-smaller-models.md" title="Raw markdown source" aria-label="Raw markdown source of Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A close reading of the CMU paper (arXiv:2607.08938): the failure-mode→adaptation framework for harnesses, the meta-agent harness optimizer, why repetitive tasks and capable SLMs respond best, and what the &#39;model&#43;harness pair&#39; framing means for the economics of agent deployment.</p>
+          <div class="tags"><span class="tag">slm</span><span class="tag">small-language-models</span><span class="tag">harness-engineering</span><span class="tag">harness-optimization</span><span class="tag">meta-agents</span><span class="tag">agents</span><span class="tag">cost-efficiency</span><span class="tag">gemma</span><span class="tag">qwen</span><span class="tag">model-swap</span><span class="tag">automated-design</span><span class="tag">amortization</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2607.08938">Better Harnesses, Smaller Models: Building 90% Cheaper Agents via Automated Harness Adaptation</a> (Chenyang Yang, Xinran Zhao, Tongshuang Wu, Christian Kästner, Carnegie Mellon University, arXiv:2607.08938, July 2026) is the paper this blog has been circling for months: it takes the harness — the software around the model — and treats it as the primary lever for making agents affordable. The title says it: keep the cheap model, fix the harness, and recover frontier-LLM performance at 4% of the cost. Companion code: <a target="_blank" rel="noopener noreferrer" href="https://github.com/malusamayo/migration-analysis">github.com/malusamayo/migration-analysis</a>.</p>
+<p>The setup is the null result every deployment engineer already believes. Take a budget-approval agent — collecting, reviewing, and communicating budget requests across departments. With a frontier model (<code>gemini-3.1-pro</code>), the generic harness hits 97.3% accuracy at $0.22 per query. Swap in a small open-weight model (<code>gemma-4-26b-a4b</code>, 4B active parameters) with no other changes, and accuracy collapses to 75.0%. That is the standard narrative: <em>SLMs just aren't good enough for agentic work.</em> The paper's bet is that the collapse is a harness artifact, not a model property. After automated harness adaptation — a step-by-step workflow skeleton in the system prompt, a filtered tool set, and an anti-loop hook — the same SLM hits <strong>98.3%</strong> on the same task, beating the frontier model, at 8% of the cost.</p>
+<h2 id="the-reframing-difficulty-is-shared-so-lift-it-into-the-harness">The reframing: difficulty is shared, so lift it into the harness</h2>
+<p>The paper's core claim is almost economic before it is technical: <strong>much of the difficulty of a routine business task is shared across instances.</strong> Every budget request in a company goes through the same policy lookup, the same pricing table, the same reserve-account handling. That shared structure is what a frontier LLM privately reconstructs on every single run, token by token, at frontier prices. An SLM does the same reconstruction worse.</p>
+<p>The fix: move that shared difficulty out of the model and into the harness — as tailored instructions, custom tools, and deterministic orchestration logic — once, offline, and amortize it over every instance. &quot;The key insight is that much of the task difficulty is shared across instances and can be lifted from the model into the harness.&quot;</p>
+<p>This is the same argument this blog has made about <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">harness engineering best practices</a> and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-harness-engineering">task-harness engineering</a>: the model is the part that burns money at runtime; everything stable about the task should be encoded where it is cheap. What this paper adds is the <em>automation</em> — nobody hand-engineers the harness, a meta-agent searches for it — and the <em>empirics</em>: seven tasks, three SLM families, 21 model-task pairs, with and without adaptation.</p>
+<h2 id="the-framework-failure-modes--adaptation-strategies">The framework: failure modes → adaptation strategies</h2>
+<p>Before automating anything, the authors build a diagnostic framework that maps <em>why</em> an agent fails to <em>what</em> the harness can do about it. Failures are indexed by the capability they implicate:</p>
+<table>
+<thead>
+<tr>
+<th>Failure mode</th>
+<th>What it looks like</th>
+<th>Harness adaptations that address it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>tool-use</strong></td>
+<td>wrong tool, malformed calls, bad composition across tools</td>
+<td>demonstrate examples; wrap common sequences into simpler tools; filter the tool set; adapt schemas</td>
+</tr>
+<tr>
+<td><strong>instruction-following</strong></td>
+<td>violates task requirements, formats, workflow rules</td>
+<td>reinforce constraints in context; enforce them programmatically via hooks</td>
+</tr>
+<tr>
+<td><strong>knowledge</strong></td>
+<td>missing domain/environment/commonsense assumptions</td>
+<td>externalize knowledge into instructions; encode it into tool implementations</td>
+</tr>
+<tr>
+<td><strong>long-context</strong></td>
+<td>forgets earlier instructions, repeats failures, misses observations</td>
+<td>reveal/compress/prune context; reduce observations; split into sub-agents</td>
+</tr>
+<tr>
+<td><strong>planning/reasoning</strong></td>
+<td>no viable decomposition, premature answers, no backtracking</td>
+<td>provide plan skeletons; encode plans in tools; orchestrate agent flows</td>
+</tr>
+</tbody>
+</table>
+<p>Adaptation strategies are grouped by which harness component they change: <strong>context</strong> (add: examples, plan skeletons, externalized knowledge; manage: progressive reveal, compression, pruning), <strong>tools</strong> (create: wrap sequences, enforce constraints, encode knowledge; manage: filter, retune schemas), and <strong>agent loops</strong> (instrument code: deterministic checks, hooks, guardrails; orchestrate agents: multi-agent topologies).</p>
+<p>The framework is deliberately size-agnostic — capabilities live on a spectrum, and today's SLM is tomorrow's mid-tier model. But the authors note the mismatch the framework exists for is most common exactly where models are small: frontier models are often strong enough that a generic harness suffices; SLMs exhibit capability gaps that make specialized harnesses the difference between 5% and 99% accuracy.</p>
+<h2 id="the-optimizer-harness-search-as-a-meta-agent-loop">The optimizer: harness search as a meta-agent loop</h2>
+<p>The design space is the <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2511.03690">OpenHands Software Agent SDK</a>: system prompts, skills, dynamic contexts, primitive and custom tools, hooks triggered on tool use, context management (external file systems, condensers), and sub-agents. The optimizer is a <strong>meta-agent</strong> (<code>gemini-3.1-pro-preview</code>) running an evolutionary loop, in the spirit of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#self-improving-agent-workflows">self-improving agent workflows</a> and the <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.22954">Darwin Gödel machine</a>:</p>
+<ol>
+<li><strong>Sample and evaluate.</strong> Maintain a pool of harnesses with validation scores; select candidates GEPA-style from the Pareto front — a harness that is optimal on at least one training instance — and run it on a sampled batch, logging full trajectories and outcome signals.</li>
+<li><strong>Diagnose and propose.</strong> The meta-agent inspects trajectories plus the current harness code and edits it. It gets four inputs: annotated trajectories, the harness implementation, a <strong>search memory</strong> of past proposals and their effects (so it stops rediscovering the same dead-end fix), and design-space documentation of available components. Proposals pass a cheap sanity check before evaluation, with a repair loop.</li>
+<li><strong>Validate and keep.</strong> If the edited harness improves on the batch, it gets a full validation run and enters the pool.</li>
+</ol>
+<p>The loop is cheap by design: $20 of optimizer budget per task-model pair, three runs each, best validation harness kept — $1,260 total for the whole study. That number matters, because the entire economics of the paper rests on it: <strong>a one-time offline cost, amortized across every production run.</strong> The authors calculate the $20 is recovered after 13 runs on average.</p>
+<h2 id="what-the-numbers-say">What the numbers say</h2>
+<p>The headline table compares three SLMs — <code>gemma-4-26b-a4b</code> (MoE, 4B active), <code>qwen3-coder-30b-a3b</code> (MoE, 3B active), <code>ministral3-8b</code> (dense) — with a generic harness and an optimized harness, against the frontier baseline, across seven tasks: attendance-auditing, budget-approval, stock-alert, anomaly-detection, playwright-testing, website-management, and code-refactoring (grounded in TheAgentCompany, LOCA-Bench, WebGenBench, WebArena, and RefactorBench, 20/20/60 train/validation/test splits):</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Avg. accuracy</th>
+<th>Avg. cost/instance</th>
+<th>Avg. latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gemini-3.1-pro-preview</code> (generic harness)</td>
+<td>89.7</td>
+<td>$1.735</td>
+<td>181s</td>
+</tr>
+<tr>
+<td><code>gemma-4-26b-a4b</code> generic</td>
+<td>31.4</td>
+<td>$0.043</td>
+<td>328s</td>
+</tr>
+<tr>
+<td><code>gemma-4-26b-a4b</code> <strong>optimized</strong></td>
+<td><strong>80.2</strong></td>
+<td>$0.071</td>
+<td><strong>135s</strong></td>
+</tr>
+<tr>
+<td><code>qwen3-coder-30b-a3b</code> generic</td>
+<td>26.9</td>
+<td>$0.085</td>
+<td>107s</td>
+</tr>
+<tr>
+<td><code>qwen3-coder-30b-a3b</code> <strong>optimized</strong></td>
+<td><strong>74.8</strong></td>
+<td>$0.064</td>
+<td><strong>76s</strong></td>
+</tr>
+<tr>
+<td><code>ministral3-8b</code> generic</td>
+<td>9.5</td>
+<td>$0.110</td>
+<td>194s</td>
+</tr>
+<tr>
+<td><code>ministral3-8b</code> <strong>optimized</strong></td>
+<td><strong>25.0</strong></td>
+<td>$0.099</td>
+<td>172s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>16 of 21 task-SLM pairs improved significantly with an optimized harness; seven pairs closed the SLM-LLM gap entirely.</strong> The best result is <code>gemma-4-26b-a4b</code>: 89.7% of LLM performance at 4% of the cost, with 25% lower latency. The per-task numbers are wilder than the averages — the same SLM that scored 5.0% on anomaly-detection and 9.9% on playwright-testing with a generic harness hits <strong>99.4% and 98.1%</strong> optimized; <code>qwen3-coder</code> goes from 1.1% to 93.9% on anomaly-detection.</p>
+<p>Two subtleties worth noting before celebrating. First, the cost win is mostly <em>not</em> lower per-token prices — the adapted harness is sometimes slightly more expensive per instance (added context, more deterministic scaffolding: $0.043 → $0.071 for gemma). The win is that the agent <em>finishes the task</em>, in fewer, shorter loops: latency collapses from 328s to 135s, and failures (which in production mean human triage or re-runs) mostly disappear. Second, the remainders are instructive: website-management stays hard even optimized (45.6% gemma, 24.4% qwen), and <code>ministral3-8b</code> — the weakest model — stays at 0.0% on stock-alert and anomaly-detection no matter what the harness does. <strong>Harnesses can absorb task difficulty, but they cannot manufacture capability that isn't there.</strong></p>
+<h2 id="when-adaptation-works">When adaptation works</h2>
+<p>Two research questions pin down the boundary conditions, and both confirm the &quot;shared difficulty&quot; thesis:</p>
+<p><strong>Repetitive tasks adapt well (RQ2).</strong> The authors measure task diversity as the average pairwise Levenshtein distance between tool-call sequences across instances, and find a strong negative correlation with optimized performance (Spearman ρ = −0.96). A controlled experiment that varies the number of workflow templates in a task confirms causality: going from 3 templates to 20 drops optimized performance from 89.1% to 68.0%. A budget-approval agent where every instance follows the same procedure is a gift to harness adaptation; a code-refactoring task where every repository and query differs resists it. This is the quantitative version of this blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnesses-need-tasks-that-fight-back">harnesses need tasks that fight back</a> — low-entropy tasks are exactly the ones where a harness can win the fight.</p>
+<p><strong>Capable SLMs benefit more (RQ3).</strong> Using Artificial Analysis benchmark scores as a capability proxy, stronger models both perform better and improve <em>more</em> from adaptation (+48.8% vs +15.5% for the weakest). The harness offloads the <em>repetitive</em> parts of the task; the model must still follow the scaffolded instructions, use the tools correctly, and handle whatever cannot be delegated — and that residual is what separates SLMs.</p>
+<h2 id="what-the-adaptations-actually-are">What the adaptations actually are</h2>
+<p>Analyzing the optimized harnesses through the framework (RQ4): the dominant addressed failure modes are <strong>instruction-following (81%) and knowledge (81%)</strong>, followed by tool-use (62%) and long-context (33%). The dominant strategies are <strong>adding contexts (86%), creating tools (43%), and managing tools (29%)</strong>. The best anomaly-detection harness, for example, combines all three: a custom <code>query_mock_bigquery</code> tool that sidesteps the default tool's long-context behavior, a filter from 40+ MCP tools down to seven, and the environment's table-naming convention externalized into the system prompt. The budget-approval harness hands the SLM a fixed plan, a filtered tool set, and a hook that refuses to let the agent send the same message twice.</p>
+<p>Two findings here deserve emphasis. First, <strong>harness adaptations do not transfer across models.</strong> <code>ministral3-8b</code> struggles with file-editing tools; <code>qwen3-coder</code> occasionally emits raw XML where the protocol demands JSON tool calls. Each model's failure patterns demand tailored fixes — the playwright-testing harness for gemma adds contexts and pytest-enforcement hooks, while the one for ministral creates new tools to work around its editing failures. There is no universal SLM harness; optimization must be re-run per model (and, the paper's stance implies, per model <em>version</em>). Second, a notable negative result: <strong>no optimized harness successfully used sub-agents.</strong> The authors attribute this to current SLMs' limited ability to track and coordinate sub-agent work — which is a bracing counterpoint to the industry reflex that answers every SLM weakness with a multi-agent topology.</p>
+<h2 id="lessons-for-building-harness-optimizers">Lessons for building harness optimizers</h2>
+<p>The meta-agent loop is itself a system, and the paper's development log doubles as practical guidance:</p>
+<ul>
+<li><strong>Diagnosis quality is the bottleneck.</strong> Spending budget on evaluations or iterations only pays off if the meta-agent proposes good candidates. The authors found that passing <em>raw JSON</em> trajectories to the meta-agent beat post-processed markdown summaries — less human-friendly, but richer evidence for the frontier model to reason over.</li>
+<li><strong>The meta-agent's intelligence is worth its price.</strong> A cheaper meta-agent (<code>gemini-3.1-flash</code>) afforded more iterations but produced worse final harnesses; lower-quality diagnoses more than offset the extra exploration. Interestingly, hand-crafting heuristics (showing successful frontier trajectories, manually mapping failure modes to fixes) did <em>not</em> consistently help — a strong frontier meta-agent, given faithful evidence and an editable harness, infers targeted repairs on its own.</li>
+<li><strong>Explore diverse regions, not one long trajectory.</strong> Without search memory, the meta-agent rediscovers the same fixes and burns budget. And several independent shorter searches beat one long search: multiple runs cover more of the design space, raising the chance at least one discovers something strong.</li>
+</ul>
+<h2 id="what-this-means">What this means</h2>
+<p>The paper's reframing — <strong>the deployable unit is the model+harness pair, not the model</strong> — is the takeaway that matters most. The industry's &quot;model swap&quot; mental model says you replace one model with another and re-validate. This work says the harness is a derived artifact, entangled with the model it scaffolds: the same task, same SLM, generic vs. adapted harness, spans 31% → 80% average accuracy. Swap in a new SLM and you must re-derive the harness; the optimization is part of deployment, not a one-time event. This also reframes <em>which</em> SLM to buy: the paper's heuristic — small MoE models like <code>gemma-4-26b-a4b</code>, chosen by benchmark score as a capability proxy — is simple and, on this evidence, effective.</p>
+<p>Seen through the lens of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every token has a price tag</a> and this blog's running argument that harnesses are where agent economics are decided, the paper is a distillation story: a frontier meta-agent spends $20 once, compresses the shared structure of a task into a harness, and every subsequent run of the cheap model executes that structure nearly free. The expensive intelligence is amortized away; the cheap model becomes the run-time executor of distilled task knowledge. That is the same economics as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agents-are-distillation-at-scale">agents are distillation at scale</a> — the harness is the distilled artifact and the frontier model is the teacher.</p>
+<p>The honest limits are stated by the authors themselves: seven tasks with clean, verifiable success metrics; one optimizer implementation; a closed-source meta-agent that may drift as APIs evolve; list-price cost accounting. And the paper's own suggestion for the diverse tasks it fails — <strong>mixtures of harnesses</strong>, collections of specialized harnesses paired with a router, plus online adaptation as task distributions drift — is an open research direction, not a delivered result.</p>
+<p>For practitioners the decision rule is clean. If you deploy agents on routine, repetitive business workflows and the bill for frontier tokens is the constraint, the paper's evidence says: take the best cheap MoE SLM you can find, spend a few dozen dollars on an automated harness search, and expect to recover most of the frontier model's accuracy at ~5% of the cost — provided you are willing to treat &quot;re-optimize the harness&quot; as a normal part of every model upgrade. The cheap agent is not a model you buy; it is a system you build. The harness is the product, and now it can be searched for automatically.</p>
+</div>
+      </article>
       <article class="post" id="hacker-laws-ase-amdahls-law">
         <link rel="canonical" href="https://blog.hackspree.com/entries/hacker-laws-ase-amdahls-law/">
         <header class="post-header">
@@ -1889,6 +2030,177 @@
 <p><strong>Denial must be structural to be final.</strong> The blocklist decides before the model can be persuaded — deny by default, allow by exception — and authorization belongs in the tool, not the prompt: who may modify the system's state is a property of the harness.</p>
 <h2 id="references">References</h2>
 <p>Meta's Llama Guard (<a target="_blank" rel="noopener noreferrer" href="https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/">publication</a>); OWASP Top 10 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Willison's prompt injection series (<a target="_blank" rel="noopener noreferrer" href="https://simonwillison.net/series/prompt-injection/">series</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek teardown</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering">Verification Is the Bottleneck</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
+</div>
+      </article>
+      <article class="post" id="terminal-agents-survey">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/terminal-agents-survey/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-24" data-utc="Aug 24, 2026 UTC" aria-label="Aug 24, 2026 UTC" tabindex="0">1787529600</time></p>
+          <h2><a href="#terminal-agents-survey">Terminal Agents: The Terminal Is the Substrate</a><a class="raw-link" href="https://blog.hackspree.com/raw/terminal-agents-survey.md" title="Raw markdown source" aria-label="Raw markdown source of Terminal Agents: The Terminal Is the Substrate" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A close reading of the Terminal Agents survey (arXiv:2608.20485): the terminal as execution substrate, the seven-dimension competence profile, and why benchmark scores hide process quality.</p>
+          <div class="tags"><span class="tag">terminal-agents</span><span class="tag">surveys</span><span class="tag">harness</span><span class="tag">evaluation</span><span class="tag">agents</span><span class="tag">swe-bench</span><span class="tag">cli</span>
+          </div>
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2608.20485">Terminal Agents: A Survey of AI Agents in Command-Line Environments</a> (Yi Bin, Xiaoyang Yuan, Haoxi Zeng, Wencheng Ye, et al., arXiv:2608.20485, 52 pages) is the first survey that treats terminal-mediated execution as an object of study in its own right, rather than scattering it across software-engineering, tool-use, and computer-use literature. It is worth a close read because it formalizes a claim this blog has been circling for months: <strong>the terminal is not an interface the agent uses, it is the substrate the agent lives in</strong> (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI Design</a> and the canonical <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>).</p>
+<p>The companion repo is <a target="_blank" rel="noopener noreferrer" href="https://github.com/EnigmaYYYY/awesome-terminal-agents">awesome-terminal-agents</a>.</p>
+<h2 id="the-scope-move-substrate-not-surface">The scope move: substrate, not surface</h2>
+<p>The survey's organizing lens is deliberately narrow: a <em>terminal agent</em> is a system whose <strong>dominant progress-bearing action–observation loop is mediated by terminal command execution, textual feedback, and stateful environment interaction</strong>. Three workload-level boundary tests operationalize &quot;dominant&quot;:</p>
+<ol>
+<li><strong>Primary execution substrate</strong> — command execution is the workload's main means of progress.</li>
+<li><strong>Iterative command feedback</strong> — outputs, errors, logs, diffs, return codes, or state changes materially shape later actions.</li>
+<li><strong>Terminal dependence</strong> — removing terminal access would change the workload's core behavior.</li>
+</ol>
+<p>The consequences are sharp. SWE-agent is in scope; Agentless is not (static patch pipelines lack iterative execution); OSWorld is not (visual feedback is the progress-bearing substrate); a CLI-packaged assistant that forwards requests to a non-terminal workflow is not. The tests apply per-workload, not per-product — a platform can be in scope for repository repair and out of scope for its browser workloads.</p>
+<p>This matters for harness engineers because <strong>most &quot;terminal agents&quot; in industry are hybrid systems, and the boundary tests tell you which parts of them deserve terminal-specific evaluation</strong>.</p>
+<h2 id="seven-dimensions-of-terminal-competence">Seven dimensions of terminal competence</h2>
+<p>The survey's analytical backbone is a seven-dimensional competence profile. These are not model capabilities; they are <em>system-level responsibilities</em> distributed across the model, interface, harness, runtime, and environment:</p>
+<ol>
+<li><strong>Command and action formulation</strong> — translating goals into executable commands, edits, and build/test/run actions.</li>
+<li><strong>Feedback and artifact interpretation</strong> — extracting evidence from stdout, stderr, exit codes, logs, diffs, stack traces.</li>
+<li><strong>Runtime and environment management</strong> — preparing, configuring, and repairing dependencies, services, containers, remote machines.</li>
+<li><strong>State, task, and context tracking</strong> — maintaining environment state and interaction history across extended sessions.</li>
+<li><strong>Progress verification</strong> — designing checks of intermediate validity and completion conditions.</li>
+<li><strong>Recovery and adaptation</strong> — diagnosing failures, replanning, retrying from grounded evidence.</li>
+<li><strong>Governance and side-effect control</strong> — permissions, sandboxes, approvals, resource limits, destructive-action prevention.</li>
+</ol>
+<p>Two features of this list are worth internalizing. First, verification (5) is separated from recovery (6), and both from governance (7) — conflating them is why so many harnesses discover that &quot;it passed the tests&quot; and &quot;it did something terrible&quot; are simultaneous truths (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#sandboxing-ai-agents">Sandboxing AI Agents</a> and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents</a>, which frames governing and recovering as first-class state concerns). Second, the dimensions are trace-observable in principle: planning appears as executable action sequences, memory is tested against persistent state, adaptation is grounded in external feedback. That traceability is the hook for everything that follows.</p>
+<h2 id="architecture-the-harness-is-a-performance-shaping-component">Architecture: the harness is a performance-shaping component</h2>
+<p>The survey traces four shifts in design emphasis: tool-augmented prompting (ReAct, Toolformer, CodeAct) → structured executable actions (SWE-agent's ACI primitives, OpenHands) → terminal-mediated agency as a first-class target (Terminal-Bench, CLI-Gym, Endless Terminals) → <strong>runtime- and harness-centered design</strong> (Meta-Harness, AutoHarness, Agentic Harness Engineering), where context compaction, approval rules, observation shaping, and observability-driven harness evolution are treated as first-class variables.</p>
+<p>Responsibilities are organized into four layers: interface and observation, runtime and workspace, control/verification/recovery/governance, and harness/context. The recurring tensions:</p>
+<ul>
+<li><strong>Expressiveness vs. recoverability</strong> — raw command access is expressive but noisy and hard to roll back; ACI mediation is reliable but narrows the task surface.</li>
+<li><strong>Generality vs. task discipline</strong> — platform runtimes span heterogeneous work but give less structured feedback.</li>
+<li><strong>Automation vs. inspectability</strong> — permission gates and approval checkpoints aid auditability but add latency; governance is the least systematically addressed dimension.</li>
+</ul>
+<p>And the one that should shape every comparison you publish: <strong>attribution difficulty</strong>. Controlled skill injection can add substantial token overhead without improving pass rate, and Agentless shows static pipelines rivaling interactive agents on some repository-repair tasks. Gains under an optimized harness may come from context management, observation shaping, retry policy, or injected procedural knowledge — not from a better model. <strong>The complete model–harness–runtime configuration is the unit of comparison, not the model.</strong></p>
+<h2 id="acquisition-trajectories-are-the-unit-failure-is-the-signal">Acquisition: trajectories are the unit, failure is the signal</h2>
+<p>The relevant learning unit is a <em>stateful trajectory</em> — actions, observations, state changes, verification, recovery — not a prompt–response pair. The survey maps the acquisition levers:</p>
+<ul>
+<li><strong>SFT on successful traces</strong> teaches common commands and workflows, but offers almost no supervision for diagnosis, rollback, or recovery after wrong assumptions.</li>
+<li><strong>RL with executable rewards</strong> (Endless Terminals, ECHO, SWE-Master, SWE-Gym, Tmax) aligns behavior with completion, but sparse rewards can reinforce brittle or unsafe behavior.</li>
+<li><strong>Process-aware / verifier-guided optimization</strong> supervises intermediate decisions via judgments, rankings, or hindsight validation (AgentHER is the key example — terminal failures usually appear early through stderr, failed tests, or inconsistent state).</li>
+<li><strong>Failure-conditioned training</strong> (TRACE, AgentHER, AgentForesight) preserves diagnosis and recovery, but suffers noisy labels and repair-loop overfit.</li>
+<li><strong>Synthetic generation</strong> broadens coverage of rare commands but risks teaching synthetic regularities; <strong>runtime memory</strong> (Memento, Context-Folding, TACO) sustains long horizons but risks persisting incorrect assumptions.</li>
+</ul>
+<p>The uncomfortable finding: <strong>recoverable failures remain underrepresented</strong>. Failed installs, version conflicts, rollback decisions, and dead-end repairs are exactly the interactions needed to learn recovery — and successful-trace filtering removes them. If your training pipeline only keeps traces that worked, you are training an agent that cannot diagnose.</p>
+<h2 id="evaluation-outcomes-are-the-floor-not-the-ceiling">Evaluation: outcomes are the floor, not the ceiling</h2>
+<p>The evaluation section is the most useful part of the paper for working engineers. Benchmark families expose <em>different things</em>:</p>
+<table>
+<thead>
+<tr>
+<th>Emphasis</th>
+<th>Representative examples</th>
+<th>Blind spot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repository repair</td>
+<td>SWE-bench, SWE-PolyBench</td>
+<td>Conflates repair with terminal competence</td>
+</tr>
+<tr>
+<td>CLI/terminal-centered</td>
+<td>Terminal-Bench, TerminalWorld, LongCLI-Bench</td>
+<td>Mixes terminal-native and repo-mediated tasks</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>SetupBench</td>
+<td>Isolated from end-to-end workflows</td>
+</tr>
+<tr>
+<td>Process</td>
+<td>OctoBench, ProcBench, AppWorld</td>
+<td>No standardized process scoring</td>
+</tr>
+<tr>
+<td>Long horizon</td>
+<td>SWE-Bench Pro, LoCoEval, LifelongAgentBench</td>
+<td>Costly, hard to reproduce</td>
+</tr>
+<tr>
+<td>Safety/governance</td>
+<td>BashArena, ClawSafety, AgentHazard</td>
+<td>Task success may conceal harmful actions</td>
+</tr>
+<tr>
+<td>Production</td>
+<td>ProdCodeBench</td>
+<td>Limited public access</td>
+</tr>
+</tbody>
+</table>
+<p>The evidence hierarchy goes beyond binary correctness: outcome evidence (task completion), process evidence (how execution happened), environment evidence (runtime validity), trace evidence (inspection/replay), and governance evidence (permissions, containment, side effects). Three protocol facts deserve wide circulation:</p>
+<ul>
+<li><strong>SWE-EVO-style long-horizon decay</strong>: 65–73% on SWE-Bench Verified drops to 21–25% on multi-file evolution in its reported setting. Short tasks hide failure.</li>
+<li><strong>Reward hacking is measurable</strong>: an audit reports 16% of tasks across five terminal-agent benchmarks are reward-hackable.</li>
+<li><strong>Harness effects dominate</strong>: WildClawBench reports an 18-point harness-conditioned gap; SWE-rebench finds evidence consistent with contamination inflation on static tasks.</li>
+</ul>
+<p><strong>Final success alone does not reveal whether an agent preserved state, recovered from failure, verified completion, or respected execution constraints.</strong></p>
+<h2 id="the-survey-runs-its-own-diagnostics">The survey runs its own diagnostics</h2>
+<p>Rather than stopping at synthesis, the survey contributes bounded fixed-condition experiments — and these are the most concrete part of the paper. On a fixed configuration (mini-SWE-agent + DeepSeek-V4-Flash), it computes seven trace-derived process indicators (P1–P7) across four benchmark families:</p>
+<table>
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Tasks</th>
+<th>Outcome</th>
+<th>Final-verify (P5)</th>
+<th>Gov. trigger (P7)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminal-Bench 2.1</td>
+<td>241</td>
+<td>52.6%</td>
+<td>29.5%</td>
+<td>0.5%</td>
+</tr>
+<tr>
+<td>SetupBench</td>
+<td>93</td>
+<td>59.1%</td>
+<td>36.6%</td>
+<td>1.4%</td>
+</tr>
+<tr>
+<td>LongCLI-Bench</td>
+<td>21</td>
+<td>23.8%</td>
+<td>23.8%</td>
+<td>4.5%</td>
+</tr>
+<tr>
+<td>BashArena</td>
+<td>640</td>
+<td>41.8%</td>
+<td>66.2%</td>
+<td>3.0%</td>
+</tr>
+</tbody>
+</table>
+<p>Key results: rule-matched invocation failures are rare (P1 ≈ 0.0%), local feedback use is high (76–82%), but <strong>final-window verification spans 23.8%–36.6% on three benchmarks versus 66.2% on BashArena</strong> — the same agent shows different process behavior because the benchmarks foreground different demands. The matched system comparison is even more pointed: SWE-agent wins every block, but the gap between systems ranges from at most 7.00 points on SWE-bench Lite to 21.25 points on Claw-SWE-Bench Lite, and the <em>ordering</em> of OpenHands and mini-SWE-agent <strong>reverses across benchmarks</strong>. Meanwhile the Flash-vs-Pro model variant never moves outcomes by more than 2.50 points. <strong>Benchmark choice changes what you can see, and system comparison without benchmark context is meaningless.</strong></p>
+<p>The trace cases ground the aggregates — the <code>magsac-install</code> case shows a dependency loop with a 38.5% environment-command non-zero-exit rate that never closes because the agent ends before an evaluator-relevant import check. Local feedback without verification and recovery leaves the loop unclosed.</p>
+<pre><code class="language-go">type TraceIndicators struct {
+	InvocationFailures  float64 // P1: rule-matched command failure rate
+	FeedbackUse         float64 // P2: helpful-use among feedback episodes
+	EnvironmentExits    float64 // P3: non-zero exit on env-management commands
+	StateErrors         float64 // P4: consequential state errors
+	FinalWindowVerify   float64 // P5: verification in final window
+	Recovery            float64 // P6: task-relevant recovery success
+	GovernanceTriggers  float64 // P7: irreversible/overprivileged/secret-handling actions
+}
+</code></pre>
+<p>This is the closest thing the survey offers to a portable process-evaluation schema — and it is exactly the shape of instrumentation this blog argues harnesses should ship with (see <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>).</p>
+<h2 id="what-to-take-away">What to take away</h2>
+<p>The survey's own conclusion is the one to steal for your evaluation practice: <strong>report system and runtime conditions explicitly, pair task outcomes with process evidence, and publish replayable traces.</strong> The four research priorities it derives — cross-domain competence, fresh and replayable process-level evaluation, runtime governability, and controlled model–harness attribution — map one-to-one onto the gaps that keep showing up in real agent deployments.</p>
+<p>For harness engineers the operative reading is: treat the terminal as substrate, instrument the seven dimensions, keep failure traces, and never publish a model comparison without pinning the harness, the runtime, and the benchmark. This is the survey version of &quot;tasks that fight back&quot; — except now the tasks are graded on process, not just outcomes, and the benchmark is treated as a measurement instrument that must resist gaming, the argument made in <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-games-and-algorithmic-game-theory-for-agents">Empirical Game Theory for Agents</a>. If you only track resolution rates, you are measuring the flattering version of your system. (Relevant adjacent reading: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#deepseek-harness">DeepSeek Harness Notes</a> and the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harness Patterns for Agentic AI Systems</a> index.)</p>
+<h2 id="references">References</h2>
+<ul>
+<li>Yi Bin, Xiaoyang Yuan, Haoxi Zeng, Wencheng Ye, Wenqi Shao, Chen Qian, Wei Ye, Yujuan Ding, Zheng Wang, Pengpeng Zeng, Jingkuan Song, Heng Tao Shen. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2608.20485">Terminal Agents: A Survey of AI Agents in Command-Line Environments</a>. arXiv:2608.20485, submitted 20 Aug 2026. <a target="_blank" rel="noopener noreferrer" href="https://github.com/EnigmaYYYY/awesome-terminal-agents">Companion repo</a>.</li>
+<li>Key benchmarks discussed: <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2601.11868">Terminal-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2507.09063">SetupBench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2512.15688">BashArena</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2602.14337">LongCLI-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2606.12344">Claw-SWE-Bench</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.01438">ClawSafety</a>.</li>
+</ul>
 </div>
       </article>
       <article class="post" id="hacker-laws-ase-conways-law">
@@ -18432,10 +18744,12 @@ type Logger interface {
               <a href="#harnessing-agentic-ai-systems-rolling-window-compression">Harnessing Agentic AI Systems: Rolling Window Compression Pattern</a>
               <a href="#hacker-laws-ase-galls-law">Hacker Laws for Agentic Software Engineering: Gall&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-budget-throttler">Harnessing Agentic AI Systems: Token &amp; Time Budget Throttler Pattern</a>
+              <a href="#better-harnesses-smaller-models">Better Harnesses, Smaller Models: 90% Cheaper Agents via Automated Harness Adaptation</a>
               <a href="#hacker-laws-ase-amdahls-law">Hacker Laws for Agentic Software Engineering: Amdahl&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-hitl-breakpoint">Harnessing Agentic AI Systems: Human-in-the-Loop Breakpoint Pattern</a>
               <a href="#hacker-laws-ase-brooks-law">Hacker Laws for Agentic Software Engineering: Brooks&#39; Law</a>
               <a href="#harnessing-agentic-ai-systems-static-intercepting-gatekeeper">Harnessing Agentic AI Systems: Static Intercepting Gatekeeper Pattern</a>
+              <a href="#terminal-agents-survey">Terminal Agents: The Terminal Is the Substrate</a>
               <a href="#hacker-laws-ase-conways-law">Hacker Laws for Agentic Software Engineering: Conway&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-ephemeral-sandbox-wrapper">Harnessing Agentic AI Systems: Ephemeral Sandbox Wrapper Pattern</a>
               <a href="#hacker-laws-for-agentic-software-engineering">Hacker Laws for Agentic Software Engineering</a>

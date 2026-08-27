@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The term already exists in the literature — three papers, three labels, no definition. A consolidated definition of the SSLM (Specialized Small Language Model): small, scoped, deliberate, and in-domain competitive. The build paths, the evidence, and the honest limits.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/specialized-small-language-models/">
+  <title>SSLM: Specialized Small Language Models — hackspree</title>
+  <meta property="og:title" content="SSLM: Specialized Small Language Models">
+  <meta property="og:description" content="The term already exists in the literature — three papers, three labels, no definition. A consolidated definition of the SSLM (Specialized Small Language Model): small, scoped, deliberate, and in-domain competitive. The build paths, the evidence, and the honest limits.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/specialized-small-language-models/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SSLM: Specialized Small Language Models">
+  <meta name="twitter:description" content="The term already exists in the literature — three papers, three labels, no definition. A consolidated definition of the SSLM (Specialized Small Language Model): small, scoped, deliberate, and in-domain competitive. The build paths, the evidence, and the honest limits.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-27">2026-08-27</time></p>
+          <h1>SSLM: Specialized Small Language Models<a class="raw-link" href="https://blog.hackspree.com/raw/specialized-small-language-models.md" title="Raw markdown source" aria-label="Raw markdown source of SSLM: Specialized Small Language Models" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">The term already exists in the literature — three papers, three labels, no definition. A consolidated definition of the SSLM (Specialized Small Language Model): small, scoped, deliberate, and in-domain competitive. The build paths, the evidence, and the honest limits.</p>
+          <div class="tags"><span class="tag">llms</span><span class="tag">slms</span><span class="tag">specialization</span><span class="tag">distillation</span><span class="tag">research</span><span class="tag">engineering</span><span class="tag">essay</span></div>
+          
+        </header>
+        <div class="post-body"><p>The term already exists in the literature; the definition doesn't. In the last two years, three papers have shipped the same concept under three different labels and no shared definition. This post consolidates them: <strong>SSLM — Specialized Small Language Model</strong> — the model class that is small <em>and</em> deliberately scoped to one domain, and which keeps beating generalists many times its size on its own turf.</p>
+<h2 id="the-term-exists-the-definition-is-missing">The term exists; the definition is missing</h2>
+<ul>
+<li><strong>DharmaOCR</strong> (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.14314">arXiv:2604.14314</a>) is the most explicit: it introduces &quot;a pair of specialized small language models (SSLMs) for structured OCR&quot; — the 3B Lite and 7B Full — and its conclusion states the whole thesis in one sentence: &quot;targeted specialization of SLMs for a specific domain yields substantial gains in both quality and cost.&quot;</li>
+<li><strong>&quot;Need a Small Specialized Language Model? Plan Early!&quot;</strong> (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.01093">arXiv:2402.01093</a>, Apple) uses &quot;small specialized language model&quot; and supplies the defining property: &quot;their performance can be good only if one limits their scope to a specialized domain.&quot; The paper's entire question is how to get such a model from a large generic pretraining set plus a <em>limited</em> amount of specialized data.</li>
+<li><strong>&quot;Learnware of Language Models&quot;</strong> (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.13425">arXiv:2505.13425</a>, Nanjing University) calls them &quot;specialized small language models (SLMs)&quot;: 8B models fine-tuned across finance, healthcare, and mathematics, motivated by data scarcity, privacy, and computational cost.</li>
+</ul>
+<p>Same concept, three labels — <strong>SSLM</strong> vs &quot;small specialized LM&quot; vs plain &quot;SLM&quot; — and size conventions that drift from 3B to 8B. None of the three cites the others' term; the concept has stabilized, the vocabulary hasn't. That is the exact situation in which a consolidation is useful rather than presumptuous: not inventing a term, but agreeing on one and sharpening its definition.</p>
+<h2 id="definition-converging-the-literature">Definition, converging the literature</h2>
+<p>An SSLM is a language model that satisfies all four of these:</p>
+<ol>
+<li><strong>Small.</strong> A few billion parameters. The literature's observed span is 3B (DharmaOCR Lite) to 8B (the Learnware specialists), so 8B — not my earlier instinct of ≤3B — is the practical ceiling. An SSLM fits on a laptop GPU, an edge device, or a cheap inference box.</li>
+<li><strong>Specialized.</strong> Scoped to a narrow domain, task family, or workflow: structured OCR (DharmaOCR), finance/healthcare/mathematics (Learnware), CWE detection, hallucination verification, a single enterprise workflow.</li>
+<li><strong>Deliberately narrowed.</strong> The lane is a design decision made up front, because smallness only works when scope is tight — Plan Early!'s &quot;performance can be good only if one limits its scope to a specialized domain.&quot; The model is built <em>for</em> its lane, not merely small.</li>
+<li><strong>In-domain competitive.</strong> On its own turf it matches or beats generalist models many times its size: DharmaOCR's 3B model outperforming open-source <em>and</em> commercial OCR baselines; Learnware's 8B specialists beating 70B–540B generalists on domain benchmarks.</li>
+</ol>
+<p>An SSLM is <strong>not</strong> a generalist SLM (that is just a small LLM), not a quantized or pruned frontier model (that is compression, not specialization), and not a large domain model (a 70B legal model is a specialized LLM, not an SSLM). The boundary is purpose: the model was scoped to one problem before it was trained.</p>
+<h2 id="why-specialization-is-the-lever-not-size">Why specialization is the lever, not size</h2>
+<p>The phi line is the strongest single argument. phi-1 is a 1.3B model trained for four days on eight A100s on ~6B tokens of &quot;textbook quality&quot; code plus synthetic exercises, and it outperformed models several times its size on code tasks (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2306.11644">Textbooks Are All You Need, arXiv:2306.11644</a>); phi-1.5 extended the same recipe (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2309.05463">arXiv:2309.05463</a>). TinyStories goes further: a 10M-parameter model that produces coherent English because its training world is deliberately small (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.07759">arXiv:2305.07759</a>). The lesson is consistent: <strong>when you control scope, data quality replaces parameter count.</strong></p>
+<p>This is not a small-model-only phenomenon — it is a general result about specialization. A comprehensive survey argues that domain specialization is precisely what makes LLMs &quot;disruptive&quot; in real applications (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.18703">arXiv:2305.18703</a>), and an analysis of &quot;the interplay between domain specialization and model size&quot; shows the optimal size/token balance shifts when you specialize rather than pretrain generally (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2501.02068">arXiv:2501.02068</a>). Specialization and scale are <em>alternative</em> levers for competence; most of the industry still treats scale as the only one.</p>
+<h2 id="three-build-paths">Three build paths</h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Move</th>
+<th>Canonical evidence</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — Curated / curriculum data</strong></td>
+<td>Hand-select and synthesize narrow, high-quality data; keep scope tight</td>
+<td>phi-1, phi-1.5, TinyStories</td>
+<td>Data curation is the moat; it does not transfer to new domains</td>
+</tr>
+<tr>
+<td><strong>B — Distillation from a big teacher</strong></td>
+<td>Transfer capability from a frontier model to a small one via traces, steps, or pruning</td>
+<td>Orca (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2306.02707">arXiv:2306.02707</a>), Distilling Step-by-Step (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.02301">arXiv:2305.02301</a>), pruning + KD at &lt;3% compute (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.14679">arXiv:2407.14679</a>)</td>
+<td>Inherits the teacher's blind spots and biases</td>
+</tr>
+<tr>
+<td><strong>C — Domain-adaptive continued pretraining</strong></td>
+<td>Keep pretraining a small base model on domain corpora until it speaks the dialect</td>
+<td>Domain-adaptive CPT of SLMs (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2504.09687">arXiv:2504.09687</a>), multi-model synthetic training at 261× lower cost (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2509.13047">arXiv:2509.13047</a>)</td>
+<td>Needs a real domain corpus; overfitting narrows the lane further</td>
+</tr>
+</tbody>
+</table>
+<p>Plan Early! maps the decision space onto two of these: pretrain a small model per domain from generic data resampled to imitate the specialization set (path C with a full pretraining budget), or cheaply adapt one pretrained model per task — its &quot;projected networks,&quot; a large network linearly projected into a small specialized one (an efficient hybrid of B and C). Its central constraint is the one the whole SSLM discipline lives under: the specialized data budget, not the compute budget, is what you must plan around.</p>
+<h2 id="the-evidence-that-specialization-beats-size">The evidence that specialization beats size</h2>
+<p>The most direct evidence comes from a 2026 task-specific efficiency analysis that compared 16 models across five tasks and identified precisely when small models outperform large ones — the first systematic accounting of the regime, not an anecdote (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2603.21389">arXiv:2603.21389</a>). DharmaOCR's SLMs beat open-source <em>and</em> commercial baselines on structured OCR, a high-stakes, low-tolerance domain, while cutting inference cost (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.14314">arXiv:2604.14314</a>). The Learnware system goes one step further up the value chain: a registry of ~100 specialized 8B SLMs across finance, healthcare, and mathematics, where selecting one suitable model per inference beats every base SLM, beats Qwen1.5-110B, Qwen2.5-72B, and Llama3.1-70B-Instruct by at least 14% on finance tasks, and surpasses Flan-PaLM-540B on medical tasks (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.13425">arXiv:2505.13425</a>). Even as <em>verifiers</em>, small specialized models hold their own: an SLM-based hallucination detector is strong enough to gate LLM outputs (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.22486">arXiv:2506.22486</a>) — the &quot;verifiers are king&quot; argument applied to model choice itself.</p>
+<p>Benchmarks are catching up. SLM-Bench is the first benchmark built specifically to score SLMs on capability <em>and</em> environmental impact (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2508.15478">arXiv:2508.15478</a>), and surveys of the SLM landscape have matured (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2410.20011">arXiv:2410.20011</a>; TinyLlama, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.02385">arXiv:2401.02385</a>). The &quot;Mini-Giants&quot; argument — that small open models + open-source community are a win-win that outruns the frontier for practical purposes — dates back to 2023 and has only aged well (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.08189">arXiv:2307.08189</a>).</p>
+<p>None of this happens in a vacuum: the harness the model runs in decides whether its advantage survives deployment. Yesterday's post on automated harness adaptation showed a 4B SLM matching a frontier model at 8% of the cost once the harness was adapted to it — the collapse of naive model swaps is a harness artifact, not a model property (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#better-harnesses-smaller-models">Better Harnesses, Smaller Models</a>). An SSLM is the model side of that story; the harness is the other half of the deployable unit.</p>
+<h2 id="the-honest-limits">The honest limits</h2>
+<p>An SSLM is not a free lunch; it is a trade, and the terms matter:</p>
+<ul>
+<li><strong>Capacity is a real ceiling.</strong> A specialist cannot escape its lane. The most pragmatic paper in this area is titled &quot;Need a Small Specialized Language Model? Plan Early!&quot; (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.01093">arXiv:2402.01093</a>) — its point is that scope must be fixed <em>before</em> data collection, because the entire design follows from the lane you choose.</li>
+<li><strong>Narrowness is a feature you must manage.</strong> You buy determinism, privacy, latency, cost, and auditability — but you must build the router that knows which specialist handles which request, and a registry that tracks what each specialist can and cannot do (the learnware paradigm, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.13425">arXiv:2505.13425</a>).</li>
+<li><strong>Distillation inherits defects.</strong> Distilled models carry their teacher's errors and biases; honesty is a known casualty of specialization via fine-tuning.</li>
+<li><strong>Benchmarks in narrow domains saturate fast.</strong> You need domain-grounded evaluation (DharmaOCR-Benchmark, SLM-Bench) or you will be tuning against noise.</li>
+<li><strong>The definition itself still drifts.</strong> The literature disagrees on the size ceiling (3B–8B) and even on the abbreviation (SSLM vs SLM). This consolidation is a proposal, not a fact — convergence will come from more papers citing the same definition, not from this post.</li>
+</ul>
+<h2 id="key-insight">Key insight</h2>
+<p><strong>Small is the constraint; specialized is the solution.</strong> An SLM is a compromise — a scaled-down LLM that is worse at everything. An SSLM is a decision — a model that is better at one thing than models ten times its size. The entire discipline is choosing the lane first, then letting data quality and distillation fill it.</p>
+<h2 id="the-consolidation">The consolidation</h2>
+<p>Keep the abbreviation the literature most explicitly uses — <strong>SSLM</strong> — and sharpen its definition: <em>a language model of a few billion parameters (3B–8B in the published record) whose training, data, and tuning are scoped to a single domain or task family, built for in-domain competence rather than general competence, and deployable within a small compute or edge budget.</em></p>
+<p>Taxonomy, for the record:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Size</th>
+<th>Scope</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM</td>
+<td>Large</td>
+<td>General</td>
+<td>Frontier &amp; 7B+ open models</td>
+</tr>
+<tr>
+<td>SLM</td>
+<td>Small</td>
+<td>General</td>
+<td>TinyLlama, small Gemma/Phi-class generalists</td>
+</tr>
+<tr>
+<td>Specialized LLM</td>
+<td>Large</td>
+<td>Narrow</td>
+<td>Domain-tuned 7B–70B models</td>
+</tr>
+<tr>
+<td><strong>SSLM</strong></td>
+<td><strong>Small</strong></td>
+<td><strong>Narrow</strong></td>
+<td>DharmaOCR for structured OCR; Learnware specialists for finance/healthcare/math</td>
+</tr>
+</tbody>
+</table>
+<p>The concept is already in the literature; it won three independent deployments before it ever had a shared name. What has been missing is one label and one definition — here they are.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>DharmaOCR: Specialized Small Language Models for Structured OCR — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.14314">https://arxiv.org/abs/2604.14314</a></li>
+<li>Need a Small Specialized Language Model? Plan Early! — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2402.01093">https://arxiv.org/abs/2402.01093</a></li>
+<li>Learnware of Language Models: Specialized Small Language Models Can Do Big — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.13425">https://arxiv.org/abs/2505.13425</a></li>
+<li>Domain Specialization as the Key to Make Large Language Models Disruptive (survey) — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.18703">https://arxiv.org/abs/2305.18703</a></li>
+<li>The Interplay between Domain Specialization and Model Size — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2501.02068">https://arxiv.org/abs/2501.02068</a></li>
+<li>Domain-Adaptive Continued Pre-Training of Small Language Models — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2504.09687">https://arxiv.org/abs/2504.09687</a></li>
+<li>Multi-Model Synthetic Training for Mission-Critical Small Language Models — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2509.13047">https://arxiv.org/abs/2509.13047</a></li>
+<li>Textbooks Are All You Need (phi-1) — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2306.11644">https://arxiv.org/abs/2306.11644</a></li>
+<li>Textbooks Are All You Need II (phi-1.5) — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2309.05463">https://arxiv.org/abs/2309.05463</a></li>
+<li>TinyStories — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.07759">https://arxiv.org/abs/2305.07759</a></li>
+<li>Orca: Progressive Learning from Complex Explanation Traces of GPT-4 — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2306.02707">https://arxiv.org/abs/2306.02707</a></li>
+<li>Distilling Step-by-Step! — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.02301">https://arxiv.org/abs/2305.02301</a></li>
+<li>Compact Language Models via Pruning and Knowledge Distillation — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2407.14679">https://arxiv.org/abs/2407.14679</a></li>
+<li>Hallucination Detection with Small Language Models — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2506.22486">https://arxiv.org/abs/2506.22486</a></li>
+<li>Task-Specific Efficiency Analysis: When Small LMs Outperform Large LMs — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2603.21389">https://arxiv.org/abs/2603.21389</a></li>
+<li>A Survey of Small Language Models — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2410.20011">https://arxiv.org/abs/2410.20011</a></li>
+<li>TinyLlama: An Open-Source Small Language Model — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.02385">https://arxiv.org/abs/2401.02385</a></li>
+<li>Mini-Giants: &quot;Small&quot; Language Models and Open Source Win-Win — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.08189">https://arxiv.org/abs/2307.08189</a></li>
+<li>SLM-Bench: A Comprehensive Benchmark of Small Language Models — <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2508.15478">https://arxiv.org/abs/2508.15478</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

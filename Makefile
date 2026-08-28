@@ -1,6 +1,6 @@
 GO := go
 GOCACHE := $(CURDIR)/.build-cache
-POSTS := $(sort $(filter-out posts/specs.md,$(wildcard posts/*.md)))
+POSTS := $(sort $(wildcard posts/*.md))
 
 .PHONY: all build clean rebuild
 

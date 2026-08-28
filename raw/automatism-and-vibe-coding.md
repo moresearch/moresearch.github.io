@@ -117,8 +117,8 @@ The dictation is automatic. The engineering is not. That is the whole art.
 - [Cadavre exquis drawing](https://commons.wikimedia.org/wiki/File:Exquisite_Corpse_(6042257203).jpg), photo by DIYLILCNC — CC BY-SA 2.0; embedded in "The editor's craft."
 - Related: [Finding David in the Marble](https://blog.hackspree.com/#finding-david-in-the-marble) — the strike-assess loop, and the same act-then-look rhythm.
 - Related: [You Don't Learn What You Delegate](https://blog.hackspree.com/#ai-impacts-skill-formation) — what delegation costs the actor's judgment.
-- Related: [Harness Engineering (Martin Fowler)](https://blog.hackspree.com/#harness-engineering-fowler) — the harness as the editing table.
-- Related: [Agent Harnesses Need Tasks That Fight Back](https://blog.hackspree.com/#agent-harnesses-need-tasks-that-fight-back) — the automatic needs resistance to mean anything.
+- Related: [Harness Engineering (Martin Fowler)](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — the harness as the editing table.
+- Related: [Agent Harnesses Need Tasks That Fight Back](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — the automatic needs resistance to mean anything.
 - Related: [Codebases in the Era of Agentic Software Engineering](https://blog.hackspree.com/#codebases-in-the-era-of-agentic-software-engineering) — the spec is the architect, the agents are the builders.
 - Related: [Conceptual Integrity and the One-Mind Rule](https://blog.hackspree.com/#brooks-design-conceptual-integrity) — coherence imposed on multi-authored output from outside.
 - Related: [OpenWorker: Outcome Layer](https://blog.hackspree.com/#openworker-outcome-layer) — the record of the making as a first-class artifact.

@@ -53,5 +53,5 @@ Dijkstra argued that the proof must lead and the program must follow. In the age
 - Dijkstra, E. W. (1976). *A Discipline of Programming.* Prentice-Hall. — The source text: weakest preconditions, guarded commands, and the argument that correctness proofs must lead and programs must follow.
 - Dijkstra, E. W. (1972). "The Humble Programmer." *Communications of the ACM.* — The earlier lecture that established the tone: programming is inherently difficult, and the only way to manage that difficulty is through disciplined simplicity.
 - Related: [Correctness First](https://blog.hackspree.com/#correctness-first) — What OpenBSD teaches about correctness as the prerequisite for security.
-- Related: [Taste as Conceptual Integrity](https://blog.hackspree.com/#taste-conceptual-integrity) — Brooks on the property Dijkstra's methodology was designed to preserve.
+- Related: [Taste as Conceptual Integrity](https://blog.hackspree.com/#taste-conceptual-integrity-brooks) — Brooks on the property Dijkstra's methodology was designed to preserve.
 - Related: [In the Land of AI Agents, the Verifiers Are King](https://blog.hackspree.com/#verifiers-are-king-sonar-acdc) — The verification imperative in the agent era.

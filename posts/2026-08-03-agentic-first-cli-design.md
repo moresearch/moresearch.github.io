@@ -95,4 +95,4 @@ Run your CLI the way the benchmark environments run it: `--help`, one command, `
 - Related: [Brooks on Software Design: One Mind](https://blog.hackspree.com/#brooks-design-one-mind-rule) — who owns the CLI contract, and why committees fail at it.
 - Related: [The Unix Philosophy Is the Only Software Engineering Theory That Works](https://blog.hackspree.com/#unix-philosophy) — `stat` for data, `ls` for rendering; the outside-in view.
 - Related: [CUPID: Properties, Not Principles](https://blog.hackspree.com/#cupid-for-joyful-coding) — composability, predictability, and the Unix property as directions, not rules.
-- Related: [Task Harness Engineering](https://blog.hackspree.com/#task-harness-engineering) — the other half of the agent's toolchain: how harnesses consume CLI contracts.
+- Related: [Task Harness Engineering](https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents) — the other half of the agent's toolchain: how harnesses consume CLI contracts.

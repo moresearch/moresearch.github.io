@@ -13,8 +13,11 @@ import (
 	"time"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/text"
+	"github.com/yuin/goldmark/util"
 )
 
 const (
@@ -29,7 +32,10 @@ var (
 	thumbPattern = regexp.MustCompile(`<img src="([^"]*)" alt="thumb:([^"]*)"(?:/>|>)`)
 	markdowner   = goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
-		goldmark.WithParserOptions(parser.WithAutoHeadingID()),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+			parser.WithASTTransformers(util.Prioritized(unpublishedLinkTransformer{}, 100)),
+		),
 	)
 	pageTemplate = template.Must(template.New("page").Parse(`<!doctype html>
 <html lang="en">
@@ -764,7 +770,7 @@ var (
       <aside class="logo-side">
         <div class="logo-rail">
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-            <img src="logo.png" alt="Hackspree logo" class="logo">
+            <img src="/logo.png" alt="Hackspree logo" class="logo">
           </a>
         </div>
       </aside>
@@ -968,6 +974,12 @@ func main() {
 		exitf("%v", err)
 	}
 
+	known, published, err := scanSlugs(*inputDir, today)
+	if err != nil {
+		exitf("%v", err)
+	}
+	knownSlugs, publishedSlugs = known, published
+
 	posts, err := loadPosts(*inputDir, today)
 	if err != nil {
 		exitf("%v", err)
@@ -1005,6 +1017,133 @@ func buildDate(todayFlag string) (time.Time, error) {
 	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local), nil
 }
 
+// knownSlugs is every post slug in the source tree (published, scheduled, and
+// drafts); publishedSlugs is the subset this build actually rendered. The link
+// transformer uses both to decide how internal post links render, so they are
+// set once in main before any markdown is converted.
+var (
+	knownSlugs     map[string]bool
+	publishedSlugs map[string]bool
+)
+
+// unpublishedLinkTransformer rewrites internal links to other posts based on
+// what this build actually published:
+//   - link to a published post   -> absolute URL to the archive anchor, which
+//     works both on the single-page index and on the standalone entry pages
+//   - link to an unpublished post (draft or scheduled) -> unlinked text, so the
+//     archive never ships a dangling anchor; the link returns automatically
+//     when a scheduled post is published or a draft is promoted
+//
+// Links to headings within the same post and external links are left untouched.
+type unpublishedLinkTransformer struct{}
+
+func (unpublishedLinkTransformer) Transform(doc *ast.Document, _ text.Reader, _ parser.Context) {
+	// Classify links first, then mutate after the walk: removing a node while
+	// ast.Walk is iterating its siblings breaks the chain and silently skips
+	// every link that follows it.
+	var rewrite, strip []*ast.Link
+	ast.Walk(doc, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
+		}
+		link, ok := n.(*ast.Link)
+		if !ok {
+			return ast.WalkContinue, nil
+		}
+		frag, ok := postAnchorFragment(string(link.Destination))
+		if !ok {
+			return ast.WalkContinue, nil
+		}
+		if publishedSlugs[frag] {
+			rewrite = append(rewrite, link)
+		} else if knownSlugs[frag] {
+			strip = append(strip, link)
+		}
+		return ast.WalkContinue, nil
+	})
+
+	for _, link := range rewrite {
+		frag, _ := postAnchorFragment(string(link.Destination))
+		link.Destination = []byte(siteURL + "#" + frag)
+	}
+
+	for _, link := range strip {
+		// Draft or scheduled: keep the link text, drop the anchor.
+		parent := link.Parent()
+		for child := link.FirstChild(); child != nil; {
+			next := child.NextSibling()
+			parent.InsertBefore(parent, link, child)
+			child = next
+		}
+		parent.RemoveChild(parent, link)
+	}
+}
+
+// postAnchorFragment returns the post slug when dest is an internal link to a
+// post anchor: a bare "#slug" or an absolute "https://blog.hackspree.com/#slug".
+func postAnchorFragment(dest string) (string, bool) {
+	switch {
+	case strings.HasPrefix(dest, siteURL+"#"):
+		return strings.TrimPrefix(dest, siteURL+"#"), true
+	case strings.HasPrefix(dest, "#") && len(dest) > 1:
+		return dest[1:], true
+	}
+	return "", false
+}
+
+// isDraft reports whether front matter marks the post as a draft. Drafts stay
+// in the source tree but are never rendered into the archive.
+func isDraft(meta map[string]string) bool {
+	d := strings.ToLower(strings.TrimSpace(meta["draft"]))
+	return d == "true" || d == "yes"
+}
+
+// scanSlugs reads front matter for every post source to build the universe of
+// post slugs (published, scheduled, and drafts) without rendering anything.
+// Invalid or unparsable files are skipped here; loadPosts reports the real
+// error when it processes the file.
+func scanSlugs(inputDir string, today time.Time) (known, published map[string]bool, err error) {
+	known = make(map[string]bool)
+	published = make(map[string]bool)
+
+	paths, err := filepath.Glob(filepath.Join(inputDir, "*.md"))
+	if err != nil {
+		return nil, nil, fmt.Errorf("glob posts: %w", err)
+	}
+
+	for _, path := range paths {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return nil, nil, fmt.Errorf("read %s: %w", path, err)
+		}
+		meta, _, err := parseFrontMatter(path, string(content))
+		if err != nil {
+			continue
+		}
+		if isDraft(meta) {
+			continue
+		}
+
+		date, err := time.ParseInLocation("2006-01-02", strings.TrimSpace(meta["date"]), time.Local)
+		if err != nil {
+			continue
+		}
+
+		slug := strings.TrimSpace(meta["slug"])
+		if slug == "" {
+			slug, _ = slugify(strings.TrimSpace(meta["title"]))
+		}
+		if slug == "" {
+			continue
+		}
+		known[slug] = true
+		if !date.After(today) {
+			published[slug] = true
+		}
+	}
+	return known, published, nil
+}
+
 func loadPosts(inputDir string, today time.Time) ([]post, error) {
 	pattern := filepath.Join(inputDir, "*.md")
 	paths, err := filepath.Glob(pattern)
@@ -1015,11 +1154,7 @@ func loadPosts(inputDir string, today time.Time) ([]post, error) {
 	posts := make([]post, 0, len(paths))
 	seen := make(map[string]struct{}, len(paths))
 	for _, path := range paths {
-		if filepath.Base(path) == "specs.md" {
-			continue
-		}
-
-		// read front matter early to allow draft skipping
+		// read front matter early to allow draft and schedule skipping
 		content, err := os.ReadFile(path)
 		if err != nil {
 			return nil, fmt.Errorf("read %s: %w", path, err)
@@ -1028,7 +1163,7 @@ func loadPosts(inputDir string, today time.Time) ([]post, error) {
 		if err != nil {
 			return nil, err
 		}
-		if strings.ToLower(strings.TrimSpace(meta["draft"])) == "true" || strings.ToLower(strings.TrimSpace(meta["draft"])) == "yes" {
+		if isDraft(meta) {
 			// skip draft posts
 			continue
 		}
@@ -1195,6 +1330,9 @@ func renderMarkdown(body string) (template.HTML, error) {
 	// thumb figures in one paragraph.
 	rendered = strings.ReplaceAll(rendered, `<p><figure class="fig-thumb">`, `<figure class="fig-thumb">`)
 	rendered = strings.ReplaceAll(rendered, `</figure></p>`, `</figure>`)
+	// Root-relative image URLs so images resolve on the single-page index and
+	// on the standalone entry pages (which live under /entries/<slug>/).
+	rendered = strings.ReplaceAll(rendered, `src="images/`, `src="/images/`)
 	rendered = strings.ReplaceAll(
 		rendered,
 		`<a href=`,

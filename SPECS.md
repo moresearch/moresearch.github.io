@@ -9,7 +9,7 @@
 ## Implementation rules
 
 - Post source files must use the `.md` extension.
-- `posts/specs.md` is reserved for contributor guidance and is never published as a post.
+- Only files inside `posts/` are published as posts; this spec lives at the repo root (`SPECS.md`) so it can never be mistaken for a draft.
 - Each post must start with front matter delimited by `---` lines.
 - Required front matter fields are `title` and `date`. Keys are case-sensitive and must be lowercase.
 - Optional front matter fields are `slug`, `summary`, and `tags`.

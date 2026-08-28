@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="The oldest parable in operations is a story about roles, not blindness: sales sees the customer, finance sees the cash, ops sees the floor, support sees the tickets — and every one of them is telling the truth about a part of the same animal. No role can see the whole end-to-end process, because the whole does not exist inside any role. That is the real problem with business process automation: most projects automate one role&#39;s elephant and call it the process. Why roles are structurally, incentive-wise, and temporally blind to the big picture — and what automation looks like when you stop trusting a single view.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/blind-men-elephant-business-process-automation/">
+  <title>The blind men and the elephant: why every role sees only part of the process — hackspree</title>
+  <meta property="og:title" content="The blind men and the elephant: why every role sees only part of the process">
+  <meta property="og:description" content="The oldest parable in operations is a story about roles, not blindness: sales sees the customer, finance sees the cash, ops sees the floor, support sees the tickets — and every one of them is telling the truth about a part of the same animal. No role can see the whole end-to-end process, because the whole does not exist inside any role. That is the real problem with business process automation: most projects automate one role&#39;s elephant and call it the process. Why roles are structurally, incentive-wise, and temporally blind to the big picture — and what automation looks like when you stop trusting a single view.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/blind-men-elephant-business-process-automation/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The blind men and the elephant: why every role sees only part of the process">
+  <meta name="twitter:description" content="The oldest parable in operations is a story about roles, not blindness: sales sees the customer, finance sees the cash, ops sees the floor, support sees the tickets — and every one of them is telling the truth about a part of the same animal. No role can see the whole end-to-end process, because the whole does not exist inside any role. That is the real problem with business process automation: most projects automate one role&#39;s elephant and call it the process. Why roles are structurally, incentive-wise, and temporally blind to the big picture — and what automation looks like when you stop trusting a single view.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-28">2026-08-28</time></p>
+          <h1>The blind men and the elephant: why every role sees only part of the process<a class="raw-link" href="https://blog.hackspree.com/raw/blind-men-elephant-business-process-automation.md" title="Raw markdown source" aria-label="Raw markdown source of The blind men and the elephant: why every role sees only part of the process" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">The oldest parable in operations is a story about roles, not blindness: sales sees the customer, finance sees the cash, ops sees the floor, support sees the tickets — and every one of them is telling the truth about a part of the same animal. No role can see the whole end-to-end process, because the whole does not exist inside any role. That is the real problem with business process automation: most projects automate one role&#39;s elephant and call it the process. Why roles are structurally, incentive-wise, and temporally blind to the big picture — and what automation looks like when you stop trusting a single view.</p>
+          <div class="tags"><span class="tag">automation</span><span class="tag">business-process-automation</span><span class="tag">process-mining</span><span class="tag">roles</span><span class="tag">organizations</span><span class="tag">rpa</span><span class="tag">agents</span><span class="tag">conways-law</span><span class="tag">goodharts-law</span><span class="tag">essay</span><span class="tag">reflection</span></div>
+          
+        </header>
+        <div class="post-body"><p><img src="/images/blind-men-elephant.jpg" alt="The blind men and the elephant — every role reports the part it touches, and none sees the whole."></p>
+<p>Six blind men are led to an elephant and asked to describe it. The man at the trunk calls it a snake. The man at the tusk calls it a spear. The man at the ear calls it a fan, the man at the leg a pillar, the man at the side a wall, the man at the tail a rope. Each report is accurate. Each man is telling the truth about what he touched. And the aggregate is wrong — not because anyone lied, but because <em>the whole is not contained in any of the parts</em>.</p>
+<p>The parable is usually read as a lesson about humility: don't mistake your part for the whole. But there is a sharper reading, and it is the one that matters for business process automation: <strong>the elephant is what the parable is really about, and no role can see it from where it stands.</strong> Every organization is six blind men standing around one process, each role touching a different part of the same animal — and every automation project begins by trusting one of them.</p>
+<h2 id="the-big-picture-is-an-end-to-end-process-and-no-one-owns-it">The big picture is an end-to-end process, and no one owns it</h2>
+<p><strong>The elephant is not a department, a system, or a tool. The elephant is the end-to-end process: order-to-cash, hire-to-retire, ticket-to-resolution — the whole flow from the event that starts it to the outcome that ends it.</strong> And here is the structural fact every organization lives with: the big picture does not live inside any role. It lives <em>between</em> the roles, in the handoffs.</p>
+<p>Walk the parts of a single order-to-cash process and name who touches what:</p>
+<ul>
+<li><strong>Sales</strong> sees the customer, the opportunity, the pipeline. For sales, the process is &quot;win the deal&quot; — and it ends the moment the contract is signed.</li>
+<li><strong>Legal and credit</strong> see the contract, the risk, the terms. The process for them is &quot;make this deal safe.&quot;</li>
+<li><strong>Finance</strong> sees the invoice, the payment, the cash. The process for them is &quot;recognize revenue and get paid.&quot;</li>
+<li><strong>Fulfillment and operations</strong> see the picking, the shipping, the inventory. The process for them is &quot;get the product out the door.&quot;</li>
+<li><strong>Support</strong> sees the tickets, the returns, the complaints. The process for them is &quot;handle what went wrong.&quot;</li>
+<li><strong>The customer</strong> sees only the output — the product that arrives, the invoice that shows up — and is the only one who experiences the process as one continuous thing.</li>
+</ul>
+<p>None of these roles is wrong. Sales is not lying when it says the deal is won; the elephant's trunk really is a snake when you are standing at the trunk. But the end-to-end process — the thing the company is actually running — is none of these views. It is the sequence of handoffs between all of them: contract → credit check → invoice → shipment → payment → reconciliation → collection. The big picture is the flow <em>through</em> the roles, and no single role is positioned to see it.</p>
+<h2 id="why-each-role-cannot-see-the-whole">Why each role cannot see the whole</h2>
+<p><strong>The blindness is not a character flaw; it is a position. Four mechanisms guarantee that every role sees only part of the elephant, and all four are structural, not personal.</strong></p>
+<p><strong>Position.</strong> A role sits <em>inside</em> the flow at one point. Information moves past it the way the elephant moves past a man standing at its side: you feel a surface, never the whole body. The sales rep never sees the invoice; the invoice is upstream or downstream of where they stand. This is not an information-technology problem — you could give sales full access to every system in the company and the sales role would still not see the process, because the <em>role</em> is defined by the part it plays, and roles see what their part touches.</p>
+<p><strong>Incentive.</strong> Every role is measured on its part, and the KPI becomes the view. Sales is measured on pipeline; finance on days-sales-outstanding; ops on throughput; support on resolution time. The deeper effect is <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-goodharts-law">Goodhart's law</a>: a role does not just <em>see</em> its metric, it optimizes it — and the metric is the part, never the whole. The call-center agent who is measured on handle time sees every call as a handle-time problem. The finance team measured on DSO sees every invoice as a DSO problem. Each role's elephant is shaped by what it is rewarded for touching.</p>
+<p><strong>Tooling.</strong> A role's systems and dashboards render its slice. The CRM shows sales the pipeline; the ERP shows finance the ledger; the WMS shows ops the warehouse. When someone asks &quot;how does the process work?&quot;, each role opens its own system and describes what it renders. The tool reinforces the position: the dashboard is the part, and it is very convincing, because it is <em>accurate</em> — it shows exactly the part that role touches.</p>
+<p><strong>Time.</strong> A role sees its moment in the lifecycle, not the lifecycle. The process takes weeks end-to-end; every role lives in the hours where it plays its part. The exception that took three weeks to resolve is invisible to the role that caused it on day one, because that role has already moved on to the next elephant. The parts are not just spatially separated — they are temporally separated, which is why nobody can &quot;look around&quot; and see the whole even if they wanted to.</p>
+<h2 id="why-automation-built-from-one-roles-view-fails">Why automation built from one role's view fails</h2>
+<p><strong>An automation project picks a role to believe — the one who sponsors it, the one who owns the pain — and then automates that role's elephant as if it were the process.</strong> This is where the parable stops being a metaphor and becomes a failure mode, because the automation inherits the role's blindness and then locks it in at machine speed:</p>
+<ul>
+<li><strong>Automate what sales sees</strong> and you get a beautiful quote-to-contract tool whose invoices go out wrong, because invoicing is not in sales's view.</li>
+<li><strong>Automate what finance sees</strong> and you get perfect invoicing that ships against unapproved credit terms, because credit is not in finance's view.</li>
+<li><strong>Automate what the RPA vendor's screen-recording sees</strong> and you get the tail: the keystrokes that twitch at the end of a process whose real structure lives upstream, in handoffs and rules the bot never touched.</li>
+<li><strong>Automate what the agent sees</strong> and you get the newest version of the error: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">an agent run is not automation</a> — an agent makes a fresh decision from its context window each time, and a context window is a hand on one part of the elephant. An agent given the billing queue will optimize the billing queue, with complete confidence and complete blindness to the cost it pushes into collections.</li>
+</ul>
+<p>The failure is not in the automation. The failure is in the trust: the project believed one role's account of the animal. <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-conways-law">Conway's law</a> then makes the mistake durable — the systems you build mirror the roles you consulted, so an organization that automates department-shaped views ships department-shaped systems, and the elephant ends up assembled from mismatched parts with the handoffs automated nowhere. And because the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-amdahls-law">chain's throughput is set by its weakest link</a>, &quot;automating the part&quot; does not speed the process up; it moves the bottleneck to the next role's handoff. Order entry automated to ten seconds; invoicing still a three-day queue. The elephant did not get faster. One of its parts got faster and the rest of the animal got more frustrated.</p>
+<h2 id="the-whole-is-only-visible-in-the-handoffs">The whole is only visible in the handoffs</h2>
+<p><strong>The big picture is not a bigger version of any role's view. It is a different object entirely: the flow of work between the roles — and it is visible only where the parts meet.</strong> This is the deepest consequence of the parable and the most useful one for automation. You cannot see the whole elephant by giving any single man a better view of his part, because the whole is not composed of parts stacked together; it is composed of the <em>transitions</em> between them — the handoffs, the waits, the exceptions, the rework.</p>
+<p>That is exactly why <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#process-mining-with-python-and-solving-real-world-data-science-tasks">process mining</a> matters more than any single automation tool: event logs are the only artifact that records the transitions. Every system the process touches writes a timestamped record of its own behavior, and process mining replays those logs across systems to reconstruct the actual end-to-end flow — the real paths, the real handoffs, the real waits, the real exceptions. It does not ask any role to describe the process, because no role can. It reads the elephant from its own motion, and it shows what every role's dashboard hides: the big picture lives in the handoffs, and the handoffs are where processes actually fail.</p>
+<p>Process mining has its own limit, and honesty requires naming it: an event log is the elephant's <em>shadow</em>, not the elephant. It records behavior, not intent — the invoice disputed because the contract was ambiguous shows up as a long edge in the graph, and the log cannot tell you why. So the whole is visible only to a <em>combination</em>: the measured flow, plus the humans from each role who can interpret their part of the shadow. The elephant-walker is not a role that sees everything; the elephant-walker is the person who assembles all the roles' partial truths into one animal — and for the first time, process mining gives them accurate parts to assemble.</p>
+<h2 id="what-automation-looks-like-when-no-role-is-trusted-with-the-whole">What automation looks like when no role is trusted with the whole</h2>
+<p><strong>The fix is not to find the role that sees everything — there is no such role. The fix is to stop building automation from any single role's view.</strong> Concretely:</p>
+<ul>
+<li><strong>End-to-end ownership before end-to-end automation.</strong> Give the process an owner whose job is the handoffs, not a department — the person whose elephant is the whole flow, and who reports that the tail is attached to something large.</li>
+<li><strong>Event logs as ground truth, not role interviews.</strong> If the project cannot produce a conformance report of the actual flow, it does not know what it is automating; it only knows what one role believes.</li>
+<li><strong>Cross-role review before anything ships.</strong> Every automation must answer three questions: what role's view did we build this from, what does it optimize, and whose downstream elephant does it break? Asked before the code is written.</li>
+<li><strong>Widen the agent's aperture like the humans'.</strong> The harness-engineering move is the same move as process mining: give the agent <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#good-harnesses-watch-the-whole-operating-system">the whole system, not the polite demo</a> — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#coding-agent-harnesses-need-real-repositories">real repositories</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnesses-need-real-browsers-not-polite-demos">real browsers</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agent-harnesses-need-tasks-that-fight-back">tasks that fight back</a>. An agent automating from one context window is the newest blind man, and the most dangerous, because it is confident, fast, and cannot see past its part.</li>
+<li><strong>Keep a human whose job is the whole.</strong> <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">The elephant is a system</a>, and a system cannot be seen from inside one of its parts — the dark-factory dream (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dark-factory-complexity">the complexity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#factory-is-not-dead">the economics</a>) does not delete this job. It makes the job be only this job.</li>
+</ul>
+<h2 id="key-insight">Key insight</h2>
+<p><strong>The point of the parable is not that the men are blind — it is that each of them is right, and the elephant is still missing.</strong> Every role in an organization is telling the truth about the part it touches: sales really does win the deal, finance really does get paid, ops really does ship, support really does resolve. The whole is not in any of their reports, and no amount of honesty, data, or goodwill inside a single role can produce it. Business process automation fails when it trusts one role's elephant; it works when it treats the big picture as something no role can see alone — measured across the handoffs, assembled from every role's partial truth, and automated only once the whole animal is in view. Automation is not the goal. Seeing the elephant is the goal, and the only way to see it is together.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>The parable — Jain, Hindu, and Buddhist versions; popularized in English by John Godfrey Saxe's poem &quot;The Blind Men and the Elephant&quot; (1873) — <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Blind_men_and_an_elephant">https://en.wikipedia.org/wiki/Blind_men_and_an_elephant</a></li>
+<li>Wil van der Aalst, <em>Process Mining: Data Science in Action</em> — <a target="_blank" rel="noopener noreferrer" href="https://www.springer.com/gp/book/9783662498507">https://www.springer.com/gp/book/9783662498507</a></li>
+<li>IEEE Task Force on Process Mining, Process Mining Manifesto (2011) — <a target="_blank" rel="noopener noreferrer" href="https://www.tf-pm.org/resources/manifesto">https://www.tf-pm.org/resources/manifesto</a></li>
+<li>Image: LinkedIn — <a target="_blank" rel="noopener noreferrer" href="https://media.licdn.com/dms/image/v2/D4E10AQGddprHhTvV2Q/image-shrink_800/B4EaBHUnZ5GgAg-/0/1787902982366">https://media.licdn.com/dms/image/v2/D4E10AQGddprHhTvV2Q/image-shrink_800/B4EaBHUnZ5GgAg-/0/1787902982366</a></li>
+<li>Archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#process-mining-with-python-and-solving-real-world-data-science-tasks">process mining with Python</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#task-automation-economics">why an agent run is not automation</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#good-harnesses-watch-the-whole-operating-system">good harnesses watch the whole operating system</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-conways-law">Conway's law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-goodharts-law">Goodhart's law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-amdahls-law">Amdahl's law</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dark-factory-complexity">dark factories: complexity</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#factory-is-not-dead">the factory is not dead</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#i-pencil">I, Pencil</a></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

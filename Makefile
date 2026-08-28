@@ -17,7 +17,7 @@ slides:
 	done
 
 index.html: build_blog.go go.mod go.sum logo.png $(POSTS)
-	GOCACHE=$(GOCACHE) $(GO) run . --input-dir posts --output index.html
+	GOCACHE=$(GOCACHE) $(GO) run . --input-dir posts --output index.html $(if $(TODAY),--today $(TODAY),)
 
 clean:
 	rm -rf $(GOCACHE)

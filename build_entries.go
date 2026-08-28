@@ -129,6 +129,40 @@ func writeRawPosts(posts []post) error {
 	return nil
 }
 
+// cleanupOrphans removes generated artifacts (entries/<slug>/ pages and
+// raw/<slug>.md sources) for posts that are no longer published — e.g.
+// scheduled posts dated after the build date. Without this, an un-published
+// post would still be served from its committed entry page and raw link.
+func cleanupOrphans(posts []post) error {
+	published := make(map[string]bool, len(posts))
+	for _, p := range posts {
+		published[p.Slug] = true
+	}
+
+	if entries, err := os.ReadDir("entries"); err == nil {
+		for _, e := range entries {
+			if e.IsDir() && !published[e.Name()] {
+				if err := os.RemoveAll(filepath.Join("entries", e.Name())); err != nil {
+					return fmt.Errorf("remove orphan entry %s: %w", e.Name(), err)
+				}
+			}
+		}
+	}
+
+	if raws, err := os.ReadDir("raw"); err == nil {
+		for _, r := range raws {
+			slug := strings.TrimSuffix(r.Name(), ".md")
+			if !r.IsDir() && !published[slug] {
+				if err := os.Remove(filepath.Join("raw", r.Name())); err != nil {
+					return fmt.Errorf("remove orphan raw %s: %w", r.Name(), err)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
 func writePostPages(posts []post) error {
 	for _, p := range posts {
 		dir := filepath.Join("entries", p.Slug)

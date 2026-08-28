@@ -956,13 +956,19 @@ type pageData struct {
 func main() {
 	inputDir := flag.String("input-dir", "", "directory containing markdown posts")
 	outputPath := flag.String("output", "", "path to generated html output")
+	todayFlag := flag.String("today", "", "build date YYYY-MM-DD; defaults to now. Posts dated after this are treated as unpublished (scheduled).")
 	flag.Parse()
 
 	if *inputDir == "" || *outputPath == "" {
 		exitf("both --input-dir and --output are required")
 	}
 
-	posts, err := loadPosts(*inputDir)
+	today, err := buildDate(*todayFlag)
+	if err != nil {
+		exitf("%v", err)
+	}
+
+	posts, err := loadPosts(*inputDir, today)
 	if err != nil {
 		exitf("%v", err)
 	}
@@ -976,12 +982,30 @@ func main() {
 	if err := writeRawPosts(posts); err != nil {
 		exitf("%v", err)
 	}
+	if err := cleanupOrphans(posts); err != nil {
+		exitf("%v", err)
+	}
 	if err := writeSitemap(posts); err != nil {
 		exitf("%v", err)
 	}
 }
 
-func loadPosts(inputDir string) ([]post, error) {
+// buildDate resolves the effective publication date for the build: the
+// --today flag when given, otherwise the wall-clock date. Future-dated posts
+// are scheduled content and must not appear in the archive until their date.
+func buildDate(todayFlag string) (time.Time, error) {
+	if todayFlag != "" {
+		t, err := time.ParseInLocation("2006-01-02", todayFlag, time.Local)
+		if err != nil {
+			return time.Time{}, fmt.Errorf("invalid --today %q (want YYYY-MM-DD): %w", todayFlag, err)
+		}
+		return t, nil
+	}
+	now := time.Now()
+	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local), nil
+}
+
+func loadPosts(inputDir string, today time.Time) ([]post, error) {
 	pattern := filepath.Join(inputDir, "*.md")
 	paths, err := filepath.Glob(pattern)
 	if err != nil {
@@ -1006,6 +1030,17 @@ func loadPosts(inputDir string) ([]post, error) {
 		}
 		if strings.ToLower(strings.TrimSpace(meta["draft"])) == "true" || strings.ToLower(strings.TrimSpace(meta["draft"])) == "yes" {
 			// skip draft posts
+			continue
+		}
+
+		// Scheduled posts: front-matter date in the future means the post is
+		// not published yet. It stays in the source tree and appears on the
+		// date it is dated for; the archive is always strictly date-ordered.
+		postDate, err := time.ParseInLocation("2006-01-02", strings.TrimSpace(meta["date"]), time.Local)
+		if err != nil {
+			return nil, fmt.Errorf("%s: invalid date %q: %w", path, meta["date"], err)
+		}
+		if postDate.After(today) {
 			continue
 		}
 

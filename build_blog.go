@@ -1028,10 +1028,17 @@ func loadPosts(inputDir string) ([]post, error) {
 	}
 
 	sort.SliceStable(posts, func(i, j int) bool {
+		// Primary: front-matter date, newest first.
 		if !posts[i].Date.Equal(posts[j].Date) {
 			return posts[i].Date.After(posts[j].Date)
 		}
-		return posts[i].ModTime.After(posts[j].ModTime)
+		// Secondary: file mtime preserves same-day publication order.
+		if !posts[i].ModTime.Equal(posts[j].ModTime) {
+			return posts[i].ModTime.After(posts[j].ModTime)
+		}
+		// Tertiary: deterministic fallback so fresh clones (equal mtimes)
+		// rebuild to the same same-day order as the committed archive.
+		return posts[i].Slug < posts[j].Slug
 	})
 
 	return posts, nil

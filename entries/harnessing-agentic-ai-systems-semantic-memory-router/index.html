@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Law 2 of 12. Brooks&#39; Law says adding human resources to a late project makes it later. The ASE key insight: adding agents to a late task makes it later — the handoff is the ramp-up, the coordination is the overhead, and the serial fraction sets the ceiling.">
+  <meta name="description" content="Problem 6 of 15: choosing what context to inject. The Semantic Memory Router pattern vs the RAG Firehose anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.hackspree.com/entries/hacker-laws-ase-brooks-law/">
-  <title>Hacker Laws for Agentic Software Engineering: Brooks&#39; Law — hackspree</title>
-  <meta property="og:title" content="Hacker Laws for Agentic Software Engineering: Brooks&#39; Law">
-  <meta property="og:description" content="Law 2 of 12. Brooks&#39; Law says adding human resources to a late project makes it later. The ASE key insight: adding agents to a late task makes it later — the handoff is the ramp-up, the coordination is the overhead, and the serial fraction sets the ceiling.">
-  <meta property="og:url" content="https://blog.hackspree.com/entries/hacker-laws-ase-brooks-law/">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-semantic-memory-router/">
+  <title>Harnessing Agentic AI Systems: Semantic Memory Router Pattern — hackspree</title>
+  <meta property="og:title" content="Harnessing Agentic AI Systems: Semantic Memory Router Pattern">
+  <meta property="og:description" content="Problem 6 of 15: choosing what context to inject. The Semantic Memory Router pattern vs the RAG Firehose anti-pattern — one table, a short discussion, the key insight, and the important references.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/harnessing-agentic-ai-systems-semantic-memory-router/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logo.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Hacker Laws for Agentic Software Engineering: Brooks&#39; Law">
-  <meta name="twitter:description" content="Law 2 of 12. Brooks&#39; Law says adding human resources to a late project makes it later. The ASE key insight: adding agents to a late task makes it later — the handoff is the ramp-up, the coordination is the overhead, and the serial fraction sets the ceiling.">
+  <meta name="twitter:title" content="Harnessing Agentic AI Systems: Semantic Memory Router Pattern">
+  <meta name="twitter:description" content="Problem 6 of 15: choosing what context to inject. The Semantic Memory Router pattern vs the RAG Firehose anti-pattern — one table, a short discussion, the key insight, and the important references.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,26 +84,61 @@
       <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
       <article>
         <header>
-          <p class="post-meta"><time datetime="2026-08-25">2026-08-25</time></p>
-          <h1>Hacker Laws for Agentic Software Engineering: Brooks&#39; Law<a class="raw-link" href="https://blog.hackspree.com/raw/hacker-laws-ase-brooks-law.md" title="Raw markdown source" aria-label="Raw markdown source of Hacker Laws for Agentic Software Engineering: Brooks&#39; Law" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Law 2 of 12. Brooks&#39; Law says adding human resources to a late project makes it later. The ASE key insight: adding agents to a late task makes it later — the handoff is the ramp-up, the coordination is the overhead, and the serial fraction sets the ceiling.</p>
-          <div class="tags"><span class="tag">hacker-laws</span><span class="tag">agentic-software-engineering</span><span class="tag">series</span><span class="tag">brooks-law</span><span class="tag">parallelism</span><span class="tag">delegation</span><span class="tag">mythical-man-month</span></div>
+          <p class="post-meta"><time datetime="2026-08-29">2026-08-29</time></p>
+          <h1>Harnessing Agentic AI Systems: Semantic Memory Router Pattern<a class="raw-link" href="https://blog.hackspree.com/raw/harnessing-agentic-ai-systems-semantic-memory-router.md" title="Raw markdown source" aria-label="Raw markdown source of Harnessing Agentic AI Systems: Semantic Memory Router Pattern" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Problem 6 of 15: choosing what context to inject. The Semantic Memory Router pattern vs the RAG Firehose anti-pattern — one table, a short discussion, the key insight, and the important references.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">pattern-language</span><span class="tag">agentic-ai</span><span class="tag">series</span><span class="tag">memory</span><span class="tag">retrieval</span><span class="tag">rag</span></div>
           
         </header>
-        <div class="post-body"><p><strong>Law 2 of 12</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-for-agentic-software-engineering">Hacker Laws for Agentic Software Engineering</a> series — read the index. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-conways-law">Conway's Law</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-amdahls-law">Amdahl's Law</a>.</p>
-<h2 id="the-law">The Law</h2>
-<blockquote>
-<p>Adding human resources to a late software development project makes it later. (<a target="_blank" rel="noopener noreferrer" href="https://github.com/dwmkerr/hacker-laws#brooks-law">hacker-laws</a>)</p>
-</blockquote>
-<h2 id="the-key-insight-for-agentic-software-engineering">The Key Insight for Agentic Software Engineering</h2>
-<p>The first temptation when a task is late is to spawn more agents — the &quot;nine women can't make a baby in one month&quot; intuition gets buried under the fact that an agent costs nothing to instantiate. But Brooks' reasoning survives the change of subject completely: the ramp-up time becomes the <strong>context handoff</strong> (the new agent must learn the task, the repo, and the state — exactly the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-state-snapshot-rollback">goldfish amnesia</a> risk of delegation); the communication overhead becomes the <strong>coordination</strong> between agents (shared state, delegation contracts, merge conflicts — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-orchestrator-worker">orchestrator-worker</a> single point of failure); and many tasks are not divisible, because the serial reasoning and verification fraction cannot be split.</p>
-<p>The cost structure is what changed, and it is the trap. Spawning an agent is nearly free; <strong>integrating its output is not</strong>. A human's ramp-up is measured in days and the org pays it once; an agent's ramp-up is measured in tokens and context, but it is paid on every delegation, and a late task invites delegating more, which multiplies the handoffs precisely when the serial path is already the bottleneck. This is the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-amdahls-law">Brooks → Amdahl</a> pair: adding workers only helps the parallelisable fraction, and the late task is late because of the serial fraction.</p>
-<p>The ASE reading of Brooks' Law: <strong>nine agents can't make a feature in one day — the handoff is the ramp-up, and the serial fraction sets the ceiling.</strong> The fix is not to spawn more workers; it is to shrink the handoff (structured artifacts, sprint contracts that define &quot;done&quot; before the work — the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-orchestrator-worker">frontier contract pattern</a>) and to make the serial fraction explicit and measured, so the decision to add an agent is made against the ceiling it cannot move.</p>
+        <div class="post-body"><p><strong>Problem 6 of 15</strong> in the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> series — read the index for the framing. Previous: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-rolling-window-compression">Rolling Window Compression Pattern</a> · Next: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-state-snapshot-rollback">State Snapshot &amp; Rollback Pattern</a>.</p>
+<h2 id="the-problem--choosing-what-context-to-inject">The Problem — Choosing what context to inject</h2>
+<p>Not every retrieved fact belongs in every prompt. Retrieval without judgment drowns the instruction — and every injected chunk is untrusted input. The system must decide, and the decision cannot be the model's.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>P6 — Semantic Memory Router (pattern)</th>
+<th>A6 — The RAG Firehose (anti-pattern)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forces / Smell</strong></td>
+<td>Grounding vs focus; freshness vs stable prefix; utility vs untrusted input.</td>
+<td>Top-K chunks by raw keyword match; the instruction buried; retrieval dominating the prompt.</td>
+</tr>
+<tr>
+<td><strong>Solution / Anti-solution</strong></td>
+<td>Intercept ongoing tasks, query vector stores, and inject context fragments just-in-time into the agent's prompt.</td>
+<td>&quot;More chunks equals better grounding.&quot;</td>
+</tr>
+<tr>
+<td><strong>Consequences / Failure</strong></td>
+<td>Grounded, lean prompts; attention curated by the system rather than dumped by default. Injected context is the highest-leverage observation — and the highest-leverage attack.</td>
+<td>Drowns the instruction where Lost in the Middle predicts; every injected chunk is untrusted input — an injection vector (OWASP LLM08).</td>
+</tr>
+<tr>
+<td><strong>Tradeoffs / Refactoring</strong></td>
+<td>The router is an injection surface; just-in-time injection fights prefix-cache discipline; retrieval quality is decided by chunking, metadata filtering, and reranking, not top-K volume.</td>
+<td>P6 with chunking, metadata filtering, and reranking deciding what is injected.</td>
+</tr>
+<tr>
+<td><strong>Evidence</strong></td>
+<td>Pinecone's RAG guides (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/retrieval-augmented-generation/">learn</a>); the always-on survey's provenance and authority axes (<a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>).</td>
+<td>Pinecone advanced RAG (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">learn</a>); OWASP <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">LLM08</a>.</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>Refactoring for A6; composes with P8 (the tiers are the router's stores).</td>
+<td>Is the absence of P6; retrieval form of A4.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="discussion">Discussion</h2>
+<p>The router is the decision layer RAG was missing: not every retrieved fact belongs in every prompt, and the decision cannot be the model's because the model cannot see what it was not shown. The mechanism is curation — chunking, metadata filtering, reranking — and the security corollary is that retrieved content is untrusted input: the router is both the grounding layer and the injection surface.</p>
+<h2 id="key-insight">Key Insight</h2>
+<p><strong>The system curates what the model sees.</strong> Injected context is the highest-leverage observation and the highest-leverage attack — retrieval quality is a decision, not a volume, and the decision cannot be the model's.</p>
 <h2 id="references">References</h2>
-<ul>
-<li>dwmkerr. <a target="_blank" rel="noopener noreferrer" href="https://github.com/dwmkerr/hacker-laws#brooks-law">hacker-laws — Brooks' Law</a> and <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Brooks%27s_law">Wikipedia</a>; Brooks, <em>The Mythical Man-Month</em>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#hacker-laws-ase-amdahls-law">Amdahl's Law</a> — the serial fraction is the ceiling.</li>
-<li>This blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">Harnessing Agentic AI Systems</a> series — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-orchestrator-worker">orchestrator-worker</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-state-snapshot-rollback">state snapshot &amp; rollback</a> (handoff state), <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-async-tool-worker-queue">asynchronous tool worker queue</a>.</li>
-</ul>
+<p>Pinecone RAG guide (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/retrieval-augmented-generation/">learn</a>) and advanced RAG (<a target="_blank" rel="noopener noreferrer" href="https://www.pinecone.io/learn/advanced-rag/">learn</a>); OWASP Top 10 — LLM08 (<a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/llm-top-10/">2025</a>); Liu et al., Lost in the Middle (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#agentic-first-cli-design">Agentic-First CLI</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>.</p>
 </div>
       </article>
     </div>

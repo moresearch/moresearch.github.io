@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/harness-engineering-fowler/">
+  <title>Harness Engineering (Martin Fowler) — hackspree</title>
+  <meta property="og:title" content="Harness Engineering (Martin Fowler)">
+  <meta property="og:description" content="Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/harness-engineering-fowler/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Harness Engineering (Martin Fowler)">
+  <meta name="twitter:description" content="Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-05-17">2026-05-17</time></p>
+          <h1>Harness Engineering (Martin Fowler)<a class="raw-link" href="https://blog.hackspree.com/raw/harness-engineering-fowler.md" title="Raw markdown source" aria-label="Raw markdown source of Harness Engineering (Martin Fowler)" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">synthesis</span><span class="tag">martin-fowler</span></div>
+          
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+Martin Fowler's essay &quot;Harness Engineering&quot; reframes the problem of trustworthy coding agents as a control-engineering task: the harness is the set of guides and sensors that steer, test, and correct agent behavior so humans can rely on the outputs.</p>
+<p>This post summarizes the article and extracts practical recommendations teams can start applying today.</p>
+<p>Key idea: harness = guides + sensors</p>
+<ul>
+<li>Guides (feedforward controls) shape agent behavior before it acts: clear instructions, bootstrapping docs, templates, and computational tooling that bias the agent toward desirable outputs.</li>
+<li>Sensors (feedback controls) observe results and enable self-correction: linters, tests, static analysis, and higher-level inferential judges (AI reviewers) that can produce signals optimized for the agent.</li>
+</ul>
+<p>Computational vs inferential</p>
+<ul>
+<li>Computational controls are deterministic and fast (linters, unit tests, static analysis). They are cheap enough to run on every change and give reliable results.</li>
+<li>Inferential controls are semantic, non-deterministic, and more expensive (LLM-based code review, AI judges). They add richness and can catch problems that structural checks miss, but they should be used judiciously.</li>
+</ul>
+<p>Steering loop and timing</p>
+<p>Fowler emphasizes the human role: the team must &quot;steer&quot; the harness by iterating on guides and sensors whenever recurring failures are observed. A practical cadence is:</p>
+<ul>
+<li>Shift cheap, computational checks as far left as possible (pre-commit, IDE/LSP, early CI).</li>
+<li>Run heavier inferential sensors in integration or post-merge pipelines.</li>
+<li>Use continuous drift detection (coverage, dependency analyses, runtime SLO sampling) outside the commit lifecycle to surface gradual regressions.</li>
+</ul>
+<p>Three regulation categories</p>
+<p>Fowler proposes thinking of harness objectives in three orthogonal dimensions:</p>
+<ul>
+<li>Maintainability harness — tools that regulate code quality and internal consistency (duplicate code, complexity, coverage).</li>
+<li>Architecture fitness harness — fitness functions and structural checks that enforce architectural constraints and observable patterns.</li>
+<li>Behaviour harness — the hardest: verifying that the system functionally does what users need; often needs a mix of tests, approved fixtures, and human checks.</li>
+</ul>
+<p>Harnessability and templates</p>
+<p>Not every codebase is equally easy to harness. Greenfield projects can bake harnessability in (types, clear module boundaries); legacy codebases may need incremental investments. To scale effort, organizations can capture common topologies as harness templates — bundles of guides and sensors tailored to a topology — while being mindful of version drift and maintenance costs.</p>
+<p>Role of humans</p>
+<p>Humans bring tacit knowledge, social accountability, and judgement that agents lack. Harnesses are partly an attempt to externalize that experience; they should therefore aim to reduce repetitive oversight while leaving nuanced judgement where people add the most value.</p>
+<p>Practical checklist</p>
+<ul>
+<li>Start with computational feedforward controls: LSPs, linters, and targeted pre-commit hooks.</li>
+<li>Add fast feedback: unit tests, structural tests, policy linters that run in CI.</li>
+<li>Design inferential sensors only where they measurably reduce supervision cost; run them at lower frequency or post-merge.</li>
+<li>Prioritize harness cases that map to production failures — convert incidents into permanent harness cases.</li>
+<li>Instrument for replay and for agent-friendly error messages so sensors can be used as correction signals.</li>
+<li>Monitor continuous drift and add sensors that surface slowly accumulating problems.</li>
+</ul>
+<p>Conclusion</p>
+<p>Fowler's framework makes the abstract idea of &quot;a harness&quot; actionable: treat it as a system of guides and sensors that you iteratively improve, and prefer cheap deterministic controls left in the pipeline while layering inferential checks where they add value. Harness engineering is not a one-off project; it's an ongoing practice that makes coding agents a practical part of the engineering workflow.</p>
+<p>References</p>
+<ul>
+<li>Martin Fowler, &quot;Harness Engineering&quot; — <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/articles/harness-engineering.html">https://martinfowler.com/articles/harness-engineering.html</a></li>
+</ul>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+<blockquote>
+<p>A harness is not a tool. It is a contract. The contract specifies what the agent can do and how its performance will be measured. The contract is the interface. The interface is the engineering.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

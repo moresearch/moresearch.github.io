@@ -17346,6 +17346,80 @@ If you are a journal editor who has spent more energy protecting your impact fac
 </blockquote>
 </div>
       </article>
+      <article class="post" id="agent-governance-toolkit">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/agent-governance-toolkit/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-21" data-utc="May 21, 2026 UTC" aria-label="May 21, 2026 UTC" tabindex="0">1779321600</time></p>
+          <h2><a href="#agent-governance-toolkit">Agent Governance Toolkit: deterministic, auditable governance for agent fleets</a><a class="raw-link" href="https://blog.hackspree.com/raw/agent-governance-toolkit.md" title="Raw markdown source" aria-label="Raw markdown source of Agent Governance Toolkit: deterministic, auditable governance for agent fleets" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A practical look at Microsoft’s Agent Governance Toolkit (AGT): what it solves, core capabilities, and how to get started governing agent actions safely and audibly.</p>
+          <div class="tags"><span class="tag">governance</span><span class="tag">agents</span><span class="tag">security</span><span class="tag">microsoft</span>
+          </div>
+        </header>
+        <div class="post-body"><p>TL;DR — Microsoft’s Agent Governance Toolkit (AGT) is a production-oriented stack for enforcing deterministic, sub-millisecond policy checks and audit trails on agent actions. It provides a policy engine (YAML / OPA / Cedar), identity &amp; trust primitives, execution sandboxes, SRE primitives, tamper-evident audit logs, and adapters for major agent frameworks. If you’re running agents in anything beyond a toy demo, AGT is one of the most complete open-source starting points for making agent behavior safe, observable, and auditable.</p>
+<h2 id="why-this-matters">Why this matters</h2>
+<p>Agentic systems change the threat model: “please follow the rules” is not reliable. AGT moves enforcement out of prompts and into the application layer — every tool call and resource access is evaluated against policy before execution. That means deterministic allow/deny decisions, consistent enforcement across frameworks, and an auditable trail that teams can use for compliance and post-mortem.</p>
+<h2 id="what-agt-provides-high-level">What AGT provides (high level)</h2>
+<ul>
+<li>Policy Engine: deterministic, low-latency allow/deny checks (sub-ms in benchmarks). Supports YAML policy files plus OPA/Rego and Cedar, and defaults to fail-closed.</li>
+<li>Zero-Trust Identity: agent credentials, delegation chains, and behavioral trust scoring so identity and delegation limits are part of enforcement decisions.</li>
+<li>Execution Sandboxing: privilege rings, saga orchestration for multi-step flows, and an agent “kill switch” to stop runaway behavior.</li>
+<li>Agent SRE: SLOs, error budgets, replay debugging, chaos/testing primitives, and OpenTelemetry-native governance events.</li>
+<li>Audit &amp; Compliance: Merkle-chained, tamper-evident audit logs and Decision BOMs; mappings for EU AI Act, SOC 2, HIPAA, GDPR.</li>
+<li>MCP Security Gateway &amp; PromptDefense: tool-poisoning detection, description-drift checks, and multi-vector prompt-injection auditing.</li>
+<li>Framework Integrations: adapters/middleware for LangChain, AutoGen, OpenAI Agents, Semantic Kernel and more — plus cross-language SDKs (Python, TypeScript, .NET, Go, Rust).</li>
+</ul>
+<h2 id="practical-example-python-style">Practical example (Python style)</h2>
+<p>This is the idiomatic quick usage pattern from the project — an evaluator that denies dangerous tools:</p>
+<pre><code class="language-python">from agent_os.policies import PolicyEvaluator, PolicyDocument, PolicyRule, PolicyCondition, PolicyOperator, PolicyAction, PolicyDefaults
+
+evaluator = PolicyEvaluator(policies=[
+  PolicyDocument(
+    name=&quot;my-policy&quot;,
+    version=&quot;1.0&quot;,
+    defaults=PolicyDefaults(action=PolicyAction.ALLOW),
+    rules=[
+      PolicyRule(
+        name=&quot;block-dangerous-tools&quot;,
+        condition=PolicyCondition(field=&quot;tool_name&quot;, operator=PolicyOperator.IN, value=[&quot;execute_code&quot;,&quot;delete_file&quot;]),
+        action=PolicyAction.DENY,
+        priority=100,
+      ),
+    ],
+  )
+])
+
+evaluator.evaluate({&quot;tool_name&quot;: &quot;web_search&quot;})   # allowed
+evaluator.evaluate({&quot;tool_name&quot;: &quot;delete_file&quot;})  # denied
+</code></pre>
+<h2 id="operational-checks--ci">Operational checks &amp; CI</h2>
+<p>AGT ships CLI tools (<code>agt doctor</code>, <code>agt verify</code>, <code>agt red-team scan</code>, <code>agt lint-policy</code>) to test policies, run evidence checks, and fail CI on weak evidence. The repo also contains 900+ conformance tests and formal RFC-style specifications for each major component — a good sign for teams that need provable behaviors and repeatable test suites.</p>
+<h2 id="when-to-consider-agt">When to consider AGT</h2>
+<ul>
+<li>You operate agent-driven automation that performs non-trivial actions (API calls, code execution, data deletion).</li>
+<li>Compliance, auditability, or SRE-grade observability is required.</li>
+<li>You need consistent enforcement across different agent frameworks or languages.</li>
+<li>You want a spec-driven implementation to anchor testing and long-term maintenance.</li>
+</ul>
+<h2 id="caveats-and-realities">Caveats and realities</h2>
+<ul>
+<li>AGT is ambitious and scoped for production; it’s labeled “Public Preview” and may evolve before GA.</li>
+<li>Integration work is required to adapt your existing agents and tool definitions; expect effort in mapping actions/contexts to policy fields.</li>
+<li>Policy design is its own discipline — start with conservative, fail-closed defaults and iterate with evidence.</li>
+</ul>
+<h2 id="resources--next-steps">Resources &amp; next steps</h2>
+<ul>
+<li>Repo: <a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-governance-toolkit">https://github.com/microsoft/agent-governance-toolkit</a></li>
+<li>Docs / Quickstart: <a target="_blank" rel="noopener noreferrer" href="https://microsoft.github.io/agent-governance-toolkit">https://microsoft.github.io/agent-governance-toolkit</a></li>
+<li>Try: pip install agent-governance-toolkit[full] and run <code>agt doctor</code> / <code>agt verify</code> on your policy files</li>
+<li>Read the specs and conformance tests in the repo to understand the behavioral contracts AGT enforces before integrating.</li>
+</ul>
+<h2 id="bottom-line">Bottom line</h2>
+<p>AGT isn’t a lightweight policy library — it’s an operational stack for teams that need to run agent fleets under strict, auditable controls. For product teams and security engineers, it’s a valuable reference implementation and a practical toolkit to lift agent governance from ad-hoc prompts into reproducible, testable infrastructure.</p>
+<p>Engineering is always embedded in a context of constraints — economic, political, organizational. The engineer who ignores the context builds systems that are technically correct and operationally irrelevant. The engineer who understands the context builds systems that survive. The context is part of the specification. The specification is incomplete without it.</p>
+<blockquote>
+<p>Governance is not about restricting what agents can do. It is about making their actions auditable. The audit trail is the mechanism of trust. Without it, the agent is a black box. Black boxes are not deployable in production.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks">
         <link rel="canonical" href="https://blog.hackspree.com/entries/how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks/">
         <header class="post-header">
@@ -17383,6 +17457,66 @@ If you are a journal editor who has spent more energy protecting your impact fac
 </ul>
 <hr>
 <p>Screenshots: YouTube thumbnails (downloaded and included in this repo). If you prefer different screenshots or specific timestamps as images, say which and a screenshot can be extracted instead.</p>
+</div>
+      </article>
+      <article class="post" id="self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-20" data-utc="May 20, 2026 UTC" aria-label="May 20, 2026 UTC" tabindex="0">1779235200</time></p>
+          <h2><a href="#self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space</a><a class="raw-link" href="https://blog.hackspree.com/raw/self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space.md" title="Raw markdown source" aria-label="Raw markdown source of Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A practical recipe that combines SEP&#39;s self‑improving skill loop with OpenDev&#39;s terminal harness architecture and an empirical survey of harness design choices.</p>
+          <div class="tags"><span class="tag">agents</span><span class="tag">harness</span><span class="tag">workflow</span><span class="tag">research</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+TL;DR</p>
+<p>Combine SEP's simple &quot;read lessons → do work → reflect → write lessons&quot; skill loop with OpenDev's harness-level practices (multi-model routing, context compaction, safety layers) and the empirical design-space findings from an architecture survey. Start with one skill and one loop; let usage generate the data you need to grow a robust harness.</p>
+<p>Introduction</p>
+<p>SEP's &quot;The workflow that teaches itself&quot; proposes a minimal, practical loop: make each task a stepwise skill that reads past lessons at start and writes new lessons at the end. Over time the skill improves itself from real failures and fixes. This is a low-friction way to bootstrap reliable agent behavior without designing heavyweight infrastructure first.</p>
+<p>Why mix SEP with system papers</p>
+<p>Two recent arXiv reports make complementary points.</p>
+<ul>
+<li>OpenDev (arXiv:2603.05344v1) argues for a compound, multi-model terminal harness with explicit context compaction, dual-agent planning/execution separation, and layered safety. Those practices solve long-running, token-budgeted CLI agent problems.</li>
+<li>An empirical architecture survey (arXiv:2604.18071v1) catalogs recurring harness design dimensions: subagent structure, context management, tool systems, safety, and orchestration. It shows which choices tend to co-occur across real projects.</li>
+</ul>
+<p>Bringing them together</p>
+<p>SEP gives a practical, incrementally deployable loop. OpenDev and the survey show the harness patterns that emerge as those loops scale and as teams demand reliability, safety, and multi-model efficiency.</p>
+<ul>
+<li>Start small: implement a skill with steps and a lessons file (team + personal). Let runs accumulate real failure modes.</li>
+<li>When recurring issues appear, promote lessons into explicit rules inside the skill or into harness-level hooks (e.g., automatic retries, sandboxing checks).</li>
+<li>Use the survey's design dimensions as a checklist when a skill grows into a subsystem: do we need subagent decomposition, a tool registry, stronger context persistence, or a governance layer?</li>
+<li>Apply OpenDev tactics for long-running terminal agents: separate planning from execution, compact context proactively, route workloads to models by role, and add staged safety vetoes.</li>
+</ul>
+<p>Figures</p>
+<p><img src="https://sep.com/wp-content/uploads/2026/05/visual-01-knowledge-first-vs-path-first-1024x683.jpg" alt="Knowledge‑first vs Path‑first">
+<em>Figure 1 — SEP: path‑first thinking (name the step, confine the scope).</em></p>
+<p><img src="https://sep.com/wp-content/uploads/2026/05/visual-02-core-learning-loop-1024x683.jpg" alt="Core learning loop">
+<em>Figure 2 — SEP: attach learning to the path (read lessons … write lessons).</em></p>
+<p><img src="/images/self-improving-harness.svg" alt="Synthesis diagram">
+<em>Figure 3 — Synthesis: skill loop (left) invokes harness layers (right). The harness implements the tool registry, context compaction, safety layers, and persistence the skill depends on as it scales.</em></p>
+<p>A short getting‑started checklist</p>
+<ol>
+<li>Pick one repeatable task (dev DB reset, data import, report generation).</li>
+<li>Write it as a stepwise skill with: 1) read lessons, 2) execute steps, 3) reflect, 4) write lessons.</li>
+<li>Store team lessons in the repo and user lessons in a gitignored file.</li>
+<li>Run the skill often; catalogue recurring failure modes.</li>
+<li>When failures repeat, promote durable lessons into explicit handlers or harness hooks.</li>
+<li>Use the survey's five design dimensions (subagents, context, tools, safety, orchestration) to plan harness upgrades.</li>
+</ol>
+<p>Why this approach works</p>
+<ul>
+<li>Low friction: you get actionable telemetry before investing in big harness projects.</li>
+<li>Composability: skills remain small and learn inside their lanes; orchestrators and harness layers coordinate them at scale.</li>
+<li>Evidence driven: empirical architecture patterns (2604.18071v1) guide which harness investments pay off across projects.</li>
+</ul>
+<p>References</p>
+<ul>
+<li>SEP: The workflow that teaches itself — <a target="_blank" rel="noopener noreferrer" href="https://sep.com/blog/the-workflow-that-teaches-itself-a-self-improving-agent-workflow/">https://sep.com/blog/the-workflow-that-teaches-itself-a-self-improving-agent-workflow/</a></li>
+<li>OpenDev (compound CLI agent): <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/html/2603.05344v1">https://arxiv.org/html/2603.05344v1</a></li>
+<li>Agent harness design-space survey: <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/html/2604.18071v1">https://arxiv.org/html/2604.18071v1</a></li>
+</ul>
+<hr>
+<p>Notes: Figures 1–2 are from SEP's public blog (linked above). Figure 3 is a synthesized diagram included in this post to show how SEP's skill loop maps to harness layers described in the OpenDev paper and the architecture survey.</p>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
 </div>
       </article>
       <article class="post" id="harness-engineering-best-practices-for-ai-agents">
@@ -17622,6 +17756,137 @@ pn_vis.view(gviz)
 <hr>
 <p>Referência: MINISTÉRIO DA CIÊNCIA, TECNOLOGIA E INOVAÇÃO - MCTI; CENTRO DE GESTÃO E ESTUDOS ESTRATÉGICOS - CGEE. IA para o bem de todos; Plano Brasileiro de Inteligência Artificial. Brasília, DF: MCTI; CGEE, 2025. 104 p.</p>
 <p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+</div>
+      </article>
+      <article class="post" id="task-harness-engineering">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/task-harness-engineering/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1778976000</time></p>
+          <h2><a href="#task-harness-engineering">Task Harness Engineering: how it compares to Eval and Agent Harnesses</a><a class="raw-link" href="https://blog.hackspree.com/raw/task-harness-engineering.md" title="Raw markdown source" aria-label="Raw markdown source of Task Harness Engineering: how it compares to Eval and Agent Harnesses" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A practical guide to building task harnesses and how they differ from evaluation and agent harnesses (informed by the referenced talk).</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">evaluation</span><span class="tag">agents</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+Task harnesses are the scaffolding that turn a high-level engineering question—&quot;Can this system finish a real task?&quot;—into reproducible, debuggable experiments. This post explains what &quot;Task Harness Engineering&quot; means, how it differs from Eval harnesses (benchmarks) and Agent harnesses (integration + environment tests), and practical recommendations for building one.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=C_GG5g38vLU"><img src="https://img.youtube.com/vi/C_GG5g38vLU/hqdefault.jpg" alt="Harness Engineering talk (YouTube)"></a></p>
+<p>Source: Harness Engineering (YouTube), referenced for conceptual framing and examples (video id: C_GG5g38vLU).</p>
+<p>What is a harness?</p>
+<ul>
+<li>A harness is code and infra that runs a task, measures outcomes, and records what happened. Harnesses range from small unit-test-like runners to complex environment orchestrators that start services, browsers, or VM sandboxes.</li>
+</ul>
+<p>Task Harness Engineering</p>
+<ul>
+<li>Goal: exercise an agent or system with realistic tasks that capture the operational surface area you care about.</li>
+<li>Characteristics: stateful, often non-deterministic, reliant on external systems or realistic mocks, and focused on end-to-end success rather than a single scalar metric.</li>
+<li>Example tasks: finish a multi-step research workflow, triage a bug in a real repo, navigate a web app and complete a purchase flow, or orchestrate tools to solve a programming prompt with tests.</li>
+<li>Measurements: success/failure, retries, time-to-completion, observability traces, logs, and qualitative artifacts (replays/screenshots).</li>
+</ul>
+<p>Eval Harness (what it is and how it’s different)</p>
+<ul>
+<li>Eval harnesses run static, dataset-driven evaluations (datasets, metrics, automated scorers).</li>
+<li>Characteristics: deterministic or quasi-deterministic, high throughput, designed to compute reproducible aggregates (accuracy, F1, BLEU, etc.).</li>
+<li>Strengths: clear comparisons, statistical rigor, fast iteration.</li>
+<li>Weaknesses vs Task Harness: lower realism (benchmarks are proxies), brittle to specification differences, and limited visibility into long-horizon or environment-level failures.</li>
+</ul>
+<p>Agent Harness (what it is and how it’s different)</p>
+<ul>
+<li>Agent harnesses focus on agents interacting with environments (simulated worlds, browsers, shells, APIs) and on integration points: tool calls, state persistence, safety checks.</li>
+<li>Characteristics: emphasizes sandboxing, step-level instrumentation, and emergent behaviors across many steps.</li>
+<li>Overlap with Task Harness: agent harnesses are often the runtime that executes task harnesses when the subject is an agent; agent harnesses add concerns like action validation, safety guards, and tool interfaces.</li>
+</ul>
+<p>Key axes of difference</p>
+<ul>
+<li>Realism: Task &gt;&gt; Eval. Agent harness sits between and often provides the runtime for tasks that exercise agents.</li>
+<li>Determinism: Eval (high) &gt; Agent (medium) &gt; Task (low).</li>
+<li>Metrics: Eval focuses on aggregated scalars; Task harnesses capture a richer set (end-to-end success, observability, human judgments). Agent harnesses must capture both step-level and end-to-end signals.</li>
+<li>Infrastructure: Task harnesses require orchestration of real or high-fidelity mocks (browsers, CLIs, repos). Eval harnesses only need fast scoring pipelines. Agent harnesses require safe sandboxes and tool shims.</li>
+</ul>
+<p>Practical engineering patterns</p>
+<ul>
+<li>Instrumentation-first: log inputs, decisions, tool calls, and environment responses. Design for replay.</li>
+<li>Replayability: capture transcripts and environment snapshots so failed runs can be replayed deterministically when possible.</li>
+<li>Tasks that &quot;fight back&quot;: design tasks that surface edge cases, race conditions, and adversarial inputs instead of only happy paths.</li>
+<li>Hybrid approach: use eval harnesses for fast filtering, then escalate promising models to task harnesses for realism tests, and run agent harnesses in parallel to validate tool integrations.</li>
+<li>Isolation and safety: run untrusted code in sandboxes; for web/OS interaction prefer ephemeral VMs/containers and recorded interactions.</li>
+<li>Observability and triage: attach lightweight traces (request ids, timestamps) to link model internals to external failures.</li>
+</ul>
+<p>When to use each harness</p>
+<ul>
+<li>Use Eval harness when you need fast, repeatable comparisons during model iteration.</li>
+<li>Use Task harness when your priority is real-world behavior, end-to-end failure modes, or human-facing UX outcomes.</li>
+<li>Use Agent harness when validating tool use, stateful interactions, or safety boundaries across many steps.</li>
+</ul>
+<p>Conclusion and recommendations</p>
+<p>Task Harness Engineering complements, not replaces, eval and agent harnesses. The right pipeline uses them together: evaluate cheaply, validate realistically, and instrument deeply. Start with a minimal task harness for the most critical user journeys, make reproducible recordings, and iterate: increase realism until the harness meaningfully predicts production failure modes.</p>
+<p>Notes and references</p>
+<ul>
+<li>Video source (conceptual reference): <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=C_GG5g38vLU">https://www.youtube.com/watch?v=C_GG5g38vLU</a> (video id: C_GG5g38vLU)</li>
+<li>Encourage readers to run the referenced talk for additional context and examples.</li>
+</ul>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+<blockquote>
+<p>A task harness is not a benchmark. It is a specification. The specification defines what success means. Without it, the agent is optimizing for a proxy that may not capture what you actually want.</p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="harness-engineering-fowler">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/harness-engineering-fowler/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-17" data-utc="May 17, 2026 UTC" aria-label="May 17, 2026 UTC" tabindex="0">1778976000</time></p>
+          <h2><a href="#harness-engineering-fowler">Harness Engineering (Martin Fowler)</a><a class="raw-link" href="https://blog.hackspree.com/raw/harness-engineering-fowler.md" title="Raw markdown source" aria-label="Raw markdown source of Harness Engineering (Martin Fowler)" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Reflection and practical takeaways from Martin Fowler&#39;s &#39;Harness Engineering&#39; — designing feedforward/feedback controls and harness templates to govern coding agents.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">synthesis</span><span class="tag">martin-fowler</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+Martin Fowler's essay &quot;Harness Engineering&quot; reframes the problem of trustworthy coding agents as a control-engineering task: the harness is the set of guides and sensors that steer, test, and correct agent behavior so humans can rely on the outputs.</p>
+<p>This post summarizes the article and extracts practical recommendations teams can start applying today.</p>
+<p>Key idea: harness = guides + sensors</p>
+<ul>
+<li>Guides (feedforward controls) shape agent behavior before it acts: clear instructions, bootstrapping docs, templates, and computational tooling that bias the agent toward desirable outputs.</li>
+<li>Sensors (feedback controls) observe results and enable self-correction: linters, tests, static analysis, and higher-level inferential judges (AI reviewers) that can produce signals optimized for the agent.</li>
+</ul>
+<p>Computational vs inferential</p>
+<ul>
+<li>Computational controls are deterministic and fast (linters, unit tests, static analysis). They are cheap enough to run on every change and give reliable results.</li>
+<li>Inferential controls are semantic, non-deterministic, and more expensive (LLM-based code review, AI judges). They add richness and can catch problems that structural checks miss, but they should be used judiciously.</li>
+</ul>
+<p>Steering loop and timing</p>
+<p>Fowler emphasizes the human role: the team must &quot;steer&quot; the harness by iterating on guides and sensors whenever recurring failures are observed. A practical cadence is:</p>
+<ul>
+<li>Shift cheap, computational checks as far left as possible (pre-commit, IDE/LSP, early CI).</li>
+<li>Run heavier inferential sensors in integration or post-merge pipelines.</li>
+<li>Use continuous drift detection (coverage, dependency analyses, runtime SLO sampling) outside the commit lifecycle to surface gradual regressions.</li>
+</ul>
+<p>Three regulation categories</p>
+<p>Fowler proposes thinking of harness objectives in three orthogonal dimensions:</p>
+<ul>
+<li>Maintainability harness — tools that regulate code quality and internal consistency (duplicate code, complexity, coverage).</li>
+<li>Architecture fitness harness — fitness functions and structural checks that enforce architectural constraints and observable patterns.</li>
+<li>Behaviour harness — the hardest: verifying that the system functionally does what users need; often needs a mix of tests, approved fixtures, and human checks.</li>
+</ul>
+<p>Harnessability and templates</p>
+<p>Not every codebase is equally easy to harness. Greenfield projects can bake harnessability in (types, clear module boundaries); legacy codebases may need incremental investments. To scale effort, organizations can capture common topologies as harness templates — bundles of guides and sensors tailored to a topology — while being mindful of version drift and maintenance costs.</p>
+<p>Role of humans</p>
+<p>Humans bring tacit knowledge, social accountability, and judgement that agents lack. Harnesses are partly an attempt to externalize that experience; they should therefore aim to reduce repetitive oversight while leaving nuanced judgement where people add the most value.</p>
+<p>Practical checklist</p>
+<ul>
+<li>Start with computational feedforward controls: LSPs, linters, and targeted pre-commit hooks.</li>
+<li>Add fast feedback: unit tests, structural tests, policy linters that run in CI.</li>
+<li>Design inferential sensors only where they measurably reduce supervision cost; run them at lower frequency or post-merge.</li>
+<li>Prioritize harness cases that map to production failures — convert incidents into permanent harness cases.</li>
+<li>Instrument for replay and for agent-friendly error messages so sensors can be used as correction signals.</li>
+<li>Monitor continuous drift and add sensors that surface slowly accumulating problems.</li>
+</ul>
+<p>Conclusion</p>
+<p>Fowler's framework makes the abstract idea of &quot;a harness&quot; actionable: treat it as a system of guides and sensors that you iteratively improve, and prefer cheap deterministic controls left in the pipeline while layering inferential checks where they add value. Harness engineering is not a one-off project; it's an ongoing practice that makes coding agents a practical part of the engineering workflow.</p>
+<p>References</p>
+<ul>
+<li>Martin Fowler, &quot;Harness Engineering&quot; — <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/articles/harness-engineering.html">https://martinfowler.com/articles/harness-engineering.html</a></li>
+</ul>
+<p>Engineering is the application of knowledge to solve problems within constraints. The constraint here is the central fact. Understanding the constraint is understanding the problem. The solution follows from the constraint. This is the engineering method: name the constraint, design within it, verify the design works.</p>
+<blockquote>
+<p>A harness is not a tool. It is a contract. The contract specifies what the agent can do and how its performance will be measured. The contract is the interface. The interface is the engineering.</p>
+</blockquote>
 </div>
       </article>
       <article class="post" id="startups-obsession-as-an-engine">
@@ -18858,6 +19123,190 @@ type Logger interface {
 </blockquote>
 </div>
       </article>
+      <article class="post" id="good-harnesses-watch-the-whole-operating-system">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/good-harnesses-watch-the-whole-operating-system/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-05-03" data-utc="May 03, 2026 UTC" aria-label="May 03, 2026 UTC" tabindex="0">1777766400</time></p>
+          <h2><a href="#good-harnesses-watch-the-whole-operating-system">Harnesses Should Observe the OS</a><a class="raw-link" href="https://blog.hackspree.com/raw/good-harnesses-watch-the-whole-operating-system.md" title="Raw markdown source" aria-label="Raw markdown source of Harnesses Should Observe the OS" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Desktop and multimodal agents need execution harnesses that see the same operating system complexity the user sees.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">osworld</span><span class="tag">multimodal</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+The right environment can make an average agent look impressive or make a strong agent fail honestly.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2404.07972">OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments</a> is valuable because it evaluates agents in real desktop settings rather than collapsing everything into a synthetic task wrapper.</p>
+<p>That is the bar harness engineers should aim for. If your agent acts inside an operating system, your evaluation should capture:</p>
+<ul>
+<li>window state,</li>
+<li>clipboard and file effects,</li>
+<li>long action sequences,</li>
+<li>recovery after mistakes.</li>
+</ul>
+<p>The more your harness reflects the real environment, the less likely you are to ship a demo that falls apart the moment a user clicks somewhere unexpected.</p>
+<h2 id="the-operating-system-is-part-of-the-task">The operating system is part of the task</h2>
+<p>Desktop and multimodal agents do not act in a vacuum. They act in an environment with windows, focus changes, files, delays, and all the messy state that ordinary users barely notice until something goes wrong.</p>
+<p>A harness that trims that away may be easier to manage, but it also stops measuring the thing the user will actually experience.</p>
+<h2 id="state-is-where-many-failures-hide">State is where many failures hide</h2>
+<p>Operating system tasks are difficult partly because the agent has to maintain awareness across a longer chain of effects. A single wrong click can change focus. A clipboard action can overwrite an assumption. A file operation can succeed but still leave the system in the wrong place for the next step.</p>
+<p>That is why it helps to capture the broader environment, not just the final answer.</p>
+<h2 id="honest-environments-create-honest-confidence">Honest environments create honest confidence</h2>
+<p>OSWorld is useful because it pushes evaluation toward the real surface area of desktop interaction. The lesson is not that every harness must copy the benchmark exactly. The lesson is that environment fidelity matters.</p>
+<p>If the product is supposed to work across the operating system, the harness should watch the operating system too. Otherwise the team risks learning the wrong lesson from a passing score.</p>
+<p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
+<blockquote>
+<p>A task that does not resist teaches the agent that resistance does not exist. The real world resists. The agent must learn to overcome resistance. The resistance is the teacher.</p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="agent-harnesses-need-tasks-that-fight-back">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/agent-harnesses-need-tasks-that-fight-back/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-27" data-utc="Apr 27, 2026 UTC" aria-label="Apr 27, 2026 UTC" tabindex="0">1777248000</time></p>
+          <h2><a href="#agent-harnesses-need-tasks-that-fight-back">Harnesses Need Tasks That Fight Back</a><a class="raw-link" href="https://blog.hackspree.com/raw/agent-harnesses-need-tasks-that-fight-back.md" title="Raw markdown source" aria-label="Raw markdown source of Harnesses Need Tasks That Fight Back" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Strong assistants are easier to trust when they are tested on tasks that require tools, retrieval, and real-world messiness.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">gaia</span><span class="tag">evaluation</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> is useful because it resists the temptation to make evaluation too neat. It mixes reasoning, tool use, information gathering, and multimodal work in a way that feels closer to assistant reality.</p>
+<p>That is a good model for internal harnesses too.</p>
+<p>The harness should ask the system to do tasks that are:</p>
+<ul>
+<li>small enough to score,</li>
+<li>rich enough to require multiple steps,</li>
+<li>messy enough that shortcuts stop working.</li>
+</ul>
+<p>If every test can be passed by pattern-matching the prompt, you are not measuring an assistant. You are measuring prompt luck.</p>
+<h2 id="good-tasks-create-resistance">Good tasks create resistance</h2>
+<p>A useful harness case should push back a little. It should require the system to gather information, make a choice, and survive the possibility that the first path is wrong. Without that resistance, it becomes too easy for a model to look capable by sounding capable.</p>
+<p>This is what I like about GAIA as a reference point. It treats assistant work as something broader than isolated reasoning. The assistant has to operate, not just answer.</p>
+<h2 id="multi-step-work-is-the-real-surface-area">Multi-step work is the real surface area</h2>
+<p>Most assistants become interesting only when they need to combine several behaviors:</p>
+<ul>
+<li>retrieve something,</li>
+<li>use a tool,</li>
+<li>inspect intermediate state,</li>
+<li>finish with a verifiable answer.</li>
+</ul>
+<p>A harness that removes those transitions removes a big portion of the actual risk. Many failures live in the handoffs between steps, not in any single step on its own.</p>
+<h2 id="score-what-matters">Score what matters</h2>
+<p>The trick is to keep tasks hard enough to be honest without making them impossible to grade. That usually means designing cases with clear evidence of success while preserving enough messiness that shortcuts stop working.</p>
+<p>That balance is worth the effort. If the tasks fight back a little, the results are much more believable. And believable results are what let teams trust an assistant enough to give it more room to work.</p>
+<p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
+<blockquote>
+<p>A task that does not resist teaches the agent that resistance does not exist. The real world resists. The agent must learn to overcome resistance. The resistance is the teacher.</p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="harnesses-need-real-browsers-not-polite-demos">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/harnesses-need-real-browsers-not-polite-demos/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-19" data-utc="Apr 19, 2026 UTC" aria-label="Apr 19, 2026 UTC" tabindex="0">1776556800</time></p>
+          <h2><a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses Need Real Browsers</a><a class="raw-link" href="https://blog.hackspree.com/raw/harnesses-need-real-browsers-not-polite-demos.md" title="Raw markdown source" aria-label="Raw markdown source of Harnesses Need Real Browsers" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Web agent evaluation gets more useful when the harness runs against real pages, real interaction flows, and explicit pass-fail criteria.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">agents</span><span class="tag">browser</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+If an agent claims it can use the web, the harness should make it prove it on the web.</p>
+<p>That is why <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2401.13919">WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models</a> matters. The paper pushes evaluation into realistic browser tasks instead of stopping at tidy prompt-response examples.</p>
+<p>The harness lesson is straightforward:</p>
+<ul>
+<li>use real interfaces,</li>
+<li>preserve the messy interaction sequence,</li>
+<li>score outcomes with concrete checks.</li>
+</ul>
+<p>A fake DOM or hand-picked screenshot can still be useful for unit tests, but it should not be the final word on whether a browser agent actually works.</p>
+<h2 id="browser-work-is-interaction-work">Browser work is interaction work</h2>
+<p>Web tasks are not only about extracting the right answer from a page. They involve navigation, state, timing, and the strange little contingencies that happen when an interface is built for humans rather than benchmarks.</p>
+<p>That is why polite demos can be misleading. A perfectly staged page or a frozen snapshot removes most of the difficulty that makes browser use interesting in the first place.</p>
+<h2 id="real-pages-expose-real-weaknesses">Real pages expose real weaknesses</h2>
+<p>Once the harness runs against real interfaces, all the inconvenient details return:</p>
+<ul>
+<li>buttons move,</li>
+<li>forms span multiple steps,</li>
+<li>state has to persist across actions,</li>
+<li>success depends on the whole sequence, not one isolated click.</li>
+</ul>
+<p>Those details are not noise. They are the task.</p>
+<h2 id="keep-simpler-fixtures-but-do-not-stop-there">Keep simpler fixtures, but do not stop there</h2>
+<p>There is still room for lightweight browser fixtures. They help with unit tests and targeted debugging. But a serious claim about browser competence should survive a more honest environment.</p>
+<p>That is why work like WebVoyager is useful. It reminds teams that if a product pitch includes autonomous web interaction, the evaluation should include actual web interaction. Otherwise the harness is grading presentation quality, not browser ability.</p>
+<p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
+<blockquote>
+<p>The browser is not just a rendering engine. It is the user's window into the application. An agent that cannot see what the user sees cannot build what the user needs.</p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="coding-agent-harnesses-need-real-repositories">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/coding-agent-harnesses-need-real-repositories/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-04-11" data-utc="Apr 11, 2026 UTC" aria-label="Apr 11, 2026 UTC" tabindex="0">1775865600</time></p>
+          <h2><a href="#coding-agent-harnesses-need-real-repositories">Coding Harnesses Need Real Repos</a><a class="raw-link" href="https://blog.hackspree.com/raw/coding-agent-harnesses-need-real-repositories.md" title="Raw markdown source" aria-label="Raw markdown source of Coding Harnesses Need Real Repos" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Coding-agent quality becomes measurable when the harness uses actual repos, issues, and test outcomes instead of idealized toy prompts.</p>
+          <div class="tags"><span class="tag">harness</span><span class="tag">coding-agents</span><span class="tag">swe-bench</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> changed the conversation because it moved coding evaluation closer to the work people actually do: read a real issue, edit a real repo, and satisfy a real test suite.</p>
+<p>That is also the right pattern for harness design inside product teams.</p>
+<p>A credible coding harness should prefer:</p>
+<ul>
+<li>messy repositories over perfect examples,</li>
+<li>failing tests over vague grading,</li>
+<li>issue-driven tasks over isolated snippets.</li>
+</ul>
+<p>If the agent only looks good in a clean-room benchmark, the harness is flattering the system instead of measuring it.</p>
+<h2 id="real-repositories-force-real-tradeoffs">Real repositories force real tradeoffs</h2>
+<p>Toy prompts are attractive because they are easy to score and easy to explain. They are also easy to overfit. A coding agent can look competent when the entire task fits neatly inside a paragraph and a single file.</p>
+<p>Real repositories are different. They introduce layout confusion, hidden assumptions, partial context, and tests that fail for reasons the agent has to discover. That is much closer to the work engineers actually delegate.</p>
+<h2 id="why-issue-driven-evaluation-matters">Why issue-driven evaluation matters</h2>
+<p>The issue format is valuable because it mirrors a normal entry point for engineering work. A task begins with an imperfect description, not with a fully specified solution path. The agent has to read, inspect, and decide what matters.</p>
+<p>That is the sort of friction a harness should preserve. It reveals whether the system can navigate ambiguity without immediately collapsing into guesswork.</p>
+<h2 id="tests-are-better-than-vibes">Tests are better than vibes</h2>
+<p>A strong coding harness needs explicit outcomes, and failing tests are one of the cleanest ways to get them. They are not perfect, but they are far better than a human observer deciding whether an output felt plausible.</p>
+<p>The broader lesson from SWE-bench is not only about benchmarking. It is about honesty. If you want to know whether a coding agent can help on real work, give it real repositories and real consequences. Everything else is too easy to stage-manage.</p>
+<p>Harness engineering is infrastructure engineering. The harness is the environment in which the agent operates. Designing a harness means deciding what the agent can see, what it can do, and how its actions are evaluated. The same design problem appears in any sandbox: the browser sandbox for JavaScript, the container sandbox for microservices, the test sandbox for CI/CD. The harness is the interface between the agent and the world. The interface determines what the agent can learn. The design of the interface is an engineering decision with consequences for everything the agent does downstream.</p>
+<blockquote>
+<p>A toy repository teaches an agent to solve toy problems. A real repository teaches an agent to navigate complexity. The complexity is the lesson. The toy is a distraction.</p>
+</blockquote>
+</div>
+      </article>
+      <article class="post" id="go-is-good-for-harness-pipelines">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/go-is-good-for-harness-pipelines/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-03-24" data-utc="Mar 24, 2026 UTC" aria-label="Mar 24, 2026 UTC" tabindex="0">1774310400</time></p>
+          <h2><a href="#go-is-good-for-harness-pipelines">Harness Engineering: Go for Reliable Pipelines</a><a class="raw-link" href="https://blog.hackspree.com/raw/go-is-good-for-harness-pipelines.md" title="Raw markdown source" aria-label="Raw markdown source of Harness Engineering: Go for Reliable Pipelines" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Harness engineering is fundamentally about building repeatable, trustworthy evaluation pipelines that can scale with complexity. This post explores why Go is a practical choice for these systems, focusing on its strengths in concurrency, static binaries, and predictable tooling. We discuss common failure modes in harnesses, the operational requirements for robust evaluation, and how Go’s simplicity helps teams avoid clever but fragile solutions. Readers will gain a clear understanding of how language and tooling choices impact the reliability and maintainability of evaluation infrastructure, with actionable insights for designing harnesses that scale.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">harness</span><span class="tag">evaluation</span>
+          </div>
+        </header>
+        <div class="post-body"><p>This post has been consolidated into <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>. See that canonical post for the full, merged guidance.
+Harness engineering is often less about model math and more about repeatable pipelines.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.06770">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a> and <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2311.12983">GAIA: a benchmark for General AI Assistants</a> both reinforce the same operational point: serious evaluation requires a lot of plumbing around the model.</p>
+<p>That plumbing usually includes:</p>
+<ul>
+<li>work queues,</li>
+<li>sandbox orchestration,</li>
+<li>artifact capture,</li>
+<li>metric aggregation,</li>
+<li>reproducible CLI entrypoints.</li>
+</ul>
+<p>Go is not the only way to build those pieces, but it is a very good way to keep them understandable. For harness code, that matters more than cleverness.</p>
+<h2 id="harnesses-fail-in-ordinary-ways">Harnesses fail in ordinary ways</h2>
+<p>People sometimes talk about evaluation as if the hard part is inventing the benchmark. In practice, a lot of pain comes from less glamorous problems: task runners that wedge, artifact paths that drift, workers that become hard to reason about, and support scripts that only one engineer wants to touch.</p>
+<p>That is why the language and tooling choice for the harness actually matters. The harness is the thing telling you whether the model improved. It should not be the least trustworthy part of the stack.</p>
+<h2 id="why-go-works-well-here">Why Go works well here</h2>
+<p>Go tends to be a good fit for harness pipelines because it handles routine infrastructure cleanly:</p>
+<ul>
+<li>concurrent workers without a lot of ceremony,</li>
+<li>static binaries that are easy to ship into controlled environments,</li>
+<li>predictable CLIs for repeatable runs,</li>
+<li>code that stays readable when the pipeline grows new branches.</li>
+</ul>
+<p>That does not make Go magical. It just makes it a practical tool for a class of problems where operational clarity pays off.</p>
+<p>Papers like SWE-bench and GAIA make the case that evaluation should get closer to real tasks. Once you accept that, you also accept more harness complexity. My bias is to meet that complexity with boring tools and explicit pipelines, not with a pile of clever glue code that becomes its own benchmark failure.</p>
+<p>This is engineering at the systems level: choosing the right tool for the constraint. The constraint determines the architecture. The architecture determines the language choice. The language choice determines the ecosystem. The chain of dependencies runs from the resource budget (compute, memory, latency) through the system design to the implementation language. The engineer who traces the chain makes principled choices. The engineer who doesn't inherits choices made by others for different constraints.</p>
+<blockquote>
+<p>A harness is not a test suite. It is an environment. The environment determines what the agent can learn. Design the environment poorly, and the agent learns the wrong lessons. Design it well, and the agent teaches itself.</p>
+</blockquote>
+</div>
+      </article>
       <article class="post" id="why-go-still-matters-in-the-ai-era">
         <link rel="canonical" href="https://blog.hackspree.com/entries/why-go-still-matters-in-the-ai-era/">
         <header class="post-header">
@@ -19311,10 +19760,14 @@ type Logger interface {
               <a href="#always-on-agents">Always-on agents: state, memory, and the governance gap</a>
               <a href="#academics-without-integrity-shame">Academics without academic integrity: shame on you</a>
               <a href="#ai-sovereignty-or-ai-colony">AI sovereignty or AI colony: why domestic capability matters</a>
+              <a href="#agent-governance-toolkit">Agent Governance Toolkit: deterministic, auditable governance for agent fleets</a>
               <a href="#how-to-build-self-improving-companies-and-internal-ai-agents-yc-talks">How to build self-improving companies and internal AI agents (YC talks)</a>
+              <a href="#self-improving-agent-workflows-sep-opendev-and-the-agent-harness-design-space">Self‑Improving Agent Workflows: SEP, OpenDev, and the Agent Harness Design Space</a>
               <a href="#harness-engineering-best-practices-for-ai-agents">Harness Engineering: Best Practices for Reliable Agent Systems</a>
               <a href="#process-mining-with-python-and-solving-real-world-data-science-tasks">Process Mining with Python and Solving Real‑World Data Science Tasks</a>
               <a href="#plano-brasileiro-de-intelig-ncia-artificial-pbia-resumo-e-reflex-es">Plano Brasileiro de Inteligência Artificial (PBIA): resumo e reflexões</a>
+              <a href="#task-harness-engineering">Task Harness Engineering: how it compares to Eval and Agent Harnesses</a>
+              <a href="#harness-engineering-fowler">Harness Engineering (Martin Fowler)</a>
               <a href="#startups-obsession-as-an-engine">Startups: Obsession as an engine</a>
               <a href="#startup-lessons-the-two-task-rule">The Two-Task Rule</a>
               <a href="#platform-engineering-scale-vs-speed">Platform Engineering: Scale vs Speed</a>
@@ -19329,6 +19782,11 @@ type Logger interface {
               <a href="#codebases-in-the-era-of-agentic-software-engineering">Agentic Engineering: Codebase Contracts and Skills</a>
               <a href="#the-agentic-era-is-an-economic-system">Agentic Era: An Economic System</a>
               <a href="#why-i-focused-my-research-on-swe-agent-economics">SWE-Agent Economics: My Focus</a>
+              <a href="#good-harnesses-watch-the-whole-operating-system">Harnesses Should Observe the OS</a>
+              <a href="#agent-harnesses-need-tasks-that-fight-back">Harnesses Need Tasks That Fight Back</a>
+              <a href="#harnesses-need-real-browsers-not-polite-demos">Harnesses Need Real Browsers</a>
+              <a href="#coding-agent-harnesses-need-real-repositories">Coding Harnesses Need Real Repos</a>
+              <a href="#go-is-good-for-harness-pipelines">Harness Engineering: Go for Reliable Pipelines</a>
               <a href="#why-go-still-matters-in-the-ai-era">Why Go Still Matters in AI</a>
               <a href="#go-fits-the-control-plane-of-mobile-llm-products">Go for Mobile LLM Control Planes</a>
               <a href="#go-is-a-natural-control-plane-for-disaggregated-serving">Go for Disaggregated Serving</a>

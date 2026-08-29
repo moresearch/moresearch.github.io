@@ -1455,6 +1455,245 @@
 <p>Temporal (<a target="_blank" rel="noopener noreferrer" href="https://docs.temporal.io/">docs</a>); Lilian Weng, LLM Powered Autonomous Agents (<a target="_blank" rel="noopener noreferrer" href="https://lilianweng.github.io/posts/2023-06-23-agent/">post</a>); LangGraph memory (<a target="_blank" rel="noopener noreferrer" href="https://docs.langchain.com/oss/python/langgraph/memory">docs</a>); archive: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons series</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">always-on agents</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#spatiotemporal-composability">spatiotemporal composability</a>.</p>
 </div>
       </article>
+      <article class="post" id="cloudflare-dns-cache-memory">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/cloudflare-dns-cache-memory/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-29" data-utc="Aug 29, 2026 UTC" aria-label="Aug 29, 2026 UTC" tabindex="0">1787961600</time></p>
+          <h2><a href="#cloudflare-dns-cache-memory">953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache</a><a class="raw-link" href="https://blog.hackspree.com/raw/cloudflare-dns-cache-memory.md" title="Raw markdown source" aria-label="Raw markdown source of 953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line.</p>
+          <div class="tags"><span class="tag">cloudflare</span><span class="tag">dns</span><span class="tag">rust</span><span class="tag">memory</span><span class="tag">cache</span><span class="tag">systems-design</span><span class="tag">performance</span><span class="tag">1.1.1.1</span><span class="tag">jemalloc</span><span class="tag">big-pineapple</span>
+          </div>
+        </header>
+        <div class="post-body"><h2 id="the-arithmetic-of-250-billion-entries">The arithmetic of 250 billion entries</h2>
+<p>DNS caching is a memory business, and the volumes are so large that the smallest inefficiency becomes a line item. <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/big-pineapple-intro/">Big Pineapple</a>, the Rust platform behind <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/the-as112-project/">1.1.1.1</a> — plus Gateway DNS, DNS Firewall, and AS112 — stores <strong>over 250 billion cache entries at any given time</strong>. Cloudflare's own math: wasting a single byte per entry costs more than 250 gigabytes across the fleet. Waste one plausible structural inefficiency per entry, and you have a data center.</p>
+<p>Which is exactly what five successive changes just removed. In <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/dns-cache-memory-optimization-1111/">a deep dive by systems engineer Sebastiaan Neuteboom</a> (<a target="_blank" rel="noopener noreferrer" href="https://www.tomshardware.com/tech-industry/big-tech/cloudflare-frees-100tb-of-ram-by-shrinking-dns-cache-entries">Tom's Hardware coverage</a>), each cached entry shrank from <strong>953 bytes to 420 bytes — a 56% reduction</strong> — with no physical RAM added to a single server. Across the fleet that is roughly <strong>100 terabytes of freed memory, equivalent to the DDR5 in 130 of Cloudflare's 768GB Gen 13 servers</strong>. The cache also got <em>faster</em>: insert throughput up 43%, lookup latency down 19%. No reconfiguration of memory modules, no added capacity — a redesign of how each entry is laid out in memory, done one Rust type at a time.</p>
+<p>The timing makes the win sharper than the raw numbers. Server-grade DDR5 prices are <a target="_blank" rel="noopener noreferrer" href="https://www.tomshardware.com/tech-industry/big-tech/cloudflare-frees-100tb-of-ram-by-shrinking-dns-cache-entries">on track to double year over year</a> — the 100TB Cloudflare reclaimed is the memory it did <em>not</em> have to buy at the top of a price spike.</p>
+<h2 id="what-a-cache-entry-actually-is">What a cache entry actually is</h2>
+<p>Every cache item is a key-value pair. The key identifies what was queried:</p>
+<pre><code class="language-rust">pub struct CacheKey {
+    qname: Name,          // the domain being resolved
+    qtype: Rtype,         // A, AAAA, TXT, ...
+    authenticated: bool,  // DNSSEC-validated
+    tag: Vec&lt;u8&gt;,         // per-client-subnet tag
+}
+</code></pre>
+<p>The value holds the DNS response — answer, authority, and additional record sections — plus metadata: creation time, TTL, a hit counter:</p>
+<pre><code class="language-rust">pub struct CacheEntry {
+    timestamp: UnixTimeStamp,
+    inception: Instant,
+    ttl: Ttl,
+    hits: u32,
+    answers: Vec&lt;Record&gt;,
+    authority: Vec&lt;Record&gt;,
+    additional: Vec&lt;Record&gt;,
+    errors: Vec&lt;ExtendedError&gt;,
+    // ...
+}
+</code></pre>
+<p>Nothing about either struct is wrong. Both are idiomatic Rust, and that is precisely the problem: idiomatic Rust is written for a working set of <em>one</em> entry. Big Pineapple holds a quarter of a trillion of them, so every field is multiplied by 250 billion. When EDNS Client Subnet (ECS) is in use, authoritative servers return different answers per client network and the cache holds multiple entries per query — multiplying both entry count and per-entry size, which is why the optimizations hit ECS-heavy data centers hardest.</p>
+<h2 id="change-1--fire-the-capacity-field">Change 1 — Fire the capacity field</h2>
+<p><code>Vec&lt;T&gt;</code> stores three words: a pointer to heap data, a length, and a <strong>capacity</strong>. Capacity exists so a growing vector can append without reallocating. But once a DNS response is stored in the cache, it is never modified again. The capacity field is dead weight — 8 bytes per vector — and the <em>slack</em> capacity reserves is dead weight too: a <code>Vec</code> with capacity for eight records but only five stored leaves three slots of heap memory permanently unused.</p>
+<p>Swapping <code>Vec&lt;T&gt;</code> for <code>Box&lt;[T]&gt;</code> and <code>String</code> for <code>Box&lt;str&gt;</code> removes both. A boxed slice can't grow, so it has no capacity field and reserves nothing beyond its exact contents. Each cache entry stores eight <code>Vec</code>/<code>String</code> fields; replacing them saves 8 bytes per field, 64 bytes per entry, plus the over-allocated heap. At 250 billion entries that single mechanical change is worth <strong>over 15 terabytes</strong>.</p>
+<h2 id="change-2--fewer-lists-fewer-pointers">Change 2 — Fewer lists, fewer pointers</h2>
+<p>The answer, authority, and additional sections were three separate boxed slices — six words of pointers and lengths per entry. DNS record counts per section fit in a <code>u16</code>, so Cloudflare stored one contiguous list plus <strong>2-byte offsets</strong> to each section's start. Two 8-byte pointer/length pairs become two 2-byte offsets: 28 bytes saved per entry.</p>
+<p>This is where the post's most subtle point appears: memory savings don't always map to the bytes you deleted. Rust pads structs to alignment and rounds sizes up. Several booleans were packed into a single bitflag — and shrinking the field count eliminated surrounding padding, so the struct shrank by <em>more</em> than the booleans were worth. When your unit of account is 250 billion copies, padding is not decoration; it is a tax with a compounding multiplier.</p>
+<h2 id="change-3--drop-the-owner">Change 3 — Drop the owner</h2>
+<p>Every DNS record carries an <em>owner</em> — the domain the record belongs to. And in the overwhelmingly common case, the owner is identical to the domain that was queried. A query for <code>example.com A</code> returns two records, both owned by <code>example.com</code>. Only in chains — <code>example.com → CNAME cdn.example.com → A records</code> — do owners diverge.</p>
+<p>On the wire, DNS handles repeated owners with RFC 1035 name compression: a 2-byte pointer back to a previously-encoded name, so <code>www.example.com</code> encodes <code>www</code> plus a pointer to where <code>example.com</code> already appears. Cloudflare deliberately does <em>not</em> follow compression pointers in cache memory — doing so on the hot path is too expensive — but storing full owners for every record is waste. So the owner became optional:</p>
+<pre><code class="language-rust">pub struct Record {
+    owner: Option&lt;Box&lt;Name&gt;&gt;, // None: owner == queried domain, inferred at read time
+    class: Class,
+    ttl: Ttl,
+    rtype: Rtype,
+    data: RecordData,
+}
+</code></pre>
+<p>When <code>owner</code> is <code>None</code>, response construction restores the queried domain from the cache key — already in hand on every lookup — and avoids a heap allocation entirely. When it differs (the CNAME case), <code>Some</code> keeps a pointer to the full name. In practice the majority of cached records need no allocation for the owner at all.</p>
+<h2 id="change-4--size-the-enum-box-the-outliers">Change 4 — Size the enum, box the outliers</h2>
+<p>Rust enums are sum types: the enum is always the size of its <em>largest</em> variant, plus a tag. For record data, the natural design stores each DNS record type as a variant — and the natural design is catastrophically wasteful:</p>
+<pre><code class="language-rust">pub enum RecordData {
+    A(Ipv4Addr),      // 4 bytes
+    Aaaa(Ipv6Addr),   // 16 bytes
+    Txt(Txt),
+    Naptr(Naptr),     // 136 bytes — sets the enum size
+    Svcb(Svcb),
+    // ...
+}
+</code></pre>
+<p>NAPTR carries three variable-length text fields, a domain name, and two integers: 136 bytes of payload, 144 bytes once tag and padding are counted. Every <code>A</code> record — 4 bytes of actual data — occupies that same 144-byte slot. <code>A</code> and <code>AAAA</code> are over <strong>80% of traffic</strong>, so the typical cached record wastes 120+ bytes on padding. This is the single biggest line item in the whole exercise, and the fix is a classic space/time trade:</p>
+<pre><code class="language-rust">pub enum RecordData {
+    // Small and common variants stored inline
+    A(Ipv4Addr),
+    Aaaa(Ipv6Addr),
+    // Large variants moved to the heap
+    Txt(Box&lt;Txt&gt;),
+    Naptr(Box&lt;Naptr&gt;),
+    Svcb(Box&lt;Svcb&gt;),
+}
+</code></pre>
+<p>The enum shrinks to 24 bytes; <code>A</code> and <code>AAAA</code> are inline, saving 120 bytes per record. Smaller types like TXT still occupy the 24-byte enum but their heap allocation is sized to their actual data instead of padded to 144. NAPTR itself <em>pays</em> — it now costs a pointer plus allocation overhead — but NAPTR records are rare, so the trade is cheap.</p>
+<p>Boxing has two costs worth naming, because they come back in Change 5. First, <strong>allocator overhead</strong>: each boxed variant is a separate allocation, and allocators round up to size classes. Big Pineapple uses <a target="_blank" rel="noopener noreferrer" href="https://jemalloc.net/">jemalloc</a>, whose fixed-size bins fit a 32-byte TXT request perfectly but round a 40-byte MX request up to 48, wasting 8 bytes. Second, <strong>locality</strong>: boxed data scatters across the heap, so reading a record means following a pointer that may land on a cold cache line. Neither is fatal alone; together they are the reason the next change exists.</p>
+<h2 id="change-5--store-the-wire-format-not-the-parse-tree">Change 5 — Store the wire format, not the parse tree</h2>
+<p>The tempting endpoint — store the entire DNS response as one wire-format message and patch per-client fields like the message ID on lookup — has real problems. DNSSEC records are only included when the client sets the DO flag, so Cloudflare would have to cache two variants of every response or filter an already-built message, and parsing a full message on every lookup costs time the parsed-enum layout avoids.</p>
+<p>The middle ground Cloudflare took: <strong>store just the record data as raw bytes</strong> — a single <code>Box&lt;[u8]&gt;</code> where each record is a 2-byte length prefix followed by its encoded bytes — while the rest of the entry stays structured. This eliminates the per-variant enum overhead <em>and</em> the boxed heap allocations from Change 4 in one move. All record data sits in one contiguous allocation, so locality improves instead of degrading. And response construction gets cheaper: most record types — A, AAAA, TXT, and all DNSSEC types — are <strong>copied byte-for-byte into the outgoing message</strong>, skipping the field-by-field reserialization the parsed representation required. Only records containing domain names (CNAME, NS, MX, SOA) still need parsing, for name compression. Since directly-copyable records are the vast majority of traffic, this change alone cut lookup latency 5% in benchmarks and raised insert throughput 13%.</p>
+<p>The implementation detail that makes it affordable is a reusable <strong>scratchspace buffer</strong> that persists across insertions: records are serialized into it, then one <code>Box&lt;[u8]&gt;</code> is allocated and filled with a <code>memcpy</code>. That replaces N per-record allocations with a single one and avoids the allocator's inability to reclaim the unused tail when shrinking a <code>Vec&lt;u8&gt;</code>. The cost of the design is that records can no longer be randomly indexed — iteration through the buffer is sequential — which complicates round-robin rotation of A/AAAA records. With one to four records per entry, the price is negligible.</p>
+<h2 id="the-scoreboard">The scoreboard</h2>
+<p>The benchmark (56% A, 25% AAAA, 19% TXT, one to four records per entry) tells the whole story:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-entry net footprint</td>
+<td>953 bytes</td>
+<td>420 bytes</td>
+<td>−56%</td>
+</tr>
+<tr>
+<td>Per-entry allocations</td>
+<td>1.1 KB</td>
+<td>461 bytes</td>
+<td>−58%</td>
+</tr>
+<tr>
+<td>Cache insert throughput</td>
+<td>625,000 entries/s</td>
+<td>893,000 entries/s</td>
+<td>+43%</td>
+</tr>
+<tr>
+<td>Cache lookup latency</td>
+<td>828 ns</td>
+<td>670 ns</td>
+<td>−19%</td>
+</tr>
+</tbody>
+</table>
+<p>Production numbers land close, with the rollout stepping across releases from May 18 to July 6, 2026: p99 resident memory fell from 9.3 GB to 5.3 GB per instance (−43%), p90 from 6.5 GB to 3.8 GB (−42%), and the aggregate working set settled roughly 100 terabytes lower. The planned reinvestment is the quiet best part: the freed memory goes back into <strong>cache capacity</strong>, raising hit rates and cutting upstream query volume — the same memory pays a second dividend.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>Four lessons, in increasing order of importance.</p>
+<p><strong>Memory is a capex line now.</strong> When DDR5 prices double year over year, the decision &quot;buy more RAM vs. waste less of it&quot; tilts hard. Cloudflare's answer was not a hardware purchase order but five releases of type-level discipline, delivered on a platform already holding a quarter trillion entries. The cost of the project was engineering; the avoided cost was a server generation's worth of DDR5.</p>
+<p><strong>Type design is memory design.</strong> Every one of the five changes is a Rust semantics fact applied at scale: <code>Vec</code> carries capacity for growth you never use; enums are sized by their largest variant; structs are padded to alignment; ownership is a pointer you can sometimes drop. These are the features that make Rust safe and ergonomic — and each one is overhead you stop paying the moment data becomes immutable at rest. Cache entries are never mutated after insert, which turns out to be a license to strip every field that existed only to support mutation.</p>
+<p><strong>Layout beats cleverness.</strong> Nothing here is algorithmic. No new data structure, no eviction breakthrough, no distributed trick. The win is the unglamorous work of removing overhead: capacity fields, redundant lists, duplicated owners, enum padding, scattered allocations. The compounding insight is the multiplier — 250 billion entries turns &quot;a few bytes&quot; into &quot;a data center.&quot;</p>
+<p><strong>Every win has a tax, and the taxes interact.</strong> Boxing bought space and cost locality; the wire-format layout bought back the locality and cost random access; dropping owners bought space and cost self-containedness (the cache key must be in hand on every lookup). The discipline that makes it all work is measurement — a custom allocator wrapper tracking the number and size of allocations per entry, alongside insert/lookup benchmarks — followed by staged rollout. The same economic lens this blog applies to tokens applies to bytes: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every unit has a price tag</a>, and at fleet scale the unit count makes the price.</p>
+<p>The larger lesson is the one Cloudflare's engineers would probably insist on: the 100TB was never going to come from a single heroic optimization. It came from five boring ones, each individually worth terabytes because each one multiplied a small saving by 250 billion. Optimize the layout, not the algorithm — and when you find yourself saving a byte per entry, remember what the next byte is worth.</p>
+</div>
+      </article>
+      <article class="post" id="stories-from-events">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/stories-from-events/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-29" data-utc="Aug 29, 2026 UTC" aria-label="Aug 29, 2026 UTC" tabindex="0">1787961600</time></p>
+          <h2><a href="#stories-from-events">Make Stories from Events: Why Event-Sourced Systems Need a Narrative Layer</a><a class="raw-link" href="https://blog.hackspree.com/raw/stories-from-events.md" title="Raw markdown source" aria-label="Raw markdown source of Make Stories from Events: Why Event-Sourced Systems Need a Narrative Layer" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">The brain does not experience reality raw — it segments it into scenes, edits it into stories, and matches those stories against a library of familiar scripts. Event-sourced systems keep only the raw footage. This post argues for projecting a story layer over the event log, and for comparing stories to stories instead of events to events.</p>
+          <div class="tags"><span class="tag">event-sourcing</span><span class="tag">cognitive-science</span><span class="tag">story-abstraction</span><span class="tag">cqrs</span><span class="tag">sagas</span><span class="tag">similarity</span><span class="tag">case-based-reasoning</span>
+          </div>
+        </header>
+        <div class="post-body"><h2 id="the-shapes-and-the-story">The shapes, and the story</h2>
+<p>In 1944, Fritz Heider and Marianne Simmel showed 114 subjects a crude animated film: a small triangle, a big triangle, a small circle, and a rectangle with a doorlike flap, moving against a plain background. Asked what they saw, almost nobody described the physical motion of the shapes. The overwhelming majority &quot;interpreted the picture in terms of actions of animated beings, chiefly of persons.&quot; To some the shapes were a love triangle; to others, a family drama; to still others, an episode of bullying. Nobody was instructed to narrate. The brain could not watch the shapes and <em>not</em> make a story.</p>
+<p>Your event-sourced system is in exactly that position. Its append-only log is a stream of shapes: <code>order.cancelled</code>, <code>payment.failed</code>, <code>email.sent</code> — precise, immutable, timestamped, replayable, true. And like the triangle's coordinates, each event is true and meaningless. Meaning is not stored in the events. It exists only in the story you cut from them. That is why scientists studying the brain's response to movies keep arriving at the same design: the brain does not record experience; it <strong>edits reality into a story</strong>, and it reads new situations by matching them against stories it already knows (<a target="_blank" rel="noopener noreferrer" href="https://www.scientificamerican.com/article/the-brain-doesnt-just-experience-reality-it-edits-it-into-a-story/">Scientific American, &quot;The brain doesn't just experience reality. It edits it into a story&quot;</a>). The systems we build should do the same.</p>
+<h2 id="the-brain-is-a-story-machine">The brain is a story machine</h2>
+<p>The neuroscience here is not metaphor. Over the past decade, researchers put people inside fMRI scanners and decoded their brain activity while they watched movies. Three findings matter for system design.</p>
+<p><strong>Brains synchronize on stories.</strong> In 2004, Uri Hasson's lab scanned five people watching half an hour of <em>The Good, the Bad and the Ugly</em> — the sort of complex, dynamic stimulus that was considered untractable for fMRI (<a target="_blank" rel="noopener noreferrer" href="https://pubmed.ncbi.nlm.nih.gov/15016991/">Hasson et al., <em>Science</em> 303, 2004</a>). All five brains responded <em>synchronously</em> to shifts in scenery, dialogue, and plot, &quot;as if operated by the same neural story-watching program.&quot; A movie drives a shared, predictable structure of neural activity across unrelated people. An event log does the same — if you build the narrative layer to expose it.</p>
+<p><strong>Memory is an edit, not a recording.</strong> In a follow-up study, Janice Chen's group scanned people watching — then recalling — the first episode of <em>Sherlock</em> (<a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1038/nn.4450">Chen et al., <em>Nature Neuroscience</em> 20, 2017</a>). The neural pattern during recall was <em>not</em> the same as during viewing. The differences were systematic and similar across viewers: the brain was editing the footage as it stored it, compressing the episode into its causal shape. What you remember is the cut, not the rushes.</p>
+<p><strong>The brain carves experience into scenes and matches them against scripts.</strong> Christopher Baldassano's re-analysis of the same data showed the brain segmenting the episode into scenes — striking shifts in prefrontal-cortex activity lined up exactly with perceived scene changes. &quot;At a scene change, you recognize, okay, now a new thing is starting.&quot; This is the known psychological phenomenon of <strong>event segmentation</strong>: people draw boundaries at shifts in place, time, or situation, and those segments are &quot;a natural product of the brain.&quot; And the brain does not build these segments from scratch: back in the 1970s, psychologists hypothesized that people hold <em>scripts</em> for familiar situations (the grocery-store run: take a cart, walk the aisles, queue, pay). Baldassano puts the scale on it — &quot;an adult brain holds hundreds of thousands of scripts for expected scenarios, a huge neuronal library of story outlines crafted from experience&quot; — and sums up the operating principle in one sentence: <strong>&quot;Your brain is not built to just record the pixels that are coming in from the screen or from the movie. You are trying to match this into something that you know.&quot;</strong></p>
+<p>One more result, the one that matters most for similarity: in Baldassano's studies, the more faithfully an experience matched a stored script, the more detailed the memory of it. Matching against a known story is not a cheap shortcut — <strong>it is the mechanism of comprehension and retention</strong>. Jesse Andrews, Pixar co-writer of <em>Luca</em>, puts the whole research program into one line: &quot;When we say 'narrative,' all we are really saying is 'simplification.' It's a simplification in the name of understanding.&quot;</p>
+<h2 id="event-sourcing-gives-you-footage-not-a-film">Event sourcing gives you footage, not a film</h2>
+<p>None of this says event sourcing is wrong. Event sourcing is the right decision <em>precisely because</em> it keeps the raw footage: an immutable, replayable, auditable record of everything that happened, in order, with no interpretive damage done on the way in. That is the correct end of the camera.</p>
+<p>But the discipline of storing only facts has a cost: the facts do not interpret themselves. An event log is the unedited rushes — frame-accurate, and without a cut. Consider two events:</p>
+<pre><code class="language-text">2026-08-01 09:14  order.cancelled   order=o-4821  reason=changed-mind
+2026-08-01 09:14  order.cancelled   order=o-4821  reason=changed-mind
+</code></pre>
+<p>Identical payloads, seconds apart, same causal <em>content</em> — but one is a customer wavering and the other is a system double-firing after a retry. The events cannot tell you which is which. The story can: <em>the same story</em> (one episode, one protagonist, one intent) vs <em>two stories colliding</em> (a genuine cancellation racing a replay). This is the Heider–Simmel lesson in production: identical shapes, different stories, and the shapes alone are mute.</p>
+<p>Systems that stop at the log are asking the frames to be the movie. Replay, audit, point queries, outbox delivery — these are frame-level operations, and they are necessary. But they are the <em>cinematographer's</em> operations. The <em>director's</em> operations — What happened to this customer over the quarter? Which run of this process fails, and where in the arc? Which past incidents is this incident like? — are story-level, and no amount of frame-level tooling answers them.</p>
+<h2 id="how-to-cut-the-film-making-stories-from-events">How to cut the film: making stories from events</h2>
+<p>The brain's three mechanisms map cleanly onto three engineering mechanisms, all of them projections over the log:</p>
+<table>
+<thead>
+<tr>
+<th>Brain mechanism (the science)</th>
+<th>Log mechanism (what to build)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event segmentation — scene changes marked by prefrontal shifts</td>
+<td>Correlation and causation ids, saga/process instances, aggregate lifecycles, session boundaries</td>
+</tr>
+<tr>
+<td>Scripts — a library of hundreds of thousands of story outlines</td>
+<td>A story-type taxonomy (archetypes) with typed slots, learned from the log and curated by the domain</td>
+</tr>
+<tr>
+<td>Viewpoint-guided extraction — critic vs wedding planner write different stories from the same restaurant scene</td>
+<td>Keyed story projections: one per viewpoint, or stories with explicit viewpoint labels</td>
+</tr>
+</tbody>
+</table>
+<p>Concretely, a <strong>story</strong> is a bounded, goal-directed episode cut from the event stream: a start trigger, a set of actors, a causal chain of events, an outcome, and a time span. The cutting is a projection — it consumes the log and writes story records, idempotently and replayably, and it can always be rebuilt. The log stays the source of truth; the story store is disposable interpretation.</p>
+<pre><code class="language-go">// Story is the unit of narrative: a bounded, goal-directed episode
+// cut from the event log. It is always a projection — re-derivable
+// from events, never the source of truth.
+type Story struct {
+	ID       string            // correlation id: the scene boundary
+	Type     string            // archetype: &quot;customer-churn&quot;, &quot;order-fulfillment&quot;
+	Actors   []string          // protagonists: aggregate or entity ids
+	Goal     string            // what the episode was trying to do
+	Events   []string          // event ids in causal order: the plot
+	Outcome  string            // success, failure, abandoned
+	Span     [2]time.Time      // scene boundaries, from segmentation
+	Features map[string]float64 // numeric features for story-level similarity
+}
+</code></pre>
+<p>Where do the scene boundaries come from? In order of preference:</p>
+<ol>
+<li><strong>Explicit process boundaries</strong> — the ones already in your log and underused: saga and process-manager instance ids, correlation ids, causation ids, transaction and outbox batch ids. A saga instance <em>is</em> a scene; its id is the prefrontal shift.</li>
+<li><strong>Aggregate boundaries (DDD)</strong> — an aggregate's lifecycle is a minimal story: one protagonist, a coherent goal, a causal chain of state transitions. Aggregate id = protagonist id.</li>
+<li><strong>Implicit segmentation</strong> — for streams with no process marker: state-transition bursts, idle gaps, session boundaries, change-point detection on state and rate. This is the fuzzy end of the spectrum; prefer 1 and 2 wherever the domain gives them to you.</li>
+</ol>
+<p>Each story closes when its causal thread terminates — an outcome event, a timeout, a boundary marker. The reducer is boring in the right way:</p>
+<pre><code class="language-go">// Reduce folds the log into stories, grouping by scene boundary and
+// advancing the plot one event at a time. Deterministic and replayable.
+func Reduce(events []Event) []Story {
+	stories := map[string]*Story{}
+	for _, e := range events {
+		s, ok := stories[e.CorrelationID]
+		if !ok {
+			s = newStory(e) // start trigger: the scene opens
+			stories[e.CorrelationID] = s
+		}
+		s.Events = append(s.Events, e.ID)
+		s.Outcome = advance(s.Outcome, e) // the plot moves, frame by frame
+	}
+	return toSlice(stories)
+}
+</code></pre>
+<p>The story projection is where you are allowed to be lossy — the summary field, the typed slots, the outcome label are the &quot;edit.&quot; The log keeps the pixels; the story keeps the cut.</p>
+<h2 id="why-story-similar-to-story-beats-event-similar-to-event">Why &quot;story similar to story&quot; beats &quot;event similar to event&quot;</h2>
+<p>This is the claim worth arguing carefully, because it inverts a very natural instinct. Most teams building retrieval, dedup, or anomaly detection over event-sourced data start with <strong>event-to-event similarity</strong> — embed the events, or hash them, or cluster them. The argument here is that the level is wrong. Similarity is only meaningful at the level where causality and outcomes live, and that level is the story. Five reasons, in increasing order of importance.</p>
+<p><strong>1. Points cannot be similar to each other; paths can.</strong> An event is a point in time; a story is a path through the state space. Point-level similarity has no access to the path — it sees the type and the payload and nothing else. Two <code>payment.failed</code> events are <em>trivially</em> identical syntactically and <em>causally unrelated</em> semantically; event similarity is the worst of both worlds. Story similarity, by contrast, is structural: it compares arcs, actors, obstacles, and outcomes. It is the difference between saying &quot;two triangles moved the same way&quot; and &quot;these are both the love-triangle story.&quot;</p>
+<p><strong>2. Composition does not commute.</strong> Similarity does not survive the trip down. If events <code>a₁</code> and <code>a₂</code> are similar, and <code>b₁</code> and <code>b₂</code> are similar, nothing follows about the stories <code>a₁→b₁</code> and <code>a₂→b₂</code> — the same-type events can appear in opposite stories (a churn story and a retention story both contain <code>email.sent</code>), and different-type events can instantiate the same archetype (churn via failed renewal, churn via support hell). Event-level indexing gives you a bag of matched facts with no causal thread; story-level structure decomposes into event structure, so it gives you the thread and the facts together.</p>
+<p><strong>3. The brain's own answer: match against what you know.</strong> Baldassano's line is the whole argument: &quot;you are trying to match this into something that you know.&quot; The brain does not compute similarity between pixels; it matches experiences against stored story outlines, and the fidelity of that match is what predicts memory. When you retrieve &quot;a story similar to this story,&quot; you retrieve a <em>template with a causal structure</em> — and a template is actionable: you can predict the next scene, replay the remedy that worked last time, generalize the counterfactual (&quot;this churn story deviates from the archetype at step 3&quot;). That is case-based reasoning, and it is the mechanism the brain runs. Retrieving &quot;an event similar to this event&quot; retrieves a fact with no affordance. A fact does not tell you what comes next; a story does.</p>
+<p><strong>4. Deviation is sequence-level, not point-level.</strong> Anomaly detection over events flags rare events — and rare events are mostly benign noise, while the dangerous event is usually individually ordinary. The signal lives in the <em>arc</em>: &quot;this incident is the standard failure story except the retry storm happens at step 4 instead of never.&quot; You can only say that once you have a story to deviate from. Story-level similarity turns anomaly detection into <em>deviation from archetype</em> — structural, explainable, and precisely the &quot;neural scaffold for a familiar scenario&quot; the brain relies on when it encounters a new-but-similar situation.</p>
+<p><strong>5. Outcomes are story-level, so similarity must be too.</strong> Churn, conversion, incident resolution, SLA breach — every metric you actually care about is an outcome of a story, not an attribute of an event. Similarity for the purpose of prediction, retrieval, or root-cause should live at the level of the thing you are predicting. Indexing at the event level optimizes for a level that has no outcome attached to it; you are comparing frames while the scoreboard lives in the cut.</p>
+<p>There is also a practical, current-LLM reason: retrieval-augmented reasoning over event logs drowns in grain. Stories are the right chunk — dense, causally coherent, few. Feeding an agent ten thousand raw events and asking it to find the similar incident is like asking a human to find the love triangle in the coordinates. Feed it the story records and the match is immediate, because the representation matches the reasoning machinery — the same reason the brain edits memory before storing it.</p>
+<h2 id="where-the-story-layer-can-mislead">Where the story layer can mislead</h2>
+<p>The brain's strategy is not free, and neither is the engineering one. The lossy edit is the point, but it is also the failure mode.</p>
+<ul>
+<li><strong>The narrative fallacy.</strong> A story layer can produce confident, coherent, <em>wrong</em> explanations — the storytelling brain has a documented talent for this (rumination, hindsight bias, false confidence in the edited cut). The defense is structural: <strong>the log is ground truth, the story store is disposable</strong>. Stories must always be re-derivable from events; when a story and the log disagree, the log wins. The moment the story becomes the source of truth, you have turned an append-only audit trail into a mutable interpretation — the exact thing event sourcing exists to prevent.</li>
+<li><strong>Viewpoint decides the story.</strong> The wedding-planner result — subjects given a role remembered a different story from the same restaurant scene — cuts both ways. A projection with no explicit viewpoint smuggles one in silently. Decide the viewpoints you index (customer journey, process health, incident response) and label them.</li>
+<li><strong>Archetypes go stale.</strong> The script library is built from experience and the domain drifts. Story types need the same versioning and deprecation discipline as any schema, or the similarity search quietly starts comparing against obsolete templates.</li>
+<li><strong>Segmentation of boundary-less streams is fuzzy.</strong> Idle-gap and change-point heuristics overfit to noise. Where the domain gives you saga ids, use them; treat implicit segmentation as the last resort, and audit its boundaries.</li>
+</ul>
+<p>The tradeoff to remember is the same one the brain accepts: the edit loses detail and buys comprehension. That is not a bug in your data model — it is the abstraction that makes generalization possible at all.</p>
+<h2 id="simplification-in-the-name-of-understanding">Simplification in the name of understanding</h2>
+<p>Thirty thousand years of cave painting, ten thousand years of oral storytelling, seventy-five years of the Heider–Simmel film, a decade of decoding movie-watching brains — they all converge on one design principle: segment experience into scenes, edit the footage into a story, and match new experience against the stories you already know. Event sourcing gives you the footage — the unedited, immutable truth. That is worth keeping, exactly as it is.</p>
+<p>But the footage is not the film, and the film is where the meaning lives. Cut your log into stories, project them beside it, and compare stories to stories. The brain has spent its entire evolutionary budget proving that is the abstraction at which the world becomes legible.</p>
+</div>
+      </article>
       <article class="post" id="hacker-laws-ase-hyrums-law">
         <link rel="canonical" href="https://blog.hackspree.com/entries/hacker-laws-ase-hyrums-law/">
         <header class="post-header">
@@ -3775,6 +4014,91 @@ func (k Keeper) Swap(ctx sdk.Context, req *types.MsgSwap) (*types.MsgSwapRespons
 </ul>
 </div>
       </article>
+      <article class="post" id="ai-impacts-skill-formation">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/ai-impacts-skill-formation/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-08-03" data-utc="Aug 03, 2026 UTC" aria-label="Aug 03, 2026 UTC" tabindex="0">1785715200</time></p>
+          <h2><a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a><a class="raw-link" href="https://blog.hackspree.com/raw/ai-impacts-skill-formation.md" title="Raw markdown source" aria-label="Raw markdown source of You Don&#39;t Learn What You Delegate" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A pre-registered randomized trial (n=52) of Python programmers learning a new async library found AI assistance cut quiz scores 17% (d=0.74, p=0.01) while saving no significant time. Errors are the curriculum; pasted code is not. Six AI-use personas split the group: delegators scored 24–39%, conceptual inquirers 65–86%. Summary infographic below.</p>
+          <div class="tags"><span class="tag">ai</span><span class="tag">llm</span><span class="tag">skill-formation</span><span class="tag">learning</span><span class="tag">software-engineering</span><span class="tag">randomized-controlled-trial</span><span class="tag">pre-registration</span><span class="tag">cognitive-offloading</span><span class="tag">overreliance</span><span class="tag">trio</span><span class="tag">anthropic</span><span class="tag">empirical-software-engineering</span><span class="tag">human-ai-collaboration</span>
+          </div>
+        </header>
+        <div class="post-body"><p>A rare thing: a <a target="_blank" rel="noopener noreferrer" href="https://osf.io/w49e7">pre-registered randomized controlled trial</a> of how AI assistance changes what workers learn. Shen and Tamkin (Anthropic), <em><a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245v2">How AI Impacts Skill Formation</a></em>. Fifty-two professional and freelance Python programmers were randomized, asked to learn a library they had never used (Trio, an async I/O library), complete two coding tasks, and then take a quiz on what they actually learned. One group had a GPT-4o chat assistant that could write the entire correct solution; the other had no AI at all.</p>
+<p><img src="https://blog.hackspree.com/images/skill-formation-linkedin-summary.jpg" alt="Summary infographic — How AI Impacts Skill Formation (via LinkedIn, August 2026)"></p>
+<p>The headline, in two numbers: <strong>the AI group scored 17% lower on the quiz — about two grade points (Cohen's d = 0.738, p = 0.010) — and gained no significant time in return.</strong> The productivity miracle measured in prior work (55.5% faster with Copilot; 26.8% more pull requests) did not show up when the task required learning. That is the paper's contribution, and the thesis of this post: <strong>AI assistance doesn't just complete the task — it removes the part of the task that teaches. You don't learn what you delegate, and the trial shows exactly which behaviors turn delegation into learning and which into a 17% toll.</strong></p>
+<h2 id="the-experiment">The experiment</h2>
+<p>Participants made this a hard test of &quot;AI helps novices most&quot;: more than a year of Python, weekly use, prior AI experience, never Trio (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/participant_distribution.svg">Fig 17</a>). A warm-up task, then 35 minutes for two Trio tasks: a concurrent timer and a record-retrieval function with error handling. Then a 14-question, 27-point quiz over 7 Trio concepts in three skill types — conceptual understanding, code reading, debugging (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/question-types.svg">Fig 20</a>); code-writing was excluded, since syntax is what AI fixes cheapest.</p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI.png" alt="Fig 3 - Experiment interface with AI assistant panel" loading="lazy"><figcaption>Fig 3 - Experiment interface with AI assistant panel</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/task_flow.png" alt="Fig 4 - Learning task and comprehension check flow" loading="lazy"><figcaption>Fig 4 - Learning task and comprehension check flow</figcaption></figure>
+<p>The treatment assistant was no toy: GPT-4o with access to the participant's code, able to produce the full correct solution to both tasks. Four pilot studies tuned the design — the first platform had 35% non-compliance (controls using AI anyway); a later pilot (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/pilot_study_D.svg">Fig 5</a>) showed the effect so strongly (d=1.7) that the pre-registration assumed a conservative d=0.85 for power. Integrity controls included pledges and screen recordings of every participant (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Pledge-NoAI.png">Figs 21–24</a>; <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-No-AI.png">Figs 25–27</a> show both platforms).</p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/participant_distribution.svg" alt="Fig 17 - Participant distribution" loading="lazy"><figcaption>Fig 17 - Participant distribution</figcaption></figure>
+<h2 id="results-the-17-toll">Results: the 17% toll</h2>
+<p>The main results (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/main_study.svg">Fig 6</a>): a 4.15-point gap on 27 points — 17%, two grade points — with no significant difference in completion time; the effect survives controlling for warm-up speed (d=0.725, p=0.016). <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/main_study_yoe.svg">Fig 7</a> shows the control group scoring higher at every experience level, and <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/quiz_score_subarea.svg">Fig 8</a> shows where the damage concentrates: the largest gap is in <strong>debugging</strong>, the smallest in code reading. Both groups read code; only the control group had to fix it.</p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/main_study.svg" alt="Fig 6 - Main study: task time and quiz score (n=52)" loading="lazy"><figcaption>Fig 6 - Main study: task time and quiz score (n=52)</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/quiz_score_subarea.svg" alt="Fig 8 - Score breakdown by question type" loading="lazy"><figcaption>Fig 8 - Score breakdown by question type</figcaption></figure>
+<p>That debugging gap is the paper's most important sentence in disguise. The industry case for human oversight of AI-written code rests on humans being able to debug what AI produces — and this trial suggests the mechanism that builds that skill is exactly what AI assistance removes.</p>
+<h2 id="why-there-was-no-speedup">Why there was no speedup</h2>
+<p>The qualitative analysis explains the missing speedup: heterogeneity. Watching every screen recording, the researchers found six AI-interaction personas (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/Personas-Simple.svg">Fig 11</a>), with completion times and quiz scores that barely overlap:</p>
+<ul>
+<li><strong>AI Delegation</strong> (n=4) — handed the whole task to the AI, finished fastest (19.5 vs 23 min), scored 24–39%.</li>
+<li><strong>Progressive AI Reliance</strong> (n=4) — started with a question, then delegated everything; lost the second task's concepts entirely.</li>
+<li><strong>Iterative AI Debugging</strong> (n=4) — used AI to fix code without understanding it; slowest of the low scorers.</li>
+<li><strong>Generation-Then-Comprehension</strong> (n=2) — generated code, then asked follow-ups to understand it. 65–86%.</li>
+<li><strong>Hybrid Code-Explanation</strong> (n=3) — asked for code <em>with</em> explanations, and read them.</li>
+<li><strong>Conceptual Inquiry</strong> (n=7) — asked only conceptual questions, hit errors, resolved them independently. Second-fastest overall.</li>
+</ul>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/Personas-Simple.svg" alt="Fig 11 - The 6 AI interaction personas with outcomes" loading="lazy"><figcaption>Fig 11 - The 6 AI interaction personas with outcomes</figcaption></figure>
+<p>The gap between worst and best usage is the real story: 24–39% vs 65–86% on the same quiz with the same assistant. The difference is not whether AI was used; it is what happened after the AI answered. The time side confirms it: some participants spent up to 11 minutes composing queries and asked 15 questions (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_interaction_time.svg">Fig 12</a>); debugging-heavy query mixes correlated with slower times and lower scores (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_query_Completion_Time.svg">Fig 18</a>, <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_query_Quiz_Score.svg">Fig 19</a>). And the paste-vs-type analysis (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/paste_behavior.svg">Fig 13</a>) has a twist: pasting AI output was fastest, manually copying it was as slow as control — but the two scored the same on the quiz. <em>Spending time typing doesn't build understanding.</em></p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/paste_behavior.svg" alt="Fig 13 - Pasting vs manual copying of AI output" loading="lazy"><figcaption>Fig 13 - Pasting vs manual copying of AI output</figcaption></figure>
+<h2 id="errors-are-the-curriculum">Errors are the curriculum</h2>
+<p>The mechanism the paper lands on is the most old-school finding in it: <strong>errors teach.</strong> The median control participant hit three errors; the median AI participant hit one (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/error_types_by_condition.svg">Fig 15</a>). Of the twelve error-free completers, only two were control. The errors that matter are the Trio-specific ones — <code>RuntimeWarning</code> (a coroutine never awaited), <code>TypeError</code> (a coroutine passed where an async function was expected) — because they force exactly the conceptual knowledge the quiz tests (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/error_types.svg">Fig 14</a>). The control group did not learn <em>despite</em> the errors; the errors were the lesson plan. Active coding time tells the same story from the other side (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/active_time_vs_quiz_score.svg">Fig 16</a>): AI shifted time from writing to reading AI output. The AI group's own feedback confirms it — they felt &quot;lazy&quot; with &quot;gaps in (their) understanding.&quot;</p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/error_types_by_condition.svg" alt="Fig 15 - Errors by condition: control meets the concepts" loading="lazy"><figcaption>Fig 15 - Errors by condition: control meets the concepts</figcaption></figure>
+<h2 id="what-this-means">What this means</h2>
+<p>Three implications, stated as plainly as the paper allows.</p>
+<p><strong>First, the chat interface is the <em>best</em> case.</strong> A chat assistant at least forces the user to compose a query — some spent six minutes on a single one, and that thinking correlates with learning. An agentic tool that writes, runs, and fixes code itself removes even that. If this trial is the lower bound on cognitive offloading, agentic settings are below the floor.</p>
+<p><strong>Second, the supervision argument inverts.</strong> &quot;AI writes code, humans verify&quot; assumes humans have debugging skill to spend. This trial suggests that skill is built by the exact experience AI removes. Companies adopting AI-assisted onboarding for juniors are not just changing throughput; they may be choosing which generation holds the verification skill.</p>
+<p><strong>Third, the dark-factory argument applies to skills, not just complexity.</strong> When automation removed factory labor, complexity moved into supervision. When AI removes implementation, the question is where the <em>learning</em> goes — and this trial's answer is: out of the worker, unless the worker keeps engaging. Delegation is a productivity strategy and a learning strategy simultaneously; you cannot have both.</p>
+<p>The six personas are the practical deliverable: the difference between treating the model as a chauffeur and as a tutor.</p>
+<blockquote>
+<p>The productivity view asks: how much did AI finish? The skill view asks: what did you keep? This trial shows the two questions now have different answers. The 17% is what you pay when you confuse them.</p>
+</blockquote>
+<h2 id="all-figures">All figures</h2>
+<p>Every figure from the paper, thumbed. Substantive results first; study artifacts last.</p>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/Hero-Results-Personas.svg" alt="Fig 1 - Overview of results: skills down, time flat" loading="lazy"><figcaption>Fig 1 - Overview of results: skills down, time flat</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai-skills.svg" alt="Fig 2 - Motivation: novices and AI in the workplace" loading="lazy"><figcaption>Fig 2 - Motivation: novices and AI in the workplace</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/pilot_study_D.svg" alt="Fig 5 - Pilot Study D: time and quiz" loading="lazy"><figcaption>Fig 5 - Pilot Study D: time and quiz</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/main_study_yoe.svg" alt="Fig 7 - Task time and quiz by years of experience" loading="lazy"><figcaption>Fig 7 - Task time and quiz by years of experience</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/task_learning_enjoyment.svg" alt="Fig 9 - Self-reported enjoyment and learning" loading="lazy"><figcaption>Fig 9 - Self-reported enjoyment and learning</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/task_difficulty.svg" alt="Fig 10 - Self-reported task difficulty" loading="lazy"><figcaption>Fig 10 - Self-reported task difficulty</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_interaction_time.svg" alt="Fig 12 - AI interaction time and query count" loading="lazy"><figcaption>Fig 12 - AI interaction time and query count</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/error_types.svg" alt="Fig 14 - All errors by type" loading="lazy"><figcaption>Fig 14 - All errors by type</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/active_time_vs_quiz_score.svg" alt="Fig 16 - Active coding time vs quiz score" loading="lazy"><figcaption>Fig 16 - Active coding time vs quiz score</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_query_Completion_Time.svg" alt="Fig 18 - Queries vs completion time" loading="lazy"><figcaption>Fig 18 - Queries vs completion time</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/ai_query_Quiz_Score.svg" alt="Fig 19 - Queries vs quiz score" loading="lazy"><figcaption>Fig 19 - Queries vs quiz score</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/question-types.svg" alt="Fig 20 - Example evaluation question types" loading="lazy"><figcaption>Fig 20 - Example evaluation question types</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Pledge-NoAI.png" alt="Fig 21 - Control pledge: no AI" loading="lazy"><figcaption>Fig 21 - Control pledge: no AI</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Instructions-AI-A.png" alt="Fig 22 - Treatment pledge" loading="lazy"><figcaption>Fig 22 - Treatment pledge</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-No-AI-Instructions-B.png" alt="Fig 23 - Control instructions" loading="lazy"><figcaption>Fig 23 - Control instructions</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Instructions-AI-B.png" alt="Fig 24 - Treatment instructions" loading="lazy"><figcaption>Fig 24 - Treatment instructions</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-No-AI.png" alt="Fig 25 - Task platform, control condition" loading="lazy"><figcaption>Fig 25 - Task platform, control condition</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI.png" alt="Fig 26 - Task platform, AI condition" loading="lazy"><figcaption>Fig 26 - Task platform, AI condition</figcaption></figure>
+<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI-Assistant.png" alt="Fig 27 - Interacting with the AI assistant" loading="lazy"><figcaption>Fig 27 - Interacting with the AI assistant</figcaption></figure>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Judy Hanwen Shen, Alex Tamkin. <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245v2">How AI Impacts Skill Formation</a>. arXiv:2601.20245v2, 2026. — Pre-registered RCT of AI assistance on learning the Trio async library; quiz deficit d=0.738, p=0.010; the six interaction personas.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://osf.io/w49e7">Study pre-registration</a> and <a target="_blank" rel="noopener noreferrer" href="https://github.com/safety-research/how-ai-impacts-skill-formation">annotated transcripts</a>.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/images/skill-formation-linkedin-summary.jpg">Summary infographic of the study (LinkedIn, August 2026)</a> — embedded at the top of this post.</li>
+<li>S. Peng et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.06590">The Impact of AI on Developer Productivity: Evidence from GitHub Copilot</a>, 2023. — 55.5% faster task completion.</li>
+<li>Z. Cui et al. <a target="_blank" rel="noopener noreferrer" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566">The Effects of Generative AI on High Skilled Work: Evidence from Three Field Experiments with Software Developers</a>, 2024. — 26.8% productivity boost.</li>
+<li>T. Wu et al. <a target="_blank" rel="noopener noreferrer" href="https://www.nber.org/papers/w33041">The Value of AI Assistance? Evidence from the Performance and Learning of Knowledge Workers</a>, 2024. — performance gains did not persist after AI was removed.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dark-factory-complexity">The Dark Factory Doesn't Eliminate Complexity — It Moves It</a> — AI removes the work; the question is where the skill goes.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-se-what-studies-say">Empirical Software Engineering: What the Studies Actually Say</a> — why RCTs in software are rare, and how to read them.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-se-how-to-think">Empirical Software Engineering: How to Think Empirically</a> — pre-registration, effect sizes, and the discipline behind this trial.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#llms-cant-jump">LLMs Can't Jump</a> — what models cannot do is exactly what the control group had to learn.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents: State, Memory, and the Governance Gap</a> — agentic AI removes the query-composition step this paper found valuable.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="agentic-first-cli-design">
         <link rel="canonical" href="https://blog.hackspree.com/entries/agentic-first-cli-design/">
         <header class="post-header">
@@ -3990,91 +4314,6 @@ func (k Keeper) Swap(ctx sdk.Context, req *types.MsgSwap) (*types.MsgSwapRespons
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#data-engineering-quality">Data Quality and the Problem of Truth</a> — revenue quality is a data-quality problem; truth is borrowing capacity.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents: State, Memory, and the Governance Gap</a> — the agentic operations layer that makes startup finance legible.</li>
 <li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#fi-lending">Lending Protocols</a> — credit is 3,800 years old; the Code of Hammurabi knew the trade-offs RBF rediscovered.</li>
-</ul>
-</div>
-      </article>
-      <article class="post" id="ai-impacts-skill-formation">
-        <link rel="canonical" href="https://blog.hackspree.com/entries/ai-impacts-skill-formation/">
-        <header class="post-header">
-          <p class="post-meta"><time datetime="2026-08-03" data-utc="Aug 03, 2026 UTC" aria-label="Aug 03, 2026 UTC" tabindex="0">1785715200</time></p>
-          <h2><a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a><a class="raw-link" href="https://blog.hackspree.com/raw/ai-impacts-skill-formation.md" title="Raw markdown source" aria-label="Raw markdown source of You Don&#39;t Learn What You Delegate" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A pre-registered randomized trial (n=52) of Python programmers learning a new async library found AI assistance cut quiz scores 17% (d=0.74, p=0.01) while saving no significant time. Errors are the curriculum; pasted code is not. Six AI-use personas split the group: delegators scored 24–39%, conceptual inquirers 65–86%. Summary infographic below.</p>
-          <div class="tags"><span class="tag">ai</span><span class="tag">llm</span><span class="tag">skill-formation</span><span class="tag">learning</span><span class="tag">software-engineering</span><span class="tag">randomized-controlled-trial</span><span class="tag">pre-registration</span><span class="tag">cognitive-offloading</span><span class="tag">overreliance</span><span class="tag">trio</span><span class="tag">anthropic</span><span class="tag">empirical-software-engineering</span><span class="tag">human-ai-collaboration</span>
-          </div>
-        </header>
-        <div class="post-body"><p>A rare thing: a <a target="_blank" rel="noopener noreferrer" href="https://osf.io/w49e7">pre-registered randomized controlled trial</a> of how AI assistance changes what workers learn. Shen and Tamkin (Anthropic), <em><a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245v2">How AI Impacts Skill Formation</a></em>. Fifty-two professional and freelance Python programmers were randomized, asked to learn a library they had never used (Trio, an async I/O library), complete two coding tasks, and then take a quiz on what they actually learned. One group had a GPT-4o chat assistant that could write the entire correct solution; the other had no AI at all.</p>
-<p><img src="https://blog.hackspree.com/images/skill-formation-linkedin-summary.jpg" alt="Summary infographic — How AI Impacts Skill Formation (via LinkedIn, August 2026)"></p>
-<p>The headline, in two numbers: <strong>the AI group scored 17% lower on the quiz — about two grade points (Cohen's d = 0.738, p = 0.010) — and gained no significant time in return.</strong> The productivity miracle measured in prior work (55.5% faster with Copilot; 26.8% more pull requests) did not show up when the task required learning. That is the paper's contribution, and the thesis of this post: <strong>AI assistance doesn't just complete the task — it removes the part of the task that teaches. You don't learn what you delegate, and the trial shows exactly which behaviors turn delegation into learning and which into a 17% toll.</strong></p>
-<h2 id="the-experiment">The experiment</h2>
-<p>Participants made this a hard test of &quot;AI helps novices most&quot;: more than a year of Python, weekly use, prior AI experience, never Trio (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x15.png">Fig 17</a>). A warm-up task, then 35 minutes for two Trio tasks: a concurrent timer and a record-retrieval function with error handling. Then a 14-question, 27-point quiz over 7 Trio concepts in three skill types — conceptual understanding, code reading, debugging (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x18.png">Fig 20</a>); code-writing was excluded, since syntax is what AI fixes cheapest.</p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI.png" alt="Fig 3 - Experiment interface with AI assistant panel" loading="lazy"><figcaption>Fig 3 - Experiment interface with AI assistant panel</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/task_flow.png" alt="Fig 4 - Learning task and comprehension check flow" loading="lazy"><figcaption>Fig 4 - Learning task and comprehension check flow</figcaption></figure>
-<p>The treatment assistant was no toy: GPT-4o with access to the participant's code, able to produce the full correct solution to both tasks. Four pilot studies tuned the design — the first platform had 35% non-compliance (controls using AI anyway); a later pilot (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x3.png">Fig 5</a>) showed the effect so strongly (d=1.7) that the pre-registration assumed a conservative d=0.85 for power. Integrity controls included pledges and screen recordings of every participant (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Pledge-NoAI.png">Figs 21–24</a>; <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-No-AI.png">Figs 25–27</a> show both platforms).</p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x15.png" alt="Fig 17 - Participant distribution" loading="lazy"><figcaption>Fig 17 - Participant distribution</figcaption></figure>
-<h2 id="results-the-17-toll">Results: the 17% toll</h2>
-<p>The main results (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x4.png">Fig 6</a>): a 4.15-point gap on 27 points — 17%, two grade points — with no significant difference in completion time; the effect survives controlling for warm-up speed (d=0.725, p=0.016). <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x7.png">Fig 7</a> shows the control group scoring higher at every experience level, and <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x6.png">Fig 8</a> shows where the damage concentrates: the largest gap is in <strong>debugging</strong>, the smallest in code reading. Both groups read code; only the control group had to fix it.</p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x4.png" alt="Fig 6 - Main study: task time and quiz score (n=52)" loading="lazy"><figcaption>Fig 6 - Main study: task time and quiz score (n=52)</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x6.png" alt="Fig 8 - Score breakdown by question type" loading="lazy"><figcaption>Fig 8 - Score breakdown by question type</figcaption></figure>
-<p>That debugging gap is the paper's most important sentence in disguise. The industry case for human oversight of AI-written code rests on humans being able to debug what AI produces — and this trial suggests the mechanism that builds that skill is exactly what AI assistance removes.</p>
-<h2 id="why-there-was-no-speedup">Why there was no speedup</h2>
-<p>The qualitative analysis explains the missing speedup: heterogeneity. Watching every screen recording, the researchers found six AI-interaction personas (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x9.png">Fig 11</a>), with completion times and quiz scores that barely overlap:</p>
-<ul>
-<li><strong>AI Delegation</strong> (n=4) — handed the whole task to the AI, finished fastest (19.5 vs 23 min), scored 24–39%.</li>
-<li><strong>Progressive AI Reliance</strong> (n=4) — started with a question, then delegated everything; lost the second task's concepts entirely.</li>
-<li><strong>Iterative AI Debugging</strong> (n=4) — used AI to fix code without understanding it; slowest of the low scorers.</li>
-<li><strong>Generation-Then-Comprehension</strong> (n=2) — generated code, then asked follow-ups to understand it. 65–86%.</li>
-<li><strong>Hybrid Code-Explanation</strong> (n=3) — asked for code <em>with</em> explanations, and read them.</li>
-<li><strong>Conceptual Inquiry</strong> (n=7) — asked only conceptual questions, hit errors, resolved them independently. Second-fastest overall.</li>
-</ul>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x9.png" alt="Fig 11 - The 6 AI interaction personas with outcomes" loading="lazy"><figcaption>Fig 11 - The 6 AI interaction personas with outcomes</figcaption></figure>
-<p>The gap between worst and best usage is the real story: 24–39% vs 65–86% on the same quiz with the same assistant. The difference is not whether AI was used; it is what happened after the AI answered. The time side confirms it: some participants spent up to 11 minutes composing queries and asked 15 questions (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x10.png">Fig 12</a>); debugging-heavy query mixes correlated with slower times and lower scores (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x16.png">Figs 18–19</a>). And the paste-vs-type analysis (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x11.png">Fig 13</a>) has a twist: pasting AI output was fastest, manually copying it was as slow as control — but the two scored the same on the quiz. <em>Spending time typing doesn't build understanding.</em></p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x11.png" alt="Fig 13 - Pasting vs manual copying of AI output" loading="lazy"><figcaption>Fig 13 - Pasting vs manual copying of AI output</figcaption></figure>
-<h2 id="errors-are-the-curriculum">Errors are the curriculum</h2>
-<p>The mechanism the paper lands on is the most old-school finding in it: <strong>errors teach.</strong> The median control participant hit three errors; the median AI participant hit one (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x13.png">Fig 15</a>). Of the twelve error-free completers, only two were control. The errors that matter are the Trio-specific ones — <code>RuntimeWarning</code> (a coroutine never awaited), <code>TypeError</code> (a coroutine passed where an async function was expected) — because they force exactly the conceptual knowledge the quiz tests (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x12.png">Fig 14</a>). The control group did not learn <em>despite</em> the errors; the errors were the lesson plan. Active coding time tells the same story from the other side (<a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x14.png">Fig 16</a>): AI shifted time from writing to reading AI output. The AI group's own feedback confirms it — they felt &quot;lazy&quot; with &quot;gaps in (their) understanding.&quot;</p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x13.png" alt="Fig 15 - Errors by condition: control meets the concepts" loading="lazy"><figcaption>Fig 15 - Errors by condition: control meets the concepts</figcaption></figure>
-<h2 id="what-this-means">What this means</h2>
-<p>Three implications, stated as plainly as the paper allows.</p>
-<p><strong>First, the chat interface is the <em>best</em> case.</strong> A chat assistant at least forces the user to compose a query — some spent six minutes on a single one, and that thinking correlates with learning. An agentic tool that writes, runs, and fixes code itself removes even that. If this trial is the lower bound on cognitive offloading, agentic settings are below the floor.</p>
-<p><strong>Second, the supervision argument inverts.</strong> &quot;AI writes code, humans verify&quot; assumes humans have debugging skill to spend. This trial suggests that skill is built by the exact experience AI removes. Companies adopting AI-assisted onboarding for juniors are not just changing throughput; they may be choosing which generation holds the verification skill.</p>
-<p><strong>Third, the dark-factory argument applies to skills, not just complexity.</strong> When automation removed factory labor, complexity moved into supervision. When AI removes implementation, the question is where the <em>learning</em> goes — and this trial's answer is: out of the worker, unless the worker keeps engaging. Delegation is a productivity strategy and a learning strategy simultaneously; you cannot have both.</p>
-<p>The six personas are the practical deliverable: the difference between treating the model as a chauffeur and as a tutor.</p>
-<blockquote>
-<p>The productivity view asks: how much did AI finish? The skill view asks: what did you keep? This trial shows the two questions now have different answers. The 17% is what you pay when you confuse them.</p>
-</blockquote>
-<h2 id="all-figures">All figures</h2>
-<p>Every figure from the paper, thumbed. Substantive results first; study artifacts last.</p>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x1.png" alt="Fig 1 - Overview of results: skills down, time flat" loading="lazy"><figcaption>Fig 1 - Overview of results: skills down, time flat</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x2.png" alt="Fig 2 - Motivation: novices and AI in the workplace" loading="lazy"><figcaption>Fig 2 - Motivation: novices and AI in the workplace</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x3.png" alt="Fig 5 - Pilot Study D: time and quiz" loading="lazy"><figcaption>Fig 5 - Pilot Study D: time and quiz</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x5.png" alt="Fig 7 - Task time and quiz by years of experience" loading="lazy"><figcaption>Fig 7 - Task time and quiz by years of experience</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x7.png" alt="Fig 9 - Self-reported enjoyment and learning" loading="lazy"><figcaption>Fig 9 - Self-reported enjoyment and learning</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x8.png" alt="Fig 10 - Self-reported task difficulty" loading="lazy"><figcaption>Fig 10 - Self-reported task difficulty</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x10.png" alt="Fig 12 - AI interaction time and query count" loading="lazy"><figcaption>Fig 12 - AI interaction time and query count</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x12.png" alt="Fig 14 - All errors by type" loading="lazy"><figcaption>Fig 14 - All errors by type</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x14.png" alt="Fig 16 - Active coding time vs quiz score" loading="lazy"><figcaption>Fig 16 - Active coding time vs quiz score</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x16.png" alt="Fig 18 - Queries vs completion time" loading="lazy"><figcaption>Fig 18 - Queries vs completion time</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x17.png" alt="Fig 19 - Queries vs quiz score" loading="lazy"><figcaption>Fig 19 - Queries vs quiz score</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/x18.png" alt="Fig 20 - Example evaluation question types" loading="lazy"><figcaption>Fig 20 - Example evaluation question types</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Pledge-NoAI.png" alt="Fig 21 - Control pledge: no AI" loading="lazy"><figcaption>Fig 21 - Control pledge: no AI</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Instructions-AI-A.png" alt="Fig 22 - Treatment pledge" loading="lazy"><figcaption>Fig 22 - Treatment pledge</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-No-AI-Instructions-B.png" alt="Fig 23 - Control instructions" loading="lazy"><figcaption>Fig 23 - Control instructions</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Instructions-AI-B.png" alt="Fig 24 - Treatment instructions" loading="lazy"><figcaption>Fig 24 - Treatment instructions</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-No-AI.png" alt="Fig 25 - Task platform, control condition" loading="lazy"><figcaption>Fig 25 - Task platform, control condition</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI.png" alt="Fig 26 - Task platform, AI condition" loading="lazy"><figcaption>Fig 26 - Task platform, AI condition</figcaption></figure>
-<figure class="fig-thumb"><img src="https://ar5iv.labs.arxiv.org/html/2601.20245/assets/img/SC-Task-AI-Assistant.png" alt="Fig 27 - Interacting with the AI assistant" loading="lazy"><figcaption>Fig 27 - Interacting with the AI assistant</figcaption></figure>
-<hr>
-<p><strong>References:</strong></p>
-<ul>
-<li>Judy Hanwen Shen, Alex Tamkin. <a target="_blank" rel="noopener noreferrer" href="https://ar5iv.labs.arxiv.org/html/2601.20245v2">How AI Impacts Skill Formation</a>. arXiv:2601.20245v2, 2026. — Pre-registered RCT of AI assistance on learning the Trio async library; quiz deficit d=0.738, p=0.010; the six interaction personas.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://osf.io/w49e7">Study pre-registration</a> and <a target="_blank" rel="noopener noreferrer" href="https://github.com/safety-research/how-ai-impacts-skill-formation">annotated transcripts</a>.</li>
-<li><a target="_blank" rel="noopener noreferrer" href="https://media.licdn.com/dms/image/v2/D4D22AQEFQ9DawOphRA/feedshare-shrink_800/B4DZ_G1e_DGkAc-/0/1785747337417?e=1787184000&amp;v=beta&amp;t=OWm6l_TOpYkVO0wMJvrlSvBofiGvG-6UW1jrzvVrY24">Summary infographic of the study (LinkedIn, August 2026)</a> — embedded at the top of this post.</li>
-<li>S. Peng et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2302.06590">The Impact of AI on Developer Productivity: Evidence from GitHub Copilot</a>, 2023. — 55.5% faster task completion.</li>
-<li>Z. Cui et al. <a target="_blank" rel="noopener noreferrer" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566">The Effects of Generative AI on High Skilled Work: Evidence from Three Field Experiments with Software Developers</a>, 2024. — 26.8% productivity boost.</li>
-<li>T. Wu et al. <a target="_blank" rel="noopener noreferrer" href="https://www.nber.org/papers/w33041">The Value of AI Assistance? Evidence from the Performance and Learning of Knowledge Workers</a>, 2024. — performance gains did not persist after AI was removed.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#dark-factory-complexity">The Dark Factory Doesn't Eliminate Complexity — It Moves It</a> — AI removes the work; the question is where the skill goes.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-se-what-studies-say">Empirical Software Engineering: What the Studies Actually Say</a> — why RCTs in software are rare, and how to read them.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-se-how-to-think">Empirical Software Engineering: How to Think Empirically</a> — pre-registration, effect sizes, and the discipline behind this trial.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#llms-cant-jump">LLMs Can't Jump</a> — what models cannot do is exactly what the control group had to learn.</li>
-<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#always-on-agents">Always-On Agents: State, Memory, and the Governance Gap</a> — agentic AI removes the query-composition step this paper found valuable.</li>
 </ul>
 </div>
       </article>
@@ -19562,6 +19801,8 @@ Harness engineering is often less about model math and more about repeatable pip
               <a href="#harnessing-agentic-ai-systems-schema-enforcement-self-correction">Harnessing Agentic AI Systems: Schema Enforcement &amp; Self-Correction Pattern</a>
               <a href="#hacker-laws-ase-hofstadters-law">Hacker Laws for Agentic Software Engineering: Hofstadter&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-state-snapshot-rollback">Harnessing Agentic AI Systems: State Snapshot &amp; Rollback Pattern</a>
+              <a href="#cloudflare-dns-cache-memory">953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache</a>
+              <a href="#stories-from-events">Make Stories from Events: Why Event-Sourced Systems Need a Narrative Layer</a>
               <a href="#hacker-laws-ase-hyrums-law">Hacker Laws for Agentic Software Engineering: Hyrum&#39;s Law</a>
               <a href="#harnessing-agentic-ai-systems-semantic-memory-router">Harnessing Agentic AI Systems: Semantic Memory Router Pattern</a>
               <a href="#blind-men-elephant-business-process-automation">The blind men and the elephant: why every role sees only part of the process</a>
@@ -19592,9 +19833,9 @@ Harness engineering is often less about model math and more about repeatable pip
               <a href="#own-the-blockspace">Own the Blockspace</a>
               <a href="#automatism-and-vibe-coding">Automatism and Vibe Coding</a>
               <a href="#every-token-has-a-price-tag">Every Token Has a Price Tag</a>
+              <a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a>
               <a href="#agentic-first-cli-design">Agentic-First CLI</a>
               <a href="#revenue-based-financing-ai">RBF: The Collateral Is Your Code</a>
-              <a href="#ai-impacts-skill-formation">You Don&#39;t Learn What You Delegate</a>
               <a href="#its-adam-back">It&#39;s Adam Back!</a>
               <a href="#cupid-for-joyful-coding">CUPID: Properties, Not Principles</a>
               <a href="#ai-sovereignty-is-freedom">AI Sovereignty Is Freedom</a>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/cloudflare-dns-cache-memory/">
+  <title>953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache — hackspree</title>
+  <meta property="og:title" content="953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache">
+  <meta property="og:description" content="Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/cloudflare-dns-cache-memory/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache">
+  <meta name="twitter:description" content="Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-29">2026-08-29</time></p>
+          <h1>953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache<a class="raw-link" href="https://blog.hackspree.com/raw/cloudflare-dns-cache-memory.md" title="Raw markdown source" aria-label="Raw markdown source of 953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line.</p>
+          <div class="tags"><span class="tag">cloudflare</span><span class="tag">dns</span><span class="tag">rust</span><span class="tag">memory</span><span class="tag">cache</span><span class="tag">systems-design</span><span class="tag">performance</span><span class="tag">1.1.1.1</span><span class="tag">jemalloc</span><span class="tag">big-pineapple</span></div>
+          
+        </header>
+        <div class="post-body"><h2 id="the-arithmetic-of-250-billion-entries">The arithmetic of 250 billion entries</h2>
+<p>DNS caching is a memory business, and the volumes are so large that the smallest inefficiency becomes a line item. <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/big-pineapple-intro/">Big Pineapple</a>, the Rust platform behind <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/the-as112-project/">1.1.1.1</a> — plus Gateway DNS, DNS Firewall, and AS112 — stores <strong>over 250 billion cache entries at any given time</strong>. Cloudflare's own math: wasting a single byte per entry costs more than 250 gigabytes across the fleet. Waste one plausible structural inefficiency per entry, and you have a data center.</p>
+<p>Which is exactly what five successive changes just removed. In <a target="_blank" rel="noopener noreferrer" href="https://blog.cloudflare.com/dns-cache-memory-optimization-1111/">a deep dive by systems engineer Sebastiaan Neuteboom</a> (<a target="_blank" rel="noopener noreferrer" href="https://www.tomshardware.com/tech-industry/big-tech/cloudflare-frees-100tb-of-ram-by-shrinking-dns-cache-entries">Tom's Hardware coverage</a>), each cached entry shrank from <strong>953 bytes to 420 bytes — a 56% reduction</strong> — with no physical RAM added to a single server. Across the fleet that is roughly <strong>100 terabytes of freed memory, equivalent to the DDR5 in 130 of Cloudflare's 768GB Gen 13 servers</strong>. The cache also got <em>faster</em>: insert throughput up 43%, lookup latency down 19%. No reconfiguration of memory modules, no added capacity — a redesign of how each entry is laid out in memory, done one Rust type at a time.</p>
+<p>The timing makes the win sharper than the raw numbers. Server-grade DDR5 prices are <a target="_blank" rel="noopener noreferrer" href="https://www.tomshardware.com/tech-industry/big-tech/cloudflare-frees-100tb-of-ram-by-shrinking-dns-cache-entries">on track to double year over year</a> — the 100TB Cloudflare reclaimed is the memory it did <em>not</em> have to buy at the top of a price spike.</p>
+<h2 id="what-a-cache-entry-actually-is">What a cache entry actually is</h2>
+<p>Every cache item is a key-value pair. The key identifies what was queried:</p>
+<pre><code class="language-rust">pub struct CacheKey {
+    qname: Name,          // the domain being resolved
+    qtype: Rtype,         // A, AAAA, TXT, ...
+    authenticated: bool,  // DNSSEC-validated
+    tag: Vec&lt;u8&gt;,         // per-client-subnet tag
+}
+</code></pre>
+<p>The value holds the DNS response — answer, authority, and additional record sections — plus metadata: creation time, TTL, a hit counter:</p>
+<pre><code class="language-rust">pub struct CacheEntry {
+    timestamp: UnixTimeStamp,
+    inception: Instant,
+    ttl: Ttl,
+    hits: u32,
+    answers: Vec&lt;Record&gt;,
+    authority: Vec&lt;Record&gt;,
+    additional: Vec&lt;Record&gt;,
+    errors: Vec&lt;ExtendedError&gt;,
+    // ...
+}
+</code></pre>
+<p>Nothing about either struct is wrong. Both are idiomatic Rust, and that is precisely the problem: idiomatic Rust is written for a working set of <em>one</em> entry. Big Pineapple holds a quarter of a trillion of them, so every field is multiplied by 250 billion. When EDNS Client Subnet (ECS) is in use, authoritative servers return different answers per client network and the cache holds multiple entries per query — multiplying both entry count and per-entry size, which is why the optimizations hit ECS-heavy data centers hardest.</p>
+<h2 id="change-1--fire-the-capacity-field">Change 1 — Fire the capacity field</h2>
+<p><code>Vec&lt;T&gt;</code> stores three words: a pointer to heap data, a length, and a <strong>capacity</strong>. Capacity exists so a growing vector can append without reallocating. But once a DNS response is stored in the cache, it is never modified again. The capacity field is dead weight — 8 bytes per vector — and the <em>slack</em> capacity reserves is dead weight too: a <code>Vec</code> with capacity for eight records but only five stored leaves three slots of heap memory permanently unused.</p>
+<p>Swapping <code>Vec&lt;T&gt;</code> for <code>Box&lt;[T]&gt;</code> and <code>String</code> for <code>Box&lt;str&gt;</code> removes both. A boxed slice can't grow, so it has no capacity field and reserves nothing beyond its exact contents. Each cache entry stores eight <code>Vec</code>/<code>String</code> fields; replacing them saves 8 bytes per field, 64 bytes per entry, plus the over-allocated heap. At 250 billion entries that single mechanical change is worth <strong>over 15 terabytes</strong>.</p>
+<h2 id="change-2--fewer-lists-fewer-pointers">Change 2 — Fewer lists, fewer pointers</h2>
+<p>The answer, authority, and additional sections were three separate boxed slices — six words of pointers and lengths per entry. DNS record counts per section fit in a <code>u16</code>, so Cloudflare stored one contiguous list plus <strong>2-byte offsets</strong> to each section's start. Two 8-byte pointer/length pairs become two 2-byte offsets: 28 bytes saved per entry.</p>
+<p>This is where the post's most subtle point appears: memory savings don't always map to the bytes you deleted. Rust pads structs to alignment and rounds sizes up. Several booleans were packed into a single bitflag — and shrinking the field count eliminated surrounding padding, so the struct shrank by <em>more</em> than the booleans were worth. When your unit of account is 250 billion copies, padding is not decoration; it is a tax with a compounding multiplier.</p>
+<h2 id="change-3--drop-the-owner">Change 3 — Drop the owner</h2>
+<p>Every DNS record carries an <em>owner</em> — the domain the record belongs to. And in the overwhelmingly common case, the owner is identical to the domain that was queried. A query for <code>example.com A</code> returns two records, both owned by <code>example.com</code>. Only in chains — <code>example.com → CNAME cdn.example.com → A records</code> — do owners diverge.</p>
+<p>On the wire, DNS handles repeated owners with RFC 1035 name compression: a 2-byte pointer back to a previously-encoded name, so <code>www.example.com</code> encodes <code>www</code> plus a pointer to where <code>example.com</code> already appears. Cloudflare deliberately does <em>not</em> follow compression pointers in cache memory — doing so on the hot path is too expensive — but storing full owners for every record is waste. So the owner became optional:</p>
+<pre><code class="language-rust">pub struct Record {
+    owner: Option&lt;Box&lt;Name&gt;&gt;, // None: owner == queried domain, inferred at read time
+    class: Class,
+    ttl: Ttl,
+    rtype: Rtype,
+    data: RecordData,
+}
+</code></pre>
+<p>When <code>owner</code> is <code>None</code>, response construction restores the queried domain from the cache key — already in hand on every lookup — and avoids a heap allocation entirely. When it differs (the CNAME case), <code>Some</code> keeps a pointer to the full name. In practice the majority of cached records need no allocation for the owner at all.</p>
+<h2 id="change-4--size-the-enum-box-the-outliers">Change 4 — Size the enum, box the outliers</h2>
+<p>Rust enums are sum types: the enum is always the size of its <em>largest</em> variant, plus a tag. For record data, the natural design stores each DNS record type as a variant — and the natural design is catastrophically wasteful:</p>
+<pre><code class="language-rust">pub enum RecordData {
+    A(Ipv4Addr),      // 4 bytes
+    Aaaa(Ipv6Addr),   // 16 bytes
+    Txt(Txt),
+    Naptr(Naptr),     // 136 bytes — sets the enum size
+    Svcb(Svcb),
+    // ...
+}
+</code></pre>
+<p>NAPTR carries three variable-length text fields, a domain name, and two integers: 136 bytes of payload, 144 bytes once tag and padding are counted. Every <code>A</code> record — 4 bytes of actual data — occupies that same 144-byte slot. <code>A</code> and <code>AAAA</code> are over <strong>80% of traffic</strong>, so the typical cached record wastes 120+ bytes on padding. This is the single biggest line item in the whole exercise, and the fix is a classic space/time trade:</p>
+<pre><code class="language-rust">pub enum RecordData {
+    // Small and common variants stored inline
+    A(Ipv4Addr),
+    Aaaa(Ipv6Addr),
+    // Large variants moved to the heap
+    Txt(Box&lt;Txt&gt;),
+    Naptr(Box&lt;Naptr&gt;),
+    Svcb(Box&lt;Svcb&gt;),
+}
+</code></pre>
+<p>The enum shrinks to 24 bytes; <code>A</code> and <code>AAAA</code> are inline, saving 120 bytes per record. Smaller types like TXT still occupy the 24-byte enum but their heap allocation is sized to their actual data instead of padded to 144. NAPTR itself <em>pays</em> — it now costs a pointer plus allocation overhead — but NAPTR records are rare, so the trade is cheap.</p>
+<p>Boxing has two costs worth naming, because they come back in Change 5. First, <strong>allocator overhead</strong>: each boxed variant is a separate allocation, and allocators round up to size classes. Big Pineapple uses <a target="_blank" rel="noopener noreferrer" href="https://jemalloc.net/">jemalloc</a>, whose fixed-size bins fit a 32-byte TXT request perfectly but round a 40-byte MX request up to 48, wasting 8 bytes. Second, <strong>locality</strong>: boxed data scatters across the heap, so reading a record means following a pointer that may land on a cold cache line. Neither is fatal alone; together they are the reason the next change exists.</p>
+<h2 id="change-5--store-the-wire-format-not-the-parse-tree">Change 5 — Store the wire format, not the parse tree</h2>
+<p>The tempting endpoint — store the entire DNS response as one wire-format message and patch per-client fields like the message ID on lookup — has real problems. DNSSEC records are only included when the client sets the DO flag, so Cloudflare would have to cache two variants of every response or filter an already-built message, and parsing a full message on every lookup costs time the parsed-enum layout avoids.</p>
+<p>The middle ground Cloudflare took: <strong>store just the record data as raw bytes</strong> — a single <code>Box&lt;[u8]&gt;</code> where each record is a 2-byte length prefix followed by its encoded bytes — while the rest of the entry stays structured. This eliminates the per-variant enum overhead <em>and</em> the boxed heap allocations from Change 4 in one move. All record data sits in one contiguous allocation, so locality improves instead of degrading. And response construction gets cheaper: most record types — A, AAAA, TXT, and all DNSSEC types — are <strong>copied byte-for-byte into the outgoing message</strong>, skipping the field-by-field reserialization the parsed representation required. Only records containing domain names (CNAME, NS, MX, SOA) still need parsing, for name compression. Since directly-copyable records are the vast majority of traffic, this change alone cut lookup latency 5% in benchmarks and raised insert throughput 13%.</p>
+<p>The implementation detail that makes it affordable is a reusable <strong>scratchspace buffer</strong> that persists across insertions: records are serialized into it, then one <code>Box&lt;[u8]&gt;</code> is allocated and filled with a <code>memcpy</code>. That replaces N per-record allocations with a single one and avoids the allocator's inability to reclaim the unused tail when shrinking a <code>Vec&lt;u8&gt;</code>. The cost of the design is that records can no longer be randomly indexed — iteration through the buffer is sequential — which complicates round-robin rotation of A/AAAA records. With one to four records per entry, the price is negligible.</p>
+<h2 id="the-scoreboard">The scoreboard</h2>
+<p>The benchmark (56% A, 25% AAAA, 19% TXT, one to four records per entry) tells the whole story:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-entry net footprint</td>
+<td>953 bytes</td>
+<td>420 bytes</td>
+<td>−56%</td>
+</tr>
+<tr>
+<td>Per-entry allocations</td>
+<td>1.1 KB</td>
+<td>461 bytes</td>
+<td>−58%</td>
+</tr>
+<tr>
+<td>Cache insert throughput</td>
+<td>625,000 entries/s</td>
+<td>893,000 entries/s</td>
+<td>+43%</td>
+</tr>
+<tr>
+<td>Cache lookup latency</td>
+<td>828 ns</td>
+<td>670 ns</td>
+<td>−19%</td>
+</tr>
+</tbody>
+</table>
+<p>Production numbers land close, with the rollout stepping across releases from May 18 to July 6, 2026: p99 resident memory fell from 9.3 GB to 5.3 GB per instance (−43%), p90 from 6.5 GB to 3.8 GB (−42%), and the aggregate working set settled roughly 100 terabytes lower. The planned reinvestment is the quiet best part: the freed memory goes back into <strong>cache capacity</strong>, raising hit rates and cutting upstream query volume — the same memory pays a second dividend.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>Four lessons, in increasing order of importance.</p>
+<p><strong>Memory is a capex line now.</strong> When DDR5 prices double year over year, the decision &quot;buy more RAM vs. waste less of it&quot; tilts hard. Cloudflare's answer was not a hardware purchase order but five releases of type-level discipline, delivered on a platform already holding a quarter trillion entries. The cost of the project was engineering; the avoided cost was a server generation's worth of DDR5.</p>
+<p><strong>Type design is memory design.</strong> Every one of the five changes is a Rust semantics fact applied at scale: <code>Vec</code> carries capacity for growth you never use; enums are sized by their largest variant; structs are padded to alignment; ownership is a pointer you can sometimes drop. These are the features that make Rust safe and ergonomic — and each one is overhead you stop paying the moment data becomes immutable at rest. Cache entries are never mutated after insert, which turns out to be a license to strip every field that existed only to support mutation.</p>
+<p><strong>Layout beats cleverness.</strong> Nothing here is algorithmic. No new data structure, no eviction breakthrough, no distributed trick. The win is the unglamorous work of removing overhead: capacity fields, redundant lists, duplicated owners, enum padding, scattered allocations. The compounding insight is the multiplier — 250 billion entries turns &quot;a few bytes&quot; into &quot;a data center.&quot;</p>
+<p><strong>Every win has a tax, and the taxes interact.</strong> Boxing bought space and cost locality; the wire-format layout bought back the locality and cost random access; dropping owners bought space and cost self-containedness (the cache key must be in hand on every lookup). The discipline that makes it all work is measurement — a custom allocator wrapper tracking the number and size of allocations per entry, alongside insert/lookup benchmarks — followed by staged rollout. The same economic lens this blog applies to tokens applies to bytes: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-token-has-a-price-tag">every unit has a price tag</a>, and at fleet scale the unit count makes the price.</p>
+<p>The larger lesson is the one Cloudflare's engineers would probably insist on: the 100TB was never going to come from a single heroic optimization. It came from five boring ones, each individually worth terabytes because each one multiplied a small saving by 250 billion. Optimize the layout, not the algorithm — and when you find yourself saving a byte per entry, remember what the next byte is worth.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

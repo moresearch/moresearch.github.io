@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Mark Maier&#39;s 1998 Systems Engineering paper defined a system-of-systems: elements that are operationally and managerially independent, geographically distributed, and producing behavior that resides in no single element — architected by evolution, not top-down design. Every multi-agent deployment is a system-of-systems, whether its builders admit it or not. The five principles and what they mean when the elements are agents.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/systems-of-systems-architecting-principles/">
+  <title>Architecting Principles for Systems-of-Systems (Applied to Agentic AI) — hackspree</title>
+  <meta property="og:title" content="Architecting Principles for Systems-of-Systems (Applied to Agentic AI)">
+  <meta property="og:description" content="Mark Maier&#39;s 1998 Systems Engineering paper defined a system-of-systems: elements that are operationally and managerially independent, geographically distributed, and producing behavior that resides in no single element — architected by evolution, not top-down design. Every multi-agent deployment is a system-of-systems, whether its builders admit it or not. The five principles and what they mean when the elements are agents.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/systems-of-systems-architecting-principles/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Architecting Principles for Systems-of-Systems (Applied to Agentic AI)">
+  <meta name="twitter:description" content="Mark Maier&#39;s 1998 Systems Engineering paper defined a system-of-systems: elements that are operationally and managerially independent, geographically distributed, and producing behavior that resides in no single element — architected by evolution, not top-down design. Every multi-agent deployment is a system-of-systems, whether its builders admit it or not. The five principles and what they mean when the elements are agents.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#fff}
+    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
+    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
+    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#d1d5db}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-08-29">2026-08-29</time></p>
+          <h1>Architecting Principles for Systems-of-Systems (Applied to Agentic AI)<a class="raw-link" href="https://blog.hackspree.com/raw/systems-of-systems-architecting-principles.md" title="Raw markdown source" aria-label="Raw markdown source of Architecting Principles for Systems-of-Systems (Applied to Agentic AI)" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Mark Maier&#39;s 1998 Systems Engineering paper defined a system-of-systems: elements that are operationally and managerially independent, geographically distributed, and producing behavior that resides in no single element — architected by evolution, not top-down design. Every multi-agent deployment is a system-of-systems, whether its builders admit it or not. The five principles and what they mean when the elements are agents.</p>
+          <div class="tags"><span class="tag">systems-of-systems</span><span class="tag">architecture</span><span class="tag">maier</span><span class="tag">multi-agent-systems</span><span class="tag">emergent-behavior</span><span class="tag">interfaces</span><span class="tag">standards</span><span class="tag">orchestration</span><span class="tag">harness-engineering</span><span class="tag">agentic-ai</span></div>
+          
+        </header>
+        <div class="post-body"><h2 id="the-definition-that-keeps-coming-back">The definition that keeps coming back</h2>
+<p>In 1998, Mark Maier published a paper in <em>Systems Engineering</em> that defined a category and then told architects how to fail at it less often: <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1002/(sici)1520-6858(1998)1:4%3C267::aid-sys3%3E3.0.co;2-d"><em>Architecting Principles for Systems-of-Systems</em></a>. A system-of-systems (SoS), he argued, is an assemblage of components that individually qualify as systems and that collectively satisfy five characteristics:</p>
+<ol>
+<li><strong>Operational independence</strong> — the elements operate usefully on their own; disassemble the SoS and each part still does its job.</li>
+<li><strong>Managerial independence</strong> — the elements are separately acquired and managed, each with a continuing existence of its own.</li>
+<li><strong>Geographic distribution</strong> — the elements live apart and integration happens over networks.</li>
+<li><strong>Emergent behavior</strong> — the SoS does things that no element does; the capability resides in the interactions.</li>
+<li><strong>Evolutionary development</strong> — the SoS never appears fully formed; functions, purposes, and elements are added, removed, and modified with experience.</li>
+</ol>
+<p>Read that list against any serious multi-agent deployment and the match is exact. Each agent can be invoked alone and is built by a team that owns it (1 and 2). The agents run on different services and machines, integrated over protocols (3). The orchestrated outcome — a report assembled from six specialized agents, a negotiation closed by an ensemble vote — belongs to no single agent (4). And the platform accretes new agents and capabilities continuously, never by one grand design (5). Maier was not anticipating LLM agents in 1998. He was describing a structural category, and agentic systems fell into it the moment they became multi-agent. The paper's value is that it tells you what kind of architecting works when you are in that category — and the honest answer is: not the kind most teams attempt.</p>
+<h2 id="why-classical-architecture-fails-the-sos-test">Why classical architecture fails the SoS test</h2>
+<p>Maier's central claim is that a SoS cannot be architected the way a single system is. Classical systems architecture assumes an architect with authority: someone who can decide the internal design of every component and the sequence in which they are built. A system-of-systems has no such authority — the elements are operationally and managerially independent, so <strong>no one controls the whole</strong>. The SoS architect therefore cannot design the elements; they can only design the conditions under which independently evolving elements interoperate.</p>
+<p>That is why the paper is titled &quot;architecting principles&quot; rather than &quot;design principles.&quot; The architect's instruments are interfaces, standards, and evolution — not control. For agentic systems this is the difference between teams that try to <em>design</em> their multi-agent platform and teams that <em>cultivate</em> it. The teams that fail are the ones who specify every agent's internal prompt, tool list, and memory layout from a central committee and expect the ensemble to behave. The teams that succeed spend their architecture budget on the harness: the contracts, the routing, the shared state, the evaluation — the things that cross the boundaries. This blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">harness patterns series</a> is, read back through this lens, a catalog of SoS architecting: every pattern is a decision about the interfaces between agents, not a recipe for any single agent's internals.</p>
+<p>The principles that follow are Maier's, each translated into the terms of agentic architecture.</p>
+<h2 id="principle-1--the-architecture-must-have-stable-intermediate-forms">Principle 1 — The architecture must have stable intermediate forms</h2>
+<p>Maier's sharpest principle: a SoS must be fieldable and useful at <em>every</em> stage of its evolution, not merely in the imagined end state. You cannot architect for the final integrated system and defer usefulness until everything is connected, because the end state never arrives — the SoS evolves forever. Every intermediate form must be a working system.</p>
+<p>For agents this is a design constraint with teeth: <strong>every agent must be useful alone before it is useful together.</strong> An agent that cannot run standalone — that depends on the fleet to make any sense — is not a stable intermediate form; it is a liability you can only ship in a big bang. The systems that last are the ones built as <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#durable-daemons">durable daemons</a>: each element is a long-lived, independently operable process that earns its keep on its own and becomes more valuable when networked. The same logic applies to the harness: a tool, a skill, or an integration should be shippable in isolation. If the architecture only works in its final, fully-connected state, the architecture is not a system-of-systems — it is a distributed monolith with an evolution problem.</p>
+<h2 id="principle-2--minimize-commonality">Principle 2 — Minimize commonality</h2>
+<p>Maier's recommendation is counterintuitive on its face: <strong>minimize commonality, don't maximize it.</strong> The natural instinct of the integrating architect is to force a shared schema, a shared framework, a shared ontology across every element — one context, one vocabulary, one platform for all. The SoS principle says the opposite: commonality should be forced only where the interface standards demand it, and everywhere else the elements should retain maximum autonomy.</p>
+<p>The reason is managerial and operational independence. The moment you force element internals to conform to a common standard, you have assumed ownership of elements you do not own — and you have frozen the SoS at the pace of its slowest-moving component. For agent systems this shows up as the universal-schema trap: the team that insists every agent emit events in one canonical format, store memory in one vector schema, and expose one tool-calling convention. The blackboard pattern is the instructive exception — <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">shared state is shared risk</a>, and the shared schema is only worth its cost where the interface genuinely requires it. Everywhere else, let each agent be internally whatever its owning team needs it to be, and pay for the integration at the boundary.</p>
+<h2 id="principle-3--design-for-the-evolution-of-standards">Principle 3 — Design for the evolution of standards</h2>
+<p>If the interface standards are the backbone of a SoS, then <strong>standards that cannot evolve become the constraint that freezes the SoS.</strong> Maier's principle is to design the standards with their own evolution path in mind — versioned, replaceable, with a defined migration — or they will outlive their usefulness and hold the whole system hostage to them.</p>
+<p>For agentic platforms this is the protocol lesson, and the evidence is all around: tool schemas, <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/System_of_systems">function-calling contracts</a>, context protocols, and memory formats are the interface standards of the multi-agent age, and they are young. The platforms that design their protocols to evolve — versioned schemas, additive changes, legacy support windows, explicit deprecation — will survive the ones that bake today's tool format in stone. The failure mode is familiar: a single version of the &quot;official&quot; agent protocol, a shared codebase that only one team may touch, a breaking change that forces every element to upgrade simultaneously. That is not evolution; that is a deadline. A SoS is only as evolvable as its least evolvable standard.</p>
+<h2 id="principle-4--the-leverage-is-at-the-interfaces">Principle 4 — The leverage is at the interfaces</h2>
+<p>Maier's most practical directive: in a system-of-systems, <strong>the architect's leverage is concentrated in the interfaces between elements</strong> — the network structure, the exchange formats, the protocols — and not in the internals of the elements. The architect who spends effort redesigning an element they don't own is wasting effort; the architect who decides <em>what crosses the boundary</em> is shaping the whole system.</p>
+<p>For agentic architecture this is where the modern practice converges with the 1998 principle. The <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harness-patterns-for-agentic-ai-systems">harness is the product</a>: the routing rules, the tool contracts, the context budget, the evaluation gates — these are interface decisions, and they are where multi-agent platforms win or lose. Whether an ensemble behaves like a <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#harnessing-agentic-ai-systems-blackboard">directed orchestra or a blackboard of collaborators</a> is decided at the boundaries: what each agent is allowed to see, write, and call. The internals of any individual agent — its prompt, its fine-tune, its tools — are mostly someone else's problem, sometimes literally. The boundary is your problem, and it is the whole ballgame. This is also the economic lens: interfaces are where the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets">mechanisms and incentives</a> live, and where the value of the ensemble is created or destroyed.</p>
+<h2 id="principle-5--assess-by-emergent-behavior">Principle 5 — Assess by emergent behavior</h2>
+<p>If the capability of a SoS resides in the interactions, then <strong>you cannot evaluate a SoS by summing or averaging its elements' performance.</strong> Maier's assessment principle follows directly from the definition: the metric that matters is the emergent behavior of the whole. Each element may be flawless by its own tests and the ensemble still fails end-to-end — and vice versa.</p>
+<p>This is the principle that most multi-agent teams violate. The agent has a 95% pass rate on its unit suite; therefore the pipeline must be fine. But the pipeline is a system-of-systems, and its behavior is emergent: the failure is in the handoff, the context that got truncated, the tool that the orchestrator called with the wrong argument, the ordering that made two agents overwrite shared state. This blog's <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#empirical-se-what-studies-say">empirical-SE discipline</a> is the practical expression of the same rule: evaluate the assembled system with end-to-end, outcome-level tests, not per-element proxies. And the reason to test the whole rather than the parts is the same reason the <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#blind-men-elephant-business-process-automation">blind men and the elephant</a> story is a SoS story: the whole does not exist inside any single element, and no element's view of it is the truth.</p>
+<h2 id="the-four-species-of-system-of-systems">The four species of system-of-systems</h2>
+<p>Maier also gave the field its taxonomy, later extended by the DoD's <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/System_of_systems">Systems Engineering Guide for Systems of Systems</a> — and the taxonomy is the first diagnostic an architect should run, because <strong>the wrong topology choice is a category error.</strong> Four types:</p>
+<ul>
+<li><strong>Directed</strong> — built and managed to fulfill specific purposes; elements integrated and operated under central management. Translation: the orchestrator-worker topology, where one coordinator owns the run and the workers are extensions of it.</li>
+<li><strong>Acknowledged</strong> — recognized objectives and a designated integrator with resources, but the elements retain independent ownership, funding, and development. Translation: the platform model — a company's central platform coordinates agents that individual teams own and evolve at their own pace. Most serious enterprise deployments are acknowledged whether they know it or not.</li>
+<li><strong>Collaborative</strong> — elements voluntarily cooperate toward agreed purposes, with weak or absent central management. Translation: blackboard ensembles and voting patterns, where agents choose to share state or consensus without a director.</li>
+<li><strong>Virtual</strong> — no central management and no agreed purpose; large-scale behavior emerges from the interactions. Translation: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets">agentic markets</a>, where no coordinator exists, agents act on their own incentives, and the system-level outcome is emergent.</li>
+</ul>
+<p>The category errors are the expensive ones. Directing a virtual SoS — mandating behavior in elements no one owns — produces resistance and gaming, the thing <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets">mechanism design</a> exists to avoid. Treating an acknowledged SoS as directed — assuming central ownership of elements that other teams control — produces integration that breaks the moment the other teams ship. And treating a directed SoS as collaborative produces drift where the coordinator should simply decide. The taxonomy is not academic: it tells you how much control you actually have, which tells you which principles apply.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>Five checks for any multi-agent architecture, straight from Maier:</p>
+<ol>
+<li><strong>Name your species.</strong> Directed, acknowledged, collaborative, or virtual — and design the topology, the interfaces, and the evaluation to match the control you actually have, not the control you wish you had.</li>
+<li><strong>Every element must stand alone.</strong> If an agent is not useful in isolation, it is not a stable intermediate form; fix that before networking it.</li>
+<li><strong>Resist forced commonality.</strong> The shared schema is a cost, not a virtue. Pay it only where the interface genuinely requires it.</li>
+<li><strong>Budget your architecture effort at the boundaries.</strong> The harness, the contracts, the routing, the shared state — not the internals of agents you don't own.</li>
+<li><strong>Evaluate the emergent whole.</strong> End-to-end outcomes over per-agent metrics, always.</li>
+</ol>
+<p>Maier's 1998 insight survives because it is structural: whenever a large system is made of independently operating, independently owned, geographically distributed parts whose value emerges from their interaction, the architect who tries to design it like a monolith loses, and the architect who cultivates it wins. The multi-agent age did not invent the system-of-systems. It just made the category impossible to ignore.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

@@ -22,7 +22,7 @@ Why does this work at all? Routine business tasks have structure shared across i
 
 The same logic defines where the lever stops working:
 
-- **Repetitive tasks adapt; diverse tasks resist.** Task diversity (average Levenshtein distance between tool-call sequences) correlates with optimized performance at ρ = −0.96. Controlled: going from 3 workflow templates to 20 drops accuracy from 89.1% to 68.0%. Low-entropy tasks are exactly the ones where a harness can win the fight — the quantitative version of this blog's [tasks that fight back](https://blog.hackspree.com/#tasks-that-fight-back) argument.
+- **Repetitive tasks adapt; diverse tasks resist.** Task diversity (average Levenshtein distance between tool-call sequences) correlates with optimized performance at ρ = −0.96. Controlled: going from 3 workflow templates to 20 drops accuracy from 89.1% to 68.0%. Low-entropy tasks are exactly the ones where a harness can win the fight — the quantitative version of this blog's [tasks that fight back](https://blog.hackspree.com/#agent-harnesses-need-tasks-that-fight-back) argument.
 - **Capable SLMs benefit more.** Stronger models gain +48.8% from adaptation vs. +15.5% for the weakest — the harness offloads the repetitive parts; the model must still handle what can't be delegated.
 - **Harnesses can't manufacture capability.** The weakest model stays at 0.0% on two of seven tasks no matter what the harness does; website-management resists at 45.6% even for the best SLM.
 

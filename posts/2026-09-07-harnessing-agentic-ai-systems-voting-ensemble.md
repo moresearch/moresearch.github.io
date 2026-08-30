@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Voting / Consensual Ensemble Pattern"
-date: 2026-09-07
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-voting-ensemble
 summary: "Problem 15 of 15: producing a verdict no single model can fake. The Voting / Consensual Ensemble pattern, the Committee Paradox anti-pattern, the Generator–Evaluator Loop and Live-Environment Evaluators frontiers — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, verification, ensembles, evaluation

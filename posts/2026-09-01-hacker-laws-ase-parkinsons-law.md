@@ -1,6 +1,6 @@
 ---
 title: "Hacker Laws for Agentic Software Engineering: Parkinson's Law"
-date: 2026-09-01
+date: 2026-08-28
 slug: hacker-laws-ase-parkinsons-law
 summary: "Law 9 of 12. Parkinson's Law says work expands so as to fill the time available for its completion. The ASE key insight: agent work expands to fill the budget — the context window and the token budget — so the budget is the discipline and the scope is a contract agreed before the work."
 tags: hacker-laws, agentic-software-engineering, series, parkinsons-law, scope, budgets, context

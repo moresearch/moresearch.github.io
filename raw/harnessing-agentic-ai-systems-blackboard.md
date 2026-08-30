@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Blackboard Pattern"
-date: 2026-09-05
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-blackboard
 summary: "Problem 13 of 15: coordinating through shared state without corruption. The Blackboard (Shared Workspace) pattern vs the State Race Conditions anti-pattern — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, orchestration, shared-state, choreography

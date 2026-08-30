@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Orchestrator-Worker Pattern"
-date: 2026-09-04
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-orchestrator-worker
 summary: "Problem 12 of 15: dividing a workflow across agents. The Orchestrator-Worker pattern, the God Agent anti-pattern, the Sprint Contracts frontier — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, orchestration, delegation, multi-agent

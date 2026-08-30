@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Sequential Pipeline Routing Pattern"
-date: 2026-09-06
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-sequential-pipeline-routing
 summary: "Problem 14 of 15: keeping linear flows linear. The Sequential Pipeline Routing pattern — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, orchestration, pipelines, chains

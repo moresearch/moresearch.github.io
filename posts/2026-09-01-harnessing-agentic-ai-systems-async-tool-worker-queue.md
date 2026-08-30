@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Asynchronous Tool Worker Queue Pattern"
-date: 2026-09-01
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-async-tool-worker-queue
 summary: "Problem 9 of 15: not blocking the loop on long tools. The Asynchronous Tool Worker Queue pattern — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, tool-binding, async, queues

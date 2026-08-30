@@ -1,6 +1,6 @@
 ---
 title: "Hacker Laws for Agentic Software Engineering: Kernighan's Law"
-date: 2026-08-31
+date: 2026-08-28
 slug: hacker-laws-ase-kernighans-law
 summary: "Law 8 of 12. Kernighan's Law says debugging is twice as hard as writing the code in the first place. The ASE key insight: if the agent writes clever code, the system must debug it — keep agent output boring and make the verifier the smarter half."
 tags: hacker-laws, agentic-software-engineering, series, kernighans-law, debugging, verification, simplicity

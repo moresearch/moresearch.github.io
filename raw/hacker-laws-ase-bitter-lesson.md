@@ -1,6 +1,6 @@
 ---
 title: "Hacker Laws for Agentic Software Engineering: The Bitter Lesson"
-date: 2026-09-03
+date: 2026-08-28
 slug: hacker-laws-ase-bitter-lesson
 summary: "Law 11 of 12. Sutton's Bitter Lesson says general methods that leverage computation are ultimately the most effective. The ASE key insight: the loop that leverages computation beats the hand-crafted prompt — and the agent will apply the same lesson to your harness."
 tags: hacker-laws, agentic-software-engineering, series, bitter-lesson, sutton, compute, loops

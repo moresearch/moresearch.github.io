@@ -1,6 +1,6 @@
 ---
 title: "Make Stories from Events: Why Event-Sourced Systems Need a Narrative Layer"
-date: 2026-08-29
+date: 2026-08-30
 slug: stories-from-events
 summary: "The brain does not experience reality raw — it segments it into scenes, edits it into stories, and matches those stories against a library of familiar scripts. Event-sourced systems keep only the raw footage. This post argues for projecting a story layer over the event log, and for comparing stories to stories instead of events to events."
 tags: [event-sourcing, cognitive-science, story-abstraction, cqrs, sagas, similarity, case-based-reasoning]

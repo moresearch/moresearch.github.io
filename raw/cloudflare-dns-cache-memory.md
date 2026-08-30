@@ -1,6 +1,6 @@
 ---
 title: "953 Bytes to 420: How Cloudflare Freed 100TB of RAM by Redesigning Its DNS Cache"
-date: 2026-08-29
+date: 2026-08-30
 slug: cloudflare-dns-cache-memory
 summary: "Five Rust-level changes to Big Pineapple, the platform behind 1.1.1.1, cut each DNS cache entry from 953 to 420 bytes — freeing roughly 100TB across the fleet (the DDR5 of 130 Gen 13 servers) while making the cache faster: insert throughput up 43%, lookup latency down 19%. At 250 billion entries, every byte is a budget line."
 tags: [cloudflare, dns, rust, memory, cache, systems-design, performance, 1.1.1.1, jemalloc, big-pineapple]

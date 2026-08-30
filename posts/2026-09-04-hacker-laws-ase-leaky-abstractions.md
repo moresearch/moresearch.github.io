@@ -1,6 +1,6 @@
 ---
 title: "Hacker Laws for Agentic Software Engineering: The Law of Leaky Abstractions"
-date: 2026-09-04
+date: 2026-08-28
 slug: hacker-laws-ase-leaky-abstractions
 summary: "Law 12 of 12. Spolsky's Law of Leaky Abstractions says all non-trivial abstractions, to some degree, are leaky. The ASE key insight: every abstraction the agent lives on leaks — and the leak layer is where the harness must put the verifier, because the model cannot see the leak."
 tags: hacker-laws, agentic-software-engineering, series, leaky-abstractions, spolsky, abstractions, verification

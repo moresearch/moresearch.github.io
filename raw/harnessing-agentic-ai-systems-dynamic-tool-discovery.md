@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Dynamic Tool Discovery Pattern"
-date: 2026-09-03
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-dynamic-tool-discovery
 summary: "Problem 11 of 15: discovering capabilities without bloating the prompt. The Dynamic Tool Discovery / Registry pattern, the Bloated Utility Belt anti-pattern, the Interop Layer frontier — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, tool-binding, discovery, registry, interop

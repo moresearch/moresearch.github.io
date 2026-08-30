@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Schema Enforcement & Self-Correction Pattern"
-date: 2026-08-31
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-schema-enforcement-self-correction
 summary: "Problem 8 of 15: typing tool output and keeping errors legible. The Schema Enforcement & Self-Correction pattern vs the Silent Crash and Schema Free-for-All anti-patterns — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, tool-binding, schemas, errors

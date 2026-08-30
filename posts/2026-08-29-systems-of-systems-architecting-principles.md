@@ -1,6 +1,6 @@
 ---
 title: "Architecting Principles for Systems-of-Systems (Applied to Agentic AI)"
-date: 2026-08-29
+date: 2026-08-30
 slug: systems-of-systems-architecting-principles
 summary: "Mark Maier's 1998 Systems Engineering paper defined a system-of-systems: elements that are operationally and managerially independent, geographically distributed, and producing behavior that resides in no single element — architected by evolution, not top-down design. Every multi-agent deployment is a system-of-systems, whether its builders admit it or not. The five principles and what they mean when the elements are agents."
 tags: [systems-of-systems, architecture, maier, multi-agent-systems, emergent-behavior, interfaces, standards, orchestration, harness-engineering, agentic-ai]

@@ -1,6 +1,6 @@
 ---
 title: "Harnessing Agentic AI Systems: Mock Tool Virtualization Pattern"
-date: 2026-09-02
+date: 2026-08-28
 slug: harnessing-agentic-ai-systems-mock-tool-virtualization
 summary: "Problem 10 of 15: making the fast loop repeatable. The Mock Tool Virtualization pattern — one table, a short discussion, the key insight, and the important references."
 tags: harness, pattern-language, agentic-ai, series, tool-binding, testing, replay

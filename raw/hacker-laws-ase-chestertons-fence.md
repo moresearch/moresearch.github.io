@@ -1,6 +1,6 @@
 ---
 title: "Hacker Laws for Agentic Software Engineering: Chesterton's Fence"
-date: 2026-09-02
+date: 2026-08-28
 slug: hacker-laws-ase-chestertons-fence
 summary: "Law 10 of 12. Chesterton's Fence says reforms should not be made until the reasoning behind the existing state of affairs is understood. The ASE key insight: the harness must make the agent find out why the code is there before letting it change — intent is a verification problem."
 tags: hacker-laws, agentic-software-engineering, series, chestertons-fence, legacy, intent, refactoring

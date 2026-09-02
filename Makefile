@@ -16,7 +16,7 @@ slides:
 	  pdflatex -output-directory=public/slides -jobname=$$(printf "%03d" $$n) $$f; \
 	done
 
-index.html: build_blog.go go.mod go.sum logo.png $(POSTS)
+index.html: build_blog.go go.mod go.sum logoicon2.png $(POSTS)
 	GOCACHE=$(GOCACHE) $(GO) run . --input-dir posts --output index.html $(if $(TODAY),--today $(TODAY),)
 
 clean:

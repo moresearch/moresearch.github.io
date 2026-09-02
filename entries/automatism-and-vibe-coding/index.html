@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#02391f">
   <meta name="description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation — which is what the culture calls vibe coding. This post follows the automatist tradition — the cafés of 1919, Masson&#39;s wandering pen, Pollock&#39;s pours, the cadavre exquis, Magritte&#39;s warning — to the practice problem at the heart of vibe coding: what you do with the automatic output is the whole craft.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/automatism-and-vibe-coding/">
@@ -12,13 +13,13 @@
   <meta property="og:description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation — which is what the culture calls vibe coding. This post follows the automatist tradition — the cafés of 1919, Masson&#39;s wandering pen, Pollock&#39;s pours, the cadavre exquis, Magritte&#39;s warning — to the practice problem at the heart of vibe coding: what you do with the automatic output is the whole craft.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/automatism-and-vibe-coding/">
   <meta property="og:type" content="article">
-  <meta property="og:image" content="https://blog.hackspree.com/logo.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
+  <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
+  <meta property="og:image:width" content="257">
+  <meta property="og:image:height" content="705">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Automatism and Vibe Coding">
   <meta name="twitter:description" content="André Breton defined Surrealism as &#39;psychic automatism&#39; — the dictation of thought in the absence of any control exercised by reason. A coding agent is the most literal heir of that idea ever built: it generates code by sampling a latent distribution, without deliberation — which is what the culture calls vibe coding. This post follows the automatist tradition — the cafés of 1919, Masson&#39;s wandering pen, Pollock&#39;s pours, the cadavre exquis, Magritte&#39;s warning — to the practice problem at the heart of vibe coding: what you do with the automatic output is the whole craft.">
-  <meta name="twitter:image" content="https://blog.hackspree.com/logo.png">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -27,48 +28,48 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
   <style>
     :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
-    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#000!important;color:#fff!important}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#02391f!important;color:#eafff3!important}
     *{box-sizing:border-box}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
     a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
     code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
-    .bg{position:fixed;inset:0;background:#000;z-index:0}
+    .bg{position:fixed;inset:0;background:#02391f;z-index:0}
     .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
     .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
-    .back-link{display:inline-block;margin-bottom:32px;color:#9ca3af;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
-    .back-link:hover{color:#fff}
-    .post-meta,.tag{margin:0;color:#9ca3af;letter-spacing:0.18em;text-transform:uppercase}
+    .back-link{display:inline-block;margin-bottom:32px;color:#79c2a0;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#eafff3}
+    .post-meta,.tag{margin:0;color:#79c2a0;letter-spacing:0.18em;text-transform:uppercase}
     .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
-    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#fff}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#f3fff8}
     h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
     h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
-    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(255,255,255,0.14);color:#c0c8d2;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(0,224,128,0.30);color:#d6f5e4;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
     .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
-    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#6b7280;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
-    .raw-link:hover,.raw-link:focus-visible{color:#fff;opacity:1}
-    .post-body{margin-top:18px;color:#9099a5;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#4f9e77;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#00f090;opacity:1}
+    .post-body{margin-top:18px;color:#8fd9b4;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
     .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
     .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
     .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
-    .post-body table th,.post-body table td{border:1px solid rgba(255,255,255,.12);padding:6px 8px;vertical-align:top;text-align:left}
-    .post-body table th{color:#c0c8d2;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(255,255,255,.04)}
-    .post-body table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
-    .post-body h2,.post-body h3{font-size:0.62rem;color:#fff;font-family:"Orbitron",Arial,sans-serif}
-    .post-body a,.post-body strong,.post-body code{color:#fff}.post-body a{text-decoration:none}
-    .post-body a:hover{color:#d1d5db}
-    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#060606;box-shadow:0 20px 48px rgba(0,0,0,0.36)}
-    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:#060606;overflow:hidden}
+    .post-body table th,.post-body table td{border:1px solid rgba(0,224,128,0.18);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#d6f5e4;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(0,224,128,.08)}
+    .post-body table tr:nth-child(even) td{background:rgba(0,224,128,.035)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#f3fff8;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#eafff3}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#00f090}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(0,224,128,0.20);border-radius:12px;background:#021a0e;box-shadow:0 20px 48px rgba(0,0,0,0.4)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(0,224,128,0.25);border-radius:8px;background:#021a0e;overflow:hidden}
     .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
-    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#8a8a8a;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#79c2a0;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
     .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
-    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(255,255,255,0.42);color:#fff;font-weight:600}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(0,240,144,0.55);color:#eafff3;font-weight:600}
     .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
-    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid #121212;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#585858 #000}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid rgba(0,224,128,0.20);color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#2e8b57 #000}
     .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
     .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
     .post-body pre:hover{scrollbar-width:thin}
     .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
-    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#585858}
-    .post-body pre:hover::-webkit-scrollbar-thumb{background:#8a8a8a}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#2e8b57}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#5fb98b}
     .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
     .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
     .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}

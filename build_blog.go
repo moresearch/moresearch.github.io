@@ -43,6 +43,7 @@ var (
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#02391f">
   <meta name="description" content="{{.MetaDescription}}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{.SiteURL}}">
@@ -51,13 +52,13 @@ var (
   <meta property="og:description" content="{{.MetaDescription}}">
   <meta property="og:url" content="{{.SiteURL}}">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="{{.SiteURL}}logo.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
+  <meta property="og:image" content="{{.SiteURL}}logoicon2.png">
+  <meta property="og:image:width" content="257">
+  <meta property="og:image:height" content="705">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{.PageTitle}}">
   <meta name="twitter:description" content="{{.MetaDescription}}">
-  <meta name="twitter:image" content="{{.SiteURL}}logo.png">
+  <meta name="twitter:image" content="{{.SiteURL}}logoicon2.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -83,8 +84,8 @@ var (
       width: 100% !important;
       min-width: 100% !important;
       min-height: 100% !important;
-      background: #000 !important;
-      color: #fff !important;
+      background: #02391f !important;
+      color: #eafff3 !important;
     }
 
     * {
@@ -117,7 +118,7 @@ var (
     .bg {
       position: fixed;
       inset: 0;
-      background: #000;
+      background: #02391f;
       z-index: 0;
     }
 
@@ -171,10 +172,8 @@ var (
       display: block;
       width: auto;
       height: auto;
-      max-width: 156vh;
-      max-height: 117%;
-      transform: rotate(-90deg) scale(1.15);
-      transform-origin: center center;
+      max-width: min(240px, 100%);
+      max-height: min(58vh, 640px);
     }
 
     .content-side {
@@ -207,7 +206,7 @@ var (
     .post-meta,
     .tag {
       margin: 0;
-      color: #9ca3af;
+      color: #79c2a0;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -221,7 +220,7 @@ var (
       display: inline-flex;
       align-items: center;
       margin-left: 0.55em;
-      color: #6b7280;
+      color: #4f9e77;
       vertical-align: middle;
       text-decoration: none;
       opacity: 0.9;
@@ -230,7 +229,7 @@ var (
 
     .raw-link:hover,
     .raw-link:focus-visible {
-      color: #ffffff;
+      color: #00f090;
       opacity: 1;
     }
 
@@ -256,9 +255,9 @@ var (
       top: 50%;
       width: 8px;
       height: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      border-left: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(10, 10, 10, 0.96);
+      border-top: 1px solid rgba(0, 224, 128, 0.30);
+      border-left: 1px solid rgba(0, 224, 128, 0.30);
+      background: rgba(2, 26, 14, 0.96);
       transform: translateY(-50%) rotate(-45deg);
       z-index: 2;
     }
@@ -270,9 +269,9 @@ var (
       top: 50%;
       padding: 6px 10px;
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(10, 10, 10, 0.96);
-      color: #fff;
+      border: 1px solid rgba(0, 224, 128, 0.30);
+      background: rgba(2, 26, 14, 0.96);
+      color: #d9ffe9;
       font-size: 0.44rem;
       letter-spacing: 0.08em;
       line-height: 1.4;
@@ -302,7 +301,7 @@ var (
       line-height: 1.2;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #fff;
+      color: #f3fff8;
     }
 
     h1 {
@@ -339,7 +338,7 @@ var (
     }
 
     .nav-rail:hover {
-      scrollbar-color: #9ca3af transparent;
+      scrollbar-color: #79c2a0 transparent;
     }
 
     .nav-rail::-webkit-scrollbar {
@@ -356,7 +355,7 @@ var (
     }
 
     .nav-rail:hover::-webkit-scrollbar-thumb {
-      background: #9ca3af;
+      background: #79c2a0;
     }
 
     .nav-head {
@@ -366,7 +365,7 @@ var (
 
     .posts-nav-empty,
     .posts-nav a {
-      color: #9ca3af;
+      color: #79c2a0;
       display: block;
       width: 100%;
       padding-left: 10px;
@@ -381,13 +380,13 @@ var (
     }
 
     .posts-nav a:hover {
-      color: #fff;
+      color: #eafff3;
     }
 
     .posts-nav a.is-active,
     .posts-nav a[aria-current="true"] {
-      color: #fff;
-      border-left-color: rgba(255, 255, 255, 0.92);
+      color: #f3fff8;
+      border-left-color: rgba(0, 240, 144, 0.92);
     }
 
     .posts-nav-links {
@@ -398,7 +397,7 @@ var (
     .posts-nav-links > * + * {
       margin-top: 10px;
       padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-top: 1px solid rgba(0, 224, 128, 0.22);
     }
 
     .post-list {
@@ -408,7 +407,7 @@ var (
     .post + .post {
       margin-top: 28px;
       padding-top: 28px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid rgba(0, 224, 128, 0.16);
     }
 
     .post-header > * + * {
@@ -418,8 +417,8 @@ var (
     .post-summary {
       max-width: 54ch;
       padding-left: 12px;
-      border-left: 1px solid rgba(255, 255, 255, 0.14);
-      color: #c0c8d2;
+      border-left: 1px solid rgba(0, 224, 128, 0.30);
+      color: #d6f5e4;
       font-size: 0.62rem;
       line-height: 1.78;
       letter-spacing: 0.04em;
@@ -439,7 +438,7 @@ var (
 
     .post-body {
       margin-top: 18px;
-      color: #9099a5;
+      color: #8fd9b4;
       font-size: 0.74rem;
       letter-spacing: 0.02em;
       line-height: 1.76;
@@ -475,35 +474,35 @@ var (
 
     .post-body table th,
     .post-body table td {
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(0, 224, 128, 0.18);
       padding: 6px 8px;
       vertical-align: top;
       text-align: left;
     }
 
     .post-body table th {
-      color: #c0c8d2;
+      color: #d6f5e4;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-weight: 600;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(0, 224, 128, 0.08);
     }
 
     .post-body table tr:nth-child(even) td {
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(0, 224, 128, 0.035);
     }
 
     .post-body h2,
     .post-body h3 {
       font-size: 0.62rem;
-      color: #fff;
+      color: #f3fff8;
       font-family: "Orbitron", Arial, sans-serif;
     }
 
     .post-body a,
     .post-body strong,
     .post-body code {
-      color: #fff;
+      color: #eafff3;
     }
 
     .post-body a {
@@ -511,16 +510,16 @@ var (
     }
 
     .post-body a:hover {
-      color: #d1d5db;
+      color: #00f090;
     }
 
     .post-body img {
       width: min(720px, 100%);
       margin: 28px 0 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 224, 128, 0.20);
       border-radius: 12px;
-      background: #060606;
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
+      background: #021a0e;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
     }
 
     .post-body figure.fig-thumb {
@@ -528,9 +527,9 @@ var (
       width: 250px;
       margin: 0 12px 14px 0;
       vertical-align: top;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(0, 224, 128, 0.25);
       border-radius: 8px;
-      background: #060606;
+      background: #021a0e;
       overflow: hidden;
     }
 
@@ -545,7 +544,7 @@ var (
 
     .post-body figure.fig-thumb figcaption {
       padding: 7px 9px;
-      color: #8a8a8a;
+      color: #79c2a0;
       font-size: 9px;
       line-height: 1.55;
       letter-spacing: 0.02em;
@@ -564,8 +563,8 @@ var (
     .post-body blockquote {
       max-width: 34ch;
       padding-left: 18px;
-      border-left: 2px solid rgba(255, 255, 255, 0.42);
-      color: #fff;
+      border-left: 2px solid rgba(0, 240, 144, 0.55);
+      color: #eafff3;
       font-weight: 600;
     }
 
@@ -584,13 +583,13 @@ var (
       padding: 18px;
       border-radius: 0;
       background: var(--syntax-bg);
-      border: 1px solid #121212;
+      border: 1px solid rgba(0, 224, 128, 0.20);
       color: var(--syntax-normal);
       font-family: "Sudo Var", monospace;
       font-size: 14px;
       line-height: 20px;
       scrollbar-width: none;
-      scrollbar-color: #585858 #000;
+      scrollbar-color: #2e8b57 #000;
     }
 
     .post-body pre code {
@@ -630,11 +629,11 @@ var (
     }
 
     .post-body pre::-webkit-scrollbar-thumb {
-      background: #585858;
+      background: #2e8b57;
     }
 
     .post-body pre:hover::-webkit-scrollbar-thumb {
-      background: #8a8a8a;
+      background: #5fb98b;
     }
 
     .post-body .hljs-comment,
@@ -694,7 +693,7 @@ var (
     .empty-state {
       margin-top: 42px;
       max-width: 100%;
-      color: #9ca3af;
+      color: #79c2a0;
       font-size: 0.74rem;
       line-height: 1.9;
       letter-spacing: 0.18em;
@@ -728,9 +727,8 @@ var (
       }
 
       .logo {
-        transform: none;
-        max-width: 252px;
-        max-height: 206px;
+        max-width: min(150px, 70vw);
+        max-height: 30vh;
       }
 
       .content-side {
@@ -770,7 +768,7 @@ var (
       <aside class="logo-side">
         <div class="logo-rail">
           <a class="logo-link" href="https://hackspree.com/" aria-label="Hackspree home">
-            <img src="/logo.png" alt="Hackspree logo" class="logo">
+            <img src="/logoicon2.png" alt="Hackspree logo" class="logo">
           </a>
         </div>
       </aside>

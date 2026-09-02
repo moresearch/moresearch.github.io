@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#02391f" />
   <title>Talk {{ID}} — Hackspree</title>
   <link rel="icon" href="/favicon/favicon.ico" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root{--sidebar:220px;--gap:40px;--bg:#000}
-    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:'IBM Plex Mono',monospace}
+    :root{--sidebar:220px;--gap:40px;--bg:#02391f}
+    html,body{height:100%;margin:0;background:var(--bg);color:#eafff3;font-family:'IBM Plex Mono',monospace}
     .talk-shell{min-height:100dvh;width:min(1440px,100%);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:var(--gap);padding:32px 24px;box-sizing:border-box;align-items:center}
 
     /* Left rail: centered logo only */
@@ -19,11 +20,11 @@
     /* Right: preview and actions */
     .talk-preview{position:relative;min-width:0;display:grid;align-items:center;justify-items:center}
     .talk-actions{position:absolute;top:12px;right:12px;display:inline-flex;gap:10px;z-index:2}
-    .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(255,255,255,0.18);color:#fff;text-decoration:none;background:rgba(0,0,0,0.5)}
+    .icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid rgba(0,224,128,0.30);color:#eafff3;text-decoration:none;background:rgba(2,26,14,0.6)}
     .icon-btn i{font-size:16px}
 
     .preview-link{display:block;width:100%;min-width:0}
-    .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#111;border:1px solid rgba(255,255,255,0.16)}
+    .preview-image{display:block;width:100%;max-height:calc(100dvh - 96px);object-fit:contain;background:#021a0e;border:1px solid rgba(0,224,128,0.24)}
     /* fullscreen presentation tweaks */
     .talk-preview:fullscreen .talk-actions,
     .talk-preview:-webkit-full-screen .talk-actions,
@@ -47,7 +48,7 @@
   <main class="talk-shell">
     <aside class="talk-rail" aria-label="Hackspree logo rail">
       <a class="brand-link" href="https://hackspree.com/" aria-label="Hackspree home" title="Hackspree">
-        <img class="brand-logo" src="https://hackspree.com/logo.png" alt="Hackspree">
+        <img class="brand-logo" src="https://hackspree.com/logoicon2.png" alt="Hackspree">
       </a>
     </aside>
 
@@ -106,7 +107,7 @@
         if(section){
           var refs = document.createElement('div');
           refs.className = 'talk-references';
-          refs.style.cssText = 'position:absolute;left:12px;bottom:12px;right:12px;color:#ddd;font-size:14px;padding:12px;background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.45));border-radius:8px;border:1px solid rgba(255,255,255,0.06);max-width:calc(100% - 24px);';
+          refs.style.cssText = 'position:absolute;left:12px;bottom:12px;right:12px;color:#d9ffe9;font-size:14px;padding:12px;background:linear-gradient(180deg, rgba(2,26,14,0.0), rgba(2,26,14,0.55));border-radius:8px;border:1px solid rgba(0,224,128,0.18);max-width:calc(100% - 24px);';
           var title = document.createElement('div'); title.textContent = 'References'; title.style.fontWeight='600'; title.style.marginBottom='6px';
           refs.appendChild(title);
           var ul = document.createElement('ul');
@@ -117,7 +118,7 @@
             var a = document.createElement('a');
             a.href = u; a.target='_blank'; a.rel='noopener noreferrer';
             a.textContent = u.replace(/^https?:\/\/blog\.hackspree\.com\//, '');
-            a.style.color = '#9fd3ff';
+            a.style.color = '#00f090';
             li.appendChild(a);
             ul.appendChild(li);
           });

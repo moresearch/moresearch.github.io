@@ -97,6 +97,18 @@ var (
       box-sizing: border-box;
     }
 
+    ::selection {
+      background: #00f090;
+      color: #021a0e;
+      text-shadow: none;
+    }
+
+    ::-moz-selection {
+      background: #00f090;
+      color: #021a0e;
+      text-shadow: none;
+    }
+
     body {
       position: relative;
       overflow-x: hidden;

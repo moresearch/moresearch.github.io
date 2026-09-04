@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#02391f">
+  <meta name="description" content="Go 1.27 ships a goroutine leak profiler that stops guessing: it reuses the garbage collector&#39;s reachability machinery to prove, for goroutines blocked on channels and sync primitives, which ones can never be unblocked. What the article on go.dev announces, why the design is a decision procedure instead of another dashboard, and where the proof deliberately ends.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/goroutine-leak-profiles/">
+  <title>The Garbage Collector Can Prove Your Goroutine Leaked — hackspree</title>
+  <meta property="og:title" content="The Garbage Collector Can Prove Your Goroutine Leaked">
+  <meta property="og:description" content="Go 1.27 ships a goroutine leak profiler that stops guessing: it reuses the garbage collector&#39;s reachability machinery to prove, for goroutines blocked on channels and sync primitives, which ones can never be unblocked. What the article on go.dev announces, why the design is a decision procedure instead of another dashboard, and where the proof deliberately ends.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/goroutine-leak-profiles/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
+  <meta property="og:image:width" content="257">
+  <meta property="og:image:height" content="705">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Garbage Collector Can Prove Your Goroutine Leaked">
+  <meta name="twitter:description" content="Go 1.27 ships a goroutine leak profiler that stops guessing: it reuses the garbage collector&#39;s reachability machinery to prove, for goroutines blocked on channels and sync primitives, which ones can never be unblocked. What the article on go.dev announces, why the design is a decision procedure instead of another dashboard, and where the proof deliberately ends.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
+  <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#02391f!important;color:#eafff3!important}
+    *{box-sizing:border-box}::selection{background:#00f090;color:#021a0e;text-shadow:none}::-moz-selection{background:#00f090;color:#021a0e;text-shadow:none}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#02391f;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#79c2a0;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#eafff3}
+    .post-meta,.tag{margin:0;color:#79c2a0;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#f3fff8}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(0,224,128,0.30);color:#d6f5e4;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#4f9e77;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#00f090;opacity:1}
+    .post-body{margin-top:18px;color:#8fd9b4;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(0,224,128,0.18);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#d6f5e4;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(0,224,128,.08)}
+    .post-body table tr:nth-child(even) td{background:rgba(0,224,128,.035)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#f3fff8;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#eafff3}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#00f090}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(0,224,128,0.20);border-radius:12px;background:#021a0e;box-shadow:0 20px 48px rgba(0,0,0,0.4)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(0,224,128,0.25);border-radius:8px;background:#021a0e;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#79c2a0;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(0,240,144,0.55);color:#eafff3;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid rgba(0,224,128,0.20);color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#2e8b57 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#2e8b57}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#5fb98b}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-09-04">2026-09-04</time></p>
+          <h1>The Garbage Collector Can Prove Your Goroutine Leaked<a class="raw-link" href="https://blog.hackspree.com/raw/goroutine-leak-profiles.md" title="Raw markdown source" aria-label="Raw markdown source of The Garbage Collector Can Prove Your Goroutine Leaked" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Go 1.27 ships a goroutine leak profiler that stops guessing: it reuses the garbage collector&#39;s reachability machinery to prove, for goroutines blocked on channels and sync primitives, which ones can never be unblocked. What the article on go.dev announces, why the design is a decision procedure instead of another dashboard, and where the proof deliberately ends.</p>
+          <div class="tags"><span class="tag">golang</span><span class="tag">go1.27</span><span class="tag">concurrency</span><span class="tag">goroutines</span><span class="tag">pprof</span><span class="tag">garbage-collection</span><span class="tag">runtime</span><span class="tag">debugging</span><span class="tag">observability</span></div>
+          
+        </header>
+        <div class="post-body"><p><a target="_blank" rel="noopener noreferrer" href="https://go.dev/blog/goroutine-leak-profiles">Goroutine Leak Profiles</a> is one of those Go blog posts where the headline feature is almost less interesting than the trick behind it. Go 1.27 introduces a profiler that finds goroutine leaks — and the detection mechanism is not a new monitoring heuristics. It is a proof, computed by the garbage collector, that a given goroutine can never run again.</p>
+<p>That inverts how leak hunting has always worked, and it is worth understanding exactly why it works, where it stops working, and what it costs.</p>
+<h2 id="the-leak-that-the-other-tools-miss">The leak that the other tools miss</h2>
+<p>A goroutine leak is a goroutine that is blocked forever: the condition that would unblock it can never be met. A worker parked on an unbuffered channel send whose receiver has already returned, a mutex waiter whose lock holder broke out of its loop without unlocking, a <code>WaitGroup</code> waiter whose counter will never reach zero.</p>
+<p>The cost is compounding. Each leaked goroutine pins its stack and everything it references, so memory grows without bound while the garbage collector pays to scan it — worse under <code>GOMEMLIMIT</code>, where the GC starts thrashing against a hard ceiling. In production the symptom shows up as a slow memory creep and then an incident, and the diagnosis is usually painful.</p>
+<p>The existing tooling covers two layers but not the third. <a target="_blank" rel="noopener noreferrer" href="https://github.com/uber-go/goleak"><code>goleak</code></a> instruments unit tests and flags any goroutine still alive when a test ends — excellent at the developer's desk. <a target="_blank" rel="noopener noreferrer" href="https://go.dev/blog/synctest"><code>synctest</code></a> (Go 1.25) makes concurrent tests deterministic so those leaks actually reproduce. But neither runs in production, and the production tool that <em>does</em> exist, the goroutine profile, only gives you counts and stacks. A microservice under load will show thousands of goroutines blocked in a channel receive <em>by design</em>; a leak of two goroutines per request fan-out is invisible against that baseline until the memory graph turns into a hockey stick. The classic workflow — diff goroutine dumps over time, read stacks, hypothesize — is human pattern-matching on top of sampling noise.</p>
+<h2 id="liveness-is-reachability-in-disguise">Liveness is reachability in disguise</h2>
+<p>The Go 1.27 feature, announced on the Go blog by Vlad Saioc (<a target="_blank" rel="noopener noreferrer" href="https://go.dev/blog/goroutine-leak-profiles">Goroutine Leak Profiles</a>), starts from an observation that sounds almost too simple: if a goroutine is blocked on a concurrency primitive that nothing else can reach, it is obviously leaked. Generalize that into an inductive definition of <em>liveness</em>:</p>
+<ul>
+<li>a goroutine is <strong>live</strong> if it is not blocked by a concurrency primitive, or</li>
+<li>if at least one concurrency primitive that blocks it is referenced by another live goroutine.</li>
+</ul>
+<p>The base case is unblocked goroutines — they can always act. The inductive step assumes a live goroutine will eventually touch the primitives it references, unblocking whoever waits on them. Everything reachable from live goroutines, transitively, is live; everything blocked and unreachable is leaked.</p>
+<p>Now notice what that definition is. &quot;Reachable from a set of roots, transitively&quot; is precisely what a garbage collector computes for memory. A goroutine leak, under this definition, is garbage that is still scheduled. The GC just needed its mark roots redefined: instead of rooting all goroutines (so they are never collected), root only the <em>unblocked</em> ones, mark what they reference, then iteratively add any blocked goroutine whose blocking primitive got marked, and repeat until the closure is stable. Whatever blocked goroutines remain are leaked. It is deadlock detection by conservation of reachability — the runtime already had the reachability engine; the paper behind this just pointed it at a different question.</p>
+<p>That reframing is what makes this a <em>decision procedure</em> rather than another dashboard. Previous approaches required a human to look at counts and stacks and decide &quot;these are growing, therefore suspicious.&quot; This feature computes, for the class of leaks it targets, an answer: leaked, or not leaked. No baseline, no traffic normalization, no trend analysis.</p>
+<h2 id="the-cut-is-principled-not-arbitrary">The cut is principled, not arbitrary</h2>
+<p>The profiler only considers goroutines blocked on channels — send, receive, blocking <code>select</code> without a default case, even <code>select {}</code> and nil channels — and on the <code>sync</code> primitives <code>Mutex</code>, <code>RWMutex</code>, <code>WaitGroup</code>, and <code>Cond</code>. Everything else — file and network I/O, system calls, hand-rolled spin locks — is never considered leaked.</p>
+<p>This is the part of the design I find genuinely elegant, because the restriction is not a conservative v1 choice. It is the exact boundary where the definition stays decidable. For a goroutine blocked on I/O, unblocking depends on the state of the <em>world</em> — a socket, a file, another process — none of which lives in the heap. For a goroutine blocked on a channel or a mutex, unblocking depends only on memory: who else holds a reference to this primitive, and can that goroutine act on it. Memory-based liveness analysis is sound exactly when the wake-up condition is memory-based too. The cut follows the physics of the runtime.</p>
+<p>And empirically it covers a lot: the article's examples are drawn from real production code — <a target="_blank" rel="noopener noreferrer" href="https://github.com/cockroachdb/cockroach/pull/584">CockroachDB</a> (a missing unlock before <code>break</code>), <a target="_blank" rel="noopener noreferrer" href="https://github.com/etcd-io/etcd/pull/6857">etcd</a> (a <code>Status</code> goroutine losing a race with <code>Stop</code>), <a target="_blank" rel="noopener noreferrer" href="https://github.com/kubernetes/kubernetes/pull/6632">Kubernetes</a> and <a target="_blank" rel="noopener noreferrer" href="https://github.com/moby/moby/pull/28462">Moby</a> (channels and mutexes deadlocking each other), <a target="_blank" rel="noopener noreferrer" href="https://github.com/moby/moby/pull/25384">Moby</a> (a <code>Wait</code> inside the loop it should follow) — plus the double-send, early-return, and timeout patterns that show up in code review everywhere. The canonical mistake is an unbuffered channel where a sender outlives its receiver:</p>
+<pre><code class="language-go">type result struct {
+	res workResult
+	err error
+}
+
+func processWorkItems(ws []workItem) ([]workResult, error) {
+	// Unbuffered: each send blocks until the main goroutine receives.
+	ch := make(chan result)
+	for _, w := range ws {
+		go func() {
+			res, err := processWorkItem(w)
+			ch &lt;- result{res, err} // blocks forever if we return early below
+		}()
+	}
+
+	// Stop receiving at the first error...
+	var results []workResult
+	for range len(ws) {
+		r := &lt;-ch
+		if r.err != nil {
+			return nil, r.err // ...and every worker still sending leaks.
+		}
+		results = append(results, r.res)
+	}
+	return results, nil
+}
+</code></pre>
+<p>Uber apparently found this exact shape in real services. In Go 1.27 you do not need to guess: if <code>net/http/pprof</code> is already registered, the new <code>/debug/pprof/goroutineleak</code> endpoint appears automatically, and <code>go tool pprof</code> will show you precisely the leaked goroutines — the ones the collector proved unreachable. For the full runnable demo program in the article, the report looks like this:</p>
+<pre><code class="language-text">$ curl http://localhost:6060/debug/pprof/goroutineleak &gt; leak.prof
+$ go tool pprof leak.prof
+Type: goroutineleak
+(pprof) list processWorkItems
+Total: 116
+ROUTINE ======================== main.processWorkItems.func1 in .../main.go
+         0        116 (flat, cum)   100% of Total
+         .          .     31:           go func() {
+         .          .     32:                   res, err := processWorkItem(w)
+         .        116     33:                   ch &lt;- result{res, err}
+         .          .     34:           }()
+</code></pre>
+<p>In that run, 116 leaked goroutines, all parked on the channel send (line 33 of the demo program), all proven unreachable. The fix is the boring one — <code>ch := make(chan result, len(ws))</code> — which is the point. The profiler's job is not to be clever about fixes; it is to make the leak <em>visible</em> at a scale where eyeballing goroutine dumps no longer works.</p>
+<h2 id="where-the-proof-ends">Where the proof ends</h2>
+<p>Because the mechanism is a proof, it has proof-shaped blind spots, and the article is refreshingly explicit about them.</p>
+<p><strong>Reachability overreach.</strong> If a blocking primitive stays reachable — through a global variable, or through a goroutine that is merely <em>runnable</em> — then goroutines blocked on it are never reported as leaked, even when nothing will ever touch that primitive again. A channel parked in a package-level variable with a worker blocked on it is, by the collector's definition, not garbage. This is a false-negative class that no GC-based scheme can close, because &quot;reachable&quot; and &quot;will be used&quot; are different predicates. The mitigation is architectural: stop letting concurrency primitives outlive their lifecycle through globals.</p>
+<p><strong>Non-standard blocking.</strong> Anything not blocked on a first-class channel or <code>sync</code> primitive is invisible. Network I/O waits, file reads, and user-space spin locks fall outside the proof. That matches the decidable-class argument above, but it means the feature has a specific shape: it finds <em>structural</em> concurrency leaks, not lifetime bugs where a goroutine waits forever on a resource that will never arrive.</p>
+<p><strong>Non-determinism.</strong> The collector reports leaks after they happen; it cannot predict them. Flaky, timing-dependent leaks still need the deterministic hammer — <code>synctest</code> — to reproduce in the first place. The article's own recommendation is to layer the approaches: leak profiles in production for detection, <code>goleak</code> and <code>synctest</code> in tests for diagnosis.</p>
+<h2 id="what-proving-liveness-costs">What proving liveness costs</h2>
+<p>The detection rides on the GC's marking phase, and the price shows up in exactly one pathological shape, which the article calls the &quot;daisy-chain&quot;: a runnable goroutine referencing a primitive that blocks G₁, which references a primitive blocking G₂, and so on. Proving Gᵢ₊₁ live requires first proving Gᵢ live, which serializes the marking rounds — and each round currently rescans all blocked goroutines, for a worst case of O(n²) per cycle where n is the goroutine count. The second cost is optimizable; the first is intrinsic to the analysis.</p>
+<p>The practical mitigation is built into the semantics: once a goroutine is observed leaked, it stays leaked for the rest of the process. There is no point sampling this profile continuously. The article suggests periodic collection on the order of hours — the leak is monotonic, so sparse sampling loses almost nothing while keeping the GC cost amortized. That is a nice property and one the profile type itself encourages: <code>Type: goroutineleak</code> output that is a near-monotone counter of <em>proven</em> leaks, rather than a noisy count of blocked goroutines. In production I would alarm on &quot;goroutineleak count &gt; 0 over any window,&quot; which is a far more honest signal than any goroutine-profile growth rule I have ever written.</p>
+<h2 id="from-asplos-to-the-standard-library">From ASPLOS to the standard library</h2>
+<p>The feature has a research pedigree worth noting: it comes out of <em><a target="_blank" rel="noopener noreferrer" href="https://dl.acm.org/doi/pdf/10.1145/3676641.3715990">Dynamic Partial Deadlock Detection and Recovery via Garbage Collection</a></em> (Saioc et al., ASPLOS 2025), a collaboration between Aarhus University, Washington University in St. Louis, and Uber, with Go team guidance from Michael Knyszek, Michael Pratt, and PJ Malloy. Deadlock detection via garbage collection is an old idea in the literature, but the interesting part of this transition is what changed between the paper and the release: the runtime's collector is concurrent and incremental now (the article casually drops that the marking phase is &quot;now with the <a target="_blank" rel="noopener noreferrer" href="https://go.dev/blog/greenteagc">Green Tea</a> variant&quot;), and the implementation had to stay compatible with that machinery rather than bolt on a separate analysis. Research prototypes of runtime analyses usually die in the gap between &quot;we can detect this offline&quot; and &quot;this must run inside a concurrent, low-pause collector without breaking it.&quot; Shipping it as a first-class profile type is a small miracle of persistence.</p>
+<h2 id="what-i-take-from-this">What I take from this</h2>
+<p>Three things.</p>
+<p>First, the feature converts a genre of debugging that felt like witchcraft — &quot;is this goroutine dump growing because of traffic or because of a bug?&quot; — into a computed property for a large, real class of failures. That is a bigger deal than the endpoint name suggests. The remaining work for the operator is only the part no runtime can do: keeping primitives' lifetimes aligned with the goroutines that use them.</p>
+<p>Second, the boundary of the proof is the most instructive part of the design. Knowing <em>why</em> I/O-blocked goroutines cannot be covered — because their wake-up condition lives outside memory — is the difference between understanding the limitation and being surprised by it in an incident.</p>
+<p>Third, &quot;the runtime as a verifier&quot; is a pattern with momentum. <code>synctest</code> gives tests control over time; this gives production a proof about blocked goroutines; the race detector long ago proved a whole bug class at runtime. Each one moves a question that used to require human judgment into machinery that either answers it or states exactly why it cannot.</p>
+<p>If you write concurrent Go, read the <a target="_blank" rel="noopener noreferrer" href="https://go.dev/blog/goroutine-leak-profiles">full post</a> — the extra examples section alone is worth it, and the Go playground reproductions make the patterns click fast. Then add <code>goroutineleak</code> to your pprof collection rotation. The GC already knew. Now it can tell you.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

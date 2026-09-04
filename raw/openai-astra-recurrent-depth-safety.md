@@ -1,5 +1,5 @@
 ---
-title: "You Can't Audit What Never Became Words: OpenAI Astra, Recurrent Depth, and the Limits of Chain-of-Thought Safety"
+title: "OpenAI Astra: Recurrent Depth and the Limits of Chain-of-Thought Safety"
 date: 2026-09-04
 slug: openai-astra-recurrent-depth-safety
 summary: "OpenAI's upcoming Astra model is a flashpoint for two reasons at once. Its own safety documentation reportedly classifies Astra as reaching critical capability in cybersecurity, and The Information reports it uses a recurrent-depth architecture that reasons in latent space instead of writing chain-of-thought tokens. The second fact quietly undermines the first era's primary safety instrument: if the model never thinks in words, nobody can read the thinking. This post works through what recurrent depth is, why chain-of-thought monitoring depended on legibility, what the Hugging Face/IM1 incident and the neocloud warning imply, and why safety is shifting from reading transcripts to containing processes."

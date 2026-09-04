@@ -25,6 +25,10 @@ Strip the abstract to its components and the recipe is remarkably legible for a 
 
 ## The looped transformer gets its first from-scratch anchor
 
+"Looped transformer" is not Nanbeige's coinage, and the idea is older than the Astra reporting. [Looped Transformers as Programmable Computers](https://arxiv.org/abs/2301.13196) (Giannou, Rajput, Sohn, Lee, Lee, and Papailiopoulos, January 2023) proved that a *constant* number of encoder layers placed in a loop is enough for universal computation: the input sequence acts as a punchcard of instructions and memory, and a 13-layer looped transformer can emulate an instruction-set computer running iterative algorithms, function calls, conditional branches, and even in-context backpropagation. Loop iterations buy the depth that extra layers would otherwise buy — which is the theoretical reason a reused layer stack can increase capacity without adding parameters, rather than merely shrinking the file size.
+
+The 2023 paper *constructed* its weights by hand to show what looping permits. Nanbeige4.2-3B is the empirical complement: a bet that the same expressiveness can be *learned* from scratch at scale — over 28T tokens — and then sharpened by RL into agentic behavior. And the older paper's "input as program" framing is exactly why Nanbeige treats trajectories and scaffolds as first-class training data: in a looped transformer, the environment-supplied trajectory is the program being run.
+
 The most useful thing about this paper may be that it separates two ideas that the Astra conversation has been conflating.
 
 One idea is *recurrent depth*: reusing weights to add effective depth, reasoning more per parameter. That is a parameter-efficiency and capacity-distribution claim, and Nanbeige4.2-3B is evidence it can work at scale — pretraining 28T tokens through a reused layer stack and beating 9B-12B models at 3B.
@@ -60,4 +64,5 @@ It also completes a loop this blog has been tracing: the RLM framing ([RLMs Are 
 
 ## References
 
+- Giannou, A., Rajput, S., Sohn, J., Lee, K., Lee, J. D., and Papailiopoulos, D. [Looped Transformers as Programmable Computers](https://arxiv.org/abs/2301.13196), arXiv:2301.13196 [cs.LG], 30 January 2023. The theoretical provenance of Nanbeige4.2-3B's reused layer stack: constant-layer looping as universal computation, with the input acting as a program of instructions and memory.
 - Nanbeige Lab. [Nanbeige4.2-3B: Unlocking Agentic Capabilities in a Compact Model](https://arxiv.org/abs/2607.22083), arXiv:2607.22083 [cs.AI], submitted 24 July 2026, revised 27 July 2026 (v2). The source paper for this post; all technical claims above are as reported in its abstract, and statements about OpenClaw's nature are inferences from the paper's wording rather than independent facts.

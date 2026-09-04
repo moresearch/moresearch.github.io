@@ -10,11 +10,22 @@ tags: golang, go1.27, concurrency, goroutines, pprof, garbage-collection, runtim
 
 That inverts how leak hunting has always worked, and it is worth understanding exactly why it works, where it stops working, and what it costs.
 
+## Key insights
+
+Six claims stand alone; the rest of the post is the argument behind them.
+
+1. **A goroutine leak is garbage that is still scheduled.** Whether a blocked goroutine can ever run again is a reachability question: its blocking condition must be reachable from some goroutine that can still act on it. The garbage collector — not a monitoring heuristics — already computes the answer.
+2. **The `goroutineleak` profile proves; it does not guess.** A goroutine profile hands you counts and stacks and asks you to infer a leak. The new profile computes an exact answer for the class it covers: leaked, or not leaked. No baseline, no trend analysis, no traffic normalization.
+3. **The proof only covers blocking that memory can decide.** Goroutines permanently blocked on channels or on `sync` primitives (`Mutex`, `RWMutex`, `WaitGroup`, `Cond`) are within reach. I/O waits are not — their wake-up condition lives outside the heap — so they are never reported as leaked.
+4. **Reachable-but-dead blockers are the built-in blind spot.** If a channel or lock stays reachable through a global variable or a merely runnable goroutine, waiters on it are never flagged, even when nothing will ever touch it again. The runtime cannot tell "reachable" from "will be used".
+5. **Leaked goroutines never un-leak, so sample rarely.** A leak, once observed, stays observed for the lifetime of the process. Collecting the profile hourly instead of continuously costs almost nothing and misses almost nothing; alarm on a count above zero, not on a growing trend.
+6. **Unit tests and production catch different halves of the problem.** `goleak` and `synctest` reproduce and catch leaks deterministically at test time; the goroutine leak profile catches what tests never exercised, in the running system. The winning setup layers both.
+
 ## The leak that the other tools miss
 
 A goroutine leak is a goroutine that is blocked forever: the condition that would unblock it can never be met. A worker parked on an unbuffered channel send whose receiver has already returned, a mutex waiter whose lock holder broke out of its loop without unlocking, a `WaitGroup` waiter whose counter will never reach zero.
 
-The cost is compounding. Each leaked goroutine pins its stack and everything it references, so memory grows without bound while the garbage collector pays to scan it — worse under `GOMEMLIMIT`, where the GC starts thrashing against a hard ceiling. In production the symptom shows up as a slow memory creep and then an incident, and the diagnosis is usually painful.
+The cost is compounding. Each leaked goroutine pins its stack and everything it references, so memory grows without bound while the garbage collector pays to scan it — worse under [`GOMEMLIMIT`](https://go.dev/doc/gc-guide), where the GC starts thrashing against a hard ceiling. In production the symptom shows up as a slow memory creep and then an incident, and the diagnosis is usually painful.
 
 The existing tooling covers two layers but not the third. [`goleak`](https://github.com/uber-go/goleak) instruments unit tests and flags any goroutine still alive when a test ends — excellent at the developer's desk. [`synctest`](https://go.dev/blog/synctest) (Go 1.25) makes concurrent tests deterministic so those leaks actually reproduce. But neither runs in production, and the production tool that *does* exist, the goroutine profile, only gives you counts and stacks. A microservice under load will show thousands of goroutines blocked in a channel receive *by design*; a leak of two goroutines per request fan-out is invisible against that baseline until the memory graph turns into a hockey stick. The classic workflow — diff goroutine dumps over time, read stacks, hypothesize — is human pattern-matching on top of sampling noise.
 
@@ -33,7 +44,7 @@ That reframing is what makes this a *decision procedure* rather than another das
 
 ## The cut is principled, not arbitrary
 
-The profiler only considers goroutines blocked on channels — send, receive, blocking `select` without a default case, even `select {}` and nil channels — and on the `sync` primitives `Mutex`, `RWMutex`, `WaitGroup`, and `Cond`. Everything else — file and network I/O, system calls, hand-rolled spin locks — is never considered leaked.
+The profiler only considers goroutines blocked on channels — send, receive, blocking `select` without a default case, even `select {}` and nil channels — and on the `sync` primitives `Mutex`, `RWMutex`, `WaitGroup`, and `Cond` (the [sync package](https://pkg.go.dev/sync)). Everything else — file and network I/O, system calls, hand-rolled spin locks — is never considered leaked.
 
 This is the part of the design I find genuinely elegant, because the restriction is not a conservative v1 choice. It is the exact boundary where the definition stays decidable. For a goroutine blocked on I/O, unblocking depends on the state of the *world* — a socket, a file, another process — none of which lives in the heap. For a goroutine blocked on a channel or a mutex, unblocking depends only on memory: who else holds a reference to this primitive, and can that goroutine act on it. Memory-based liveness analysis is sound exactly when the wake-up condition is memory-based too. The cut follows the physics of the runtime.
 
@@ -68,7 +79,7 @@ func processWorkItems(ws []workItem) ([]workResult, error) {
 }
 ```
 
-Uber apparently found this exact shape in real services. In Go 1.27 you do not need to guess: if `net/http/pprof` is already registered, the new `/debug/pprof/goroutineleak` endpoint appears automatically, and `go tool pprof` will show you precisely the leaked goroutines — the ones the collector proved unreachable. For the full runnable demo program in the article, the report looks like this:
+Uber apparently found this exact shape in real services. In Go 1.27 you do not need to guess: the profile is exposed as the `goroutineleak` profile type in [runtime/pprof](https://pkg.go.dev/runtime/pprof), and if the [net/http/pprof](https://pkg.go.dev/net/http/pprof) handlers are already registered, the new `/debug/pprof/goroutineleak` endpoint appears automatically — no code change required. It is also part of the [Go 1.27 release notes](https://go.dev/doc/go1.27). `go tool pprof` will then show you precisely the leaked goroutines — the ones the collector proved unreachable. For the full runnable demo program in the article, the report looks like this:
 
 ```text
 $ curl http://localhost:6060/debug/pprof/goroutineleak > leak.prof
@@ -114,6 +125,20 @@ First, the feature converts a genre of debugging that felt like witchcraft — "
 
 Second, the boundary of the proof is the most instructive part of the design. Knowing *why* I/O-blocked goroutines cannot be covered — because their wake-up condition lives outside memory — is the difference between understanding the limitation and being surprised by it in an incident.
 
-Third, "the runtime as a verifier" is a pattern with momentum. `synctest` gives tests control over time; this gives production a proof about blocked goroutines; the race detector long ago proved a whole bug class at runtime. Each one moves a question that used to require human judgment into machinery that either answers it or states exactly why it cannot.
+Third, "the runtime as a verifier" is a pattern with momentum. `synctest` gives tests control over time; this gives production a proof about blocked goroutines; the [race detector](https://go.dev/doc/articles/race_detector) long ago proved a whole bug class at runtime. Each one moves a question that used to require human judgment into machinery that either answers it or states exactly why it cannot.
 
-If you write concurrent Go, read the [full post](https://go.dev/blog/goroutine-leak-profiles) — the extra examples section alone is worth it, and the Go playground reproductions make the patterns click fast. Then add `goroutineleak` to your pprof collection rotation. The GC already knew. Now it can tell you.
+If you write concurrent Go, read the [full post](https://go.dev/blog/goroutine-leak-profiles) — the [extra examples section](https://go.dev/blog/goroutine-leak-profiles#examples) alone is worth it, and the [Go playground reproductions](https://go.dev/play/p/S4Uw66sMbpj-) make the patterns click fast. Then add `goroutineleak` to your pprof collection rotation. The GC already knew. Now it can tell you.
+
+## References
+
+- Saioc, V. [Goroutine Leak Profiles](https://go.dev/blog/goroutine-leak-profiles) — The Go Blog, 2 September 2026. The source article for this post; the end sections catalogue additional leak patterns ([examples](https://go.dev/blog/goroutine-leak-profiles#examples)) and the full trade-offs ([limitations](https://go.dev/blog/goroutine-leak-profiles#limitations)).
+- [Go 1.27 Release Notes](https://go.dev/doc/go1.27) — the "Goroutine leak profile" entry.
+- [runtime/pprof](https://pkg.go.dev/runtime/pprof) and [net/http/pprof](https://pkg.go.dev/net/http/pprof) — package docs for the `goroutineleak` profile type and its HTTP endpoint.
+- Saioc, V., et al. [Dynamic Partial Deadlock Detection and Recovery via Garbage Collection](https://dl.acm.org/doi/pdf/10.1145/3676641.3715990) — ASPLOS 2025 (ACM), the research the feature ships.
+- Go team. [Go GC guide](https://go.dev/doc/gc-guide) — `GOMEMLIMIT` and soft memory limits.
+- Go team. [Race detector](https://go.dev/doc/articles/race_detector) article.
+- Go Blog. [Testing concurrent code with testing/synctest](https://go.dev/blog/synctest) and [Testing Time (and other asynchronicities)](https://go.dev/blog/testing-time) — the Go 1.25 testing groundwork.
+- Knyszek, M., and Clements, A. [Green Tea: A new family of concurrent garbage collectors](https://go.dev/blog/greenteagc) — the concurrent GC, experimental in Go 1.25 and the default collector from Go 1.26 on.
+- uber-go. [goleak](https://github.com/uber-go/goleak) — goroutine leak detection in unit tests.
+- Real-world leaks used as examples in the source article: [CockroachDB #584](https://github.com/cockroachdb/cockroach/pull/584), [etcd #6857](https://github.com/etcd-io/etcd/pull/6857), [Kubernetes #6632](https://github.com/kubernetes/kubernetes/pull/6632), [Moby #25384](https://github.com/moby/moby/pull/25384), [Moby #28462](https://github.com/moby/moby/pull/28462).
+- [Go playground reproduction](https://go.dev/play/p/S4Uw66sMbpj-) of the leak patterns from the article.

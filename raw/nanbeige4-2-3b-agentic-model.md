@@ -23,9 +23,11 @@ The architecture at the center of the frontier's safety conversation just shippe
 - **RL.** Mixed-mode RLHF over Think and Non-Think responses (quality, fewer failures); length-controlled reasoning RL (accuracy vs. efficiency); agentic RL with outcome *and* process rewards (stabilizes long-horizon training).
 - **Results.** Beats Qwen3.5-9B and Gemma4-12B on agentic benchmarks; runs locally as a personal assistant (OpenClaw).
 
-## Four papers that make it legible
+## Context: four papers and a technical note
 
 **Looped Transformers as Programmable Computers** ([Giannou et al., 2023](https://arxiv.org/abs/2301.13196)) proved a constant number of encoder layers in a loop can emulate an instruction-set computer — the input acts as a punchcard of instructions and memory. Its weights were hand-constructed to show what looping *permits*; Nanbeige is the bet that the same expressiveness can be *learned* at scale. The "input as program" framing is also why trajectories matter: in a looped transformer, the environment-supplied trajectory is the program being run.
+
+**Sebastian Raschka's technical note** ([OpenAI Astra and Looped Transformers](https://sebastianraschka.com/blog/2026/openai-astra-looped-transformers.html), September 2026) fills in the engineering the abstract omits: in Nanbeige 4.2 the same 22-layer stack is run twice — roughly 44 effective layers with no duplicated weights — which is how capacity doubles without parameters, at roughly double the inference compute. Two passes won the trade-off (about 75% of standard token efficiency retained; more passes barely helped), which is why Raschka calls the looped transformer "a tiny architectural tweak," not the source of the model's capability. He traces the technique's lineage to the NeurIPS *Mixture-of-Recursions* paper (a learned router deciding one, two, or more passes per token) and pushes back on the Astra framing: layer reuse adds hidden-state computation before each emitted token, like ordinary layers do, and does not by itself suppress visible chain of thought — independent support for key insight 4.
 
 **DeepSeek-R1** ([2025](https://arxiv.org/abs/2501.12948)) showed pure RL against verifiable rewards grows reasoning — self-reflection, verification — with no human-labeled traces, producing legible thinking (the R1-Zero "aha moment") as an emergent, reward-selected behavior. That is the foundation of Nanbeige's whole post-pretraining program, and of why readable Think traces are an *option*, not a given.
 
@@ -65,3 +67,4 @@ Run the same question through the largest model you can reach and compare: the p
 - DeepSeek-AI. [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948), arXiv:2501.12948 [cs.CL], January 2025.
 - Kimi Team. [Kimi k1.5: Scaling Reinforcement Learning with LLMs](https://arxiv.org/abs/2501.12599), arXiv:2501.12599 [cs.CL], January 2025.
 - Wei, Y., et al. [SWE-RL: Advancing LLM Reasoning via Reinforcement Learning on Open Software Evolution](https://arxiv.org/abs/2502.18449), arXiv:2502.18449 [cs.CL], February 2025.
+- Raschka, S. [OpenAI Astra and Looped Transformers](https://sebastianraschka.com/blog/2026/openai-astra-looped-transformers.html), 2 September 2026. Technical field note: Nanbeige 4.2's two-pass layer reuse (22 effective layers doubled at roughly 2x inference compute), the Mixture-of-Recursions lineage, and why layer reuse does not by itself suppress visible chain of thought.

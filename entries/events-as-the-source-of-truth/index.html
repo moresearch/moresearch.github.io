@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#02391f">
+  <meta name="description" content="Oscar van der Leij&#39;s event-sourcing essay makes the case that every state change should be an immutable event in an append-only log — a full, tamper-evident history your database keeps, not a current-state snapshot that forgets how it got there. Read as an engineering claim, the essay&#39;s own adjectives — immutable, tamper-evident, append-only — are promises a single-operator store cannot enforce, only honor. That gap is exactly where blockchains become relevant: a chain is event sourcing run by keepers who do not trust each other, where append-only stops being a convention and becomes a structural property. This post maps the essay&#39;s principles onto chains, walks a hash-chained event log in Go, and ends with the trust-boundary test for when you need consensus, a hash anchor, or just Postgres.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/events-as-the-source-of-truth/">
+  <title>Events as the Source of Truth: Why Blockchains Are Relevant — hackspree</title>
+  <meta property="og:title" content="Events as the Source of Truth: Why Blockchains Are Relevant">
+  <meta property="og:description" content="Oscar van der Leij&#39;s event-sourcing essay makes the case that every state change should be an immutable event in an append-only log — a full, tamper-evident history your database keeps, not a current-state snapshot that forgets how it got there. Read as an engineering claim, the essay&#39;s own adjectives — immutable, tamper-evident, append-only — are promises a single-operator store cannot enforce, only honor. That gap is exactly where blockchains become relevant: a chain is event sourcing run by keepers who do not trust each other, where append-only stops being a convention and becomes a structural property. This post maps the essay&#39;s principles onto chains, walks a hash-chained event log in Go, and ends with the trust-boundary test for when you need consensus, a hash anchor, or just Postgres.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/events-as-the-source-of-truth/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
+  <meta property="og:image:width" content="257">
+  <meta property="og:image:height" content="705">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Events as the Source of Truth: Why Blockchains Are Relevant">
+  <meta name="twitter:description" content="Oscar van der Leij&#39;s event-sourcing essay makes the case that every state change should be an immutable event in an append-only log — a full, tamper-evident history your database keeps, not a current-state snapshot that forgets how it got there. Read as an engineering claim, the essay&#39;s own adjectives — immutable, tamper-evident, append-only — are promises a single-operator store cannot enforce, only honor. That gap is exactly where blockchains become relevant: a chain is event sourcing run by keepers who do not trust each other, where append-only stops being a convention and becomes a structural property. This post maps the essay&#39;s principles onto chains, walks a hash-chained event log in Go, and ends with the trust-boundary test for when you need consensus, a hash anchor, or just Postgres.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
+  <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#02391f!important;color:#eafff3!important}
+    *{box-sizing:border-box}::selection{background:#00f090;color:#021a0e;text-shadow:none}::-moz-selection{background:#00f090;color:#021a0e;text-shadow:none}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#02391f;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#79c2a0;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#eafff3}
+    .post-meta,.tag{margin:0;color:#79c2a0;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#f3fff8}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(0,224,128,0.30);color:#d6f5e4;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#4f9e77;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#00f090;opacity:1}
+    .post-body{margin-top:18px;color:#8fd9b4;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(0,224,128,0.18);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#d6f5e4;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(0,224,128,.08)}
+    .post-body table tr:nth-child(even) td{background:rgba(0,224,128,.035)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#f3fff8;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#eafff3}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#00f090}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(0,224,128,0.20);border-radius:12px;background:#021a0e;box-shadow:0 20px 48px rgba(0,0,0,0.4)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(0,224,128,0.25);border-radius:8px;background:#021a0e;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#79c2a0;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(0,240,144,0.55);color:#eafff3;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid rgba(0,224,128,0.20);color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#2e8b57 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#2e8b57}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#5fb98b}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-09-07">2026-09-07</time></p>
+          <h1>Events as the Source of Truth: Why Blockchains Are Relevant<a class="raw-link" href="https://blog.hackspree.com/raw/events-as-the-source-of-truth.md" title="Raw markdown source" aria-label="Raw markdown source of Events as the Source of Truth: Why Blockchains Are Relevant" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">Oscar van der Leij&#39;s event-sourcing essay makes the case that every state change should be an immutable event in an append-only log — a full, tamper-evident history your database keeps, not a current-state snapshot that forgets how it got there. Read as an engineering claim, the essay&#39;s own adjectives — immutable, tamper-evident, append-only — are promises a single-operator store cannot enforce, only honor. That gap is exactly where blockchains become relevant: a chain is event sourcing run by keepers who do not trust each other, where append-only stops being a convention and becomes a structural property. This post maps the essay&#39;s principles onto chains, walks a hash-chained event log in Go, and ends with the trust-boundary test for when you need consensus, a hash anchor, or just Postgres.</p>
+          <div class="tags"><span class="tag">event-sourcing</span><span class="tag">blockchain</span><span class="tag">audit-trail</span><span class="tag">append-only</span><span class="tag">cqrs</span><span class="tag">projections</span><span class="tag">database-architecture</span><span class="tag">immutability</span><span class="tag">trust</span><span class="tag">essay</span></div>
+          
+        </header>
+        <div class="post-body"><p>A governance officer asks: &quot;Can you show us a full audit trail of who changed what, and when?&quot; The development team's answer, writes Oscar van der Leij in <a target="_blank" rel="noopener noreferrer" href="https://www.architectviewmaster.com/blog/event-sourcing-a-history-lesson-your-database-actually-wants/"><em>Event Sourcing: A History Lesson Your Database Actually Wants</em></a>, is always some version of &quot;we store the current state, so we can see what it is now, but not how it got there.&quot; His essay is the standard fix: Event Sourcing, the pattern where an application stores every state change as an immutable event in an append-only log and derives current state by replaying those events. He recommends it, he says, &quot;not as an architectural curiosity, but as a practical response to a requirement I kept encountering: full, tamper-evident, queryable history of every state change in the application.&quot;</p>
+<p>Notice the adjectives in that requirement. <em>Tamper-evident.</em> <em>Immutable.</em> <em>Append-only.</em> The essay's whole architecture is built to deliver them — and yet the implementation it walks through, a local SQLite event store in C#, cannot actually enforce any of them. It can only honor them. That gap between the property an audit trail claims and the property a database can enforce is not a flaw in the essay; it is the essay's unfinished thought. When the history has to be believed by someone who does not trust the system that wrote it, the append-only log needs a keeper the writer does not control. That is what a blockchain is. A blockchain is event sourcing executed by keepers who do not trust each other, where append-only stops being a convention and becomes a structural property.</p>
+<p>This post reads the essay carefully, then follows the sentence it leaves hanging.</p>
+<h2 id="what-the-essay-teaches">What the essay teaches</h2>
+<p>The essay's core move is to reframe persistence. A traditional database &quot;stores the current truth&quot;: update the address and the old one &quot;disappears into the digital ether.&quot; That works until someone asks how the system got where it is. The essay's analogy is a meeting-room whiteboard: you erase the old content and write the new state, so the board can always show the current truth and never the meeting. Event Sourcing &quot;is like replacing that whiteboard with a roll of paper that keeps feeding forward. Nothing gets erased.&quot; The current state stays visible; so does everything that led to it. &quot;Your database becomes a ledger, a chronicle, a time machine.&quot;</p>
+<p>Four principles carry the pattern:</p>
+<ul>
+<li><strong>Events as the source of truth.</strong> State is derived; events are canonical. Each event records what happened (a business fact in the past tense: <code>OrderPlaced</code>, <code>PaymentProcessed</code>), when it happened, who made it happen, and the details needed to replay it. &quot;These are historical records, as unchangeable as yesterday's weather.&quot; And events are the contract you make with the future: &quot;once written, they never change.&quot;</li>
+<li><strong>The append-only log.</strong> Events are never updated or deleted. Made an accounting error? &quot;Don't change the original transaction. Add an 'AccountingCorrectionApplied' event.&quot; The mistake and its correction both survive, &quot;which is often exactly what auditors and regulators want to see.&quot;</li>
+<li><strong>State reconstruction through replay.</strong> Current state is not (primarily) stored; it is rebuilt by replaying the event stream. The essay's C# aggregate is a <code>switch</code> over event types — <code>OrderPlaced</code> sets <code>Status = Placed</code>, <code>OrderShipped</code> sets <code>Shipped</code> — which is a state machine folded into code, the same shape this site traced through the workflow-engine argument in <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-workflow-is-an-fsm">Every workflow is an FSM</a>.</li>
+<li><strong>Temporal queries.</strong> Because the full history exists, you can ask what the state was at any earlier time — replay to a date, not just to now. &quot;This temporal dimension transforms debugging, auditing, and analytics from guesswork into precision.&quot;</li>
+</ul>
+<p>The essay is equally clear about the costs, which is what makes it a good reference rather than a manifesto. Replaying ten thousand events on every read is expensive, so you take periodic <strong>snapshots</strong> — current-state captures that serve as replay starting points, tagged with the event version they include. Reading from the log for every query is expensive, so you build <strong>projections</strong> — denormalized read models that answer queries instantly and stay in sync with the stream: &quot;Same data, two different shapes. That is CQRS in practice.&quot; And you should not apply the pattern everywhere: simple CRUD without audit requirements, teams without event-driven experience, and hot read paths are all reasons to skip it. The deciding question, he says, is the one he now asks at the start of every project: &quot;Will anyone ever need to prove what happened, who did it, and when?&quot;</p>
+<p>His closing claim is the load-bearing one: &quot;The audit trail is a structural property of the system, and retrofitting it onto a CRUD database after the fact is far more expensive than building it in from the start.&quot;</p>
+<h2 id="the-property-the-demo-does-not-enforce">The property the demo does not enforce</h2>
+<p>Now look closely at what the essay's own implementation delivers. The demo's <code>EventStore</code> is a SQLite table with an <code>INSERT</code>-only API and an index on <code>(AggregateId, EventVersion)</code>. The audit trail prints straight from that table — &quot;there is no separate logging system, no trigger, no after-the-fact reconstruction: the history is the data.&quot; All true, and all true <em>by convention</em>. The table permits <code>UPDATE</code> and <code>DELETE</code> like any other table. Nothing in the schema, the file, or the machine stops an administrator with write access — or an attacker with the application's credentials, or a <code>DROP TABLE</code> followed by a restore from an older backup — from rewriting, deleting, or truncating the history. &quot;Immutable&quot; here means &quot;the application agreed not to mutate,&quot; and &quot;tamper-evident&quot; means &quot;tampering would require violating an application-level rule,&quot; not &quot;tampering would be detected by the system.&quot; A hash chain would make even local tampering detectable:</p>
+<pre><code class="language-go">package eventlog
+
+import (
+	&quot;crypto/sha256&quot;
+	&quot;encoding/hex&quot;
+	&quot;encoding/json&quot;
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+// Event is one immutable fact: what happened, when, and by whom. Actor and
+// At are self-asserted — the event says who did it and when; nothing yet
+// proves it.
+type Event struct {
+	Type     string          `json:&quot;type&quot;`
+	Actor    string          `json:&quot;actor&quot;`
+	At       int64           `json:&quot;at&quot;`
+	Data     json.RawMessage `json:&quot;data&quot;`
+	PrevHash string          `json:&quot;prevHash&quot;` // digest of the previous event
+	Hash     string          `json:&quot;hash&quot;`     // digest of this event
+}
+
+// digest covers every field except Hash, so an event never signs itself.
+func digest(e Event) string {
+	body, _ := json.Marshal(struct {
+		Type     string          `json:&quot;type&quot;`
+		Actor    string          `json:&quot;actor&quot;`
+		At       int64           `json:&quot;at&quot;`
+		Data     json.RawMessage `json:&quot;data&quot;`
+		PrevHash string          `json:&quot;prevHash&quot;`
+	}{e.Type, e.Actor, e.At, e.Data, e.PrevHash})
+	sum := sha256.Sum256(body)
+	return hex.EncodeToString(sum[:])
+}
+
+// Append links the new event to the log head and inserts it. The store only
+// ever INSERTs: correcting a mistake means appending a compensating event.
+func Append(s *Store, e Event) (Event, error) {
+	head, err := s.Head()
+	if err != nil {
+		return Event{}, err
+	}
+	e.PrevHash = head
+	e.Hash = digest(e)
+	return e, s.Insert(e)
+}
+
+// Verify walks the log in order and recomputes every digest. Editing any
+// event, deleting any link, or reordering any pair breaks the chain here —
+// tampering becomes detectable, though nothing yet stops a determined
+// operator from rewriting the whole file and re-chaining it.
+func Verify(s *Store) error {
+	prev := &quot;&quot;
+	for _, e := range s.All() { // All returns events in insertion order
+		if e.PrevHash != prev || e.Hash != digest(e) {
+			return fmt.Errorf(&quot;event log tampered at %s&quot;, e.Hash)
+		}
+		prev = e.Hash
+	}
+	return nil
+}
+
+// Store is deliberately boring: rows are appended in sequence and never
+// updated or deleted. Keeping that discipline is the application's job; the
+// schema cannot enforce it — which is precisely the essay's tension.
+type Store struct {
+	mu   sync.Mutex
+	rows []Event
+}
+
+func (s *Store) Head() (string, error) {
+	if len(s.rows) == 0 {
+		return &quot;&quot;, nil
+	}
+	return s.rows[len(s.rows)-1].Hash, nil
+}
+
+func (s *Store) Insert(e Event) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.rows = append(s.rows, e)
+	return nil
+}
+
+func (s *Store) All() []Event {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := make([]Event, len(s.rows))
+	copy(out, s.rows)
+	return out
+}
+</code></pre>
+<p>The hash chain upgrades the story from &quot;we promised not to edit&quot; to &quot;an edit breaks the chain and Verify fails.&quot; That is a real improvement — it is what turns an audit <em>log</em> into an audit <em>trail</em> — but notice what it does not do. The actor field is still self-asserted: any code that can call <code>Append</code> can claim to be anyone. And the whole chain lives in one file under one operator's control, so a determined operator can rewrite the history <em>and</em> re-chain it: delete an embarrassing event, recompute every subsequent hash, and present the file as untampered. Verification detects amateur tampering. It cannot detect tampering by the party who owns the store — and the party who owns the store is exactly the party whose history an auditor, a regulator, or a legal team is trying to verify.</p>
+<p>This is the sentence the essay leaves hanging. The author asked for &quot;tamper-evident, queryable history&quot; and built &quot;history with a hash chain your own team could still rewrite.&quot; The requirement was never fully satisfiable by a single-operator database, because the threat model of a compliance audit includes the operator. &quot;Will anyone ever need to prove what happened, who did it, and when?&quot; — prove <em>to whom</em>? If the answer is &quot;to people who trust us,&quot; the SQLite store is fine. If the answer is &quot;to people who might not,&quot; no amount of application discipline closes the gap. The history must be kept, or at least vouched for, by someone other than the writer.</p>
+<h2 id="blockchain-is-event-sourcing-across-a-trust-boundary">Blockchain is event sourcing across a trust boundary</h2>
+<p>Every piece of the essay's architecture has a counterpart in a blockchain, and recognizing the mapping is the fastest way to see why the technology is relevant to this pattern rather than adjacent to it:</p>
+<ul>
+<li><strong>Events as the source of truth.</strong> A blockchain does not store its &quot;current truth&quot; as an authority separate from history. Its state is derived by replaying the log: every full node re-executes the ordered history of blocks to rebuild the state, exactly as the essay's <code>Order.FromEvents</code> re-executes events. The block is <code>OrderPlacedEvent</code>; the account balance is <code>order.Status</code>; the state at height N is the temporal query.</li>
+<li><strong>Append-only as a structural property.</strong> This is the big one. Blocks are hash-linked (each commits to its predecessor, and through it, to the entire history), and the log is replicated across validators who do not trust each other. Editing one block breaks every descendant hash and every honest replica detects it. Rewriting history therefore requires rewriting it on a majority of independent keepers — corrupting the consensus, not one database. Immutability stops being a convention the application honors and becomes a property the network enforces. The essay's whiteboard-with-a-paper-roll becomes a paper roll nobody owns alone: everyone holds a copy, so nobody can privately erase.</li>
+<li><strong>Who and when.</strong> The essay's event carries a <code>UserId</code> string that any writer can set. On a chain, the &quot;who&quot; is a public key: the event is only accepted if it carries a signature the network can verify against that key, and the writer's right to append at all is decided by the chain's rules, not by whoever holds the database connection. The &quot;when&quot; is the consensus-ordered sequence — the block height — not an application clock. The actors and timestamps an auditor reads are not self-asserted; they are asserted under rules the auditor can check.</li>
+<li><strong>Temporal queries.</strong> Historical state at any height is a first-class concept, and since every block commits to the state root that resulted from replaying up to that point, the answer to &quot;what did this look like six months ago&quot; is a commitment that can be verified against a stored root — not a guess reconstructed from whatever events happened to survive.</li>
+<li><strong>Snapshots and projections.</strong> A chain's per-block state root is the essay's snapshot: current state plus the version (height) it includes, used as a replay starting point. Wallets, explorers, and indexers are the essay's projections — read models derived from the log, answering queries instantly, eventually consistent with it. &quot;Same data, two different shapes&quot; is not just CQRS; it is the standard shape of blockchain infrastructure.</li>
+</ul>
+<p>So the relevance thesis is precise: <strong>event sourcing makes one organization's history a first-class citizen; a blockchain makes history first-class across organizations.</strong> Everything the essay wants inside a single trust boundary — complete history, compensating events, temporal queries, derived read models — a chain provides across a trust boundary, at the price of consensus. When the events in question all belong to one company and the proof's audience trusts that company, Postgres plus a hash chain is the right-sized answer and a chain is waste. When the events are jointly produced by parties that must be able to audit each other — two firms settling trades, a hospital and an insurer disputing a claim, a supplier and a buyer arguing about provenance, two organizations' agents executing a contract — each party keeping its own append-only log recreates the original problem at the boundary: in a dispute, each side can rewrite its own history, and both sides know it. A shared log with no single keeper is the only history both sides can be asked to accept. That is what blockchains are for. The article's own audit question — &quot;who changed what, and when&quot; — is answered by event sourcing within a company, and by a chain between companies.</p>
+<p>This is the same claim this site made about blockchains and agentic software from the mechanism side: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#why-blockchains-matter-again-for-agentic-software">blockchains matter because they make rules visible and programmable rather than opaque</a>. The event-sourcing lens adds the evidential side. A blockchain is not primarily a token ledger; it is a shared, append-only, tamper-evident history that no participant controls, plus rules about who may append. If your problem is &quot;we need a history that outsiders will believe,&quot; you have described a blockchain-shaped requirement whether or not you use the word.</p>
+<h2 id="the-trust-boundary-test">The trust-boundary test</h2>
+<p>The honest engineering question is not &quot;should I use event sourcing&quot; or &quot;should I use blockchain&quot; but <em>where the boundary of trust runs</em>. Three configurations cover most of the design space:</p>
+<p><strong>Inside one trust boundary — a plain event store.</strong> The essay's SQLite/Postgres design, optionally hash-chained. Tamper-evident to your own auditors in the amateur-tampering sense, cheap, fast, boring. This is where most of the essay's use cases belong: your orders, your claims, your inventory, your auditors inside your org.</p>
+<p><strong>History you own, proof you share — hash anchoring.</strong> When outsiders must be able to verify that your history has not been rewritten since a certain time, you do not need to move your events onto a chain; you need to commit their fingerprints somewhere neither you nor your auditor controls. Periodically compute a digest of the current log head and append it to a public chain (or a shared ledger). From that moment on, any later rewrite of your local log breaks the anchored digest, and the anchor is timestamped and preserved by people who are not you. This is the pattern behind RFC 3161 timestamping and <a target="_blank" rel="noopener noreferrer" href="https://opentimestamps.org/">OpenTimestamps</a>: the log stays in your database, the <em>proof</em> leaves it. It is the cheapest way to buy &quot;tamper-evident to outsiders&quot; without paying for consensus on every event. It works because the essay's snapshots give you a natural anchor point: every snapshot is a digest of the history up to a version, and that digest is exactly what you notarize.</p>
+<p><strong>History jointly produced and jointly audited — a shared ledger.</strong> When multiple parties must <em>append</em> to the same history without trusting each other's databases — settlement, provenance, interorganizational workflows, agents transacting across companies — an anchor is not enough, because each party still maintains its own log and can still disagree about what the other appended. Then the log itself must be the shared artifact: a permissioned shared ledger among known counterparties, or a public chain where the value of neutral history justifies the cost. The essay's &quot;when to think twice&quot; list has a direct analogue here: consensus is slow and expensive, so this configuration is for histories whose integrity is worth more than their throughput — the settlement layer, not the shopping cart.</p>
+<h2 id="why-this-matters-for-agents">Why this matters for agents</h2>
+<p>The reference essay was written about humans asking humans for audit trails. The reason the topic keeps compounding is that the askers are increasingly programs. Autonomous agents emit events continuously — every tool call, every decision, every transfer — and when two agents from different organizations interact, the situation is the two-company dispute at machine speed: each side's internal log is self-serving, neither side can inspect the other's database, and there is no phone call and no court deadline to force the question. This site has argued that <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#stories-from-events">the event log, not the plan, is the honest memory of an agent</a>: graphs describe intentions, logs describe executions. The blockchain relevance follows from that argument's logical endpoint — when the execution spans organizations, the log that records it must not be owned by either side, or neither side can trust it. An agent's audit trail is only as honest as the party that keeps it; a shared append-only history is the only form in which &quot;what happened&quot; survives contact between agents that do not trust each other. The essay's deciding question — &quot;will anyone ever need to prove what happened, who did it, and when?&quot; — becomes, in an agentic economy, a question asked at machine frequency by counterparties that cannot take anyone's word. The answer event sourcing gives within a system, and blockchains give between systems, is the same answer the essay gives its governance officer: the history is the data. The difference is who gets to rewrite it.</p>
+<h2 id="key-insight">Key insight</h2>
+<p>The essay is right that state without history is a whiteboard, and that the audit trail should be &quot;a structural property of the system&quot; rather than a retrofit. The unfinished sentence is <em>whose</em> system. &quot;Immutable,&quot; &quot;append-only,&quot; and &quot;tamper-evident&quot; are properties an application can promise but only a keeper outside the writer's control can enforce. Within one trust boundary, event sourcing — with or without a local hash chain — is the right and complete answer, and adding consensus would be over-engineering. Across a trust boundary, the same pattern needs its log kept by people who are not the writer, which is the definition of a blockchain: event sourcing whose append-only property is enforced by replication and consensus instead of by convention, and whose actors sign instead of assert. The spectrum between the two — plain log, anchored log, shared ledger — is chosen by one question, which is the essay's own question sharpened: will anyone ever need to prove what happened, who did it, and when — <em>to someone who does not trust you?</em> If no, Postgres. If yes, an anchor. If the parties must write the history together, a chain. The history lesson your database actually wants ends where your trust boundary does.</p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>van der Leij, O. <a target="_blank" rel="noopener noreferrer" href="https://www.architectviewmaster.com/blog/event-sourcing-a-history-lesson-your-database-actually-wants/"><em>Event Sourcing: A History Lesson Your Database Actually Wants</em></a> — Architect Viewmaster, 10 June 2026. The main reference; all unattributed quotes above are from this essay (the whiteboard-and-paper-roll analogy, the audit question, the CQRS and snapshot strategies, and the deciding question in the conclusion).</li>
+<li>Fowler, M. <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/bliki/EventSourcing.html"><em>Event Sourcing</em></a> — martinfowler.com bliki, 2005. The canonical definition of the pattern: events as the primary record of a system's state.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://opentimestamps.org/"><em>OpenTimestamps</em></a> — the client-side hash-anchoring scheme (Bitcoin blockchain as a public timestamping calendar), the canonical example of &quot;log stays with you, proof leaves.&quot;</li>
+<li>IETF. <a target="_blank" rel="noopener noreferrer" href="https://www.rfc-editor.org/rfc/rfc3161"><em>RFC 3161: Internet X.509 Public Key Infrastructure Time-Stamp Protocol</em></a> — the standardized form of the same anchoring idea.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#stories-from-events">Make Stories from Events</a> — the event log as honest memory, and why raw events need a narrative layer; the complementary half of this argument.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#why-blockchains-matter-again-for-agentic-software">Blockchains for Agentic Software</a> — blockchains as mechanisms with visible, programmable, auditable rules; the rules side of the same coin.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-workflow-is-an-fsm">Every workflow is an FSM. Not every FSM is a workflow.</a> — state reconstruction as replay, event history as the state machine's truth, and the versioning discipline shared by event-sourced aggregates and replay engines.</li>
+<li>Related: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#mechanism-design-and-network-economics-for-agentic-markets">Mechanism Design and Network Economics for Agentic Markets</a> — rules as the design surface when autonomous parties must coordinate without trusting each other.</li>
+</ul>
+<p>Engineering treats every system as a set of dependencies and asks which ones you can afford to own. Event sourcing is the discovery that history is not a dependency — it is the asset you delete when you store only current state. The append-only log is the engineering answer to &quot;what happened,&quot; and the blockchain is the engineering answer to &quot;what happened, when the people asking do not trust the people who kept the record.&quot; Same pattern, wider boundary. The boundary is the specification.</p>
+<blockquote>
+<p>Immutable means nothing unless someone you do not control can check it. Event sourcing makes history the source of truth inside one trust boundary; a blockchain is what the same idea becomes across one. The question is never &quot;append-only or not.&quot; It is who else holds the roll of paper.</p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+

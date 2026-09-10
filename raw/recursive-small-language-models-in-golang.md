@@ -377,6 +377,8 @@ Go's concurrency model is the other half of why this lands. The recursion tree *
 
 ## What to expect, honestly
 
+> **Note.** We start small and try bigger models after. The whole point of the LM in this pattern is recursive reasoning across iterations — a 350M model will produce incoherent Go code inside the Yaegi REPL and will not complete a real analysis. The 350M run is the floor test, not the destination: the point of doing it first is to find exactly where the recursion breaks before paying for a bigger student. Treat any 350M result as a lower bound on the harness, not an upper bound on the idea.
+
 **The 350M student learns the scaffold, not the knowledge.** Expect it to emit valid Go, call the right functions, slice sensibly, and terminate. Expect its extraction and reasoning to be weak — MMLU 35 and HumanEval 39 are the honest priors. Split the policy as shown and let the frontier model handle the child work.
 
 **SFT caps at the teacher.** Imitation cannot exceed the demonstrations, and it inherits their biases, including any leakage in the synthetic set. Keep a human-audited held-out set, and evaluate with a real metric, not vibes.

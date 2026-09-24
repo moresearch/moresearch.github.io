@@ -178,13 +178,22 @@ Compile time is where the LLM lives: it reads your event schemas, your tool regi
 
 Decision models like Jev and Laya are a meaningful improvement over runtime LLMs: no token generation, hundreds of milliseconds instead of seconds, guaranteed type safety, calibrated confidence. They are also still neural networks with per-call pricing, hundreds of megabytes of weights, a GPU to hit their stated latency, and a per-option budget that degrades as your label space grows. A waypoint, not a destination.
 
-So, concretely:
+---
 
-- **Stop putting LLMs in the event loop.** Not because they are bad, but because the event loop is the wrong place for them.
-- **Treat prompts as source code.** Version them, review them, hash them, compile them into artifacts, and stop letting them run free at runtime.
-- **Build the wall and enforce it with hashes.** Refuse to run when a variable cost sneaks past.
-- **Measure your traditional models.** Do not assume a 400M-parameter model beats a 2 MB tree on your task; test it, and you will be surprised more often than you expect.
-- **Write down your unit economics and what you learn.** Know your cost per decision and how it scales. This discipline is being invented in production systems right now by people too busy shipping to write it up, and the community needs your scars.
+## A Call to the Community
+
+We are at the beginning of a discipline. AI systems engineering does not have its *Design Patterns* yet. It does not have its *Site Reliability Engineering* yet. It does not have its *Choose Boring Technology* yet.
+
+What it has is a lot of demos in production and a growing sense that something is wrong. The sense is right. The wrongness is economic as much as it is architectural.
+
+So here is what I am asking:
+
+- **Stop putting LLMs in the event loop.** Not because they are bad, but because the event loop is the wrong place for them. The right place is design time, as the semantic layer of your AutoML pipeline.
+- **Start treating prompts as source code.** Version them, review them, hash them, compile them into artifacts. Do not let them run free at runtime, and do not let them become a subscription you cannot cancel.
+- **Measure your traditional models.** Do not assume a 400M-parameter model beats a 2 MB tree on your task. Test it; you will be surprised more often than you expect.
+- **Build the wall.** Draw the line between compile time and runtime in your architecture, enforce it with hashes, and refuse to run when the wall is broken — or when a variable cost sneaks past.
+- **Write down your unit economics.** Know your cost per decision. Know how it scales. Know what it would look like if it were zero. Then ask yourself why it isn't.
+- **Write down what you learn.** This discipline is being invented right now, in production systems, by people too busy shipping to write blog posts. If you have built one of these systems, write it up. The community needs your scars.
 
 The next decade of AI systems will not be won by the teams with the biggest models. It will be won by the teams who understand that intelligence belongs at design time and execution belongs at runtime — and who build the wall between them.
 

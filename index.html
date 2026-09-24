@@ -864,13 +864,18 @@ actions.yaml  → H4  → binds decisions to tools
 <h2 id="the-point">The Point</h2>
 <p>Compile time is where the LLM lives: it reads your event schemas, your tool registry, and your objective, and proposes candidate features that a syntactic search would never generate. An engine compiles them into point-in-time-correct folds. Traditional ML trains, prunes, and freezes them. Runtime is where neither the LLM nor the decision model appears — the daemon loads the frozen artifacts, verifies their hashes, builds a feature vector, asks the tree model for an action, maps it to a tool, and publishes. That artifact runs anywhere a static binary runs, <a target="_blank" rel="noopener noreferrer" href="https://onnxruntime.ai/">ONNX Runtime</a> or <a target="_blank" rel="noopener noreferrer" href="https://github.com/yalue/onnxruntime_go">its Go binding</a> included, with the network unplugged.</p>
 <p>Decision models like Jev and Laya are a meaningful improvement over runtime LLMs: no token generation, hundreds of milliseconds instead of seconds, guaranteed type safety, calibrated confidence. They are also still neural networks with per-call pricing, hundreds of megabytes of weights, a GPU to hit their stated latency, and a per-option budget that degrades as your label space grows. A waypoint, not a destination.</p>
-<p>So, concretely:</p>
+<hr>
+<h2 id="a-call-to-the-community">A Call to the Community</h2>
+<p>We are at the beginning of a discipline. AI systems engineering does not have its <em>Design Patterns</em> yet. It does not have its <em>Site Reliability Engineering</em> yet. It does not have its <em>Choose Boring Technology</em> yet.</p>
+<p>What it has is a lot of demos in production and a growing sense that something is wrong. The sense is right. The wrongness is economic as much as it is architectural.</p>
+<p>So here is what I am asking:</p>
 <ul>
-<li><strong>Stop putting LLMs in the event loop.</strong> Not because they are bad, but because the event loop is the wrong place for them.</li>
-<li><strong>Treat prompts as source code.</strong> Version them, review them, hash them, compile them into artifacts, and stop letting them run free at runtime.</li>
-<li><strong>Build the wall and enforce it with hashes.</strong> Refuse to run when a variable cost sneaks past.</li>
-<li><strong>Measure your traditional models.</strong> Do not assume a 400M-parameter model beats a 2 MB tree on your task; test it, and you will be surprised more often than you expect.</li>
-<li><strong>Write down your unit economics and what you learn.</strong> Know your cost per decision and how it scales. This discipline is being invented in production systems right now by people too busy shipping to write it up, and the community needs your scars.</li>
+<li><strong>Stop putting LLMs in the event loop.</strong> Not because they are bad, but because the event loop is the wrong place for them. The right place is design time, as the semantic layer of your AutoML pipeline.</li>
+<li><strong>Start treating prompts as source code.</strong> Version them, review them, hash them, compile them into artifacts. Do not let them run free at runtime, and do not let them become a subscription you cannot cancel.</li>
+<li><strong>Measure your traditional models.</strong> Do not assume a 400M-parameter model beats a 2 MB tree on your task. Test it; you will be surprised more often than you expect.</li>
+<li><strong>Build the wall.</strong> Draw the line between compile time and runtime in your architecture, enforce it with hashes, and refuse to run when the wall is broken — or when a variable cost sneaks past.</li>
+<li><strong>Write down your unit economics.</strong> Know your cost per decision. Know how it scales. Know what it would look like if it were zero. Then ask yourself why it isn't.</li>
+<li><strong>Write down what you learn.</strong> This discipline is being invented right now, in production systems, by people too busy shipping to write blog posts. If you have built one of these systems, write it up. The community needs your scars.</li>
 </ul>
 <p>The next decade of AI systems will not be won by the teams with the biggest models. It will be won by the teams who understand that intelligence belongs at design time and execution belongs at runtime — and who build the wall between them.</p>
 <p>Brooks told us there is no silver bullet. Boehm told us what the delay costs. We have known this for forty years.</p>

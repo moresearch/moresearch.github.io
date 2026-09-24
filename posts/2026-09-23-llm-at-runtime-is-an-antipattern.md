@@ -2,8 +2,8 @@
 title: "LLM at Runtime Is an Antipattern"
 date: 2026-09-23
 slug: llm-at-runtime-is-an-antipattern
-summary: "An LLM in the event loop converts a fixed cost into a variable cost, and gives up replayability, auditability, versioning, and determinism in the process. The fix is a hard wall: the LLM belongs at compile time, as the semantic layer of the AutoML stack, proposing candidate features that an engine compiles and a small tree model freezes. Jev and Laya are a real advance over generative LLMs at runtime — and still the wrong shape for the event loop, because a decision model is a smaller variable cost, not a fixed one."
-tags: llm, runtime, compile-time, automl, semantic-feature-engineering, decision-models, system-one, jev, laya, jevons, catboost, tabular-ml, software-economics, brooks, boehm, determinism, auditability, antipattern, essay
+summary: "An LLM in the event loop converts a fixed cost into a variable cost, and gives up replayability, auditability, versioning, and determinism in the process. DSPy already taught the right discipline — declare signatures, compose modules, compile against a metric — but what it compiles to is still executed by a model. Keep the principles and change the artifact: the LLM belongs at compile time, as the semantic layer of the AutoML stack, proposing candidate features that an engine compiles and a small tree model freezes. Jev and Laya are a real advance over generative LLMs at runtime — and still the wrong shape for the event loop, because a decision model is a smaller variable cost, not a fixed one."
+tags: llm, runtime, compile-time, automl, semantic-feature-engineering, dspy, compound-ai-systems, prompt-compilation, decision-models, system-one, jev, laya, jevons, catboost, tabular-ml, software-economics, brooks, boehm, determinism, auditability, antipattern, essay
 ---
 
 Fred Brooks observed that the hardest part of software engineering is not building the thing, but building it in a way that survives change:
@@ -12,7 +12,7 @@ Fred Brooks observed that the hardest part of software engineering is not buildi
 
 Barry Boehm priced the delay. A defect caught at design time costs one unit; caught at test time, ten; caught in production, a hundred. Boehm and Basili's [Software Defect Reduction Top 10 List](https://web.archive.org/web/2020/https://www.cs.umd.edu/~basili/publications/journals/J81.pdf) opens with exactly that number — "Finding and fixing a software problem after delivery is often 100 times more expensive than finding and fixing it during the requirements and design phase" — and adds that 40 to 50 percent of project effort goes to avoidable rework.
 
-Neither man was writing about AI. They were writing about a discipline that had learned, painfully, that **where you pay a cost determines everything about the system that results**. We are now building AI systems and forgetting that lesson at scale: an LLM in the event loop of production systems, priced per million tokens, running forever.
+Neither man was writing about AI. They were writing about a discipline that had learned, painfully, that **where you pay a cost determines everything about the system that results**. We are now building AI systems and unlearning it in public: an LLM in the event loop, priced per million tokens, running forever.
 
 ---
 
@@ -27,11 +27,13 @@ raw_event ──▶ LLM ──▶ action
 
 Every decision. Every event. Every tick. A network call to a nondeterministic, slow, expensive, unversionable model. It works. It demos. It ships. And then it bleeds.
 
-One economic fact decides everything else about that shape: **an LLM in the event loop has a nonzero marginal cost per decision, forever.** Every call costs tokens. Every token costs money. Every dollar scales with traffic. There is no volume discount that takes the marginal cost to zero, no learning curve that bends it downward, no amortization that spreads it across future decisions. You have taken what should be a **fixed cost** — the design of a decision procedure — and turned it into a **variable cost** that compounds with every event the system processes.
+One economic fact decides the rest of this argument: **an LLM in the event loop has a nonzero marginal cost per decision, forever.** Every call costs tokens. Every token costs money. Every dollar scales with traffic. There is no volume discount that takes the marginal cost to zero, no learning curve that bends it downward, no amortization that spreads it across future decisions. You have taken what should be a **fixed cost** — the design of a decision procedure — and turned it into a **variable cost** that compounds with every event the system processes.
 
 Software economics has one rule for this: **convert variable costs into fixed costs as early as possible.** That is what compilation is (the [Futamura projections](https://link.springer.com/article/10.1023/A:1010095604496) are its purest statement). That is what caching is. That is what an [index](https://use-the-index-luke.com/sql/anatomy) is: a precomputed answer to a question you would otherwise re-derive on every scan. Brooks called the difficulty that survives good design "essential complexity"; an LLM in the event loop does not reduce it, it re-pays for it on every event in the most expensive currency available.
 
-It is not flexibility. It is a subscription to your own architecture. The ML engineering literature named this failure mode years ago — [Machine Learning: The High-Interest Credit Card of Technical Debt](https://research.google/pubs/pub43146/) and [Hidden Technical Debt in Machine Learning Systems](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf), whose CACE principle ("Changing Anything Changes Everything") is precisely what an unversioned model in the loop does to every downstream decision.
+The ML engineering literature named this failure mode years ago — [Machine Learning: The High-Interest Credit Card of Technical Debt](https://research.google/pubs/pub43146/) and [Hidden Technical Debt in Machine Learning Systems](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf), whose CACE principle ("Changing Anything Changes Everything") is precisely what an unversioned model in the loop does to every downstream decision.
+
+It is not flexibility. It is a subscription to your own architecture.
 
 ## What You Give Up
 
@@ -44,7 +46,7 @@ The cost is not only latency and dollars. It is the set of engineering propertie
 - **Cost predictability.** Frontier pricing is a band, not a number — $0.20 to $10 per million input tokens, output roughly 5x that, [by TypeSafe's own comparison](https://typesafe.ai/blog/introducing-system-one-models-and-jev). Your CFO cannot model it and your pricing team cannot pass it through.
 - **Locality.** Every decision is a network round trip, and every round trip is a point of failure. Air-gapped and edge deployments are off the table without something like [llama.cpp](https://github.com/ggml-org/llama.cpp) — which is why [on-device LLMs are a systems design problem](https://blog.hackspree.com/#on-device-llms-are-a-systems-design-problem) rather than a model choice.
 
-These are the properties that make software engineering a discipline rather than a craft. Give them up and you are not building a system; you are building a demo that happens to be in production. And you are paying for it on every event, forever.
+These are the properties that make software engineering a discipline rather than a craft. Surrender them and you are not building a system; you are running a demo in production and paying for it on every event, forever.
 
 ## Why It Feels Right Anyway
 
@@ -74,23 +76,38 @@ The type-safety numbers — the ones that matter if a decision is buried in a de
 
 Three things in that post are structural rather than promotional. **Type errors are an architectural property, not a model-quality property:** if the output space is fixed at request time and the model never writes strings, schema violations stop being a probability and become impossible — a compile-time guarantee smuggled into a runtime call. **Calibration is what makes a decision usable:** a model that can do a task 95% of the time but cannot say which 5% is not automatable, because the graph has no branch for it; RLCD trains honesty directly by making a strictly proper scoring rule the only way to maximise reward. And **the numbers are footnoted on the page:** the workflows were written by TypeSafe's own capabilities team, the reference probabilities are an average of GPT-6 Astra and Fable 5.1 (which biases toward OpenAI and Anthropic), the baseline LLMs run inside TypeSafe's own structured-output wrapper, and the type-error figure is "not empirical — schema matching is guaranteed." The [independent coverage](https://aimodelreport.com/articles/2026-09-21-jev-and-laya-introduce-a-new-model-class-non-autoregressive-decision-models-that/) flags the same caveats.
 
-Now the part that matters more than the speedups.
+Three consequences matter more than the speedups.
 
-**The demo is a variable cost wearing a costume.** TypeSafe's team wired Jev into Doom at ten queries per second and were pleased it cost "~$7/hour" — roughly $61,000 a year to play one game, scaling with every additional player and frame. That line was published as a celebration; it is the marginal-cost problem stated by the model's own authors.
+**The celebrated demo is the antipattern in miniature.** TypeSafe's team wired Jev into Doom at ten queries per second and were pleased it cost "~$7/hour" — roughly $61,000 a year to play one game, scaling with every additional player and frame. That line was published as a triumph; it is the marginal-cost problem stated by the model's own authors.
 
 **The naming is the tell.** Jev is named after William Stanley Jevons — "every order of magnitude drop in the cost of intelligence unlocks orders of magnitude more use cases." That is correct, and it is the strongest argument against putting intelligence in the event loop. Jevons' paradox says efficiency gains increase total consumption: cheaper per-call decisions do not shrink the variable-cost line on your P&L, they grow it, because now you call the model where you previously wrote an `if`.
 
 **The waypoint still costs what a neural network costs.** Jev is a hosted, closed API with no weights, no parameter counts, and no self-hosting, versioned on someone else's release schedule. Laya is open, and its card shows the bill in kind: 421M (English) and 322M (multilingual) parameters, an ~808 MB English checkpoint, a GPU to hit 33 ms, a per-option token budget that degrades past ~20 options (0.425 on Banking77's 77 labels, where Jev scores 0.870), calibration error that starts at 0.466 and reaches 0.081 only after fitting a temperature per question type on your domain, and an English checkpoint that shreds non-Latin scripts *while staying confident* — 0.000 accuracy on Khmer at 0.952 mean confidence, so no confidence gate can protect you. The card's own verdict is the thesis of this post: "Treat Laya as a fast foundation model to specialize, not as an omniscient zero-shot oracle." It is all in Laya's [benchmark report](https://laya.convaiinnovations.com/), which is unusually honest about ceilings.
 
-So: take the waypoint seriously, use it where it fits, and treat it as an on-ramp. The decision model is how you *discover* the decision procedure. It is not how you *own* it.
+Take the waypoint seriously, use it where it fits, and treat it as an on-ramp. The decision model is how you *discover* the decision procedure. It is not how you *own* it.
 
 ## The Missing Layer in AutoML
 
-The obvious next move is AutoML, and it usually stops too early. [auto-sklearn](https://arxiv.org/abs/2007.04074), [TPOT](https://epistasislab.github.io/tpot/), and [H2O AutoML](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html) automate the *syntactic* pipeline: imputation, encoding, scaling, model families, hyperparameters, ensembling. It is genuinely powerful and it cannot *understand* your event schemas.
+The obvious next move is AutoML, and it usually stops too early. [auto-sklearn](https://arxiv.org/abs/2007.04074), [TPOT](https://epistasislab.github.io/tpot/), and [H2O AutoML](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html) automate the *syntactic* pipeline: imputation, encoding, scaling, model families, hyperparameters, ensembling. All genuinely powerful, and none of it *understands* your event schemas.
 
 It cannot look at a stream of `OrderPlaced`, `RefundRequested`, and `SupportTicketOpened` and say: *"the ratio of refund requests to purchases over a rolling 90-day window is probably predictive of churn."* That is a semantic step; it requires knowing what the events mean. AutoML searches. It does not propose. Even the most ambitious classical answer, [Deep Feature Synthesis](https://featuretools.alteryx.com/en/stable/), mechanically composes primitives over relational structure — more ambition than most pipelines have, and still syntactic.
 
 That is the gap where an LLM belongs: not at runtime, but at compile time, as the **semantic layer of the AutoML stack**. It is no longer speculative. CAAFE ([Hollmann, Müller, Hutter](https://arxiv.org/abs/2305.03403), NeurIPS 2024) puts an LLM in the loop to read dataset context and propose new features, then evaluates them by cross-validation instead of trusting them; [AutoML-GPT](https://arxiv.org/abs/2305.02499) extends the idea to pipeline construction. The pattern is being published — mostly on the wrong side of the wall. This blog has argued the same shape from the enterprise rule side, where the LLM's job is [extracting decision models at design time](https://blog.hackspree.com/#on-rule-engines-automating-decision-models) rather than adjudicating at runtime.
+
+## The DSPy Lesson: Compile the Program, Not the Prompt
+
+A production AI system is not a model; it is a program of model calls, retrievals, and ordinary code — a [compound AI system](https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/). The most principled tooling for building those is [DSPy](https://dspy.ai/) ([Khattab et al.](https://arxiv.org/abs/2310.03714)), and its principles are the ones this post has been arguing from a different direction:
+
+- **Declare signatures, not prompts.** You state the inputs and outputs and stop hand-writing the strings that coax them out of a model ([signatures](https://dspy.ai/learn/programming/signatures/)).
+- **Compose modules, not monoliths.** A compound system is a program of typed calls ([modules](https://dspy.ai/learn/programming/modules/)) that you can inspect, test, and reuse.
+- **Compile against a metric.** Optimizers such as BootstrapFewShot, [MIPROv2](https://arxiv.org/abs/2406.11695), and [GEPA](https://arxiv.org/abs/2507.19457) search instructions and demonstrations on your behalf instead of leaving a human to guess at them ([optimization overview](https://dspy.ai/learn/optimization/overview/)).
+- **Ship the compiled artifact.** The output of a compile is a program you save, version, and evaluate — not a prompt you keep tweaking by hand.
+
+That is the right shape, and it stops one variable short. What DSPy compiles *to* is still a bundle of instructions and demonstrations that calls a language model on every event. It moves the *writing* to compile time and leaves the *inference* at runtime: the optimization run becomes a fixed cost, and the program it produces remains a subscription.
+
+So keep the principles and change the target. Signatures become the event schema and the objective. Modules become the proposer, the folder, and the pruner. The metric stays a metric — temporal cross-validation instead of accuracy on a dev split, permutation importance as the pruner. And what the compiler emits is not a prompt bundle but `spec.yaml`, `model.cbm`, and their hashes. The optimizer can still be an LLM; that is precisely where an LLM earns its place in a compound system — as a design-time component of the compiler, never as a call on the event path.
+
+DSPy tells you to compile the program. This post is asking for one more turn of the screw: compile it into something that cannot call a model.
 
 ## The Wall
 
@@ -107,7 +124,7 @@ RUNTIME — fast, deterministic, replayable, versioned
   artifacts ─▶ verify hashes ─▶ Vector() ─▶ tree model ─▶ action ─▶ tool
 ```
 
-Everything to the left is allowed to be slow, expensive, and messy. Everything to the right is pure code and frozen data. The compile-time LLM reads the declared event schemas, the tool registry, and the objective, and proposes candidates a syntactic search would never generate:
+Everything to the left is allowed to be slow, expensive, and messy. Everything to the right is pure code and frozen data. Laid out this way, it is [DSPy](https://dspy.ai/)'s discipline with a different output type: signatures become schemas, modules become the feature proposer, the folder, and the pruner, the metric-driven optimizer becomes the compiler — and what it emits is data instead of instructions. So the compile-time LLM reads the declared event schemas, the tool registry, and the objective, and proposes candidates a syntactic search would never generate:
 
 ```yaml
 candidate_features:
@@ -166,9 +183,9 @@ In those cases the flexibility is worth the price. Be honest about the price, th
 
 Two things moved while I was writing this, and both moved toward the wall.
 
-The first is that the decision-model waypoint arrived faster and better than I expected. I had filed "put a classifier in the loop instead of an LLM" under obvious-but-unbuilt. TypeSafe shipped it, published the workflow evals, footnoted their own biases, and priced the calls; Laya shipped open weights and a limitations section that says out loud that the base model is near random on the task it is advertised for. That honesty is what makes the case *for the wall*, because the same post that shows Jev on a Pareto frontier also shows the $7/hour Doom line — a variable cost doing exactly what variable costs do.
+The first is that the decision-model waypoint arrived faster and better than I expected. I had filed "put a classifier in the loop instead of an LLM" as an obvious idea nobody had shipped. TypeSafe shipped it, published the workflow evals, footnoted their own biases, and priced the calls; Laya shipped open weights and a limitations section that says out loud that the base model is near random on the task it is advertised for. That honesty is what makes the case *for the wall*: the same post that shows Jev on a Pareto frontier also shows the $7/hour Doom line, which is a variable cost doing exactly what variable costs do.
 
-The second is that the argument is mostly about **artifacts, not models**. I came in thinking the choice was "big model at runtime" versus "small model at compile time." The stronger framing is "a call you make forever" versus "an artifact you own." A compiled spec, a frozen tree ensemble, and four hashes are not a smaller AI system; they are a different kind of thing — something you can diff in a pull request, roll back, replay, audit, and hand to someone else. That is what [conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) looks like for a decision procedure, and it is why the cost argument and the engineering argument keep landing in the same place.
+The second is that the argument is really about **artifacts, not models**. I came in thinking the choice was "big model at runtime" versus "small model at compile time." The sharper framing is "a call you make forever" versus "an artifact you own." A compiled spec, a frozen tree ensemble, and four hashes are not a smaller AI system; they are a different kind of thing — something you can diff in a pull request, roll back, replay, audit, and hand to someone else. That is what [conceptual integrity](https://blog.hackspree.com/#brooks-design-conceptual-integrity) looks like for a decision procedure, and it is why the cost argument and the engineering argument keep arriving at the same place.
 
 What did not move: the honest cases at the boundary. Conversational interfaces are not going away, and unlabelable decisions still need something flexible. The wall is a default, not a religion.
 
@@ -186,9 +203,10 @@ We are at the beginning of a discipline. AI systems engineering does not have it
 
 What it has is a lot of demos in production and a growing sense that something is wrong. The sense is right. The wrongness is economic as much as it is architectural.
 
-So here is what I am asking:
+Here is what I am asking:
 
 - **Stop putting LLMs in the event loop.** Not because they are bad, but because the event loop is the wrong place for them. The right place is design time, as the semantic layer of your AutoML pipeline.
+- **Borrow DSPy's principles, and aim them at compile time.** Declare signatures instead of writing prompts. Compose modules instead of one giant prompt. Let a metric-driven optimizer do the tuning — then make what it emits a feature contract and a frozen model, not an optimized prompt bundle.
 - **Start treating prompts as source code.** Version them, review them, hash them, compile them into artifacts. Do not let them run free at runtime, and do not let them become a subscription you cannot cancel.
 - **Measure your traditional models.** Do not assume a 400M-parameter model beats a 2 MB tree on your task. Test it; you will be surprised more often than you expect.
 - **Build the wall.** Draw the line between compile time and runtime in your architecture, enforce it with hashes, and refuse to run when the wall is broken — or when a variable cost sneaks past.
@@ -229,6 +247,12 @@ Let's apply it.
 - Zhang, S. et al. [*AutoML-GPT: Automatic Machine Learning with GPT*](https://arxiv.org/abs/2305.02499) — LLM-driven pipeline construction.
 - Feurer, M. et al. [*Auto-sklearn 2.0*](https://arxiv.org/abs/2007.04074); [TPOT](https://epistasislab.github.io/tpot/); [H2O AutoML](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html) — the syntactic search layer the semantic layer feeds.
 - Kanter, J. M. and Veeramachaneni, K. [*Deep Feature Synthesis*](https://featuretools.alteryx.com/en/stable/) — Featuretools; the classical attempt to automate feature construction, and where syntactic search stops.
+
+**Compound AI systems, DSPy, and compiled programs**
+
+- Zaharia, M. et al. [*The Shift from Models to Compound AI Systems*](https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/) — Berkeley AI Research, February 2024. The framing this post assumes: the unit of production AI is a system of calls, retrievals, and code, not a model.
+- Khattab, O. et al. [*DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines*](https://arxiv.org/abs/2310.03714) — ICLR 2024, plus the [DSPy documentation](https://dspy.ai/) ([signatures](https://dspy.ai/learn/programming/signatures/), [modules](https://dspy.ai/learn/programming/modules/), [optimizers](https://dspy.ai/learn/optimization/overview/)). Signatures over prompt strings, programs over monoliths, metric-driven compilation over hand-tuning, and a compiled program you save — the four principles this post borrows and then re-aims at an artifact that cannot call a model.
+- Opsahl-Ong, K. et al. [*Optimizing Instructions and Demonstrations for Multi-Stage Language Model Programs*](https://arxiv.org/abs/2406.11695) — MIPROv2; Agrawal, L. et al. [*GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning*](https://arxiv.org/abs/2507.19457). The state of the art in prompt-side compilation, and the clearest illustration of what it still leaves at runtime.
 
 **Why a small tree beats a big network on a structured decision**
 

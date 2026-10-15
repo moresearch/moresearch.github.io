@@ -2,13 +2,15 @@
 title: "Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing"
 date: 2026-10-15
 slug: what-if-attention-ran-on-events-not-tokens
-summary: "A research idea: context as an append-only event log, attention as complex event processing. It targets the four context failure modes in agents and is falsifiable with a typed event log and a temporal-retrieval benchmark."
+summary: "A research idea: assemble a model's context from an explicit event history — complex event processing for temporal constraints, a learned router for relevance. Tested on temporal retrieval, revision, and context efficiency, with a frozen generator."
 tags: event-sourcing, complex-event-processing, context-engineering, decision-transformer, attention, transformers, state-space-models, mamba, rwkv, temporal-reasoning, long-context, agents, research-direction, llm-architecture
 ---
 
-LLMs treat context as a **static token string** and attention as "look at everything, score by similarity." Flip both: context is an **append-only event log**; attention is complex event processing — "which past events matter, by a temporal rule."
+Long-running agents do not merely process text; they maintain histories of events, decisions, observations, and state changes. Yet these histories are often supplied to language models as token sequences, leaving temporal relationships, revisions, and causal dependencies to be inferred or handled by external memory mechanisms.
 
-This is a reframing, not a new architecture. It borrows Decision Transformer's outcome-conditioned idea but applies a different mechanism: learned selection over an explicit event history.
+What if context selection operated directly over an explicit event history? Complex event processing could enforce temporal and relational constraints, while a learned router could select semantically relevant events for a language model to interpret. Token attention would remain intact; the proposed change would be in how the model's context is assembled.
+
+This is not a claim that event-based context is inherently superior. It is a testable research question: does combining structured temporal selection with learned relevance improve the accuracy–cost trade-off of language-model reasoning over long-running histories?
 
 ## Intuition
 
@@ -38,18 +40,18 @@ An event-based model stores:
 
 The log is append-only: you add events, never rewrite the prompt. Appending isn't cheaper by itself — it buys incremental indexing and cached per-event representations, so re-encoding the whole history stops being the default. This is [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html): [the event log is the honest memory](https://blog.hackspree.com/#events-as-the-source-of-truth), [narratives are reconstructions built on top of it](https://blog.hackspree.com/#stories-from-events).
 
-## Attention is complex event processing, not a dot product
+## Selection is complex event processing, not a dot product
 
-Standard attention:
+Token attention is unchanged. The change is upstream, in how context is assembled:
 
 ```text
-Attention(Q, K, V) = softmax(Q·Kᵀ / √d) · V
+Attention(Q, K, V) = softmax(Q·Kᵀ / √d) · V      -- inside the model, unchanged
 ```
 
-Event attention:
+Selection, over events:
 
 ```text
-Attention(e_now) = f({ e_i | Pattern(e_i, ..., e_now) matches })
+Select(q) = { e_i | Pattern(e_i, ..., q) matches }
 ```
 
 CEP patterns — the vocabulary of [rule engines](https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp):
@@ -61,7 +63,7 @@ NOT(C) AFTER B                  -- negation, made explicit
 COUNT(X) > 3 IN window W        -- aggregation over time
 ```
 
-The CEP layer emits a *relevant substream* — `SELECT events WHERE type=entitlement AND user=me AND t > last_payment`. That substream feeds the generator. Attention becomes a **router**: it still scores candidates, but it changes what reaches the generator.
+The CEP layer emits a *relevant substream* — `SELECT events WHERE type=entitlement AND user=me AND t > last_payment`. That substream feeds the generator. Selection becomes a **router**: it still scores candidates, but it changes which events reach the generator; token attention then runs on the result.
 
 ## Four failure modes this might mitigate
 
@@ -77,7 +79,7 @@ Keen (IBM) names four ways context breaks long-running agents in [*Context Engin
 
 **4. Clash** — conflicting facts. `supersedes` points at the old fact, `causes` orders the chain. Resolving it becomes a rule, not an inference.
 
-The video's fixes — validate, compact, curate, prune — are hand-written CEP rules. The claim is they can be *learned*, not that they're solved. Punchline: agents do better with **less** context, if it's the **right** context.
+The four modes have different causes: retractions help with stale facts but don't by themselves prevent distraction or tool confusion. The video's fixes — validate, compact, curate, prune — are hand-written CEP rules. The claim is they can be *learned*, not that they're solved. Punchline: agents do better with **less** context, if it's the **right** context.
 
 ## Why it might be useful
 
@@ -101,9 +103,9 @@ Three strands, each half-built.
 
 **Sequence modeling: learning, not an explicit substream.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), [Time2Vec](https://arxiv.org/abs/1907.05321), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345)/[Decision Mamba](https://arxiv.org/abs/2406.00079), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) model irregular sequences. Transformers attend densely; SSMs fold history into a hidden state. They don't expose a retrievable substream.
 
-Gap (a question, not a proven absence): **does a learned, differentiable router that emits an explicit event substream add anything?** This argues yes — to test, not to assume.
+Gap (a question, not a proven absence): **do typed event structure, explicit temporal constraints, and a learned event selector together beat strong existing context-selection methods?** "Learning to select" alone is not novel — sparse attention and differentiable retrieval already do that. The specific question is whether the combination adds measurable value.
 
-This is an *integration*, not a new primitive. Learned sparse attention, differentiable retrieval, and neural-symbolic temporal reasoning are close neighbors; the absence of this exact combination can't be assumed. If a hand-written CEP rule matches the learned router, the idea dies.
+This is an *integration*, not a new primitive. If a hand-written CEP rule matches the learned router, the idea dies.
 
 ## The Decision Transformer reframing
 
@@ -133,7 +135,7 @@ That MLP is the proposal's own scoring mechanism. [Temporal Fusion Transformers]
 
 ## The minimum novel mechanism
 
-Boring part: append-only log, index, scan. Three mechanisms, named: **deterministic CEP** (hand-written rules), **learned router** (ranks/selects events), **differentiable temporal attention** (learned relationship scoring). The initial contribution is the second only.
+Boring part: append-only log, index, scan. Three mechanisms, named: **deterministic CEP** (hand-written rules), **learned router** (ranks/selects events), **differentiable temporal attention** (learned relationship scoring). The initial contribution is the second only — a learned *selector constrained by* deterministic CEP, not a learned CEP engine. The MLP below does not learn `SEQ`/`NOT`/`COUNT`; the deterministic stage keeps those operators fixed.
 
 **Schema.** Six fields:
 
@@ -146,7 +148,7 @@ Boring part: append-only log, index, scan. Three mechanisms, named: **determinis
 
 **Inputs/outputs.** In: log prefix + query. Out: substream `S = {e_1 ... e_k}`, each tagged with a matched operator and weight. The generator reads `S`, not the log.
 
-**Two-stage selection.** Stage one (non-learned): filter by type, entity, time window, causal reachability → candidate set `C`. Stage two (learned):
+**Two-stage selection.** Stage one (deterministic): apply `SEQ`/`NOT`/`COUNT`-style rules — filter by type, entity, time window, causal reachability → candidate set `C`. Stage two (learned) scores candidates for relevance only:
 
 ```text
 score(e_i, q) = σ( MLP([type_i, type_q, Δt, causal_edge, payload_emb_i, payload_emb_q]) )
@@ -154,7 +156,7 @@ score(e_i, q) = σ( MLP([type_i, type_q, Δt, causal_edge, payload_emb_i, payloa
 
 Top-k, tag, emit. Hard top-k is discrete — no gradient through it. So the first experiment trains supervised (predict gold relevance; hard top-k only at inference). End-to-end is separate.
 
-Cost: with incremental indexing and cached embeddings, the router avoids re-encoding full history; cost depends on candidate discovery, scoring, and selected-context size. (`O(C)` assumes constant-time scoring; indexing, embedding, and causal traversal are separate.)
+Cost: with incremental indexing and cached embeddings, the router avoids re-encoding full history; cost depends on candidate discovery, scoring, and selected-context size. (`O(C)` assumes constant-time scoring; indexing, embedding, and causal traversal are separate.) The end-to-end comparison must include candidate retrieval, embedding, causal traversal, and context serialization — and report cold-start vs repeated-query, since caching is where the claimed savings live.
 
 **Training.** *Hindsight supervision*: a CEP oracle marks the correct substream; the router imitates. *End-to-end*: generator loss flows back through a soft mask / Gumbel-Softmax. The first runs first.
 
@@ -167,7 +169,7 @@ Pipeline:
 [Learnable CEP Router] -> selects k events                  (the novel part)
         |
         v
-[Small LLM / SSM] -> generates the next event               (already exists)
+[Small LLM / SSM] -> answers from selected events          (already exists)
 ```
 
 Embedder = content + time + type + causal links ([Time2Vec](https://arxiv.org/abs/1907.05321) + entity embeddings). [Mamba](https://arxiv.org/abs/2312.00752), [Mamba-2](https://arxiv.org/abs/2405.21060), [RWKV](https://arxiv.org/abs/2305.13048) fold the past into hidden state; the router keeps it retrievable. Whether explicitness pays is what's left to show.
@@ -180,11 +182,11 @@ Embedder = content + time + type + causal links ([Time2Vec](https://arxiv.org/ab
 
 The test set must contain patterns and combinations not in training — else it measures memorization, not routing.
 
-**Hypothesis.** **H1**: selective event context maintains answer accuracy as history length grows, within a fixed context budget. **H2**: the learned router improves the accuracy–cost trade-off over embedding retrieval, recency selection, and hand-written CEP on the discriminating task.
+**Hypothesis.** **H1 (context efficiency)**: at a fixed context-token budget, event selection maintains answer accuracy as history length increases. **H2 (selection quality)**: on the discriminating tier, the learned router improves the accuracy–cost trade-off over fixed retrieval, recency selection, and deterministic CEP. A hand-written rule that matches the learned router is a meaningful negative result: learning may not justify its added complexity.
 
 **Baselines.** Full history (reference, not a guaranteed loser — it may win at short lengths; its cost grows with the log). Embedding retrieval (misses retractions). Recency window (catches recency bias). Hand-written CEP rule (does learning beat writing the rule down?).
 
-**Metrics.** Accuracy; retrieval precision/recall vs the gold substream; context size at matched accuracy. Key curve: accuracy vs log length, equal budgets. Dense attention may win short; the claim is only that the router *holds*. If the hand-written rule matches everywhere, H2 dies: "use CEP, skip the ML."
+**Two evaluations.** (1) *Selection quality*: precision/recall against a gold evidence set, including required dependencies and corrections. (2) *Downstream QA*: answer accuracy and temporal consistency given the selected events, with Qwen frozen. Track context tokens at matched accuracy and total pipeline cost (candidate retrieval, embeddings, causal traversal, serialization; cold-start and repeated-query). Key curve: accuracy vs log length, equal budgets. Dense attention may win short; the claim is only that the router *holds*. If the hand-written rule matches everywhere, H2 dies: "use CEP, skip the ML" — a meaningful negative result.
 
 ## A concrete plan: Qwen, frozen
 
@@ -192,11 +194,11 @@ Run it with [`Qwen3-0.6B`](https://huggingface.co/Qwen/Qwen3-0.6B), frozen. Thre
 
 **Data + baselines.** Synthetic histories, ground-truth labels, difficult negatives (outdated, superseded, or wrong-time events for the same entity). Split by history, not pairs. Run four baselines first: full history, retrieval, rule-based CEP, learned router.
 
-**Train the router** two ways. *A — Qwen as classifier:* sequence-classification head, LoRA if tight; trains relevance decisions, not generation. *B — smaller router:* a compact model over `[query_emb, event_emb, type, entity, Δt, supersedes]`.
+**Train a compact router first** (Qwen stays frozen as generator): a small model over `[query_emb, event_emb, type, entity, Δt, supersedes]` predicts relevance; hard top-k at inference. Gap to check: independent scoring can pick a correction and drop the statement it corrects.
 
-Hard top-k at inference. Gap to check: independent scoring can pick a correction and drop the statement it corrects.
+*Later, separate configuration:* fine-tune Qwen itself as the selector (sequence-classification head, LoRA). That is a different condition from the frozen generator — don't conflate them.
 
-**Evaluate** (generator fixed): recall@k, accuracy, temporal consistency, tokens, latency, cost. Sweep length, entities, density, conflicts across budgets. Central question: accuracy up at comparable tokens, or tokens down at comparable accuracy?
+**Evaluate** (generator fixed) in two ways: selection quality (precision/recall vs gold evidence) and downstream QA (accuracy + temporal consistency). Track tokens, latency, and total pipeline cost — cold-start and repeated-query. Sweep length, entities, density, conflicts across budgets. Central question: accuracy up at comparable tokens, or tokens down at comparable accuracy?
 
 **Only then fine-tune the generator** (SFT/LoRA on `(question, events) → answer`). Keep a frozen-Qwen control. Key decision: **don't fine-tune the generator first.**
 

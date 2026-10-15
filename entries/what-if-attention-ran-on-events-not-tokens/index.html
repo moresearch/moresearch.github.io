@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#02391f">
-  <meta name="description" content="A research idea: context as an append-only event log, attention as complex event processing. It targets the four context failure modes in agents and is falsifiable with a typed event log and a temporal-retrieval benchmark.">
+  <meta name="description" content="A research idea: assemble a model&#39;s context from an explicit event history — complex event processing for temporal constraints, a learned router for relevance. Tested on temporal retrieval, revision, and context efficiency, with a frozen generator.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/entries/what-if-attention-ran-on-events-not-tokens/">
   <title>Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing — hackspree</title>
   <meta property="og:title" content="Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing">
-  <meta property="og:description" content="A research idea: context as an append-only event log, attention as complex event processing. It targets the four context failure modes in agents and is falsifiable with a typed event log and a temporal-retrieval benchmark.">
+  <meta property="og:description" content="A research idea: assemble a model&#39;s context from an explicit event history — complex event processing for temporal constraints, a learned router for relevance. Tested on temporal retrieval, revision, and context efficiency, with a frozen generator.">
   <meta property="og:url" content="https://blog.hackspree.com/entries/what-if-attention-ran-on-events-not-tokens/">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="705">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing">
-  <meta name="twitter:description" content="A research idea: context as an append-only event log, attention as complex event processing. It targets the four context failure modes in agents and is falsifiable with a typed event log and a temporal-retrieval benchmark.">
+  <meta name="twitter:description" content="A research idea: assemble a model&#39;s context from an explicit event history — complex event processing for temporal constraints, a learned router for relevance. Tested on temporal retrieval, revision, and context efficiency, with a frozen generator.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
   <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
@@ -91,12 +91,13 @@
       <article>
         <header>
           <p class="post-meta"><time datetime="2026-10-15">2026-10-15</time></p>
-          <h1>Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing<a class="raw-link" href="https://blog.hackspree.com/raw/what-if-attention-ran-on-events-not-tokens.md" title="Raw markdown source" aria-label="Raw markdown source of Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A research idea: context as an append-only event log, attention as complex event processing. It targets the four context failure modes in agents and is falsifiable with a typed event log and a temporal-retrieval benchmark.</p>
+          <h1>Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing<a class="raw-link" href="https://blog.hackspree.com/raw/what-if-attention-ran-on-events-not-tokens.md" title="Raw markdown source" aria-label="Raw markdown source of Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">A research idea: assemble a model&#39;s context from an explicit event history — complex event processing for temporal constraints, a learned router for relevance. Tested on temporal retrieval, revision, and context efficiency, with a frozen generator.</p>
           <div class="tags"><span class="tag">event-sourcing</span><span class="tag">complex-event-processing</span><span class="tag">context-engineering</span><span class="tag">decision-transformer</span><span class="tag">attention</span><span class="tag">transformers</span><span class="tag">state-space-models</span><span class="tag">mamba</span><span class="tag">rwkv</span><span class="tag">temporal-reasoning</span><span class="tag">long-context</span><span class="tag">agents</span><span class="tag">research-direction</span><span class="tag">llm-architecture</span></div>
           
         </header>
-        <div class="post-body"><p>LLMs treat context as a <strong>static token string</strong> and attention as &quot;look at everything, score by similarity.&quot; Flip both: context is an <strong>append-only event log</strong>; attention is complex event processing — &quot;which past events matter, by a temporal rule.&quot;</p>
-<p>This is a reframing, not a new architecture. It borrows Decision Transformer's outcome-conditioned idea but applies a different mechanism: learned selection over an explicit event history.</p>
+        <div class="post-body"><p>Long-running agents do not merely process text; they maintain histories of events, decisions, observations, and state changes. Yet these histories are often supplied to language models as token sequences, leaving temporal relationships, revisions, and causal dependencies to be inferred or handled by external memory mechanisms.</p>
+<p>What if context selection operated directly over an explicit event history? Complex event processing could enforce temporal and relational constraints, while a learned router could select semantically relevant events for a language model to interpret. Token attention would remain intact; the proposed change would be in how the model's context is assembled.</p>
+<p>This is not a claim that event-based context is inherently superior. It is a testable research question: does combining structured temporal selection with learned relevance improve the accuracy–cost trade-off of language-model reasoning over long-running histories?</p>
 <h2 id="intuition">Intuition</h2>
 <p>A long-running agent's history isn't a flat transcript — it's a record of events: decisions, actions, observations, revised facts, commitments. An event's significance depends on its content, when it happened, which entity it touches, what it changes, and how it relates to later events.</p>
 <p>That is the difference between <strong>representing history and reasoning over it</strong>. A transcript records what was said; it does not make temporal order, superseded facts, or causal links explicit. Models can infer these from text, and agents can patch around it with summaries or retrieval — but neither gives a uniform way to query an evolving history as typed, temporally related events.</p>
@@ -111,12 +112,12 @@
 <pre><code class="language-json">{ &quot;id&quot;: &quot;evt-0042&quot;, &quot;type&quot;: &quot;tool_returned&quot;, &quot;t&quot;: 1734200000, &quot;payload&quot;: { &quot;price&quot;: 320 }, &quot;causes&quot;: [&quot;evt-0041&quot;], &quot;supersedes&quot;: null }
 </code></pre>
 <p>The log is append-only: you add events, never rewrite the prompt. Appending isn't cheaper by itself — it buys incremental indexing and cached per-event representations, so re-encoding the whole history stops being the default. This is <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#events-as-the-source-of-truth">the event log is the honest memory</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#stories-from-events">narratives are reconstructions built on top of it</a>.</p>
-<h2 id="attention-is-complex-event-processing-not-a-dot-product">Attention is complex event processing, not a dot product</h2>
-<p>Standard attention:</p>
-<pre><code class="language-text">Attention(Q, K, V) = softmax(Q·Kᵀ / √d) · V
+<h2 id="selection-is-complex-event-processing-not-a-dot-product">Selection is complex event processing, not a dot product</h2>
+<p>Token attention is unchanged. The change is upstream, in how context is assembled:</p>
+<pre><code class="language-text">Attention(Q, K, V) = softmax(Q·Kᵀ / √d) · V      -- inside the model, unchanged
 </code></pre>
-<p>Event attention:</p>
-<pre><code class="language-text">Attention(e_now) = f({ e_i | Pattern(e_i, ..., e_now) matches })
+<p>Selection, over events:</p>
+<pre><code class="language-text">Select(q) = { e_i | Pattern(e_i, ..., q) matches }
 </code></pre>
 <p>CEP patterns — the vocabulary of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp">rule engines</a>:</p>
 <pre><code class="language-text">SEQ(A, B) WITHIN 5 minutes      -- B right after A
@@ -124,7 +125,7 @@ A CAUSES B                      -- causal edge, not positional proximity
 NOT(C) AFTER B                  -- negation, made explicit
 COUNT(X) &gt; 3 IN window W        -- aggregation over time
 </code></pre>
-<p>The CEP layer emits a <em>relevant substream</em> — <code>SELECT events WHERE type=entitlement AND user=me AND t &gt; last_payment</code>. That substream feeds the generator. Attention becomes a <strong>router</strong>: it still scores candidates, but it changes what reaches the generator.</p>
+<p>The CEP layer emits a <em>relevant substream</em> — <code>SELECT events WHERE type=entitlement AND user=me AND t &gt; last_payment</code>. That substream feeds the generator. Selection becomes a <strong>router</strong>: it still scores candidates, but it changes which events reach the generator; token attention then runs on the result.</p>
 <h2 id="four-failure-modes-this-might-mitigate">Four failure modes this might mitigate</h2>
 <p>Keen (IBM) names four ways context breaks long-running agents in <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I"><em>Context Engineering for AI Agents: 4 Failure Modes to Avoid</em></a>. Each maps to a CEP operator.</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I"><img src="https://img.youtube.com/vi/BwXremQ-i6I/hqdefault.jpg" alt="IBM Technology — Context Engineering for AI Agents: 4 Failure Modes to Avoid"></a></p>
@@ -132,7 +133,7 @@ COUNT(X) &gt; 3 IN window W        -- aggregation over time
 <p><strong>2. Distraction</strong> — long histories derail the model. Dense attention reads everything; a router reads only the matched substream.</p>
 <p><strong>3. Confusion</strong> — too many tools. Typed events let the router filter by <code>type=tool_returned</code> and causal reachability.</p>
 <p><strong>4. Clash</strong> — conflicting facts. <code>supersedes</code> points at the old fact, <code>causes</code> orders the chain. Resolving it becomes a rule, not an inference.</p>
-<p>The video's fixes — validate, compact, curate, prune — are hand-written CEP rules. The claim is they can be <em>learned</em>, not that they're solved. Punchline: agents do better with <strong>less</strong> context, if it's the <strong>right</strong> context.</p>
+<p>The four modes have different causes: retractions help with stale facts but don't by themselves prevent distraction or tool confusion. The video's fixes — validate, compact, curate, prune — are hand-written CEP rules. The claim is they can be <em>learned</em>, not that they're solved. Punchline: agents do better with <strong>less</strong> context, if it's the <strong>right</strong> context.</p>
 <h2 id="why-it-might-be-useful">Why it might be useful</h2>
 <p><strong>1. Explicit time and causality.</strong> Positional encodings only imply order; events can carry timestamps and causal links — if those fields are accurate.</p>
 <p><strong>2. Bounded compute as history grows.</strong> Savings come from incremental indexing and selective retrieval, not the log itself. &quot;Unbounded&quot; is never literal: storage, latency, and budgets stay finite. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">MemGPT</a> approximates this with vector DBs and paging.</p>
@@ -144,8 +145,8 @@ COUNT(X) &gt; 3 IN window W        -- aggregation over time
 <p><strong>Event processing: operators, not learning.</strong> CEP and rule engines handle time, causality, retraction, aggregation — but rules are hand-written and non-differentiable (<a target="_blank" rel="noopener noreferrer" href="https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/">Flink CEP</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp">RETE</a>).</p>
 <p><strong>Temporal retrieval: selection, not operators.</strong> <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">MemGPT</a>, temporal knowledge graphs, and agent frameworks (<a target="_blank" rel="noopener noreferrer" href="https://langchain-ai.github.io/langgraph/">LangGraph</a>, <a target="_blank" rel="noopener noreferrer" href="https://microsoft.github.io/autogen/">AutoGen</a>, <a target="_blank" rel="noopener noreferrer" href="https://docs.crewai.com/">CrewAI</a>) retrieve a subset of history, but the selector is frozen — cosine similarity, paging, recency. In those implementations a <code>retraction</code> may be just another embedding — a question for comparison, not a property of the area.</p>
 <p><strong>Sequence modeling: learning, not an explicit substream.</strong> Temporal point processes (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2002.09291">Transformer Hawkes Process</a>), <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1907.05321">Time2Vec</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1912.09363">Temporal Fusion Transformers</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2106.01345">Decision Transformer</a>/<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2406.00079">Decision Mamba</a>, and state-space models (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.00752">Mamba</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.13048">RWKV</a>) model irregular sequences. Transformers attend densely; SSMs fold history into a hidden state. They don't expose a retrievable substream.</p>
-<p>Gap (a question, not a proven absence): <strong>does a learned, differentiable router that emits an explicit event substream add anything?</strong> This argues yes — to test, not to assume.</p>
-<p>This is an <em>integration</em>, not a new primitive. Learned sparse attention, differentiable retrieval, and neural-symbolic temporal reasoning are close neighbors; the absence of this exact combination can't be assumed. If a hand-written CEP rule matches the learned router, the idea dies.</p>
+<p>Gap (a question, not a proven absence): <strong>do typed event structure, explicit temporal constraints, and a learned event selector together beat strong existing context-selection methods?</strong> &quot;Learning to select&quot; alone is not novel — sparse attention and differentiable retrieval already do that. The specific question is whether the combination adds measurable value.</p>
+<p>This is an <em>integration</em>, not a new primitive. If a hand-written CEP rule matches the learned router, the idea dies.</p>
 <h2 id="the-decision-transformer-reframing">The Decision Transformer reframing</h2>
 <p>Decision Transformer learned a sequence model over trajectories instead of a policy:</p>
 <pre><code class="language-text">[G_t, S_t, A_t, G_{t+1}, S_{t+1}, A_{t+1}, ...]
@@ -186,18 +187,18 @@ COUNT(X) &gt; 3 IN window W        -- aggregation over time
 </code></pre>
 <p>That MLP is the proposal's own scoring mechanism. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1912.09363">Temporal Fusion Transformers</a> is related work on temporal modeling and selection (variable selection, gating, interpretable attention) — not the source of the formula. This attention-level version remains a possible extension, not the first experiment.</p>
 <h2 id="the-minimum-novel-mechanism">The minimum novel mechanism</h2>
-<p>Boring part: append-only log, index, scan. Three mechanisms, named: <strong>deterministic CEP</strong> (hand-written rules), <strong>learned router</strong> (ranks/selects events), <strong>differentiable temporal attention</strong> (learned relationship scoring). The initial contribution is the second only.</p>
+<p>Boring part: append-only log, index, scan. Three mechanisms, named: <strong>deterministic CEP</strong> (hand-written rules), <strong>learned router</strong> (ranks/selects events), <strong>differentiable temporal attention</strong> (learned relationship scoring). The initial contribution is the second only — a learned <em>selector constrained by</em> deterministic CEP, not a learned CEP engine. The MLP below does not learn <code>SEQ</code>/<code>NOT</code>/<code>COUNT</code>; the deterministic stage keeps those operators fixed.</p>
 <p><strong>Schema.</strong> Six fields:</p>
 <pre><code class="language-json">{ &quot;id&quot;: &quot;evt-0042&quot;, &quot;type&quot;: &quot;tool_returned&quot;, &quot;t&quot;: 1734200000,
   &quot;payload&quot;: { &quot;price&quot;: 320 }, &quot;causes&quot;: [&quot;evt-0041&quot;], &quot;supersedes&quot;: &quot;evt-0019&quot; }
 </code></pre>
 <p><code>supersedes</code> is retraction as a pointer, not a deletion. <code>t</code> isn't monotonic — out-of-order producers and clock drift — so pick event time, ingestion time, or a logical sequence number.</p>
 <p><strong>Inputs/outputs.</strong> In: log prefix + query. Out: substream <code>S = {e_1 ... e_k}</code>, each tagged with a matched operator and weight. The generator reads <code>S</code>, not the log.</p>
-<p><strong>Two-stage selection.</strong> Stage one (non-learned): filter by type, entity, time window, causal reachability → candidate set <code>C</code>. Stage two (learned):</p>
+<p><strong>Two-stage selection.</strong> Stage one (deterministic): apply <code>SEQ</code>/<code>NOT</code>/<code>COUNT</code>-style rules — filter by type, entity, time window, causal reachability → candidate set <code>C</code>. Stage two (learned) scores candidates for relevance only:</p>
 <pre><code class="language-text">score(e_i, q) = σ( MLP([type_i, type_q, Δt, causal_edge, payload_emb_i, payload_emb_q]) )
 </code></pre>
 <p>Top-k, tag, emit. Hard top-k is discrete — no gradient through it. So the first experiment trains supervised (predict gold relevance; hard top-k only at inference). End-to-end is separate.</p>
-<p>Cost: with incremental indexing and cached embeddings, the router avoids re-encoding full history; cost depends on candidate discovery, scoring, and selected-context size. (<code>O(C)</code> assumes constant-time scoring; indexing, embedding, and causal traversal are separate.)</p>
+<p>Cost: with incremental indexing and cached embeddings, the router avoids re-encoding full history; cost depends on candidate discovery, scoring, and selected-context size. (<code>O(C)</code> assumes constant-time scoring; indexing, embedding, and causal traversal are separate.) The end-to-end comparison must include candidate retrieval, embedding, causal traversal, and context serialization — and report cold-start vs repeated-query, since caching is where the claimed savings live.</p>
 <p><strong>Training.</strong> <em>Hindsight supervision</em>: a CEP oracle marks the correct substream; the router imitates. <em>End-to-end</em>: generator loss flows back through a soft mask / Gumbel-Softmax. The first runs first.</p>
 <p>Pipeline:</p>
 <pre><code class="language-text">[Event Stream] -&gt; [Event Embedder] -&gt; [Temporal Index]      (off-the-shelf)
@@ -206,7 +207,7 @@ COUNT(X) &gt; 3 IN window W        -- aggregation over time
 [Learnable CEP Router] -&gt; selects k events                  (the novel part)
         |
         v
-[Small LLM / SSM] -&gt; generates the next event               (already exists)
+[Small LLM / SSM] -&gt; answers from selected events          (already exists)
 </code></pre>
 <p>Embedder = content + time + type + causal links (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1907.05321">Time2Vec</a> + entity embeddings). <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.00752">Mamba</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2405.21060">Mamba-2</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.13048">RWKV</a> fold the past into hidden state; the router keeps it retrievable. Whether explicitness pays is what's left to show.</p>
 <h2 id="a-falsifiable-experiment">A falsifiable experiment</h2>
@@ -216,15 +217,15 @@ COUNT(X) &gt; 3 IN window W        -- aggregation over time
 <li><em>Discriminating</em>: ambiguous payloads, noisy typing, interleaved entities, structured+semantic constraints.</li>
 </ul>
 <p>The test set must contain patterns and combinations not in training — else it measures memorization, not routing.</p>
-<p><strong>Hypothesis.</strong> <strong>H1</strong>: selective event context maintains answer accuracy as history length grows, within a fixed context budget. <strong>H2</strong>: the learned router improves the accuracy–cost trade-off over embedding retrieval, recency selection, and hand-written CEP on the discriminating task.</p>
+<p><strong>Hypothesis.</strong> <strong>H1 (context efficiency)</strong>: at a fixed context-token budget, event selection maintains answer accuracy as history length increases. <strong>H2 (selection quality)</strong>: on the discriminating tier, the learned router improves the accuracy–cost trade-off over fixed retrieval, recency selection, and deterministic CEP. A hand-written rule that matches the learned router is a meaningful negative result: learning may not justify its added complexity.</p>
 <p><strong>Baselines.</strong> Full history (reference, not a guaranteed loser — it may win at short lengths; its cost grows with the log). Embedding retrieval (misses retractions). Recency window (catches recency bias). Hand-written CEP rule (does learning beat writing the rule down?).</p>
-<p><strong>Metrics.</strong> Accuracy; retrieval precision/recall vs the gold substream; context size at matched accuracy. Key curve: accuracy vs log length, equal budgets. Dense attention may win short; the claim is only that the router <em>holds</em>. If the hand-written rule matches everywhere, H2 dies: &quot;use CEP, skip the ML.&quot;</p>
+<p><strong>Two evaluations.</strong> (1) <em>Selection quality</em>: precision/recall against a gold evidence set, including required dependencies and corrections. (2) <em>Downstream QA</em>: answer accuracy and temporal consistency given the selected events, with Qwen frozen. Track context tokens at matched accuracy and total pipeline cost (candidate retrieval, embeddings, causal traversal, serialization; cold-start and repeated-query). Key curve: accuracy vs log length, equal budgets. Dense attention may win short; the claim is only that the router <em>holds</em>. If the hand-written rule matches everywhere, H2 dies: &quot;use CEP, skip the ML&quot; — a meaningful negative result.</p>
 <h2 id="a-concrete-plan-qwen-frozen">A concrete plan: Qwen, frozen</h2>
 <p>Run it with <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/Qwen/Qwen3-0.6B"><code>Qwen3-0.6B</code></a>, frozen. Three parts: <strong>event store</strong> (append-only), <strong>temporal event router</strong> (learned scorer + deterministic CEP), <strong>frozen Qwen generator</strong> (question + selected events → answer). Freeze Qwen first to isolate the context's effect.</p>
 <p><strong>Data + baselines.</strong> Synthetic histories, ground-truth labels, difficult negatives (outdated, superseded, or wrong-time events for the same entity). Split by history, not pairs. Run four baselines first: full history, retrieval, rule-based CEP, learned router.</p>
-<p><strong>Train the router</strong> two ways. <em>A — Qwen as classifier:</em> sequence-classification head, LoRA if tight; trains relevance decisions, not generation. <em>B — smaller router:</em> a compact model over <code>[query_emb, event_emb, type, entity, Δt, supersedes]</code>.</p>
-<p>Hard top-k at inference. Gap to check: independent scoring can pick a correction and drop the statement it corrects.</p>
-<p><strong>Evaluate</strong> (generator fixed): recall@k, accuracy, temporal consistency, tokens, latency, cost. Sweep length, entities, density, conflicts across budgets. Central question: accuracy up at comparable tokens, or tokens down at comparable accuracy?</p>
+<p><strong>Train a compact router first</strong> (Qwen stays frozen as generator): a small model over <code>[query_emb, event_emb, type, entity, Δt, supersedes]</code> predicts relevance; hard top-k at inference. Gap to check: independent scoring can pick a correction and drop the statement it corrects.</p>
+<p><em>Later, separate configuration:</em> fine-tune Qwen itself as the selector (sequence-classification head, LoRA). That is a different condition from the frozen generator — don't conflate them.</p>
+<p><strong>Evaluate</strong> (generator fixed) in two ways: selection quality (precision/recall vs gold evidence) and downstream QA (accuracy + temporal consistency). Track tokens, latency, and total pipeline cost — cold-start and repeated-query. Sweep length, entities, density, conflicts across budgets. Central question: accuracy up at comparable tokens, or tokens down at comparable accuracy?</p>
 <p><strong>Only then fine-tune the generator</strong> (SFT/LoRA on <code>(question, events) → answer</code>). Keep a frozen-Qwen control. Key decision: <strong>don't fine-tune the generator first.</strong></p>
 <h2 id="three-objections">Three objections</h2>
 <p><strong>A. Tokens are still tokens.</strong> CEP doesn't replace soft attention; it selects over event boundaries. Naive all-pairs is <code>O(E²)</code>; the router scores <code>C</code> candidates and pays token attention only over <code>k</code> selected events.</p>

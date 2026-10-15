@@ -20,7 +20,7 @@ The proposed system has three stages.
 
 First, it stores events in an append-only history. Each event records what changed, when it was recorded in the sequence, which entity and attribute it concerns, and whether it revises an earlier event.
 
-Second, deterministic rules remove events that are ineligible under the question's temporal constraints, without resolving all remaining evidence-selection decisions. A learned selector then chooses which remaining events to pass to the language model.
+Second, deterministic rules remove events that violate the question's temporal constraints. The learned selector chooses among the remaining candidates, which may still contain irrelevant events or competing evidence.
 
 Third, a frozen Qwen3-0.6B model answers using only the selected evidence.
 
@@ -38,21 +38,19 @@ This proposal does not introduce event-based memory or temporal retrieval. It as
 
 I will generate synthetic event histories containing facts, revisions, retractions, and unrelated updates. Each history will support questions about both the current state and past states.
 
-**First, test single-event selection.** Begin with questions for which one event is sufficient to identify the answer. Include distractors that are newer than the correct event but concern unrelated attributes. Compare the fine-tuned selector with the original model and a deterministic selector. This isolates whether fine-tuning improves evidence selection before introducing questions that require multiple events.
+**First, test single-event selection.** Begin with questions for which one event uniquely identifies the requested fact. Include distractors that occur later but concern unrelated attributes. For example, if an event changes an allowed port from 80 to 443 and a later event changes the authentication method, the port-change event remains the correct evidence. This initial experiment tests whether the selector can identify relevant evidence without confusing recency with relevance.
 
 **Next, train the selector.** Start from a pretrained decision model and fine-tune it on examples that pair a question and candidate events with the correct evidence. Split the data by underlying history template or scenario, rather than randomly splitting individual questions. Hold out combinations of revisions, retractions, temporal queries, and unrelated updates to test generalization.
 
 **Then, compare against baselines.** Evaluate full-context input when it fits, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original unfine-tuned decision model. When a history exceeds the context limit, specify a truncation strategy for the full-context baseline. Give every method the same maximum generator-input token budget.
 
-**Finally, measure the result.** Keep Qwen3-0.6B frozen and first verify that it can answer correctly when given the gold evidence.
-
 The first experiment should establish whether fine-tuning improves single-event selection over both the original model and the deterministic baseline. Only if it does should the study extend to selecting multiple events under a token budget.
 
 **Candidate model.** [Tev1](https://ollama.com/library/tev1) is a candidate because it is a pretrained decision model that selects among predefined options. Its standard interface selects one option, so the initial experiment will use single-event selection. Multi-event selection is a later extension, not an assumption of the initial design. The published LoRA recipe targets Qwen3.5-4B; compatibility with the separate 0.8B variant must be verified before implementation. See the [training repository](https://github.com/togethercomputer/tev1).
 
-**Evaluation.** Use the same tokenizer and maximum generator-input token budget for every method, counting the question, instructions, and selected events. Measure answer accuracy as history length increases, evidence-selection precision and recall, actual token use, and end-to-end latency including retrieval and selector overhead. Report accuracy and end-to-end cost separately, and compare methods across context budgets — a method that is more accurate but slower may still be useful, and one scalar should not hide that.
+**Evaluation.** First verify that Qwen3-0.6B answers correctly when given the gold evidence. Then compare all selectors using the same tokenizer and maximum generator-input token budget, counting the question, instructions, and selected events. Measure answer accuracy as history length increases, evidence-selection precision and recall, actual token use, and end-to-end latency, including retrieval, selection, and serialization. When full context exceeds the budget, use a predefined truncation strategy.
 
-**Falsification.** The hypothesis is not supported if learned selection fails to improve the accuracy–cost trade-off over strong baselines. If a deterministic selector achieves comparable accuracy at lower cost, the deterministic method is preferable. If the frozen generator cannot answer reliably even with gold evidence, the selection experiment must be revised before drawing conclusions about the selector.
+**Falsification.** The hypothesis is unsupported if fine-tuning does not improve the accuracy–cost trade-off over the original decision model and strong deterministic and retrieval baselines. If a deterministic selector achieves comparable accuracy at lower cost, prefer the deterministic method. If Qwen cannot answer reliably with gold evidence, the generator must be addressed before conclusions about selector quality can be drawn.
 
 ## Limitations
 

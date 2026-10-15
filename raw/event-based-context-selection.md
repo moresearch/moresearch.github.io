@@ -32,9 +32,11 @@ I will evaluate synthetic temporal question answering over event histories conta
 
 **Method.** Question plus typed historical events (timestamps, revision links) go in. Deterministic temporal filters remove ineligible candidates. A fine-tuned decision model ranks the remaining events within a fixed token budget, and a frozen Qwen3-0.6B generates the answer. The decision model is fine-tuned; Qwen stays frozen.
 
-**Backbone.** Start from a pretrained decision model, not an MLP from scratch. Clef-Flash is a candidate: it makes structured decisions, is Apache-2.0, and is ~9B via [Ollama](https://ollama.com) — but fine-tuning needs the actual weights and a training pipeline (pulling Ollama is not training), and full local fine-tuning of 9B is impractical on 27 GiB RAM / 4 GB integrated GPU. Use a cloud GPU or a smaller model, and first establish a reproducible fine-tuning recipe plus event-selection labels.
+**Backbone.** Start from a pretrained decision model, not an MLP from scratch. [Tev1](https://ollama.com/library/tev1) fits better than a 9B model: it is a fine-tuned decision model (from Qwen3.5) that selects among predefined options, and its 0.8B variant (~0.8–1.5 GB) is practical for a CPU-oriented setup — 9B is impractical to fine-tune locally on 27 GiB RAM / 4 GB integrated GPU. Adapt its supervised fine-tuning recipe (in the [Together AI repo](https://github.com/togethercomputer/tev1)) to rank candidate events.
 
-**Baselines.** Compare full context, embedding retrieval, recency selection, and a deterministic revision-aware selector under comparable token budgets.
+One caveat: Tev1's standard interface picks a single option. Selecting an evidence *subset* under a token budget needs a formulation — sequential selection or ranking — that must be designed and validated, not assumed.
+
+**Baselines.** Compare full context, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original (un-fine-tuned) Tev1 — under comparable token budgets.
 
 **Evaluation.** Measure answer accuracy as history length increases, evidence-selection precision and recall, actual input tokens, and end-to-end latency. First verify that the generator can answer correctly when given gold evidence.
 
@@ -56,7 +58,7 @@ Rules may suffice; selection can drop the statement a correction fixes; overhead
 **Experimental backbone**
 
 - [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — Hugging Face.
-- Clef-Flash (via [Ollama](https://ollama.com)) — Apache-2.0 decision model, ~9B; candidate backbone for the fine-tuned selector.
+- [Tev1](https://ollama.com/library/tev1) (0.8B) — fine-tuned decision model for the selector; recipe in the [Together AI repo](https://github.com/togethercomputer/tev1).
 
 **Motivation**
 

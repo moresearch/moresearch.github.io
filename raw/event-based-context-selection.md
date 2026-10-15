@@ -2,7 +2,7 @@
 title: "Event-Based Context Selection for Temporal Reasoning in Language Models"
 date: 2026-10-15
 slug: event-based-context-selection
-summary: "An exploratory research proposal on whether learned selection over structured event histories can improve temporal question answering under fixed context budgets. The approach combines deterministic temporal filtering with a learned event selector and evaluates it against retrieval and rule-based baselines."
+summary: "An exploratory research proposal testing whether learned selection over structured event histories improves temporal question answering under fixed context budgets. The approach combines deterministic temporal filtering with a learned event selector and compares it against retrieval and rule-based baselines."
 tags: event-sourcing, temporal-reasoning, retrieval, language-models
 ---
 
@@ -18,45 +18,45 @@ The proposal is motivated in part by IBM Technology's [discussion of context eng
 
 The proposed system has three stages.
 
-First, it stores events in an append-only history. Each event records what changed, when it was recorded in the sequence, which entity and attribute it concerns, and whether it revises an earlier event.
+First, it stores events in an append-only history. Each event records what changed, its sequence position, the entity and attribute it concerns, and whether it revises or retracts an earlier event. Revisions are linked to the specific fact or attribute they change, rather than merely to an entity. This prevents a change to one attribute from incorrectly displacing unrelated information about the same entity.
 
-Second, deterministic rules remove events that violate the question's temporal constraints. The learned selector chooses among the remaining candidates, which may still contain irrelevant events or competing evidence.
+Second, deterministic rules remove events that violate the question's temporal constraints. For a query about a past state, for example, events recorded after the query's reference point are ineligible. The learned selector chooses among the remaining candidates, which may still contain irrelevant events or competing evidence.
 
 Third, a frozen Qwen3-0.6B model answers using only the selected evidence.
 
 The experiment evaluates the selector, not the storage system or the answer generator. The selector is fine-tuned; Qwen remains unchanged. The central question is whether learned selection adds value beyond deterministic filtering and conventional retrieval.
 
-One technical point is worth preserving: revisions should be linked to the specific fact or attribute they change, not merely to an entity. Otherwise, a change to one attribute could incorrectly displace unrelated information about the same entity.
-
 ## Related work
 
 Event-based memory and temporal retrieval are established research directions. [APEX-MEM](https://arxiv.org/abs/2604.14362) explores temporally grounded event graphs and retrieval-time resolution; [Chronos](https://arxiv.org/abs/2603.16862) uses structured temporal events for time-sensitive question answering; and [ARTEM](https://ojs.aaai.org/index.php/AAAI/article/view/39773) investigates spatio-temporal episodic memory and retrieval.
 
-This proposal does not introduce event-based memory or temporal retrieval. It asks a narrower empirical question: after deterministic temporal filtering, does a learned selector improve the quality–cost trade-off compared with strong retrieval and rule-based alternatives?
+This proposal does not introduce event-based memory or temporal retrieval. It asks a narrower empirical question: after deterministic temporal filtering, does a learned selector improve evidence quality and the accuracy–cost trade-off compared with strong retrieval and rule-based alternatives?
 
 ## The experiment
 
-I will generate synthetic event histories containing facts, revisions, retractions, and unrelated updates. Each history will support questions about both the current state and past states.
+I will generate synthetic event histories containing facts, revisions, retractions, and unrelated updates. Each history will support questions about both the current state and past states. Each question will specify its temporal reference point, and the benchmark's rules will determine which events are eligible before selection. The generation process will retain the correct evidence labels so that selection quality can be measured directly.
 
-**First, test single-event selection.** Begin with questions for which one event uniquely identifies the requested fact. Include distractors that occur later but concern unrelated attributes. For example, if an event changes an allowed port from 80 to 443 and a later event changes the authentication method, the port-change event remains the correct evidence. This initial experiment tests whether the selector can identify relevant evidence without confusing recency with relevance.
+**First, test single-event selection.** Begin with questions for which one event uniquely identifies the requested fact. Include newer distractors that concern unrelated attributes. For example, if an event changes an allowed port from 80 to 443 and a later event changes the authentication method, the port-change event remains the correct evidence for a question about the port. This initial benchmark tests whether the selector can identify relevant evidence without confusing recency with relevance. The correct event must always be present among the candidates.
 
-**Next, train the selector.** Start from a pretrained decision model and fine-tune it on examples that pair a question and candidate events with the correct evidence. Split the data by underlying history template or scenario, rather than randomly splitting individual questions. Hold out combinations of revisions, retractions, temporal queries, and unrelated updates to test generalization.
+**Next, train the selector.** Start from a pretrained decision model and fine-tune it on examples pairing a question and candidate events with the correct evidence. Each candidate option represents an event, identified by its event ID. The model selects the ID of the event it considers sufficient to answer the question. Split the data by underlying history template or scenario, rather than randomly splitting individual questions. Hold out combinations of revisions, retractions, temporal queries, and unrelated updates to test generalization.
 
-**Then, compare against baselines.** Evaluate full-context input when it fits, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original unfine-tuned decision model. When a history exceeds the context limit, specify a truncation strategy for the full-context baseline. Give every method the same maximum generator-input token budget.
+**Then, compare against baselines.** Evaluate full-context input when it fits, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original unfine-tuned decision model. All selection methods receive the same question and temporally eligible candidate events. Use the same tokenizer and maximum evidence-token budget for the selection methods. When a history exceeds the context limit, apply a predefined truncation strategy to the full-context baseline. Report this baseline separately because it does not perform evidence selection in the same way as the other methods.
 
-The first experiment should establish whether fine-tuning improves single-event selection over both the original model and the deterministic baseline. Only if it does should the study extend to selecting multiple events under a token budget.
+The first experiment should establish whether fine-tuning improves single-event selection over both the original decision model and the deterministic and retrieval baselines. Only if it does should the study extend to selecting multiple events under a token budget.
 
-**Candidate model.** [Tev1](https://ollama.com/library/tev1) is a candidate because it is a pretrained decision model that selects among predefined options. Its standard interface selects one option, so the initial experiment will use single-event selection. Multi-event selection is a later extension, not an assumption of the initial design. The published LoRA recipe targets Qwen3.5-4B; compatibility with the separate 0.8B variant must be verified before implementation. See the [training repository](https://github.com/togethercomputer/tev1).
+**Candidate model.** [Tev1](https://ollama.com/library/tev1) is a candidate because it is a pretrained decision model that selects among predefined options. Its standard interface selects one option, making it suitable in principle for the initial single-event experiment. Multi-event selection is a later extension, not an assumption of the initial design. The published LoRA recipe targets Qwen3.5-4B; compatibility with the separate 0.8B variant must be verified before implementation. See the [training repository](https://github.com/togethercomputer/tev1).
 
-**Evaluation.** First verify that Qwen3-0.6B answers correctly when given the gold evidence. Then compare all selectors using the same tokenizer and maximum generator-input token budget, counting the question, instructions, and selected events. Measure answer accuracy as history length increases, evidence-selection precision and recall, actual token use, and end-to-end latency, including retrieval, selection, and serialization. When full context exceeds the budget, use a predefined truncation strategy. Report accuracy and end-to-end cost separately rather than as a single accuracy–cost score.
+**Evaluation.** First verify that frozen Qwen3-0.6B can answer reliably when given the gold evidence. This establishes whether errors in downstream answers can reasonably be attributed to evidence selection. Then evaluate each method using the same question, candidate history, tokenizer, and applicable token budget.
 
-**Falsification.** The hypothesis is unsupported if fine-tuning does not improve the accuracy–cost trade-off over the original decision model and strong deterministic and retrieval baselines. If a deterministic selector achieves comparable accuracy at lower cost, prefer the deterministic method. If Qwen cannot answer reliably with gold evidence, the generator must be addressed before conclusions about selector quality can be drawn.
+Measure evidence-selection accuracy as the primary metric for the initial single-event task. Also report answer accuracy, evidence-selection precision and recall, actual generator-input tokens, selector inference time, and end-to-end latency, including retrieval, selection, and serialization. Evaluate performance as history length increases. Report answer accuracy and computational cost separately rather than combining them into a single score. The main comparison is whether fine-tuning improves selection and downstream answering enough to justify its additional cost.
+
+**Falsification.** The hypothesis is unsupported if fine-tuning does not improve evidence-selection performance or the accuracy–cost trade-off over the original decision model and strong deterministic and retrieval baselines. If a deterministic selector achieves comparable accuracy at lower cost, the deterministic method is preferable. If Qwen cannot answer reliably even with gold evidence, the generator or benchmark must be addressed before drawing conclusions about selector quality.
 
 ## Limitations
 
-Deterministic rules may solve the task without a learned model. A selector may omit an event needed to interpret a correction or retraction. Its inference cost may outweigh the savings from a shorter context. Finally, success on synthetic histories would not establish generalization to real-world agent histories.
+Deterministic rules may solve the task without a learned model. A selector may omit evidence needed to interpret a correction or retraction. Its inference cost may outweigh the savings from a shorter context. Synthetic histories may also fail to capture the ambiguity, noise, and complexity of real-world agent histories.
 
-The initial study therefore keeps the answer generator frozen and defers generator fine-tuning, end-to-end training, and learned temporal operators until the evidence-selection experiment demonstrates a measurable limitation that justifies them.
+The initial study therefore keeps the answer generator frozen and defers generator fine-tuning, end-to-end training, multi-event selection, and learned temporal operators until the single-event experiment demonstrates a measurable limitation that justifies further work.
 
 ## References
 

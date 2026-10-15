@@ -180,6 +180,24 @@ The weekend demo is not the argument. A hypothesis, four baselines, and a metric
 
 **Metrics.** Accuracy (headline); retrieval precision/recall against the gold substream; context size at matched accuracy. The key curve is accuracy vs log length, all methods under equal context and compute budgets. Dense attention may win on short histories — the claim is only that the router *holds* as the log grows. If the hand-written rule matches the learned router everywhere, H2 is dead: "use CEP, skip the ML." Still a result.
 
+## A concrete plan: Qwen, frozen
+
+The experiment above can be run end-to-end without training a foundation model from scratch. Use [`Qwen3-0.6B`](https://huggingface.co/Qwen/Qwen3-0.6B) — small enough for cheap iteration.
+
+**Three components.** An **event store** (append-only; id, event time, type, entity, payload, causal/supersession links); a **temporal event router** (learned scorer + deterministic CEP rules); and a **frozen Qwen generator** that reads question + selected events and writes the answer. Freeze Qwen first so any change is attributable to the selected context, not the model.
+
+**Dataset and baselines.** Generate synthetic histories with known ground truth. Each example is a query + candidate event + binary relevance label, with *difficult negatives* — outdated, superseded, or wrong-time events for the same entity. Split by history or scenario, not by random pairs, so near-identical histories don't leak across train/test. Run four baselines before training anything: full history, text/embedding retrieval, rule-based CEP, and the learned router. This stage decides whether there is a real problem for learning to solve.
+
+**Train the router** two ways. *A — Qwen as a classifier:* add a sequence-classification head, feed `[question, candidate event]`, output a relevance score; LoRA if compute is tight. This trains relevance decisions, not generation. *B — a smaller router:* embed query and event, then a compact model over `[query_emb, event_emb, type, entity, Δt, supersedes]`. Cheaper than running Qwen per candidate, and a baseline against the Qwen classifier.
+
+Selection is hard top-k at inference — no gradients through it. One known gap to check: independent scoring can select a correction and drop the statement it corrects, so temporal dependencies and event grouping need explicit evaluation.
+
+**Evaluate** with the generator fixed: event recall@k, answer accuracy, temporal consistency, input tokens, latency, total cost. Sweep history length, entity count, event density, and conflicts across several context budgets. The central question: does the router raise accuracy at a comparable token budget, or cut tokens at comparable accuracy?
+
+**Only then fine-tune the generator.** If selection works but Qwen still misreads the selected history, add supervised fine-tuning (or LoRA) on `(question, selected events) → answer` pairs — a different objective from router training. Keep a frozen-Qwen control so you know which component moved the needle.
+
+The one decision that keeps the whole thing defensible: **don't fine-tune the generator first.** Test whether explicit event selection helps with Qwen unchanged. Cleaner experiment, lower cost, stronger first result.
+
 ## Three objections a reviewer would raise
 
 **A. Tokens inside an event are still tokens.** CEP does not replace soft attention; it sits above it, selecting over event *boundaries*. Complexity: naive all-pairs event attention is `O(E²)`, but the router scores `C` candidates (`O(C)` plus indexing) and pays token attention only over the `k` selected events.
@@ -236,6 +254,10 @@ If you want agents that remember *when, why, and for how long* — not chatbots 
 **Context engineering and the four failure modes**
 
 - Keen, M. (IBM Technology). [*Context Engineering for AI Agents: 4 Failure Modes to Avoid*](https://www.youtube.com/watch?v=BwXremQ-i6I) — context poisoning, distraction, confusion, and clash; fixes: validate, compact, curate, prune.
+
+**Implementation**
+
+- [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — Hugging Face. The small, cheap backbone for the event-selection experiment.
 
 **Context and systems**
 

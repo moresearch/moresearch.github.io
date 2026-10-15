@@ -6,47 +6,70 @@ summary: "An exploratory research proposal on whether learned selection over str
 tags: event-sourcing, temporal-reasoning, retrieval, language-models
 ---
 
-Long-running agents must retrieve relevant information from histories in which facts change over time. Flat-context prompting is one approach, while structured temporal memory and selective retrieval offer alternatives. This proposal tests whether a learned event selector can improve temporal question answering under a fixed context budget, beyond strong retrieval and deterministic baselines.
+An AI agent may need to answer a question using a history of events in which facts change over time. The latest event is not always the relevant one: a change to an account's address does not tell us whether its permissions have changed, and a correction may invalidate an earlier fact.
 
-The motivation is IBM Technology's [Context Engineering for AI Agents](https://www.youtube.com/watch?v=BwXremQ-i6I). It names four ways context fails long-running agents — poisoning, distraction, confusion, clash. This idea tests only the temporal slice: retrieval, revision, and answer accuracy.
+One solution is to give the model the entire history. Another is to retrieve only the information needed for the current question. This proposal investigates a narrower possibility: can a learned model select better evidence from a structured event history than existing retrieval and rule-based methods, given the same context budget?
+
+The proposal is motivated in part by IBM Technology's [discussion of context engineering for AI agents](https://www.youtube.com/watch?v=BwXremQ-i6I), which identifies poisoning, distraction, confusion, and clash as context failure modes. This study focuses on one specific problem: selecting evidence from histories in which facts are revised, retracted, or superseded.
 
 ## The research question
 
-**Does a learned selector, constrained by explicit temporal rules, improve the accuracy–cost trade-off over strong retrieval and a well-designed deterministic query, under equal context budgets?**
+**Can a learned model select evidence that improves temporal question answering, compared with strong retrieval and rule-based methods, under the same context budget?**
 
-The pipeline: an append-only event log (type, time, entity, payload, and revision links keyed by fact or attribute — not by entity alone) feeds deterministic filters that narrow the log to candidates; a fine-tuned decision model ranks the events needed to answer; a frozen Qwen3-0.6B answers from the selection. The learned selector is the component under evaluation — the event store and filter are infrastructure, and the decision model is fine-tuned, not Qwen.
+The proposed system has three stages.
 
-APEX-MEM (temporally grounded event graphs, retrieval-time resolution), Chronos (structured temporal events, query-guided retrieval), and ARTEM (spatio-temporal episodic memory and retrieval) already cover much of event-based memory and temporal retrieval, and learned selection exists in sparse attention and differentiable retrieval. The contribution here is a controlled comparison of learned evidence selection against strong deterministic and retrieval baselines under a fixed context budget — not the introduction of event-based memory.
+First, it stores events in an append-only history. Each event records what changed, when it was recorded in the sequence, which entity and attribute it concerns, and whether it revises an earlier event.
+
+Second, deterministic rules remove events that cannot apply to the question's time reference. A learned selector then chooses which remaining events to pass to the language model.
+
+Third, a frozen Qwen3-0.6B model answers using only the selected evidence.
+
+The experiment evaluates the selector, not the storage system or the answer generator. The selector is fine-tuned; Qwen remains unchanged. The central question is whether learned selection adds value beyond deterministic filtering and conventional retrieval.
+
+One technical point is worth preserving: revisions should be linked to the specific fact or attribute they change, not merely to an entity. Otherwise, a change to one attribute could incorrectly displace unrelated information about the same entity.
+
+## Related work
+
+Event-based memory and temporal retrieval are established research directions. [APEX-MEM](https://arxiv.org/abs/2604.14362) explores temporally grounded event graphs and retrieval-time resolution; [Chronos](https://arxiv.org/abs/2603.16862) uses structured temporal events for time-sensitive question answering; and [ARTEM](https://ojs.aaai.org/index.php/AAAI/article/view/39773) investigates spatio-temporal episodic memory and retrieval.
+
+This proposal does not introduce event-based memory or temporal retrieval. It asks a narrower empirical question: after deterministic temporal filtering, does a learned selector improve the quality–cost trade-off compared with strong retrieval and rule-based alternatives?
 
 ## The experiment
 
-I will evaluate synthetic temporal question answering over event histories containing facts, revisions, and retractions.
+I will generate synthetic event histories containing facts, revisions, retractions, and unrelated updates. Each history will support questions about both the current state and past states.
 
-**Data.** Split by event-history template or scenario, not random questions; hold out combinations of revision, retraction, temporal query, and unrelated updates, so the selector can't memorize patterns.
+**First, test single-event selection.** Start with questions for which one event uniquely identifies the requested fact. For example, if an event changes an allowed port from 80 to 443 and a later event changes the authentication method, the correct port evidence is the earlier port-change event — not the newest event in the history.
 
-**Method.** Question plus typed historical events (timestamps, revision links) go in. Deterministic temporal filters remove ineligible candidates. A fine-tuned decision model — trained to identify the evidence useful for each question — ranks the remaining events within a fixed token budget, and a frozen Qwen3-0.6B generates the answer. The decision model is fine-tuned; Qwen stays frozen. Queries distinguish "what is true now" from "what was true at t" so recency alone can't win; for the first experiment, order events by a monotonic sequence number with explicit query-time semantics, deferring occurrence-vs-recording.
+**Next, train the selector.** Start from a pretrained decision model and fine-tune it on examples that pair a question and candidate events with the correct evidence. Split the data by underlying history template or scenario, rather than randomly splitting individual questions. Hold out combinations of revisions, retractions, temporal queries, and unrelated updates to test generalization.
 
-**Selector model.** A pretrained decision model is the starting point; [Tev1](https://ollama.com/library/tev1) is a candidate, not a confirmed backbone. Its standard interface selects a single option, so the initial experiment tests single-event selection; multi-event selection under a token budget follows only if that succeeds. (Its LoRA recipe targets Qwen3.5-4B; verify the separate 0.8B variant is supported.)
+**Then, compare against baselines.** Evaluate full-context input when it fits, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original unfine-tuned decision model. When a history exceeds the context limit, specify a truncation strategy for the full-context baseline. Give every method the same maximum generator-input token budget.
 
-**Baselines.** Full context, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original (un-fine-tuned) Tev1 through the same selection interface — under comparable token budgets. The deterministic selector resolves revisions per fact or attribute, respects the question's temporal reference, and keeps the evidence needed to interpret a correction or retraction. The Tev1 control separates what fine-tuning adds from what a pretrained decision model already provides.
+**Finally, measure the result.** Keep Qwen3-0.6B frozen and first verify that it can answer correctly when given the gold evidence. Measure answer accuracy, evidence-selection precision and recall, actual input tokens, and end-to-end latency, including retrieval and selector overhead.
 
-**Evaluation.** Fix an equal context budget — the same maximum generator-input tokens, same tokenizer, counting question, instructions, and selected events. Measure answer accuracy as history length increases, evidence-selection precision and recall, actual tokens, and end-to-end latency including selector inference, retrieval, and serialization. First verify that the generator can answer correctly when given gold evidence.
+The first experiment should establish whether fine-tuning improves single-event selection over both the original model and the deterministic baseline. Only if it does should the study extend to selecting multiple events under a token budget.
 
-**Falsification.** The hypothesis is unsupported if the learned selector does not improve the accuracy–cost trade-off over strong baselines. If a deterministic method performs equally well at lower cost, prefer the simpler method.
+**Candidate model.** [Tev1](https://ollama.com/library/tev1) is a candidate because it is a pretrained decision model that selects among predefined options. Its standard interface selects one option, so the initial experiment will use single-event selection. Multi-event selection is a later extension, not an assumption of the initial design. The published LoRA recipe targets Qwen3.5-4B; compatibility with the separate 0.8B variant must be verified before implementation. See the [training repository](https://github.com/togethercomputer/tev1).
+
+**Evaluation.** Use the same tokenizer and maximum generator-input token budget for every method, counting the question, instructions, and selected events. Measure answer accuracy as history length increases, evidence-selection precision and recall, actual token use, and end-to-end latency.
+
+**Falsification.** The hypothesis is not supported if learned selection fails to improve the accuracy–cost trade-off over strong baselines. If a deterministic selector achieves comparable accuracy at lower cost, the deterministic method is preferable. If the frozen generator cannot answer reliably even with gold evidence, the selection experiment must be revised before drawing conclusions about the selector.
 
 ## Limitations
 
-Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator Qwen, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.
+Deterministic rules may solve the task without a learned model. A selector may omit an event needed to interpret a correction or retraction. Its inference cost may outweigh the savings from a shorter context. Finally, success on synthetic histories would not establish generalization to real-world agent histories.
+
+The initial study therefore keeps the answer generator frozen and defers generator fine-tuning, end-to-end training, and learned temporal operators until the evidence-selection experiment demonstrates a measurable limitation that justifies them.
 
 ## References
 
-**Related work**
+**Related research**
 
-- [APEX-MEM](https://arxiv.org/abs/2604.14362) — temporally grounded event graphs, append-only storage, retrieval-time resolution.
-- [Chronos](https://arxiv.org/abs/2603.16862) — timestamped event tuples for time-sensitive QA.
-- ARTEM (AAAI) — spatio-temporal episodic memory and retrieval.
+- [APEX-MEM](https://arxiv.org/abs/2604.14362) — temporally grounded event graphs and retrieval-time resolution.
+- [Chronos](https://arxiv.org/abs/2603.16862) — structured temporal events for time-sensitive question answering.
+- [ARTEM](https://ojs.aaai.org/index.php/AAAI/article/view/39773) — spatio-temporal episodic memory and retrieval.
 
-**Experimental backbone**
+**Implementation resources**
 
-- [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — Hugging Face.
-- [Tev1](https://ollama.com/library/tev1) (0.8B) — fine-tuned decision model; LoRA recipe (Qwen3.5-4B) in the [Together AI repo](https://github.com/togethercomputer/tev1).
+- [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — frozen answer generator.
+- [Tev1](https://ollama.com/library/tev1) — candidate pretrained decision model.
+- [Tev1 training repository](https://github.com/togethercomputer/tev1) — published fine-tuning recipe.

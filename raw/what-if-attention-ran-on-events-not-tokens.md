@@ -2,7 +2,7 @@
 title: "What If Attention Ran on Events, Not Tokens?"
 date: 2026-10-15
 slug: what-if-attention-ran-on-events-not-tokens
-summary: "A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can test this weekend with a frozen model and LoRA."
+summary: "A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can falsify with a typed event log, a frozen base model, and a temporal-retrieval benchmark."
 tags: event-sourcing, complex-event-processing, decision-transformer, attention, transformers, state-space-models, mamba, rwkv, temporal-reasoning, long-context, agents, research-direction, llm-architecture
 ---
 
@@ -21,7 +21,7 @@ A normal model stores this:
 An event-based model stores this:
 
 ```json
-{ "id": "evt-0042", "type": "tool_returned", "timestamp": 1734200000, "payload": { "price": 320 }, "causes": ["evt-0041"] }
+{ "id": "evt-0042", "type": "tool_returned", "t": 1734200000, "payload": { "price": 320 }, "causes": ["evt-0041"], "supersedes": null }
 ```
 
 The payload can be anything: `user_said: "book a flight"`, `tool_returned: {"price": 320}`, `inference: user_intent = travel`, `retraction: fact X no longer valid`. The log is **append-only**. You never rewrite the prompt — you only add events. That is the property that matters for long context, because you stop paying the cost of re-encoding a hundred thousand tokens on every turn. This is the same instinct as [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html), which this blog has been circling for a while: [the event log is the honest memory](https://blog.hackspree.com/#events-as-the-source-of-truth), and [narratives are reconstructions built on top of it](https://blog.hackspree.com/#stories-from-events).
@@ -65,6 +65,20 @@ Four concrete reasons, each one a thing the current architecture buys at a premi
 
 There is a fifth, framing reason. Decision models assume regular timesteps; agent life does not happen at regular timesteps. If you want LLMs that act as **agents over months** rather than **chatbots over minutes**, the event abstraction is closer to what the system actually lives in. I wrote about this divergence in [*Every Workflow Is an FSM*](https://blog.hackspree.com/#every-workflow-is-an-fsm); the event model is the FSM's memory.
 
+## What already exists, and the gap
+
+Three strands have each built one half of this, and none of them meet in the middle.
+
+**Event processing has the operators, not the learning.** CEP engines, rule engines, and event-sourced systems already handle irregular time, causality, retraction, and aggregation over millions of events ([Flink CEP](https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/), [RETE](https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp), [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)). They know *how* to select events — `SEQ`, `NOT`, `WITHIN`, `latest_version` — but the rules are hand-written and non-differentiable, so nothing in this stack learns.
+
+**Temporal retrieval has the selection, not the operators.** Memory systems like [MemGPT](https://arxiv.org/abs/2310.08560), temporal knowledge graphs, and the agent frameworks that already serialize history as events ([LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), [CrewAI](https://docs.crewai.com/)) all retrieve a subset of history instead of feeding everything. But the selector is frozen — cosine similarity over embeddings, paging, or recency — not a learned temporal pattern. A `retraction` event is just another embedding; nothing in the retrieval path treats it as the negation of an earlier fact.
+
+**Sequence modeling has the learning, not the sparsity.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), time embeddings ([Time2Vec](https://arxiv.org/abs/1907.05321)), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345) and [Decision Mamba](https://arxiv.org/abs/2403.19979), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) already model irregular event sequences with learned, differentiable parameters. But they score *every* event densely or compress history into a fixed-width state; they do not emit an explicit, typed, explainable substream.
+
+The gap is therefore precise: what does not exist is a **learned, differentiable router whose output is an explicit event substream** — a CEP-style pattern match produced by a network rather than a hand-written rule, with `SEQ`, `NOT`, `COUNT`, and retraction as first-class, explainable operators instead of emergent side effects.
+
+Novelty, stated honestly: this is an *integration* problem, not a new primitive. Every component already exists in one of the three strands; the claim is only that joining them is worth doing. And the join is falsifiable — if a hand-written CEP rule already gets everything the learned router gets, the whole proposal dies. That is exactly what the experiment at the end is designed to find out.
+
 ## The Decision Transformer trick
 
 Decision Transformer worked because it refused to learn a policy and instead learned a **sequence model over trajectories**. A trajectory is just text:
@@ -95,30 +109,56 @@ score_ij = MLP([type_i, type_j, Δt_ij, causal_edge_ij]) · (Q_i · K_j)
 
 That MLP learns rules like "if `j` is an observation within 10 seconds, boost the score" — a learnable `SEQ` operator. This is precisely the "temporal bias" move from [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), and it is the line where event attention stops being a metaphor and becomes a mechanism.
 
-## A minimal experiment you can actually run
+## The minimum novel mechanism
 
-You do not need to pre-train from scratch. The cheap version:
+The proposal splits into a boring part and a novel part, and it is worth being explicit about which is which. The boring part — the append-only log, the index, the time-ordered scan — is ordinary event-sourcing infrastructure and needs no new research. The novel part is a single component: **a differentiable router that turns a query plus the log into a small, typed, explainable substream.**
 
-1. Take a small base model — Qwen2-1.5B or TinyLlama — freeze it, add LoRA.
-2. Build ~10k event traces from your own agent logs. Instrument an existing LangChain/CrewAI-style agent so every LLM call, tool return, and observation is logged as a typed event. Label each trace with its final outcome event.
-3. Format each trace as `[GOAL, Event_0, Event_1, ..., Event_N]` and train to predict `Event_{t+1}` given the goal and the prefix.
-4. At inference, condition on a *pattern* instead of a prompt: `NOT(payment_failed) AFTER search`, plus the current log, and let it generate the next event that avoids the failure.
+**Event schema.** Six fields, nothing more:
 
-Step one in the smallest form: **don't touch attention at all.** Train a Decision Transformer over typed events and measure whether the model already learns temporal rules implicitly. That is the control experiment, and it is a weekend of work. The follow-ups — the temporal-bias MLP, learned CEP heads, differentiable pattern matching — are where the real research is.
-
-The architecture most people converge on looks like this:
-
-```text
-[Event Stream] -> [Event Embedder] -> [Temporal Index]
-        |
-        v
-[Learnable CEP Router] -> selects k events via patterns
-        |
-        v
-[Small LLM / SSM] -> generates the next event, not the next token
+```json
+{ "id": "evt-0042", "type": "tool_returned", "t": 1734200000,
+  "payload": { "price": 320 }, "causes": ["evt-0041"], "supersedes": "evt-0019" }
 ```
 
-The embedder is content + time + type + causal links ([Time2Vec](https://arxiv.org/abs/1907.05321) plus entity embeddings). The router replaces QK attention over 32k tokens with maybe eight learnable queries like "find the last user goal not yet marked complete." And here is the part I find satisfying: the generator's neighbors already exist. [Mamba](https://arxiv.org/abs/2312.00752), [Mamba-2](https://arxiv.org/abs/2405.21060), and [RWKV](https://arxiv.org/abs/2305.13048) are event-based *in spirit* — they keep a recurrent state updated per event and propagate only when the event is relevant. A selective scan is a continuous, differentiable CEP. [Decision Mamba](https://arxiv.org/abs/2403.19979) has already spliced this lineage with the Decision Transformer lineage; adding typed, irregular-time events is the natural next step.
+`id` is unique; `type` comes from a fixed vocabulary (`user_said`, `tool_returned`, `inference`, `retraction`, `goal`, ...); `t` is a monotonic timestamp; `payload` is structured, unstructured, or both; `causes` holds explicit causal edges; `supersedes` points at the event this one retracts, and is null otherwise. That `supersedes` field is the whole story of selective forgetting — a retraction is a pointer, not a deletion.
+
+**Router inputs and outputs.** In: the log prefix up to now, plus a query — either the event being answered or a goal pattern such as `latest(preference)`. Out: a substream `S = {e_1 ... e_k}` of at most `k` events, each carrying a matched-operator label (`SEQ`, `NOT`, `COUNT`, `retraction`, ...) and a scalar weight. The generator reads `S`, not the log. That is the entire interface.
+
+**Candidate selection is two-stage.** Stage one is non-learned: filter the log by type, entity, time window, and causal reachability down to a candidate set `C` — exactly what an event-store index already returns for free. Stage two is the learned part, the score from the previous section given a sigmoid:
+
+```text
+score(e_i, q) = σ( MLP([type_i, type_q, Δt, causal_edge, payload_emb_i, payload_emb_q]) )
+```
+
+Take the top-k, attach the operator labels, emit. The MLP is the same "temporal bias" idea, but now used to *select* events rather than gate attention, and the sigmoid turns a match into a probability so the route stays differentiable. This one MLP is the entire machine-learning contribution.
+
+**Training the router.** Two options, in increasing order of ambition. *Hindsight supervision*: on traces where a hand-written CEP pattern — the oracle — marks the correct substream for each query, train the router to imitate that selection. It is supervised and safe, and it teaches the router to reproduce rules it can later relax. *End-to-end*: let the generator's loss flow back through the sigmoid (or Gumbel-Softmax) mask, so the router discovers patterns the oracle never wrote. The first is the weekend version; the second is the actual research.
+
+What stays separate, deliberately: the append-only log, the index, and even the CEP engine used as the training oracle are ordinary infrastructure. The only machine-learning contribution is that scoring MLP and its training signal. Someone who already has an event-sourced agent bolts on one small model — not a new database.
+
+The full pipeline, with the boring half drawn so it can be ignored:
+
+```text
+[Event Stream] -> [Event Embedder] -> [Temporal Index]      (off-the-shelf)
+        |
+        v
+[Learnable CEP Router] -> selects k events via patterns     (the novel part)
+        |
+        v
+[Small LLM / SSM] -> generates the next event               (already exists)
+```
+
+The embedder is content + time + type + causal links ([Time2Vec](https://arxiv.org/abs/1907.05321) plus entity embeddings). The generator's neighbors already exist — [Mamba](https://arxiv.org/abs/2312.00752), [Mamba-2](https://arxiv.org/abs/2405.21060), and [RWKV](https://arxiv.org/abs/2305.13048) are event-based in spirit, and [Decision Mamba](https://arxiv.org/abs/2403.19979) has already spliced the selective-scan lineage with the Decision Transformer lineage. What none of them do is emit an explicit, explainable substream — which is the one thing the router adds.
+
+## A falsifiable experiment
+
+The weekend demo is not the argument. The argument is a hypothesis that can be wrong, four baselines that can beat it, and a metric that decides. The toy task is the one from the objections: **Temporal Retrieval QA with Retractions.** A user preference is asserted at `t1`, retracted at `t2`, re-asserted at `t3`; the generator must answer "what is the current preference?" — and the correct answer depends on reading the `retraction`, not on which embedding happens to be closest.
+
+**Hypothesis.** A learned event router that emits a sparse, retraction-aware substream will reach *higher answer accuracy at fixed context* than any baseline that does not model retraction explicitly, and it will hold that accuracy as the log grows. The claim is two parts, and each can fail on its own: **H1** — bounded context is sufficient, top-k selected events contain enough to answer; **H2** — learning beats frozen selection, the trained router matches or exceeds a hand-written CEP rule on the same task.
+
+**Baselines.** Four, each aimed at killing one part of the claim. *Full context*: feed the whole log with dense attention — the information ceiling, and the thing that dies at long horizons. *Vector retrieval*: embed events, retrieve top-k by cosine similarity — the agent-framework default, and the thing that misses retractions because a `retraction` is just another vector. *Recency window*: keep the last `k` events — the trivial temporal baseline that catches the recency-bias failure mode. *Hand-written CEP rule*: the symbolic oracle (`latest_version(entity)`, retraction filtering) — the control that asks whether learning adds anything over writing the rule down.
+
+**Metrics.** Answer accuracy on the QA task is the headline. Behind it: retrieval precision/recall against the gold substream the oracle would select — does the router actually pick the right events? — and context size at matched accuracy, which is the efficiency claim. The interesting curve is accuracy *against log length*. If the learned router stays flat while full-context and vector retrieval decay, H1 holds. If the hand-written rule matches the learned router everywhere, H2 is dead and the honest conclusion is "use CEP, skip the ML" — still a result, just not the one this post is rooting for.
 
 ## Three objections a reviewer would raise
 
@@ -128,7 +168,7 @@ Written as a formal paper, this has three gaps, and each one has a concrete fix.
 
 **B. Differentiability — `SEQ`, `NOT`, and `COUNT` are discrete logic.** Hard rules are non-differentiable, and replacing `Q·Kᵀ` with them breaks backpropagation during end-to-end training. The fix is to frame the router as a *neural-symbolic soft mask*: a sigmoid over the temporal-bias MLP (so a match is a probability, not a boolean), or Gumbel-Softmax routing over log predicates (so the discrete selection keeps a gradient). This is the continuous relaxation of event matching, and the machinery already exists — temporal point processes are exactly "an event of type `X` is more likely at time `t` given this history," and they are differentiable by construction.
 
-**C. Evaluation and baselines — the hypothesis has no benchmark.** Prompting a frozen LLM with an event log is already standard practice in agent frameworks — AutoGen, CrewAI, and LangGraph all serialize history as structured events or messages. Without an empirical result showing learned CEP attention heads beat plain RAG / vector search over the same log, the proposal stays a hypothesis. The fix is a concrete toy task where dense attention demonstrably fails: *Temporal Retrieval QA with Retractions* — "find the user preference updated at `t1`, retracted at `t2`, re-asserted at `t3`." Dense attention loses to recency bias or context limits; the `retraction` operator is the one thing that gets the answer right. It is small enough to run in a weekend, and it is the control experiment the prototype section was missing.
+**C. Evaluation and baselines — the hypothesis has no benchmark.** Prompting a frozen LLM with an event log is already standard practice in agent frameworks — AutoGen, CrewAI, and LangGraph all serialize history as structured events or messages. Without an empirical result showing learned CEP attention heads beat plain RAG / vector search over the same log, the proposal stays a hypothesis. The fix is a concrete toy task where dense attention demonstrably fails: *Temporal Retrieval QA with Retractions* — "find the user preference updated at `t1`, retracted at `t2`, re-asserted at `t3`." Dense attention loses to recency bias or context limits; the `retraction` operator is the one thing that gets the answer right. It is small enough to run in a weekend, and it is the control experiment the falsifiable setup above is built around.
 
 One caveat survives all three objections: the **messy payload** problem. Real events mix structured and unstructured parts, and how you embed `{"JSON from an API": ...}` and natural language in the same space so CEP matching still works over both is unsolved in general. It is not an objection to the direction — it is the part of the embedder nobody has solved yet.
 

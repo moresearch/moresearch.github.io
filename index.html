@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#02391f">
-  <meta name="description" content="The storage metaphor of memory — encode, compress, file, retrieve, unzip — fails for brains and for neural networks in the same three ways: nothing is stable, nothing is located, and nothing survives being switched off. Victoria Trumbull&#39;s argument that the brain enables memory rather than containing it is a description of parametric memory in machine learning; her two readings of &#39;time stores memory&#39; map onto recurrence and attention; and CatBoost&#39;s ordered target statistics — which the paper calls an &#39;artificial time&#39; — are the clearest small example of a model that keeps the past in an ordering instead of compressing it into a value.">
+  <meta name="description" content="A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can test this weekend with a frozen model and LoRA.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://blog.hackspree.com/">
   <title>Engineering blog — hackspree</title>
   <meta property="og:title" content="Engineering blog — hackspree">
-  <meta property="og:description" content="The storage metaphor of memory — encode, compress, file, retrieve, unzip — fails for brains and for neural networks in the same three ways: nothing is stable, nothing is located, and nothing survives being switched off. Victoria Trumbull&#39;s argument that the brain enables memory rather than containing it is a description of parametric memory in machine learning; her two readings of &#39;time stores memory&#39; map onto recurrence and attention; and CatBoost&#39;s ordered target statistics — which the paper calls an &#39;artificial time&#39; — are the clearest small example of a model that keeps the past in an ordering instead of compressing it into a value.">
+  <meta property="og:description" content="A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can test this weekend with a frozen model and LoRA.">
   <meta property="og:url" content="https://blog.hackspree.com/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="705">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Engineering blog — hackspree">
-  <meta name="twitter:description" content="The storage metaphor of memory — encode, compress, file, retrieve, unzip — fails for brains and for neural networks in the same three ways: nothing is stable, nothing is located, and nothing survives being switched off. Victoria Trumbull&#39;s argument that the brain enables memory rather than containing it is a description of parametric memory in machine learning; her two readings of &#39;time stores memory&#39; map onto recurrence and attention; and CatBoost&#39;s ordered target statistics — which the paper calls an &#39;artificial time&#39; — are the clearest small example of a model that keeps the past in an ordering instead of compressing it into a value.">
+  <meta name="twitter:description" content="A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can test this weekend with a frozen model and LoRA.">
   <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
   <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
@@ -753,6 +753,148 @@
       <section class="content-side">
         <div class="content">
           <div class="post-list">
+      <article class="post" id="what-if-attention-ran-on-events-not-tokens">
+        <link rel="canonical" href="https://blog.hackspree.com/entries/what-if-attention-ran-on-events-not-tokens/">
+        <header class="post-header">
+          <p class="post-meta"><time datetime="2026-10-15" data-utc="Oct 15, 2026 UTC" aria-label="Oct 15, 2026 UTC" tabindex="0">1792022400</time></p>
+          <h2><a href="#what-if-attention-ran-on-events-not-tokens">What If Attention Ran on Events, Not Tokens?</a><a class="raw-link" href="https://blog.hackspree.com/raw/what-if-attention-ran-on-events-not-tokens.md" title="Raw markdown source" aria-label="Raw markdown source of What If Attention Ran on Events, Not Tokens?" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h2><p class="post-summary">A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can test this weekend with a frozen model and LoRA.</p>
+          <div class="tags"><span class="tag">event-sourcing</span><span class="tag">complex-event-processing</span><span class="tag">decision-transformer</span><span class="tag">attention</span><span class="tag">transformers</span><span class="tag">state-space-models</span><span class="tag">mamba</span><span class="tag">rwkv</span><span class="tag">temporal-reasoning</span><span class="tag">long-context</span><span class="tag">agents</span><span class="tag">research-direction</span><span class="tag">llm-architecture</span>
+          </div>
+        </header>
+        <div class="post-body"><p>Here is the assumption almost nobody questions: an LLM's context is a <strong>static string of tokens</strong>, and attention is the operation that says <strong>&quot;look at everything at once and score it by similarity.&quot;</strong> Those two choices are so baked in that we treat them as what a language model <em>is</em>, rather than as two design decisions we happened to inherit.</p>
+<p>An event-based language model flips both. Context becomes a <strong>stream of state changes over time</strong>, and attention becomes <strong>&quot;which past events matter for this event, according to a temporal rule.&quot;</strong> I want to argue that this is not a stretch goal or a different model — it is a <em>reframing</em>, the same kind that made Decision Transformer work, and it is close enough to things that already exist that you can prototype the core idea over a weekend.</p>
+<h2 id="context-is-an-event-log-not-a-buffer">Context is an event log, not a buffer</h2>
+<p>A normal model stores this:</p>
+<pre><code class="language-text">[tok_1, tok_2, tok_3, ..., tok_n]
+</code></pre>
+<p>An event-based model stores this:</p>
+<pre><code class="language-json">{ &quot;id&quot;: &quot;evt-0042&quot;, &quot;type&quot;: &quot;tool_returned&quot;, &quot;timestamp&quot;: 1734200000, &quot;payload&quot;: { &quot;price&quot;: 320 }, &quot;causes&quot;: [&quot;evt-0041&quot;] }
+</code></pre>
+<p>The payload can be anything: <code>user_said: &quot;book a flight&quot;</code>, <code>tool_returned: {&quot;price&quot;: 320}</code>, <code>inference: user_intent = travel</code>, <code>retraction: fact X no longer valid</code>. The log is <strong>append-only</strong>. You never rewrite the prompt — you only add events. That is the property that matters for long context, because you stop paying the cost of re-encoding a hundred thousand tokens on every turn. This is the same instinct as <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>, which this blog has been circling for a while: <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#events-as-the-source-of-truth">the event log is the honest memory</a>, and <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#stories-from-events">narratives are reconstructions built on top of it</a>.</p>
+<h2 id="attention-is-complex-event-processing-not-a-dot-product">Attention is complex event processing, not a dot product</h2>
+<p>Standard attention:</p>
+<pre><code class="language-text">Attention(Q, K, V) = softmax(Q·Kᵀ / √d) · V
+</code></pre>
+<p>Event attention:</p>
+<pre><code class="language-text">Attention(e_now) = f({ e_i | Pattern(e_i, ..., e_now) matches })
+</code></pre>
+<p>Instead of &quot;all tokens are equally eligible, weight by similarity,&quot; you define <strong>complex event processing (CEP)</strong> patterns — the vocabulary of <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp">stream processing and rule engines</a>:</p>
+<pre><code class="language-text">SEQ(A, B) WITHIN 5 minutes      -- B happened right after A
+A CAUSES B                      -- a causal edge, not positional proximity
+NOT(C) AFTER B                  -- negation, which transformers are bad at
+COUNT(X) &gt; 3 IN window W        -- aggregation over time
+</code></pre>
+<p>So when the model needs to answer, it does not scan the whole history. The CEP layer emits a <em>relevant event substream</em> — a query like <code>SELECT events WHERE type=entitlement AND user=current_user AND timestamp &gt; last_payment</code>. That substream, tiny and temporally coherent, is what actually feeds the generator. Attention becomes a <em>router</em> instead of a <em>scorer</em>.</p>
+<h2 id="why-it-might-be-useful">Why it might be useful</h2>
+<p>Four concrete reasons, each one a thing the current architecture buys at a premium or fakes.</p>
+<p><strong>1. Native time and causality.</strong> Transformers fake time with positional encodings. An event log has real <code>t0 &lt; t1 &lt; t2</code>, with intervals and durations. You get &quot;before,&quot; &quot;after,&quot; and &quot;during&quot; for free instead of teaching them as an emergent trick.</p>
+<p><strong>2. Bounded compute with unbounded history.</strong> CEP engines are built to run over millions of events. You keep the log on disk and materialize only the matched pattern. This is what memory managers like <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">MemGPT</a> and temporal knowledge graphs are approximating with vector databases and paging — but with events, selective retrieval is first-class rather than retrofitted.</p>
+<p><strong>3. Revision instead of retraction-by-rewrite.</strong> In a token buffer you cannot un-say something. In an event log you append a <code>retraction</code> or <code>superseded</code> event, and the rule <code>latest_version(entity)</code> hides the stale fact automatically. Selective forgetting becomes a query, not a surgery.</p>
+<p><strong>4. A symbolic–neural hybrid with an obvious seam.</strong> The big one. CEP rules can be hand-written <em>or</em> learned. A small network can learn which event patterns to listen to — your &quot;event attention heads&quot; — with different heads specializing in causality, recency, and frequency. This is where the two halves of the field stop being enemies and become layers.</p>
+<p>There is a fifth, framing reason. Decision models assume regular timesteps; agent life does not happen at regular timesteps. If you want LLMs that act as <strong>agents over months</strong> rather than <strong>chatbots over minutes</strong>, the event abstraction is closer to what the system actually lives in. I wrote about this divergence in <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-workflow-is-an-fsm"><em>Every Workflow Is an FSM</em></a>; the event model is the FSM's memory.</p>
+<h2 id="the-decision-transformer-trick">The Decision Transformer trick</h2>
+<p>Decision Transformer worked because it refused to learn a policy and instead learned a <strong>sequence model over trajectories</strong>. A trajectory is just text:</p>
+<pre><code class="language-text">[G_t, S_t, A_t, G_{t+1}, S_{t+1}, A_{t+1}, ...]
+</code></pre>
+<p>where <code>G</code> is return-to-go, <code>S</code> is state, and <code>A</code> is action. You train a GPT to predict the next <code>A</code> conditioned on a <em>desired</em> <code>G</code> — no value functions, no actor-critic. At inference you condition on a high return and the model produces the behavior that gets you there (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2106.01345">Chen et al., 2021</a>).</p>
+<p>The event model does the same trick with the labels swapped:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Decision LM concept</th>
+<th style="text-align:left">Event LM equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Return-to-go <code>G</code></td>
+<td style="text-align:left">Desired future event / CEP pattern to achieve, e.g. <code>COMPLETED(booking) WITHIN 5m</code></td>
+</tr>
+<tr>
+<td style="text-align:left">State <code>S</code></td>
+<td style="text-align:left">World-snapshot event — current beliefs, tool states</td>
+</tr>
+<tr>
+<td style="text-align:left">Action <code>A</code></td>
+<td style="text-align:left">Emitted event — <code>say()</code>, <code>call_tool()</code>, <code>infer()</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Trajectory</td>
+<td style="text-align:left">Event trace — the full log of one task or session</td>
+</tr>
+<tr>
+<td style="text-align:left">Reward</td>
+<td style="text-align:left">Pattern-match score — did the desired CEP pattern fire?</td>
+</tr>
+</tbody>
+</table>
+<p>Training is the same as Decision Transformer: collect traces, compute the outcome <em>in hindsight</em>, prepend it as conditioning, and predict the next event with causal masking. The conditioning signal is the insight worth stealing — conditioning on the <strong>future you want</strong> turns a generation problem into a selection problem.</p>
+<p>And the attention injection is where CEP becomes differentiable. A vanilla event model can leave attention alone and let it <em>implicitly</em> learn temporal patterns, because the events are already structured. The interesting version replaces the score:</p>
+<pre><code class="language-text">score_ij = MLP([type_i, type_j, Δt_ij, causal_edge_ij]) · (Q_i · K_j)
+</code></pre>
+<p>That MLP learns rules like &quot;if <code>j</code> is an observation within 10 seconds, boost the score&quot; — a learnable <code>SEQ</code> operator. This is precisely the &quot;temporal bias&quot; move from <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1912.09363">Temporal Fusion Transformers</a>, and it is the line where event attention stops being a metaphor and becomes a mechanism.</p>
+<h2 id="a-minimal-experiment-you-can-actually-run">A minimal experiment you can actually run</h2>
+<p>You do not need to pre-train from scratch. The cheap version:</p>
+<ol>
+<li>Take a small base model — Qwen2-1.5B or TinyLlama — freeze it, add LoRA.</li>
+<li>Build ~10k event traces from your own agent logs. Instrument an existing LangChain/CrewAI-style agent so every LLM call, tool return, and observation is logged as a typed event. Label each trace with its final outcome event.</li>
+<li>Format each trace as <code>[GOAL, Event_0, Event_1, ..., Event_N]</code> and train to predict <code>Event_{t+1}</code> given the goal and the prefix.</li>
+<li>At inference, condition on a <em>pattern</em> instead of a prompt: <code>NOT(payment_failed) AFTER search</code>, plus the current log, and let it generate the next event that avoids the failure.</li>
+</ol>
+<p>Step one in the smallest form: <strong>don't touch attention at all.</strong> Train a Decision Transformer over typed events and measure whether the model already learns temporal rules implicitly. That is the control experiment, and it is a weekend of work. The follow-ups — the temporal-bias MLP, learned CEP heads, differentiable pattern matching — are where the real research is.</p>
+<p>The architecture most people converge on looks like this:</p>
+<pre><code class="language-text">[Event Stream] -&gt; [Event Embedder] -&gt; [Temporal Index]
+        |
+        v
+[Learnable CEP Router] -&gt; selects k events via patterns
+        |
+        v
+[Small LLM / SSM] -&gt; generates the next event, not the next token
+</code></pre>
+<p>The embedder is content + time + type + causal links (<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1907.05321">Time2Vec</a> plus entity embeddings). The router replaces QK attention over 32k tokens with maybe eight learnable queries like &quot;find the last user goal not yet marked complete.&quot; And here is the part I find satisfying: the generator's neighbors already exist. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.00752">Mamba</a>, <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2405.21060">Mamba-2</a>, and <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.13048">RWKV</a> are event-based <em>in spirit</em> — they keep a recurrent state updated per event and propagate only when the event is relevant. A selective scan is a continuous, differentiable CEP. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2403.19979">Decision Mamba</a> has already spliced this lineage with the Decision Transformer lineage; adding typed, irregular-time events is the natural next step.</p>
+<h2 id="what-would-have-to-be-true">What would have to be true</h2>
+<p>Three hard parts, stated as problems rather than aspirations.</p>
+<p><strong>Learning the patterns.</strong> Hand-written CEP rules do not scale. The model needs to learn its own event patterns from data, which means <em>differentiable</em> CEP — a genuinely open problem. Neural Datalog and temporal-logic networks are attempts, not answers. Until this works, the &quot;symbolic–neural hybrid&quot; claim is a proposal, not a result.</p>
+<p><strong>Messy payloads.</strong> Real events mix structured and unstructured parts. How do you embed <code>{&quot;JSON from an API&quot;: ...}</code> and natural language in the same space so CEP matching still works over both? This is the embedder problem, and it is unsolved in the general case.</p>
+<p><strong>Evaluation.</strong> All our benchmarks are token-based. An event model needs benchmarks where <em>temporal logic matters</em> — long-horizon agent tasks with deadlines, retractions, and causally ordered constraints. Without those, you cannot tell whether the model is reasoning about time or just correlating.</p>
+<p>The honest version of all of this: you probably would not replace attention entirely. You would have two layers — fast, low-level token attention <em>within</em> an event to read its payload, and slow, high-level event attention <em>across</em> events via CEP to decide which memories matter. That division of labor is the whole thesis in one sentence.</p>
+<h2 id="why-this-is-worth-doing">Why this is worth doing</h2>
+<p>This is the part I keep coming back to. The storage metaphor this blog examined in <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#the-brain-is-a-key-not-a-box"><em>The Brain Is a Key, Not a Box</em></a> fails in three specific ways: recollection rewrites, nothing is located, and the store is never powered off. An event log is not a filing cabinet — it is an append-only stream you re-derive state from, which is exactly the shape those three failures <em>demand</em>. And the economics point from <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#llm-at-runtime-is-an-antipattern"><em>LLM at Runtime Is an Antipattern</em></a> — that the fix is a hard wall between what is computed and what is stored — is the same move as separating the CEP router from the generator.</p>
+<p>I think the field is converging on this from three directions at once: state-space models that are already event-based in spirit, memory systems that are already doing selective retrieval under the table, and decision models that are already conditioning on the future. The event abstraction just names what they have in common. Whether it is the right abstraction is an empirical question, and it is testable — which is rare for a claim this sweeping. The experiment is small, the base model already exists, and the data is sitting in your agent traces.</p>
+<p>If you want agents that remember <em>when</em> and <em>why</em> and <em>for how long</em>, rather than chatbots that re-read a long string, this is the direction I would bet a weekend on.</p>
+<h2 id="references">References</h2>
+<p><strong>The reframing</strong></p>
+<ul>
+<li>Chen, L. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2106.01345"><em>Decision Transformer: Reinforcement Learning via Sequence Modeling</em></a> — NeurIPS 2021. The sequence-model-over-trajectories trick this post transplants onto events.</li>
+<li>Ota, T. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2403.19979"><em>Decision Mamba: Reinforcement Learning via Hybrid Selective Sequence Modeling</em></a> — 2024. Decision-model conditioning on a selective state-space backbone.</li>
+</ul>
+<p><strong>Event-based in spirit already</strong></p>
+<ul>
+<li>Gu, A. and Dao, T. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2312.00752"><em>Mamba: Linear-Time Sequence Modeling with Selective State Spaces</em></a> — 2023.</li>
+<li>Dao, T. and Gu, A. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2405.21060"><em>Transformers are SSMs</em></a> — Mamba-2, 2024.</li>
+<li>Peng, B. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2305.13048"><em>RWKV: Reinventing RNNs for the Transformer Era</em></a> — 2023.</li>
+</ul>
+<p><strong>Time, events, and transformers</strong></p>
+<ul>
+<li>Zuo, S. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2002.09291"><em>Transformer Hawkes Process</em></a> — ICML 2020. Modeling irregular event sequences with a transformer, the temporal-point-process side of the idea.</li>
+<li>Kazemi, S. M. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1907.05321"><em>Time2Vec: Learning a Vector Representation of Time</em></a> — 2019. Time as a learned embedding rather than a scalar.</li>
+<li>Lim, B. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1912.09363"><em>Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting</em></a> — 2019. The temporal-bias move the learnable CEP mask generalizes.</li>
+</ul>
+<p><strong>Memory and selective retrieval</strong></p>
+<ul>
+<li>Packer, C. et al. <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560"><em>MemGPT: Towards LLMs as Operating Systems</em></a> — 2023. Approximating selective memory with paging over a vector store.</li>
+</ul>
+<p><strong>Context and systems</strong></p>
+<ul>
+<li>Fowler, M. <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/eaaDev/EventSourcing.html"><em>Event Sourcing</em></a> — the append-only-log discipline behind the event log.</li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/">Apache Flink: Complex Event Processing</a> — a reference CEP vocabulary (<code>SEQ</code>, <code>NOT</code>, <code>WITHIN</code>, patterns over streams).</li>
+</ul>
+<p><strong>This blog, on events and memory</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#events-as-the-source-of-truth">Events as the Source of Truth</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#stories-from-events">Make Stories from Events</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp">On Rule Engines 1: From RETE to MCP</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#every-workflow-is-an-fsm">Every Workflow Is an FSM</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#the-brain-is-a-key-not-a-box">The Brain Is a Key, Not a Box</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#llm-at-runtime-is-an-antipattern">LLM at Runtime Is an Antipattern</a>, <a target="_blank" rel="noopener noreferrer" href="https://blog.hackspree.com/#rlms-are-the-new-reasoning-models">RLMs Are the New Reasoning Models</a>.</li>
+</ul>
+</div>
+      </article>
       <article class="post" id="the-brain-is-a-key-not-a-box">
         <link rel="canonical" href="https://blog.hackspree.com/entries/the-brain-is-a-key-not-a-box/">
         <header class="post-header">
@@ -21860,6 +22002,7 @@ Harness engineering is often less about model math and more about repeatable pip
           </div>
           <nav class="posts-nav" aria-label="Posts navigation">
             <div class="posts-nav-links">
+              <a href="#what-if-attention-ran-on-events-not-tokens">What If Attention Ran on Events, Not Tokens?</a>
               <a href="#the-brain-is-a-key-not-a-box">The Brain Is a Key, Not a Box</a>
               <a href="#llm-at-runtime-is-an-antipattern">LLM at Runtime Is an Antipattern</a>
               <a href="#recursive-small-language-models-in-golang">Recursive Small Language Models in Golang</a>

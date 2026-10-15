@@ -120,17 +120,19 @@ The architecture most people converge on looks like this:
 
 The embedder is content + time + type + causal links ([Time2Vec](https://arxiv.org/abs/1907.05321) plus entity embeddings). The router replaces QK attention over 32k tokens with maybe eight learnable queries like "find the last user goal not yet marked complete." And here is the part I find satisfying: the generator's neighbors already exist. [Mamba](https://arxiv.org/abs/2312.00752), [Mamba-2](https://arxiv.org/abs/2405.21060), and [RWKV](https://arxiv.org/abs/2305.13048) are event-based *in spirit* — they keep a recurrent state updated per event and propagate only when the event is relevant. A selective scan is a continuous, differentiable CEP. [Decision Mamba](https://arxiv.org/abs/2403.19979) has already spliced this lineage with the Decision Transformer lineage; adding typed, irregular-time events is the natural next step.
 
-## What would have to be true
+## Three objections a reviewer would raise
 
-Three hard parts, stated as problems rather than aspirations.
+Written as a formal paper, this has three gaps, and each one has a concrete fix.
 
-**Learning the patterns.** Hand-written CEP rules do not scale. The model needs to learn its own event patterns from data, which means *differentiable* CEP — a genuinely open problem. Neural Datalog and temporal-logic networks are attempts, not answers. Until this works, the "symbolic–neural hybrid" claim is a proposal, not a result.
+**A. The equivalence fallacy — tokens inside an event are still tokens.** CEP does not replace soft attention; it sits above it. Standard transformers cross-attend over tokens because natural-language ambiguity requires sub-symbolic, dense similarity scoring, and that does not stop being true because the tokens are wrapped in an event envelope. The fix is to state the hierarchy explicitly: CEP is a *sparsity mask over event boundaries*, costing `O(E²)` over `E` events, while soft attention over the selected events' payloads still costs `O(N²)` over `N` tokens. The two levels coexist — the win is that the all-to-all pass happens over a handful of selected events, not the whole log.
 
-**Messy payloads.** Real events mix structured and unstructured parts. How do you embed `{"JSON from an API": ...}` and natural language in the same space so CEP matching still works over both? This is the embedder problem, and it is unsolved in the general case.
+**B. Differentiability — `SEQ`, `NOT`, and `COUNT` are discrete logic.** Hard rules are non-differentiable, and replacing `Q·Kᵀ` with them breaks backpropagation during end-to-end training. The fix is to frame the router as a *neural-symbolic soft mask*: a sigmoid over the temporal-bias MLP (so a match is a probability, not a boolean), or Gumbel-Softmax routing over log predicates (so the discrete selection keeps a gradient). This is the continuous relaxation of event matching, and the machinery already exists — temporal point processes are exactly "an event of type `X` is more likely at time `t` given this history," and they are differentiable by construction.
 
-**Evaluation.** All our benchmarks are token-based. An event model needs benchmarks where *temporal logic matters* — long-horizon agent tasks with deadlines, retractions, and causally ordered constraints. Without those, you cannot tell whether the model is reasoning about time or just correlating.
+**C. Evaluation and baselines — the hypothesis has no benchmark.** Prompting a frozen LLM with an event log is already standard practice in agent frameworks — AutoGen, CrewAI, and LangGraph all serialize history as structured events or messages. Without an empirical result showing learned CEP attention heads beat plain RAG / vector search over the same log, the proposal stays a hypothesis. The fix is a concrete toy task where dense attention demonstrably fails: *Temporal Retrieval QA with Retractions* — "find the user preference updated at `t1`, retracted at `t2`, re-asserted at `t3`." Dense attention loses to recency bias or context limits; the `retraction` operator is the one thing that gets the answer right. It is small enough to run in a weekend, and it is the control experiment the prototype section was missing.
 
-The honest version of all of this: you probably would not replace attention entirely. You would have two layers — fast, low-level token attention *within* an event to read its payload, and slow, high-level event attention *across* events via CEP to decide which memories matter. That division of labor is the whole thesis in one sentence.
+One caveat survives all three objections: the **messy payload** problem. Real events mix structured and unstructured parts, and how you embed `{"JSON from an API": ...}` and natural language in the same space so CEP matching still works over both is unsolved in general. It is not an objection to the direction — it is the part of the embedder nobody has solved yet.
+
+The three objections land on the same architecture from different directions, and it is the one this post already argued for: **two layers.** Fast, low-level token attention *within* an event to read its payload (A's point), slow, high-level event attention *across* events through a soft, differentiable CEP mask (B's point), measured on a task with retractions (C's point). That division of labor is the whole thesis in one sentence.
 
 ## Why this is worth doing
 
@@ -162,6 +164,10 @@ If you want agents that remember *when* and *why* and *for how long*, rather tha
 **Memory and selective retrieval**
 
 - Packer, C. et al. [*MemGPT: Towards LLMs as Operating Systems*](https://arxiv.org/abs/2310.08560) — 2023. Approximating selective memory with paging over a vector store.
+
+**Agent frameworks that already treat history as events**
+
+- [LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), and [CrewAI](https://docs.crewai.com/) — serializing agent history as structured events or messages is already default practice; this is the baseline a learned CEP router must beat.
 
 **Context and systems**
 

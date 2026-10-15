@@ -16,9 +16,7 @@ The motivation is IBM Technology's [Context Engineering for AI Agents](https://w
 
 One question: does a learned selector improve temporal question answering when deterministic rules have already filtered the event history?
 
-The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, revision links). Deterministic rules narrow the log to candidates without deciding the answer; a fine-tuned decision model ranks the events needed to answer; a frozen Qwen3-0.6B answers from the selection. The decision model is fine-tuned — Qwen is not.
-
-One correction: resolve revisions by fact, attribute, or claim key, not by entity alone. An entity can hold several independent facts, and updating one must not discard unrelated information.
+The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, and revision links keyed by fact or attribute — not by entity alone, so updating one fact doesn't discard unrelated facts). Deterministic rules narrow the log to candidates without deciding the answer; a fine-tuned decision model ranks the events needed to answer; a frozen Qwen3-0.6B answers from the selection. The decision model is fine-tuned — Qwen is not.
 
 ## The research question
 
@@ -32,9 +30,9 @@ I will evaluate synthetic temporal question answering over event histories conta
 
 **Method.** Question plus typed historical events (timestamps, revision links) go in. Deterministic temporal filters remove ineligible candidates. A fine-tuned decision model ranks the remaining events within a fixed token budget, and a frozen Qwen3-0.6B generates the answer. The decision model is fine-tuned; Qwen stays frozen.
 
-**Backbone.** Start from a pretrained decision model, not an MLP from scratch. [Tev1](https://ollama.com/library/tev1) fits better than a 9B model: it is a fine-tuned decision model (from Qwen3.5) that selects among predefined options, and its 0.8B variant (~0.8–1.5 GB) is practical for a CPU-oriented setup — 9B is impractical to fine-tune locally on 27 GiB RAM / 4 GB integrated GPU. Adapt its supervised fine-tuning recipe (in the [Together AI repo](https://github.com/togethercomputer/tev1)) to rank candidate events.
+**Backbone.** Start from a pretrained decision model, not an MLP from scratch. [Tev1](https://ollama.com/library/tev1) is a decision model (fine-tuned from Qwen3.5) that selects among predefined options, and its 0.8B variant (~0.8–1.5 GB) fits a CPU-oriented setup. Its published LoRA recipe targets Qwen3.5-4B, so verify the training setup supports the 0.8B base before committing.
 
-One caveat: Tev1's standard interface picks a single option. Selecting an evidence *subset* under a token budget needs a formulation — sequential selection or ranking — that must be designed and validated, not assumed.
+One caveat: Tev1 picks a single option, not an evidence *subset* under a token budget. Feasibility test first — on a tiny synthetic dataset, confirm Tev1 selects the relevant event from options, then design the ranking or sequential-selection formulation for subsets.
 
 **Baselines.** Compare full context, embedding retrieval, recency selection, a deterministic revision-aware selector, and the original (un-fine-tuned) Tev1 — under comparable token budgets.
 
@@ -53,13 +51,8 @@ Rules may suffice; selection can drop the statement a correction fixes; overhead
 - [APEX-MEM](https://arxiv.org/abs/2604.14362) — temporally grounded event graphs, append-only storage, retrieval-time resolution.
 - [Chronos](https://arxiv.org/abs/2603.16862) — timestamped event tuples for time-sensitive QA.
 - ARTEM (AAAI) — event extraction, temporal memory, and selective retrieval.
-- [Apache Flink: Complex Event Processing](https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/) — `SEQ`, `NOT`, `WITHIN` patterns over streams.
 
 **Experimental backbone**
 
 - [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — Hugging Face.
-- [Tev1](https://ollama.com/library/tev1) (0.8B) — fine-tuned decision model for the selector; recipe in the [Together AI repo](https://github.com/togethercomputer/tev1).
-
-**Motivation**
-
-- Keen, M. (IBM Technology). [*Context Engineering for AI Agents: 4 Failure Modes to Avoid*](https://www.youtube.com/watch?v=BwXremQ-i6I) — released 2026-10-15.
+- [Tev1](https://ollama.com/library/tev1) (0.8B) — fine-tuned decision model; LoRA recipe (Qwen3.5-4B) in the [Together AI repo](https://github.com/togethercomputer/tev1).

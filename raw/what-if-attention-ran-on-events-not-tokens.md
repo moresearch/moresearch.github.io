@@ -1,5 +1,5 @@
 ---
-title: "What If Attention Ran on Events, Not Tokens?"
+title: "Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing"
 date: 2026-10-15
 slug: what-if-attention-ran-on-events-not-tokens
 summary: "A transformer treats context as a static string of tokens and attention as all-to-all similarity. Flip both: context becomes an append-only event log and attention becomes complex event processing — a set of temporal patterns that select which past events matter. It is the same trick Decision Transformer pulled on reinforcement learning, applied to memory, and it is a research direction you can falsify with a typed event log, a frozen base model, and a temporal-retrieval benchmark."

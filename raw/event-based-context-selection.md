@@ -16,7 +16,7 @@ The motivation is IBM Technology's [Context Engineering for AI Agents](https://w
 
 One question: does a learned selector improve temporal question answering when deterministic rules have already filtered the event history?
 
-The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, revision links). Deterministic rules narrow the log to candidates without deciding the answer; a small learned model scores candidate relevance; a frozen Qwen3-0.6B answers from the top-k.
+The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, revision links). Deterministic rules narrow the log to candidates without deciding the answer; a fine-tuned decision model ranks the events needed to answer; a frozen Qwen3-0.6B answers from the selection. The decision model is fine-tuned — Qwen is not.
 
 One correction: resolve revisions by fact, attribute, or claim key, not by entity alone. An entity can hold several independent facts, and updating one must not discard unrelated information.
 
@@ -30,7 +30,9 @@ The narrower question: **does a learned selector, constrained by explicit tempor
 
 I will evaluate synthetic temporal question answering over event histories containing facts, revisions, and retractions.
 
-**Method.** An append-only event log and deterministic temporal filters produce candidate events. A small learned selector chooses evidence within a fixed token budget, and a frozen Qwen3-0.6B model generates the answer.
+**Method.** Question plus typed historical events (timestamps, revision links) go in. Deterministic temporal filters remove ineligible candidates. A fine-tuned decision model ranks the remaining events within a fixed token budget, and a frozen Qwen3-0.6B generates the answer. The decision model is fine-tuned; Qwen stays frozen.
+
+**Backbone.** Start from a pretrained decision model, not an MLP from scratch. Clef-Flash is a candidate: it makes structured decisions, is Apache-2.0, and is ~9B via [Ollama](https://ollama.com) — but fine-tuning needs the actual weights and a training pipeline (pulling Ollama is not training), and full local fine-tuning of 9B is impractical on 27 GiB RAM / 4 GB integrated GPU. Use a cloud GPU or a smaller model, and first establish a reproducible fine-tuning recipe plus event-selection labels.
 
 **Baselines.** Compare full context, embedding retrieval, recency selection, and a deterministic revision-aware selector under comparable token budgets.
 
@@ -40,7 +42,7 @@ I will evaluate synthetic temporal question answering over event histories conta
 
 ## Limitations
 
-Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.
+Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator Qwen, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.
 
 ## References
 
@@ -54,6 +56,7 @@ Rules may suffice; selection can drop the statement a correction fixes; overhead
 **Experimental backbone**
 
 - [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — Hugging Face.
+- Clef-Flash (via [Ollama](https://ollama.com)) — Apache-2.0 decision model, ~9B; candidate backbone for the fine-tuned selector.
 
 **Motivation**
 

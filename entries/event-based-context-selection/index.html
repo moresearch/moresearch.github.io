@@ -100,19 +100,20 @@
 <p>The motivation is IBM Technology's <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I">Context Engineering for AI Agents</a>, released today. It names four ways context fails long-running agents — poisoning, distraction, confusion, clash. This idea tests only the temporal slice: retrieval, revision, and answer accuracy.</p>
 <h2 id="the-contribution">The contribution</h2>
 <p>One question: does a learned selector improve temporal question answering when deterministic rules have already filtered the event history?</p>
-<p>The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, revision links). Deterministic rules narrow the log to candidates without deciding the answer; a small learned model scores candidate relevance; a frozen Qwen3-0.6B answers from the top-k.</p>
+<p>The event store and temporal filter are supporting infrastructure; the learned selector is the component under evaluation. Events are append-only records (type, time, entity, payload, revision links). Deterministic rules narrow the log to candidates without deciding the answer; a fine-tuned decision model ranks the events needed to answer; a frozen Qwen3-0.6B answers from the selection. The decision model is fine-tuned — Qwen is not.</p>
 <p>One correction: resolve revisions by fact, attribute, or claim key, not by entity alone. An entity can hold several independent facts, and updating one must not discard unrelated information.</p>
 <h2 id="the-research-question">The research question</h2>
 <p>Temporal memory and event retrieval are established: APEX-MEM, Chronos, and ARTEM already combine event structure, temporal reasoning, and selective retrieval, and learned selection exists in sparse attention and differentiable retrieval. Prior work motivates the approach but does not, by itself, establish whether this combination improves performance.</p>
 <p>The narrower question: <strong>does a learned selector, constrained by explicit temporal rules, improve the accuracy–cost trade-off over strong retrieval and a well-designed deterministic query under equal context budgets?</strong></p>
 <h2 id="the-experiment">The experiment</h2>
 <p>I will evaluate synthetic temporal question answering over event histories containing facts, revisions, and retractions.</p>
-<p><strong>Method.</strong> An append-only event log and deterministic temporal filters produce candidate events. A small learned selector chooses evidence within a fixed token budget, and a frozen Qwen3-0.6B model generates the answer.</p>
+<p><strong>Method.</strong> Question plus typed historical events (timestamps, revision links) go in. Deterministic temporal filters remove ineligible candidates. A fine-tuned decision model ranks the remaining events within a fixed token budget, and a frozen Qwen3-0.6B generates the answer. The decision model is fine-tuned; Qwen stays frozen.</p>
+<p><strong>Backbone.</strong> Start from a pretrained decision model, not an MLP from scratch. Clef-Flash is a candidate: it makes structured decisions, is Apache-2.0, and is ~9B via <a target="_blank" rel="noopener noreferrer" href="https://ollama.com">Ollama</a> — but fine-tuning needs the actual weights and a training pipeline (pulling Ollama is not training), and full local fine-tuning of 9B is impractical on 27 GiB RAM / 4 GB integrated GPU. Use a cloud GPU or a smaller model, and first establish a reproducible fine-tuning recipe plus event-selection labels.</p>
 <p><strong>Baselines.</strong> Compare full context, embedding retrieval, recency selection, and a deterministic revision-aware selector under comparable token budgets.</p>
 <p><strong>Evaluation.</strong> Measure answer accuracy as history length increases, evidence-selection precision and recall, actual input tokens, and end-to-end latency. First verify that the generator can answer correctly when given gold evidence.</p>
 <p><strong>Falsification.</strong> The hypothesis is unsupported if the learned selector does not improve the accuracy–cost trade-off over strong baselines. If a deterministic method performs equally well at lower cost, prefer the simpler method.</p>
 <h2 id="limitations">Limitations</h2>
-<p>Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.</p>
+<p>Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator Qwen, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.</p>
 <h2 id="references">References</h2>
 <p><strong>Related work</strong></p>
 <ul>
@@ -124,6 +125,7 @@
 <p><strong>Experimental backbone</strong></p>
 <ul>
 <li><a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/Qwen/Qwen3-0.6B">Qwen3-0.6B</a> — Hugging Face.</li>
+<li>Clef-Flash (via <a target="_blank" rel="noopener noreferrer" href="https://ollama.com">Ollama</a>) — Apache-2.0 decision model, ~9B; candidate backbone for the fine-tuned selector.</li>
 </ul>
 <p><strong>Motivation</strong></p>
 <ul>

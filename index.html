@@ -763,6 +763,10 @@
         </header>
         <div class="post-body"><p>LLMs treat context as a <strong>static token string</strong> and attention as &quot;look at everything, score by similarity.&quot; Flip both: context is an <strong>append-only event log</strong>; attention is complex event processing — &quot;which past events matter, by a temporal rule.&quot;</p>
 <p>This is a reframing, not a new architecture. It borrows Decision Transformer's outcome-conditioned idea but applies a different mechanism: learned selection over an explicit event history.</p>
+<h2 id="intuition">Intuition</h2>
+<p>Why does this feel right? Because it's how everything else that deals with time already works. A database doesn't re-read its whole history to answer one query — it keeps a log and an index and asks &quot;what changed, and when.&quot; A stream processor doesn't rescan the stream; it matches patterns as events arrive. Human memory is the same: to answer &quot;what's the current policy?&quot; you reach for the last change and whatever it superseded, not your whole life.</p>
+<p>A language model is the odd one out — it re-reads everything, every turn. Its context is a flat string with no notion of <em>before</em> or <em>replaced-by</em>. That single gap explains all four failure modes: poisoning, distraction, confusion, and clash are all just &quot;a flat pile of text can't express change.&quot;</p>
+<p>So the intuition is simple: <strong>the missing thing isn't more context, it's the shape of context.</strong> Events give context a shape — order, type, causality, supersession — and a shape is what lets you route instead of re-read.</p>
 <h2 id="context-is-an-event-log-not-a-buffer">Context is an event log, not a buffer</h2>
 <p>A normal model stores:</p>
 <pre><code class="language-text">[tok_1, tok_2, tok_3, ..., tok_n]

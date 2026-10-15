@@ -10,6 +10,14 @@ LLMs treat context as a **static token string** and attention as "look at everyt
 
 This is a reframing, not a new architecture. It borrows Decision Transformer's outcome-conditioned idea but applies a different mechanism: learned selection over an explicit event history.
 
+## Intuition
+
+Why does this feel right? Because it's how everything else that deals with time already works. A database doesn't re-read its whole history to answer one query — it keeps a log and an index and asks "what changed, and when." A stream processor doesn't rescan the stream; it matches patterns as events arrive. Human memory is the same: to answer "what's the current policy?" you reach for the last change and whatever it superseded, not your whole life.
+
+A language model is the odd one out — it re-reads everything, every turn. Its context is a flat string with no notion of *before* or *replaced-by*. That single gap explains all four failure modes: poisoning, distraction, confusion, and clash are all just "a flat pile of text can't express change."
+
+So the intuition is simple: **the missing thing isn't more context, it's the shape of context.** Events give context a shape — order, type, causality, supersession — and a shape is what lets you route instead of re-read.
+
 ## Context is an event log, not a buffer
 
 A normal model stores:

@@ -40,7 +40,7 @@ I will evaluate synthetic temporal question answering over event histories conta
 
 ## Limitations
 
-Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator, end-to-end gradients, learned operators, and Decision Transformer-style conditioning are deferred until the frozen-generator run shows a gap.
+Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings; and generalization beyond synthetic data is open. Fine-tuning the generator, end-to-end gradients, and learned operators are deferred until the frozen-generator run shows a gap.
 
 ## References
 
@@ -49,7 +49,6 @@ Rules may suffice; selection can drop the statement a correction fixes; overhead
 - [APEX-MEM](https://arxiv.org/abs/2604.14362) — temporally grounded event graphs, append-only storage, retrieval-time resolution.
 - [Chronos](https://arxiv.org/abs/2603.16862) — timestamped event tuples for time-sensitive QA.
 - ARTEM (AAAI) — event extraction, temporal memory, and selective retrieval.
-- Packer, C. et al. [*MemGPT: Towards LLMs as Operating Systems*](https://arxiv.org/abs/2310.08560) — 2023.
 - [Apache Flink: Complex Event Processing](https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/) — `SEQ`, `NOT`, `WITHIN` patterns over streams.
 
 **Experimental backbone**
@@ -59,7 +58,3 @@ Rules may suffice; selection can drop the statement a correction fixes; overhead
 **Motivation**
 
 - Keen, M. (IBM Technology). [*Context Engineering for AI Agents: 4 Failure Modes to Avoid*](https://www.youtube.com/watch?v=BwXremQ-i6I) — released 2026-10-15.
-
-**Future work**
-
-- Chen, L. et al. [*Decision Transformer: Reinforcement Learning via Sequence Modeling*](https://arxiv.org/abs/2106.01345) — NeurIPS 2021.

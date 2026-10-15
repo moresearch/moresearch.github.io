@@ -2,13 +2,13 @@
 title: "Temporal Reasoning in Language Models: An Exploratory Research Idea on Event-Based Context and Complex Event Processing"
 date: 2026-10-15
 slug: what-if-attention-ran-on-events-not-tokens
-summary: "A research idea: treat context as an append-only event log and attention as complex event processing, not a dot product. It fixes the four context failure modes in agents, reuses the Decision Transformer trick, and can be falsified with a typed event log and a temporal-retrieval benchmark."
+summary: "A research idea: treat context as an append-only event log and attention as complex event processing, not a dot product. It targets the four context failure modes in agents, borrows the Decision Transformer reframing, and can be falsified with a typed event log and a temporal-retrieval benchmark."
 tags: event-sourcing, complex-event-processing, context-engineering, decision-transformer, attention, transformers, state-space-models, mamba, rwkv, temporal-reasoning, long-context, agents, research-direction, llm-architecture
 ---
 
 Most LLMs treat context as a **static string of tokens**, and attention as "look at everything, score by similarity." An event-based model flips both: context is a **stream of state changes over time**, and attention is "which past events matter, by a temporal rule."
 
-This is not a new architecture. It is a reframing — the same one Decision Transformer made for RL — and it is testable in a weekend.
+This is not a new architecture; it is a reframing. It draws inspiration from Decision Transformer's outcome-conditioned sequence modeling but applies a different mechanism — learned selection over an explicit event history. Whether that yields a useful training objective is an empirical question.
 
 ## Context is an event log, not a buffer
 
@@ -47,35 +47,35 @@ Instead of "all tokens eligible, weighted by similarity," you define **complex e
 ```text
 SEQ(A, B) WITHIN 5 minutes      -- B happened right after A
 A CAUSES B                      -- a causal edge, not positional proximity
-NOT(C) AFTER B                  -- negation, which transformers are bad at
+NOT(C) AFTER B                  -- negation, made explicit rather than emergent
 COUNT(X) > 3 IN window W        -- aggregation over time
 ```
 
-The CEP layer emits a *relevant substream* — a query like `SELECT events WHERE type=entitlement AND user=me AND t > last_payment`. That tiny, temporally coherent substream feeds the generator. Attention becomes a **router**, not a scorer.
+The CEP layer emits a *relevant substream* — a query like `SELECT events WHERE type=entitlement AND user=me AND t > last_payment`. That tiny, temporally coherent substream feeds the generator. Attention becomes a **router**: it still scores candidates, but it changes which information reaches the generator.
 
-## The four failure modes this fixes
+## The four failure modes this might mitigate
 
 IBM's Martin Keen names four ways context breaks long-running agents in [*Context Engineering for AI Agents: 4 Failure Modes to Avoid*](https://www.youtube.com/watch?v=BwXremQ-i6I). Each maps to a CEP operator.
 
 [![IBM Technology — Context Engineering for AI Agents: 4 Failure Modes to Avoid](https://img.youtube.com/vi/BwXremQ-i6I/hqdefault.jpg)](https://www.youtube.com/watch?v=BwXremQ-i6I)
 
-**1. Context poisoning** — bad information becomes "truth." A token buffer cannot un-say it. An event log appends a `retraction`, and `latest_version(entity)` hides the poison. Negation is first-class.
+**1. Context poisoning** — bad information becomes "truth." A token buffer cannot un-say it; an event log *can* append a `retraction` and let `latest_version(entity)` hide the poison — if the retraction is recorded correctly.
 
-**2. Context distraction** — long histories derail the model. Dense attention reads everything; the router reads only the matched substream. The generator never sees the noise.
+**2. Context distraction** — long histories derail the model. Dense attention reads everything; a router reads only a matched substream. The generator sees less noise — when the router selects well.
 
-**3. Context confusion** — too many tools hurt accuracy. Events are typed, so the router filters by `type=tool_returned` and causal reachability, keeping only the tools relevant right now.
+**3. Context confusion** — too many tools hurt accuracy. Typed events let the router filter by `type=tool_returned` and causal reachability, keeping the tools relevant to the current goal.
 
-**4. Context clash** — conflicting facts break reasoning. A flat context holds two versions and no way to say which wins. The event log says it explicitly: `supersedes` points at the old fact, `causes` orders the chain. The clash is resolved before generation.
+**4. Context clash** — conflicting facts break reasoning. A flat context holds two versions and no way to say which wins. An event log can record it: `supersedes` points at the old fact, `causes` orders the chain. Resolving the clash is then a rule, not an inference.
 
-The video's own fixes — validate, compact, curate, prune — are hand-written CEP rules. This post's claim is that they can be *learned*. And the video's punchline is the same thesis: agents often do better with **less** context, if it is the **right** context.
+The video's own fixes — validate, compact, curate, prune — are hand-written CEP rules. This post's claim is that they can be *learned*, not that they are solved. And the video's punchline is the same thesis: agents often do better with **less** context, if it is the **right** context.
 
 ## Why it might be useful
 
 Four gains, plus one framing reason.
 
-**1. Native time and causality.** Transformers fake time with positional encodings. Events carry real order, intervals, and durations — "before," "after," "during" for free.
+**1. Explicit time and causality.** Positional encodings only imply order. Events can carry timestamps and causal links, making temporal information available to the router — provided those fields are accurate.
 
-**2. Bounded compute, unbounded history.** The savings come from incremental indexing and selective retrieval, not from the log itself. Keep the log on disk, materialize only the match. Memory managers like [MemGPT](https://arxiv.org/abs/2310.08560) approximate this with vector DBs and paging; events make it first-class.
+**2. Bounded compute as history grows.** The savings come from incremental indexing and selective retrieval, not from the log itself — and "unbounded" is never literal: storage, latency, and context budgets stay finite. Keep the log on disk, materialize only the match. Memory managers like [MemGPT](https://arxiv.org/abs/2310.08560) approximate this with vector DBs and paging; events make it first-class.
 
 **3. Revision, not rewrite.** In a token buffer you cannot un-say something. In an event log you append a `retraction` and `latest_version(entity)` hides the stale fact. Forgetting becomes a query.
 
@@ -89,9 +89,9 @@ Three strands each built half of this; they do not obviously meet.
 
 **Event processing has operators, not learning.** CEP engines, rule engines, and event-sourced systems already handle irregular time, causality, retraction, and aggregation over millions of events ([Flink CEP](https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/), [RETE](https://blog.hackspree.com/#on-rule-engines-1-rete-to-mcp)). They know *how* to select — `SEQ`, `NOT`, `WITHIN`, `latest_version` — but the rules are hand-written and non-differentiable.
 
-**Temporal retrieval has selection, not operators.** Memory systems like [MemGPT](https://arxiv.org/abs/2310.08560), temporal knowledge graphs, and agent frameworks ([LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), [CrewAI](https://docs.crewai.com/)) already retrieve a subset of history. But the selector is frozen — cosine similarity, paging, or recency. A `retraction` is just another embedding; nothing treats it as negation.
+**Temporal retrieval has selection, not operators.** Memory systems like [MemGPT](https://arxiv.org/abs/2310.08560) and temporal knowledge graphs already retrieve a subset of history, and agent frameworks ([LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), [CrewAI](https://docs.crewai.com/)) serialize history as structured messages. But in many of these the selector is *frozen* — cosine similarity, paging, or recency. In those implementations a `retraction` may be just another embedding; whether any of them treats it as negation is a question for systematic comparison, not a property of the whole area.
 
-**Sequence modeling has learning, not an explicit substream.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), time embeddings ([Time2Vec](https://arxiv.org/abs/1907.05321)), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345) and [Decision Mamba](https://arxiv.org/abs/2403.19979), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) model irregular sequences with learned parameters. Transformers attend densely; SSMs fold history into an input-dependent hidden state. None exposes a *retrievable, explicit* substream.
+**Sequence modeling has learning, not an explicit substream.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), time embeddings ([Time2Vec](https://arxiv.org/abs/1907.05321)), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345) and [Decision Mamba](https://arxiv.org/abs/2403.19979), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) model irregular sequences with learned parameters. Transformers attend densely; SSMs fold history into an input-dependent hidden state. They do not generally expose a *retrievable, explicit* substream.
 
 So the gap is a question, not a proven absence: **does a learned, differentiable router that emits an explicit event substream add anything?** This post argues yes — but that is a claim to test, not a gap the citations prove.
 
@@ -117,19 +117,19 @@ Swap the labels:
 | Trajectory | Event trace |
 | Reward | Did the pattern fire? |
 
-Train the same way: collect traces, label the outcome in hindsight, prepend it as conditioning, predict the next event. Conditioning on the future you want turns generation into selection.
+One could train an event model the same way — condition on a desired outcome and predict the next event. But that analogy is inspiration, not validation: outcome-conditioning does not by itself teach a model to *select* relevant events. The router needs its own objective and labels, which the mechanism section below supplies.
 
-The attention injection is where CEP becomes differentiable:
+A possible attention-level version, for later work, is where CEP becomes differentiable:
 
 ```text
 score_ij = MLP([type_i, type_j, Δt_ij, causal_edge_ij]) · (Q_i · K_j)
 ```
 
-That MLP learns "if `j` is an observation within 10s, boost" — a learnable `SEQ`. This is the temporal-bias move from [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363).
+That MLP would learn "if `j` is an observation within 10s, boost" — a learnable `SEQ`. This is the temporal-bias move from [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), and it is a possible extension, not the first experiment.
 
 ## The minimum novel mechanism
 
-Split it. The **boring** part — append-only log, index, scan — is ordinary event sourcing. The **novel** part is one component: a differentiable router that turns query plus log into a small, typed, explainable substream.
+Split it. The **boring** part — append-only log, index, scan — is ordinary event sourcing. Three mechanisms keep getting conflated, so name them: **deterministic CEP** (hand-written temporal rules), a **learned router** (a model that ranks or selects events), and **differentiable temporal attention** (a learned relationship-scoring layer). The initial contribution is the second only — learned event selection over a typed history. The third is a possible later extension, not what the first experiment requires.
 
 **Schema.** Six fields:
 
@@ -142,13 +142,15 @@ Split it. The **boring** part — append-only log, index, scan — is ordinary e
 
 **Inputs and outputs.** In: log prefix + query (the event being answered, or a goal pattern like `latest(preference)`). Out: substream `S = {e_1 ... e_k}`, each event tagged with a matched operator and a weight. The generator reads `S`, not the log.
 
-**Two-stage selection.** Stage one (non-learned): filter by type, entity, time window, causal reachability → candidate set `C`. The index does this for free, keeping scoring at `O(C)`, not `O(E²)`. Stage two (learned):
+**Two-stage selection.** Stage one (non-learned): filter by type, entity, time window, causal reachability → candidate set `C`. Stage two (learned):
 
 ```text
 score(e_i, q) = σ( MLP([type_i, type_q, Δt, causal_edge, payload_emb_i, payload_emb_q]) )
 ```
 
 Top-k, tag, emit. The sigmoid gives continuous scores, but hard top-k is discrete — the gradient does not flow through selection. So the initial experiment trains *supervised* (predict gold relevance; hard top-k only at inference). End-to-end is a separate experiment.
+
+On complexity: with incremental indexing and cached embeddings, the router avoids re-encoding the full history each query. Its cost depends on candidate discovery, candidate scoring, and the size of the selected context — not necessarily on the whole history. (`O(C)` scoring assumes each candidate scores in constant time; indexing, embedding, and causal traversal are separate costs.)
 
 **Training.** Two options. *Hindsight supervision*: a hand-written CEP oracle marks the correct substream; the router imitates it. *End-to-end*: generator loss flows back through a soft mask or Gumbel-Softmax. The first is what the initial experiment runs.
 
@@ -168,11 +170,13 @@ The embedder is content + time + type + causal links ([Time2Vec](https://arxiv.o
 
 ## A falsifiable experiment
 
-The weekend demo is not the argument. A hypothesis, four baselines, and a metric are.
+A hypothesis, four baselines, and a metric are the argument.
 
 **Task: Temporal Retrieval QA with Retractions**, in two tiers.
 - *Control tier* (deterministic): preference asserted at `t1`, retracted at `t2`, re-asserted at `t3`. `latest_version(entity)` solves it — checks correctness, not whether learning adds anything.
 - *Discriminating tier*: ambiguous payloads whose retraction target must be inferred, noisy typing, interleaved entities, structured+semantic constraints. This is where learning must earn its keep.
+
+The test set must contain temporal patterns and combinations not present in training — otherwise the experiment measures memorization, not routing.
 
 **Hypothesis.** A retraction-aware router reaches higher accuracy at fixed context, and holds it as the log grows. Two parts, each falsifiable: **H1** bounded context is sufficient; **H2** learning beats frozen selection — the trained router matches or beats a hand-written CEP rule.
 
@@ -204,7 +208,7 @@ The one decision that keeps the whole thing defensible: **don't fine-tune the ge
 
 **B. `SEQ`, `NOT`, `COUNT` are discrete logic.** Hard rules break backprop. Fix: a neural-symbolic soft mask — sigmoid over the temporal-bias MLP (a match is a probability), or Gumbel-Softmax routing. This is the continuous relaxation temporal point processes already know.
 
-**C. No benchmark.** Frozen-LLM + event log is already standard (AutoGen, CrewAI, LangGraph). The claim needs a benchmark where dense attention fails — that is the Temporal Retrieval QA task above.
+**C. No benchmark.** Frozen-LLM + event log is already standard (AutoGen, CrewAI, LangGraph). The claim needs a benchmark that tests whether event routing retains accuracy and cuts cost as history length and temporal complexity grow — not one rigged so dense attention fails; dense attention may stay competitive or win in some conditions. That is the Temporal Retrieval QA task above.
 
 One caveat survives: **messy payloads.** Embedding `{"JSON": ...}` and natural language in one space so CEP matches both is unsolved.
 
@@ -223,7 +227,7 @@ If you want agents that remember *when, why, and for how long* — not chatbots 
 **The reframing**
 
 - Chen, L. et al. [*Decision Transformer: Reinforcement Learning via Sequence Modeling*](https://arxiv.org/abs/2106.01345) — NeurIPS 2021. The sequence-model-over-trajectories trick transplanted onto events.
-- Ota, T. [*Decision Mamba: Reinforcement Learning via Hybrid Selective Sequence Modeling*](https://arxiv.org/abs/2403.19979) — 2024. Decision-model conditioning on a selective state-space backbone.
+- Ota, T. [*Decision Mamba: Reinforcement Learning via Hybrid Selective Sequence Modeling*](https://arxiv.org/abs/2403.19979) — NeurIPS 2024. Decision-model conditioning on a selective state-space backbone. (Distinct from the same-named NeurIPS 2024 offline-RL paper *Decision Mamba: A Multi-Grained State Space Model with Self-Evolution Regularization for Offline RL*.)
 
 **Event-based in spirit already**
 
@@ -249,7 +253,7 @@ If you want agents that remember *when, why, and for how long* — not chatbots 
 
 **Agent frameworks that already treat history as events**
 
-- [LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), and [CrewAI](https://docs.crewai.com/) — serializing history as structured events is default practice; this is the baseline a learned router must beat.
+- [LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), and [CrewAI](https://docs.crewai.com/) — serialize history as structured messages/events; the extent to which they treat retraction as negation is an open comparison point, and a learned router must beat this baseline.
 
 **Context engineering and the four failure modes**
 

@@ -12,11 +12,15 @@ This is a reframing, not a new architecture. It borrows Decision Transformer's o
 
 ## Intuition
 
-Why does this feel right? Because it's how everything else that deals with time already works. A database doesn't re-read its whole history to answer one query — it keeps a log and an index and asks "what changed, and when." A stream processor doesn't rescan the stream; it matches patterns as events arrive. Human memory is the same: to answer "what's the current policy?" you reach for the last change and whatever it superseded, not your whole life.
+Language models process information as token sequences, but the histories of long-running agents are not merely sequences of text. They are records of events: decisions made, actions attempted, observations received, facts revised, and commitments established. The significance of an event depends not only on its content, but also on when it occurred, which entity it concerns, what it changes, and how it relates to subsequent events.
 
-A language model is the odd one out — it re-reads everything, every turn. Its context is a flat string with no notion of *before* or *replaced-by*. That single gap explains all four failure modes: poisoning, distraction, confusion, and clash are all just "a flat pile of text can't express change."
+This suggests a useful distinction between **representing history and reasoning over history**. A transcript preserves what was said, but it does not inherently provide an explicit representation of temporal relationships, superseded information, causal dependencies, or the conditions under which an earlier event becomes relevant again. A model may infer these relationships from text, and an agent can compensate with summaries, retrieval systems, or structured memory. However, these mechanisms do not automatically provide a unified way to query an evolving history as a sequence of typed, temporally related events.
 
-So the intuition is simple: **the missing thing isn't more context, it's the shape of context.** Events give context a shape — order, type, causality, supersession — and a shape is what lets you route instead of re-read.
+Event-based systems offer a different starting point. Instead of treating the entire history as undifferentiated context, they represent it as an ordered record of state-changing events. Complex event processing (CEP) can identify patterns across those events using explicit temporal and relational rules. A learned selection mechanism could complement this deterministic layer by identifying which events are relevant to a particular question, especially when relevance depends on semantic meaning rather than predefined rules alone.
+
+The interesting possibility is therefore not simply to replace tokens with events, nor to assume that attention is inherently unsuitable for temporal reasoning. It is to separate two responsibilities that are often entangled in long-running agents: maintaining and querying an evolving history, and generating a response from the information relevant to the current task. Under this view, event processing and language modeling become complementary mechanisms: the former organizes and selects evidence across time; the latter interprets that evidence and produces an answer.
+
+This intuition motivates an exploratory question: **could a language model reason more reliably and economically over long-running histories when its context is assembled from a structured stream of relevant events, rather than relying primarily on a growing transcript or generic retrieval?** The answer is not obvious. Structured event selection introduces its own risks, including omitted evidence, incorrect temporal relationships, and brittle rules. Its value must therefore be established empirically, against retrieval and context-selection baselines, on tasks where temporal order, revisions, and relationships between events genuinely matter.
 
 ## Context is an event log, not a buffer
 
@@ -95,7 +99,7 @@ Three strands, each half-built.
 
 **Temporal retrieval: selection, not operators.** [MemGPT](https://arxiv.org/abs/2310.08560), temporal knowledge graphs, and agent frameworks ([LangGraph](https://langchain-ai.github.io/langgraph/), [AutoGen](https://microsoft.github.io/autogen/), [CrewAI](https://docs.crewai.com/)) retrieve a subset of history, but the selector is frozen — cosine similarity, paging, recency. In those implementations a `retraction` may be just another embedding — a question for comparison, not a property of the area.
 
-**Sequence modeling: learning, not an explicit substream.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), [Time2Vec](https://arxiv.org/abs/1907.05321), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345)/[Mamba](https://arxiv.org/abs/2403.19979), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) model irregular sequences. Transformers attend densely; SSMs fold history into a hidden state. They don't expose a retrievable substream.
+**Sequence modeling: learning, not an explicit substream.** Temporal point processes ([Transformer Hawkes Process](https://arxiv.org/abs/2002.09291)), [Time2Vec](https://arxiv.org/abs/1907.05321), [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363), [Decision Transformer](https://arxiv.org/abs/2106.01345)/[Decision Mamba](https://arxiv.org/abs/2406.00079), and state-space models ([Mamba](https://arxiv.org/abs/2312.00752), [RWKV](https://arxiv.org/abs/2305.13048)) model irregular sequences. Transformers attend densely; SSMs fold history into a hidden state. They don't expose a retrievable substream.
 
 Gap (a question, not a proven absence): **does a learned, differentiable router that emits an explicit event substream add anything?** This argues yes — to test, not to assume.
 
@@ -125,7 +129,7 @@ One could train an event model the same way. That's inspiration, not validation:
 score_ij = MLP([type_i, type_j, Δt_ij, causal_edge_ij]) · (Q_i · K_j)
 ```
 
-That's the temporal-bias move from [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363) — a possible extension, not the first experiment.
+That MLP is the proposal's own scoring mechanism. [Temporal Fusion Transformers](https://arxiv.org/abs/1912.09363) is related work on temporal modeling and selection (variable selection, gating, interpretable attention) — not the source of the formula. This attention-level version remains a possible extension, not the first experiment.
 
 ## The minimum novel mechanism
 
@@ -176,9 +180,9 @@ Embedder = content + time + type + causal links ([Time2Vec](https://arxiv.org/ab
 
 The test set must contain patterns and combinations not in training — else it measures memorization, not routing.
 
-**Hypothesis.** A retraction-aware router reaches higher accuracy at fixed context and holds it as the log grows. **H1**: bounded context is sufficient. **H2**: learning beats frozen selection — matches or beats a hand-written CEP rule.
+**Hypothesis.** **H1**: selective event context maintains answer accuracy as history length grows, within a fixed context budget. **H2**: the learned router improves the accuracy–cost trade-off over embedding retrieval, recency selection, and hand-written CEP on the discriminating task.
 
-**Baselines.** Full context (ceiling; dies at long horizons). Vector retrieval (misses retractions). Recency window (catches recency bias). Hand-written CEP rule (does learning beat writing the rule down?).
+**Baselines.** Full history (reference, not a guaranteed loser — it may win at short lengths; its cost grows with the log). Embedding retrieval (misses retractions). Recency window (catches recency bias). Hand-written CEP rule (does learning beat writing the rule down?).
 
 **Metrics.** Accuracy; retrieval precision/recall vs the gold substream; context size at matched accuracy. Key curve: accuracy vs log length, equal budgets. Dense attention may win short; the claim is only that the router *holds*. If the hand-written rule matches everywhere, H2 dies: "use CEP, skip the ML."
 
@@ -219,7 +223,7 @@ If you want agents that remember *when, why, for how long* — not chatbots that
 **The reframing**
 
 - Chen, L. et al. [*Decision Transformer: Reinforcement Learning via Sequence Modeling*](https://arxiv.org/abs/2106.01345) — NeurIPS 2021. The sequence-model-over-trajectories trick transplanted onto events.
-- Ota, T. [*Decision Mamba: Reinforcement Learning via Hybrid Selective Sequence Modeling*](https://arxiv.org/abs/2403.19979) — NeurIPS 2024. Decision-model conditioning on a selective state-space backbone. (Distinct from the same-named NeurIPS 2024 offline-RL paper *Decision Mamba: A Multi-Grained State Space Model with Self-Evolution Regularization for Offline RL*.)
+- Huang, S., Hu, J., Yang, Z., Yang, L., and Luo, T. [*Decision Mamba: Reinforcement Learning via Hybrid Selective Sequence Modeling*](https://arxiv.org/abs/2406.00079) — NeurIPS 2024. Decision-model conditioning on a selective state-space backbone. (Distinct from Lv, Q. et al., [*Decision Mamba: A Multi-Grained State Space Model with Self-Evolution Regularization for Offline RL*](https://arxiv.org/abs/2406.05427), also NeurIPS 2024.)
 
 **Event-based in spirit already**
 
@@ -231,7 +235,7 @@ If you want agents that remember *when, why, for how long* — not chatbots that
 
 - Zuo, S. et al. [*Transformer Hawkes Process*](https://arxiv.org/abs/2002.09291) — ICML 2020. Irregular event sequences with a transformer.
 - Kazemi, S. M. et al. [*Time2Vec: Learning a Vector Representation of Time*](https://arxiv.org/abs/1907.05321) — 2019.
-- Lim, B. et al. [*Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting*](https://arxiv.org/abs/1912.09363) — 2019. The temporal-bias move the CEP mask generalizes.
+- Lim, B. et al. [*Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting*](https://arxiv.org/abs/1912.09363) — 2019. Related work on temporal modeling and selection: variable selection, gating, and interpretable temporal attention.
 
 **Learned sparse attention, differentiable retrieval, and neural-symbolic temporal reasoning**
 

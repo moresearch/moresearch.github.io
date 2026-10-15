@@ -95,59 +95,43 @@
           <div class="tags"><span class="tag">event-sourcing</span><span class="tag">complex-event-processing</span><span class="tag">context-engineering</span><span class="tag">temporal-reasoning</span><span class="tag">long-context</span><span class="tag">agents</span><span class="tag">research-direction</span><span class="tag">llm-architecture</span></div>
           
         </header>
-        <div class="post-body"><p>The question, narrowed to one sentence: <strong>does a learned selector over typed event histories improve temporal question answering under a fixed context-token budget, compared with strong retrieval and rule-based baselines?</strong></p>
-<p>Long-running agents keep histories of events, decisions, observations, and revisions, but usually hand a language model a flat token string and let it infer what changed and when. The proposal is to assemble that context from an explicit event history instead: deterministic temporal rules constrain the candidates, a learned selector picks the relevant ones, and a frozen generator answers from the result. Token attention stays unchanged; the change is in how context is selected.</p>
-<p>This is not a claim that event-based context is inherently better. It is a falsifiable question about the accuracy–cost trade-off.</p>
-<h2 id="intuition">Intuition</h2>
-<p>A long-running agent's history isn't a flat transcript — it's a record of events: decisions, actions, observations, revised facts, commitments. An event's significance depends on its content, when it happened, which entity it touches, what it changes, and how it relates to later events.</p>
-<p>That is the difference between <strong>representing history and reasoning over it</strong>. A transcript records what was said; it does not make temporal order, superseded facts, or causal links explicit. Models can infer these from text, and agents can patch around it with summaries or retrieval — but neither gives a uniform way to query an evolving history as typed, temporally related events.</p>
-<p>Event-based systems do. They store history as an ordered log of state changes; CEP matches temporal patterns with explicit rules; a learned selector picks the events relevant to a question when relevance is semantic rather than rule-shaped.</p>
-<p>So the idea isn't &quot;events instead of attention.&quot; It's separating two jobs agents currently entangle: <strong>querying an evolving history</strong>, and <strong>generating from the relevant slice</strong>. Event processing selects; the language model interprets.</p>
+        <div class="post-body"><p>One question: does a learned selector over typed event histories improve temporal question answering under a fixed context-token budget, versus strong retrieval and rule-based baselines?</p>
+<p>Long-running agents keep histories of events — decisions, observations, revisions — but hand a language model a flat token string and make it infer what changed and when. This proposal instead assembles context from an explicit event log: deterministic temporal rules constrain the candidates, a learned selector picks the relevant ones, and a frozen Qwen3-0.6B answers from the result. Token attention is unchanged; the change is in how context is selected.</p>
+<p>The direct inspiration is IBM Technology's <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I">Context Engineering for AI Agents: 4 Failure Modes to Avoid</a>, released today. It names four ways context fails long-running agents — poisoning, distraction, confusion, clash. This idea explores only the temporal slice: retrieval, revision, and answer accuracy.</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I"><img src="https://img.youtube.com/vi/BwXremQ-i6I/hqdefault.jpg" alt="IBM Technology — Context Engineering for AI Agents: 4 Failure Modes to Avoid"></a></p>
-<p>IBM's <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I">context-engineering talk</a> names four ways context fails long-running agents — poisoning, distraction, confusion, clash. This proposal evaluates only the temporal slice: retrieval, revision, and answer accuracy.</p>
-<h2 id="proposed-mechanism">Proposed mechanism</h2>
-<p>Three components, and only one is the contribution.</p>
-<p><strong>Event store</strong> — append-only records. Revision is a pointer, not a deletion:</p>
+<h2 id="the-idea">The idea</h2>
+<p>The useful distinction is <strong>representing history vs reasoning over it</strong>. A transcript records what was said; it does not make temporal order, superseded facts, or causal links explicit. An event log does — an ordered record of state changes, where a retraction is a pointer, not a deletion:</p>
 <pre><code class="language-json">{ &quot;id&quot;: &quot;evt-0042&quot;, &quot;type&quot;: &quot;constraint_updated&quot;, &quot;t&quot;: 1734200000,
   &quot;entity&quot;: &quot;network_policy&quot;, &quot;payload&quot;: &quot;...&quot;, &quot;supersedes&quot;: &quot;evt-0019&quot; }
 </code></pre>
-<p><strong>Deterministic candidate filter</strong> — CEP-style rules (<code>latest_version(entity)</code>, time windows, causal reachability) narrow the log to a candidate set. These operators stay fixed.</p>
-<p><strong>Learned selector</strong> — a small model scores each candidate for relevance to the query; the top-k become the context:</p>
-<pre><code class="language-text">candidates = filter(log, entity, type, window, reachability)     -- deterministic
+<p>Three pieces, one contribution:</p>
+<pre><code class="language-text">candidates = filter(log, entity, type, window, reachability)     -- deterministic CEP
 score(e,q) = σ( MLP([type_e, type_q, Δt, causal_edge, emb_e, emb_q]) )  -- learned
 context    = top_k(candidates by score)
 </code></pre>
-<p><strong>Frozen generator</strong> — <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/Qwen/Qwen3-0.6B">Qwen3-0.6B</a> reads the question plus the selected events and answers. Token attention is untouched.</p>
-<p>The selector is learned, but it is not a learned CEP engine: it learns relevance ranking only, not <code>SEQ</code>/<code>NOT</code>/<code>COUNT</code>. The contribution under test is <strong>learned selection over typed, temporally constrained candidates</strong> — nothing more.</p>
-<p>Two caveats. <code>t</code> is not automatically monotonic (out-of-order producers, clock drift): pick event time, ingestion time, or a logical sequence. And scoring is <code>O(C)</code> only if each candidate scores in constant time — candidate retrieval, embeddings, causal traversal, and serialization are separate costs, and the end-to-end comparison must include them (cold-start and repeated-query).</p>
-<h2 id="related-work-and-the-gap">Related work and the gap</h2>
-<p>Three families already cover much of this, so the novelty claim must be narrow.</p>
-<p><strong>Event-based memory.</strong> <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.14362">APEX-MEM</a> builds temporally grounded event graphs with append-only storage and resolves evolving information at retrieval; <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2603.16862">Chronos</a> stores dialogue as timestamped event tuples and retrieves evidence for time-sensitive questions; ARTEM (AAAI) combines event extraction, temporal memory, and selective retrieval. Structured temporal memory and event retrieval are established — they are not the gap.</p>
-<p><strong>Retrieval and learned selection.</strong> <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2310.08560">MemGPT</a> and agent frameworks already retrieve a subset of history by similarity, paging, or recency. Learning to select is also not new: sparse attention and differentiable retrieval do it inside the model.</p>
-<p><strong>Deterministic CEP.</strong> Rule engines and event stores provide <code>SEQ</code>, <code>NOT</code>, <code>WITHIN</code>, <code>latest_version</code>, but as hand-written, non-differentiable rules (<a target="_blank" rel="noopener noreferrer" href="https://nightlies.apache.org/flink/flink-docs-stable/docs/libs/cep/">Flink CEP</a>, <a target="_blank" rel="noopener noreferrer" href="https://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>).</p>
-<p>The narrower question: <strong>does a learned event selector, operating over candidates constrained by explicit temporal rules, improve the accuracy–cost trade-off over both strong retrieval and a well-designed deterministic event query, under equal context budgets?</strong> Whether this combination adds value is an empirical question, not an assumed gap.</p>
-<h2 id="experiment-version-1--the-minimum-credible-study">Experiment (version 1 — the minimum credible study)</h2>
-<p><strong>Task.</strong> Synthetic temporal QA with facts, updates, and retractions — a preference asserted at <code>t1</code>, retracted at <code>t2</code>, re-asserted at <code>t3</code>; &quot;what is the current policy?&quot;.</p>
-<p><strong>Representation.</strong> Append-only events: entity, type, timestamp/sequence, payload, optional supersession link.</p>
-<p><strong>Selector.</strong> Deterministic candidate filtering → small learned relevance scorer.</p>
-<p><strong>Generator.</strong> Frozen Qwen3-0.6B, question + selected events only.</p>
-<p><strong>Baselines.</strong> Full context; embedding retrieval; recency selection; deterministic event selection.</p>
-<p><strong>Outcomes.</strong> Primary: answer accuracy at a fixed token budget as history length grows. Secondary: evidence-selection precision/recall, token count, end-to-end latency.</p>
-<p>Three design rules make it credible:</p>
-<ol>
-<li><strong>Gold evidence independent of the learned model.</strong> A deterministic oracle labels rule-defined cases; semantic or ambiguous cases use controlled generation with known provenance or manually validated labels. Otherwise the router is trained and evaluated against the same rule engine's assumptions.</li>
-<li><strong>Baselines see the same information.</strong> Give retrieval the same events and metadata, including a stronger variant that resolves correction chains. Don't make a vector baseline deliberately retraction-blind and then claim revision handling wins.</li>
-<li><strong>Isolate the variable.</strong> Same schema, candidate rules, generator, prompt, and token budget across selectors; include indexing and routing overhead in cost.</li>
-</ol>
-<p><strong>Falsification.</strong> If a hand-written rule or a retraction-aware retrieval matches the learned selector everywhere, learning is not justified. If full context wins at every affordable length, selection adds nothing at this scale.</p>
-<h2 id="limitations-and-next-steps">Limitations and next steps</h2>
-<p>Three ways this can fail, and what comes after.</p>
 <ul>
-<li><strong>Rules may suffice.</strong> If deterministic CEP already solves the synthetic task, the learned selector is redundant. The discriminating cases — ambiguous payloads, noisy typing, interleaved entities — are where learning must earn its keep, and they must not leak from training.</li>
-<li><strong>Selection can drop evidence.</strong> A scorer that picks a correction but omits the statement it corrects fails downstream; temporal dependencies and grouping need explicit handling.</li>
-<li><strong>Overhead can erase the savings.</strong> Candidate retrieval, embeddings, and serialization may cost more than the tokens saved. Measure end-to-end, cold-start and repeated-query.</li>
+<li><strong>Event store</strong> — append-only; revision is a pointer.</li>
+<li><strong>Deterministic filter</strong> — <code>latest_version(entity)</code>, time windows, reachability. Fixed, not learned.</li>
+<li><strong>Learned selector</strong> — relevance ranking only; it does not learn <code>SEQ</code>/<code>NOT</code>/<code>COUNT</code>.</li>
+<li><strong>Frozen generator</strong> — Qwen3-0.6B reads question + selected events.</li>
 </ul>
-<p>Deferred until the frozen-generator experiment shows a gap: fine-tuning the generator, end-to-end gradients through a soft mask (Gumbel-Softmax), learning the temporal operators themselves, and <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2106.01345">Decision Transformer</a>-style outcome conditioning. Generalization beyond synthetic histories is also open.</p>
+<p>So the contribution under test is narrow: learned selection over typed, temporally constrained candidates. (<code>t</code> isn't automatically monotonic — pick event time, ingestion time, or a sequence; and end-to-end cost must count candidate retrieval, embeddings, traversal, and serialization, cold-start and repeated-query.)</p>
+<h2 id="related-work-and-the-gap">Related work and the gap</h2>
+<p>Structured temporal memory and event retrieval already exist: <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2604.14362">APEX-MEM</a> (event graphs + append-only storage), <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2603.16862">Chronos</a> (timestamped event tuples for time-sensitive QA), ARTEM (event extraction + temporal memory + selective retrieval). Learned selection also exists — sparse attention and differentiable retrieval — and deterministic CEP gives <code>SEQ</code>/<code>NOT</code>/<code>WITHIN</code>/<code>latest_version</code> as hand-written rules.</p>
+<p>So the gap isn't &quot;events&quot; or &quot;learned selection.&quot; It's whether a learned selector, constrained by explicit temporal rules, beats both strong retrieval and a well-designed deterministic query under equal budgets. That's an empirical question, not an assumed gap.</p>
+<h2 id="the-experiment">The experiment</h2>
+<p>Synthetic temporal QA with facts, updates, and retractions (a preference asserted at <code>t1</code>, retracted at <code>t2</code>, re-asserted at <code>t3</code>; &quot;what is the current policy?&quot;).</p>
+<ul>
+<li>Representation: append-only events (entity, type, timestamp/sequence, payload, optional supersession).</li>
+<li>Selector: deterministic filter → small learned scorer.</li>
+<li>Generator: frozen Qwen3-0.6B, question + selected events only.</li>
+<li>Baselines: full context, embedding retrieval, recency, deterministic selection.</li>
+<li>Primary outcome: answer accuracy at a fixed token budget as history grows. Secondary: selection precision/recall, tokens, latency.</li>
+</ul>
+<p>Three rules: gold evidence must be independent of the learned model; baselines must see the same information (including a retraction-aware retrieval); and isolate the variable — same schema, rules, generator, prompt, and budget, with indexing overhead counted.</p>
+<p>The idea is falsified if a hand-written rule or retraction-aware retrieval matches the selector everywhere, or if full context wins at every affordable length.</p>
+<h2 id="limitations">Limitations</h2>
+<p>Rules may suffice; selection can drop the statement a correction fixes; overhead can erase the token savings. Deferred until the frozen-generator run shows a gap: generator fine-tuning, end-to-end gradients, learned operators, Decision Transformer-style conditioning. Generalization beyond synthetic data is open.</p>
 <h2 id="references">References</h2>
 <p><strong>Event-based memory and temporal retrieval</strong></p>
 <ul>
@@ -167,7 +151,7 @@ context    = top_k(candidates by score)
 </ul>
 <p><strong>Motivation</strong></p>
 <ul>
-<li>Keen, M. (IBM Technology). <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I"><em>Context Engineering for AI Agents: 4 Failure Modes to Avoid</em></a>.</li>
+<li>Keen, M. (IBM Technology). <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=BwXremQ-i6I"><em>Context Engineering for AI Agents: 4 Failure Modes to Avoid</em></a> — released 2026-10-15; the inspiration for this idea.</li>
 </ul>
 <p><strong>Related ideas (future work)</strong></p>
 <ul>

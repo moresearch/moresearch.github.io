@@ -2,8 +2,8 @@
 title: Software Factory Engineering
 date: 2026-10-17
 slug: software-factory-engineering
-summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessal shows why: a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line."
-tags: software-factory, dark-factory, agents, software-engineering, factory-engineering, specialization, verification, patrick-debois
+summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessal shows why a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line. It also introduces the emerging role of software factory engineer and a software factory development lifecycle for building and operating the factory itself."
+tags: software-factory, dark-factory, agents, software-engineering, factory-engineering, software-factory-engineer, software-factory-development-lifecycle, specialization, verification, patrick-debois
 ---
 
 Ask whether software engineering is becoming a factory and the answer is probably yes. The more useful question is: *which* factory?
@@ -59,12 +59,9 @@ Examples of product lines:
 - API integration adapters with defined contracts, retry semantics, rate limits, and reconciliation tests.
 - Data pipelines with schema contracts, idempotency requirements, freshness SLAs, and reconciliation against sources.
 - Cloud infrastructure modules with policy-as-code checks, cost constraints, and a conformance suite.
-- Migrations with reversibility, backfill validation, and cutover runbooks.
 - Developer CLIs and code generators with a command contract, exit codes, and golden-output tests.
-- Documentation sets generated from a source of truth and checked for coverage and link integrity.
 - Evaluation and benchmark suites with reproducible tasks, graders, and statistical acceptance criteria.
-- Static sites and content products with a rendering contract, accessibility checks, and link validation.
-- Regulated or safety-critical components, where the acceptance regime includes traceability, certification evidence, and independent review.
+- Regulated or safety-critical components, where acceptance includes traceability, certification evidence, and independent review.
 
 Each is a different factory. They may share infrastructure — model access, sandboxing, artifact storage, telemetry, identity — but they do not share a specification language, a verification oracle, or a definition of done.
 
@@ -72,28 +69,53 @@ The artifact product is the right unit because it can carry a stable contract. A
 
 ## What factory engineering builds
 
-If a factory is a product line plus a production system, factory engineering has concrete deliverables:
+Factory engineering has concrete deliverables: a product-line charter, a specification schema, a reference corpus, a harness and toolchain, verification oracles, human gates, yield telemetry, and change management. Together they form the factory's operating system — and the basis for a lifecycle.
 
-- **A product-line charter:** what the factory produces, what is explicitly out of scope, and which quality and regulatory regimes apply.
-- **A specification schema:** structured enough to validate, expressive enough to capture real decisions, narrow enough to reject work outside the product line.
-- **A reference corpus:** golden artifacts, exemplars, and anti-exemplars — the factory's institutional memory.
-- **A harness and toolchain:** the versioned build, test, lint, security, and deployment machinery the agents operate.
-- **Verification oracles:** tests, invariants, reconciliations, policy checks, and review procedures that decide acceptance. If the oracle is weak, the yield number is fiction.
-- **Human gates:** placed where judgment is irreducible, not where it is habitual.
-- **Telemetry and yield accounting:** first-pass yield, rework rate, defect escape rate, cost per accepted artifact, specification coverage, changeover cost.
-- **Change management:** a way to detect drift, re-run conformance, and upgrade models or dependencies without silently changing what "accepted" means.
+## The software factory engineer
 
-This is ordinary engineering discipline applied to an unusual production system. It is the difference between a factory and a very expensive autocomplete.
+A new role is emerging, and it is not a renamed software engineer. The **software factory engineer** owns the production function, not the artifacts coming out of it. Their job is to make the factory reliable, measurable, and economical.
+
+The role is easiest to define by its questions. A software engineer asks whether a piece of code works. A software factory engineer asks whether the production system reliably produces accepted artifacts at a defensible cost — and whether the organization can prove it when something goes wrong. The artifact is a product of the factory. The factory is the engineer's product.
+
+In practice, the role combines disciplines that used to sit in different teams: product-line design (what the factory serves and refuses), specification engineering (the input language and its validation), verification engineering (oracles and acceptance evidence), platform operations (sandboxes, credentials, observability, cost, incident response), agent engineering (harnesses, context, model upgrades), and product economics (yield, cycle time, cost per accepted artifact).
+
+That is too much for one person at scale, and the role usually starts as a small team rather than a unicorn hire. The important distinction is ownership. A platform engineer provides shared capabilities: compute, sandboxes, identity, telemetry. A software factory engineer composes those capabilities into a production function and is accountable for its yield. The platform team can say the sandbox is available. The factory engineer has to say the factory produced twelve accepted artifacts this week, rejected three specifications as out of scope, and escaped one defect that the oracle did not catch.
+
+This is also the answer to Debois's fifteen-ticket question. Self-improvement work is not noise. It is the factory's maintenance backlog, and it needs an owner with a roadmap. Without that role, the factory either stalls or optimizes itself in directions nobody chose.
+
+The best candidates are systems thinkers who can say precisely what class of artifact a domain supports, how it will be verified, and what the factory should refuse to build.
+
+## The software factory development lifecycle
+
+Factories are products, so they need a lifecycle. Most teams jump from a working demo to production and skip the stages that make a production function trustworthy. The result is predictable: a factory with no charter, an unbounded product line, a weak oracle, and no answer to who owns the tickets it generates.
+
+A **software factory development lifecycle** (SFDL) makes those stages explicit. The names will vary by organization; the sequence and the exit criteria matter more than the vocabulary.
+
+**1. Fit and product-line discovery.** Identify the artifact class, its expected volume, its repeatability, and whether a real oracle is feasible. Not every domain is factory-shaped. Exit: evidence that the class is repeatable and verifiable, plus a build-buy-rent decision.
+
+**2. Charter and design.** Define outputs, refusals, interfaces, acceptance regime, risk appetite, owner, and economic targets. Exit: a charter with measurable acceptance criteria and an accountable owner.
+
+**3. Bootstrap.** Build the specification schema, reference corpus, harness, oracles, and one paved road. Run a single artifact end to end. Exit: a golden artifact passes the factory's own acceptance procedure, with failures diagnosed by the factory rather than by a human reading a diff.
+
+**4. Pilot and shadow operation.** Run alongside the existing human process. Measure first-pass yield, rework, defect escape rate, cycle time, and cost per accepted artifact. Do not grant merge or deploy authority yet. Exit: a baseline, a risk review, and evidence that the oracle catches the failures that matter.
+
+**5. Operate.** Put the factory into production with telemetry, human gates, incident response, and change management. The factory itself needs on-call responsibility: when the harness breaks, the model changes, or the sandbox leaks, someone must own the response. Exit: sustained yield inside agreed thresholds, not a launch date.
+
+**6. Evolve or fork.** Models change, dependencies drift, and product lines expand. Re-run conformance, version the acceptance standard, and decide whether to extend the existing factory or build a new one. Exit: a documented change with the oracle re-validated against the new reality.
+
+**7. Retire.** Stop production, migrate the artifacts, archive the corpus and oracles, and revoke credentials. Exit: no orphaned artifacts, no orphaned tickets, and no factory still running because nobody remembered to turn it off.
+
+This is a loop, not a waterfall. Pilot findings reshape the charter. Operational incidents reshape the oracles. Evolution may send a product line back to discovery. What matters is that each transition has an artifact and an owner, and that the factory's definition of "accepted" is versioned rather than inferred.
+
+The lifecycle also gives the factory's self-generated work a place to go. The fifteen tickets about improving the factory become a roadmap item with a stage, an owner, and an exit criterion instead of a Slack thread asking who is responsible. That is the difference between a factory that improves itself coherently and one that merely produces more work.
 
 ## Dark does not mean ownerless
 
 The most instructive part of Debois's interview is the operational mess that factories expose.
 
-At Tessal, the factory unexpectedly took over marketing and sales tickets as well as engineering work. It produced too many features for go-to-market to keep up. Maintainers found inconsistencies between classes written by different engineers and moved more of their taste into deterministic checks — linters, verifiers, tests — so agents could detect the problem without a human comment on a ticket. And then the factory started filing tickets about improving itself, with no owner assigned.
+At Tessal, the factory unexpectedly took over marketing and sales tickets as well as engineering work. It produced too many features for go-to-market to keep up. Maintainers found inconsistencies between classes written by different engineers and moved more of their taste into deterministic checks — linters, verifiers, tests — so agents could detect the problem without a human commenting on a ticket. And then the factory started filing tickets about improving itself, with no owner assigned.
 
 Debois's conclusion is that ownership is not optional: "Can you do it without? Yes. But can you redo it without ownership? No." The factory needs an owner accountable for its yield, and the organization needs a deliberate decision to create that team. Otherwise, as he puts it, the tools get handed to engineering with the instruction to figure it out, and nobody owns the production function.
-
-This is also where the line between platform and factory matters. A platform provides shared capabilities: sandboxes, proxies, a skills registry, observability, security scanning. A factory owns a production function. Confusing the two produces a platform team that thinks it is building factories and product teams that think they are using one. Debois describes the eventual convergence of the enablement team and the factory maintenance team into something like a platform team — but for the software factory, not for the cloud.
 
 Two more warnings from the interview are worth keeping:
 

@@ -2,19 +2,21 @@
 title: Software Factory Engineering
 date: 2026-10-17
 slug: software-factory-engineering
-summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessal shows why a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line. It also introduces the emerging role of software factory engineer and a software factory development lifecycle for building and operating the factory itself."
-tags: software-factory, dark-factory, agents, software-engineering, factory-engineering, software-factory-engineer, software-factory-development-lifecycle, specialization, verification, patrick-debois
+summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessl shows why a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line. It also introduces the role of software factory engineer, a factory development lifecycle, and the case for engineering the factory as the environment in which coding agents operate."
+tags: software-factory, dark-factory, agents, environment-engineering, software-engineering, factory-engineering, software-factory-engineer, software-factory-development-lifecycle, specialization, verification, patrick-debois
 ---
 
 Ask whether software engineering is becoming a factory and the answer is probably yes. The more useful question is: *which* factory?
 
-Patrick Debois — one of the people who gave the industry DevOps — has been building software factories at Tessal. In a recent interview, [*Is the Future of Software Engineering a Factory?*](https://www.youtube.com/watch?v=FnCnv2tGsK0), he describes what happened when the whole organization was told to build one: "we ended up with five or six different factories." Not because the team wanted duplication, but because the work was not the same. As he puts it, "not all projects are similar." The factories differed by repository shape, tooling, context, and workflow.
+Patrick Debois — one of the people who gave the industry DevOps — has been building software factories at Tessl. In a recent interview, [*Is the Future of Software Engineering a Factory?*](https://www.youtube.com/watch?v=FnCnv2tGsK0), he describes what happened when the whole organization was told to build one: "we ended up with five or six different factories." Not because the team wanted duplication, but because the work was not the same. As he puts it, "not all projects are similar." The factories differed by repository shape, tooling, context, and workflow.
 
 [![Patrick Debois interviewed about software factories: five or six factories, ownership, and what it takes to survive production](images/software-factory-engineering-video.jpg)](https://www.youtube.com/watch?v=FnCnv2tGsK0)
 
 Then came the message that captures the whole problem. One morning, someone asked on Slack: the factory had created fifteen tickets about improving itself. *Who owns this?*
 
-That question is the subject of this post. A dark factory is not a room full of agents producing "software." It is a production function, and production functions need a product, a boundary, an owner, and a verification regime. The discipline that designs them is **software factory engineering**.
+That question is the subject of this post, and it rests on one key insight: **an AI coding agent is only half of the system. The other half is the environment it acts in.** The agent literature treats the environment as part of the abstraction. The software industry has spent its energy on the agent — models, prompts, context, harnesses, loops — and left the environment as a fixed backdrop. If we engineer the environment as deliberately as we engineer the agent, we can offload many of the hardest parts of agent engineering into environment engineering. The software factory should be that environment.
+
+A dark factory is not a room full of agents producing "software." It is a production function and a designed world, with a product, a boundary, an owner, and a verification regime. The discipline that designs them is **software factory engineering**.
 
 ## The factory is a production function
 
@@ -28,6 +30,24 @@ Every factory, physical or software, has four parts:
 Most dark-factory discussion obsesses over the transformation — which model, which framework, which loop. That is the visible factory floor. The leverage is in the other three. Inputs determine whether the factory can start. Outputs determine what it is for. Control determines whether anyone can trust what comes out.
 
 This is not a new idea. Robert W. Bemer's 1968 "machine-controlled production environment, or software factory" already included compilation, test-system construction, documentation, quality control, instrumentation, scheduling, and costing. The software factory has always meant organized production. What changed is that the machinery can now perform the steps that used to require human judgment at every turn.
+
+## The key insight: the agent is only half the system
+
+The standard definition is simple: an agent perceives its environment, acts on it, and receives feedback. The environment is not scenery. It defines what the agent can observe, what actions are available, what those actions cost, and what counts as success. From Russell and Norvig's agent-environment framing to the multi-agent systems literature, the definition is relational: an agent is always an agent *in* something.
+
+The software industry's AI-coding conversation has been strangely one-sided. It has focused almost entirely on the agent: better models, better prompts, better context, better harnesses, better loops. Even the harness conversation is usually agent-side — how do we give the agent more tools, more memory, more autonomy? The environment is treated as a fixed backdrop: the repository, the build system, the ticket tracker, production.
+
+That framing puts every hard problem inside the agent. It has to discover the build command, remember the conventions, infer the architecture, choose the safe action, recover from its own mistakes, and avoid the destructive one. Then we are surprised when it fails at things a human absorbed through years of context.
+
+The inversion is to engineer the environment to fit the agent — as deliberately as we engineer the agent itself. Make the repository legible: one canonical build command, a reproducible development container, typed interfaces, fast tests, structured error messages, linters that encode style, and architectural boundaries that make risky areas visible. Give the agent a sandbox with least privilege, snapshots, and reversible operations. Put a paved road in front of it instead of a toolbox and a warning label.
+
+This is not cheating. It is offloading. The agent does not need to remember the convention if a linter rejects violations. It does not need to infer the deployment sequence if there is one documented path. It does not need to be trusted never to delete the database if permissions and backups make that mistake recoverable. The difficult parts of agent engineering become ordinary environment engineering: design the constraints, feedback, and affordances so that a good-enough agent produces good work.
+
+The payoff is durability. A prompt tweak is local and fragile. An environment improvement is reusable, testable, and shared across every agent that operates in it. It also changes how we debug. When the agent fails, the first question is no longer only "what is wrong with the model?" It is also "what did the environment fail to expose, constrain, or verify?"
+
+This is where the factory becomes more than a pipeline. **The factory is the environment in which the coding agent operates.** The specification schema defines what the agent can see. The harness defines what it can do. The sandbox defines its blast radius. The oracle defines its feedback. The reference corpus defines what good looks like. The product-line charter defines what is out of bounds. The factory's job is to make the right action easy, the wrong action hard, and the result checkable.
+
+Once the factory is the environment, specialization stops being an organizational preference and becomes an engineering one. A specialized factory is a specialized world. A general factory is a generic world, and a generic world forces the agent to carry every assumption we failed to encode. The more we can put into the environment, the less the agent has to hold in its head.
 
 ## Specialization is the safety mechanism
 
@@ -45,7 +65,7 @@ Software looks exempt because the material is text and the machinery is a model.
 
 **Accountability.** "The factory built it" is not an answer to an auditor or an incident review. A specialized factory has a defined product and a defined acceptance regime, so it can answer *what was supposed to happen* and *how we know it did*. A general factory has a story about agents.
 
-This is why Tessal ended up with five or six factories. Debois's lesson is not that duplication is good. It is that a factory is shaped by its product. He describes aiming for "two or three paved roads" — standard shapes the organization can support — with teams that leave the road taking on the security, observability, and maintenance burden themselves.
+This is why Tessl ended up with five or six factories. Debois's lesson is not that duplication is good. It is that a factory is shaped by its product. He describes aiming for "two or three paved roads" — standard shapes the organization can support — with teams that leave the road taking on the security, observability, and maintenance burden themselves.
 
 ## The product defines the factory
 
@@ -113,7 +133,7 @@ The lifecycle also gives the factory's self-generated work a place to go. The fi
 
 The most instructive part of Debois's interview is the operational mess that factories expose.
 
-At Tessal, the factory unexpectedly took over marketing and sales tickets as well as engineering work. It produced too many features for go-to-market to keep up. Maintainers found inconsistencies between classes written by different engineers and moved more of their taste into deterministic checks — linters, verifiers, tests — so agents could detect the problem without a human commenting on a ticket. And then the factory started filing tickets about improving itself, with no owner assigned.
+At Tessl, the factory unexpectedly took over marketing and sales tickets as well as engineering work. It produced too many features for go-to-market to keep up. Maintainers found inconsistencies between classes written by different engineers and moved more of their taste into deterministic checks — linters, verifiers, tests — so agents could detect the problem without a human commenting on a ticket. And then the factory started filing tickets about improving itself, with no owner assigned.
 
 Debois's conclusion is that ownership is not optional: "Can you do it without? Yes. But can you redo it without ownership? No." The factory needs an owner accountable for its yield, and the organization needs a deliberate decision to create that team. Otherwise, as he puts it, the tools get handed to engineering with the instruction to figure it out, and nobody owns the production function.
 
@@ -132,7 +152,7 @@ The answer should be specific. A factory that produces CRUD admin surfaces is di
 
 That is not a limitation of the idea. It is the idea. A factory is powerful because it is specialized: because it knows its product, it can verify its product, and because it can verify its product, it can run dark.
 
-The next discipline after software engineering is not prompt engineering or loop engineering alone. It is **software factory engineering**: the design of specialized production systems that reliably turn specifications into a defined class of software artifact products. The teams that learn to build those factories — narrow, instrumented, owned, and measured — will get the economics of the dark factory without the failure modes of the general-purpose dream.
+The next discipline after software engineering is not prompt engineering or loop engineering alone. It is **software factory engineering**: the design of specialized production systems that reliably turn specifications into a defined class of software artifact products. The key insight is that the factory is not a pipeline the agent passes through. It is the environment the agent inhabits. Engineering that environment — its constraints, feedback, tools, and oracles — is how we offload the hard parts of agent engineering and make dark factories reliable. The teams that learn to build those environments — narrow, instrumented, owned, and measured — will get the economics of the dark factory without the failure modes of the general-purpose dream.
 
 ---
 
@@ -144,3 +164,5 @@ The next discipline after software engineering is not prompt engineering or loop
 - [The Factory Is Not Dead](https://blog.hackspree.com/#factory-is-not-dead) — the industrial-factory lens, the smile curve, and Bemer's 1968 software factory.
 - [Verification Is the Bottleneck](https://blog.hackspree.com/#fowler-retreat-verification-harness-engineering) — why the oracle, not the generator, determines what a factory can safely produce.
 - Robert W. Bemer, *Machine-controlled production environment*, in the [NATO Software Engineering Conference report](https://www.cs.uni.edu/~wallingf/teaching/172/resources/nato1968.pdf) (Garmisch, 1968) — the software factory as an instrumented production system, not a metaphor.
+- Stuart Russell and Peter Norvig, [*Artificial Intelligence: A Modern Approach*](https://aima.cs.berkeley.edu/) — the agent-environment framing that makes the environment half of the agent abstraction.
+- Michael Wooldridge, *An Introduction to MultiAgent Systems* — agents as situated actors whose behavior is defined relative to their environment.

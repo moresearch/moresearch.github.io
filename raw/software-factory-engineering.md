@@ -2,8 +2,8 @@
 title: Software Factory Engineering
 date: 2026-10-17
 slug: software-factory-engineering
-summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessl shows why a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line. It also introduces the role of software factory engineer, a factory development lifecycle, and the case for engineering the factory as the environment in which coding agents operate."
-tags: software-factory, dark-factory, agents, environment-engineering, software-engineering, factory-engineering, software-factory-engineer, software-factory-development-lifecycle, specialization, verification, patrick-debois
+summary: "Dark factories are production functions, not rooms full of agents. Patrick Debois's account of building five or six factories at Tessl shows why a factory has to be specialized around a class of software artifact products, owned like a product, and verified like a production line. It also introduces the role of software factory engineer, a factory development lifecycle, the case for engineering the factory as the environment in which coding agents operate, and the neurosymbolic Vericoding Loop as the strongest oracle for high-assurance product lines."
+tags: software-factory, dark-factory, agents, environment-engineering, neurosymbolic, vericoding, formal-verification, software-engineering, factory-engineering, software-factory-engineer, software-factory-development-lifecycle, specialization, verification, patrick-debois
 ---
 
 Ask whether software engineering is becoming a factory and the answer is probably yes. The more useful question is: *which* factory?
@@ -66,6 +66,30 @@ Software looks exempt because the material is text and the machinery is a model.
 **Accountability.** "The factory built it" is not an answer to an auditor or an incident review. A specialized factory has a defined product and a defined acceptance regime, so it can answer *what was supposed to happen* and *how we know it did*. A general factory has a story about agents.
 
 This is why Tessl ended up with five or six factories. Debois's lesson is not that duplication is good. It is that a factory is shaped by its product. He describes aiming for "two or three paved roads" — standard shapes the organization can support — with teams that leave the road taking on the security, observability, and maintenance burden themselves.
+
+## The Vericoding Loop
+
+Dark factories have a verification problem. Tests sample behavior. Human review is exactly what the factory removed. For some artifact classes, the strongest available oracle is neither a bigger test suite nor another model: it is a proof checker.
+
+**Vericoding** is AI-assisted development in which the model produces code together with a formal specification and a machine-checkable proof that the implementation satisfies the specification. The model may hallucinate, but the verifier does not negotiate. It accepts the proof or returns a failed obligation or counterexample. The **Vericoding Loop** is the cycle that follows: propose code, specification, and proof; check them with a symbolic tool; classify the failure; repair the artifact or decompose the goal; repeat until the verifier accepts — or until the failure reveals that the specification itself is wrong.
+
+This is **neurosymbolic engineering** made operational. The neural half supplies what symbolic tools lack: translating intent into candidate specifications, inventing invariants, searching for proofs, repairing failures, and decomposing hard goals into smaller lemmas. The symbolic half supplies what models lack: soundness, exhaustive checking, and a trust boundary that does not depend on confidence. Neither is sufficient alone. A model-only loop produces plausible code. A symbolic-only loop produces a proof of the wrong thing, slowly. The composition produces a machine-checked artifact against a property a human chose.
+
+That matters to dark software factories for five reasons.
+
+**It replaces human review with an independent oracle.** The factory can remove the reviewer without removing review, provided the property is formal enough to check. The verifier is not another agent to persuade. It is a deterministic part of the environment that can say no.
+
+**It makes acceptance auditable.** A proof artifact is versionable evidence. The factory can point to the specification, the implementation, the checker version, and the accepted proof. That is a stronger audit trail than a green test run and a confident summary from an agent.
+
+**It forces the product line to be narrow and crisp.** Formal verification works on properties such as authorization predicates, money arithmetic, parsers, state-machine transitions, serialization invariants, and concurrency protocols. It does not prove an entire SaaS product correct. That constraint is healthy: it pushes the factory toward artifact classes where acceptance can actually be defined. A payments factory can prove that a ledger posting never creates or destroys value and that only an owner can approve a transfer; a parser factory can prove that decode followed by encode returns the original bytes; a workflow factory can prove that a state machine never enters two mutually exclusive states at once. Those are the properties a human reviewer would otherwise have to reconstruct on every diff, and exactly the ones a dark factory cannot leave to an LLM judge.
+
+**It moves human work to specification ownership.** Someone still has to decide what the property means, approve the formal statement, and own its relationship to the business rule. The Vericoding Loop automates proof search and repair, not intent. The scarce human role becomes the spec owner, which is exactly where a dark factory needs human judgment.
+
+**It turns verification into environment engineering.** The checker, the specification language, the CI invocation, and the failure taxonomy are all part of the factory environment. Improving them improves every subsequent run. The agent does not need to become better at proving; the environment becomes better at rejecting what is not proved.
+
+The limits are the factory's limits. Vericoding proves stated properties, not unstated intent. If the model writes both the code and the specification from the same vague prompt, it can produce a beautiful proof of the wrong requirement. Integration behavior, units, permissions, stale data, and deployment assumptions remain outside the proof. Proof does not replace tests; it raises assurance for a bounded kernel while the harness and the rest of the factory handle the seams.
+
+That is why the Vericoding Loop belongs inside software factory engineering, not beside it. The verifier is part of the environment. The formal specification is part of the product-line charter. The proof artifact is part of acceptance. A dark factory that can run a vericoding product line has an oracle stronger than "the agent says it is done" — and that is the difference between lights-out and lights-off.
 
 ## The product defines the factory
 
@@ -166,3 +190,6 @@ The next discipline after software engineering is not prompt engineering or loop
 - Robert W. Bemer, *Machine-controlled production environment*, in the [NATO Software Engineering Conference report](https://www.cs.uni.edu/~wallingf/teaching/172/resources/nato1968.pdf) (Garmisch, 1968) — the software factory as an instrumented production system, not a metaphor.
 - Stuart Russell and Peter Norvig, [*Artificial Intelligence: A Modern Approach*](https://aima.cs.berkeley.edu/) — the agent-environment framing that makes the environment half of the agent abstraction.
 - Michael Wooldridge, *An Introduction to MultiAgent Systems* — agents as situated actors whose behavior is defined relative to their environment.
+- [Awesome Vericoding](https://github.com/JGalego/awesome-vericoding) — a curated map of classic and AI vericoding, including the propose-check-repair-decompose workflow and the trust checklist.
+- [A Benchmark for Vericoding: Formally Verified Program Synthesis](https://arxiv.org/abs/2509.22908) — a large public benchmark across Dafny, Verus, and Lean, and evidence that verifier-backed synthesis is real but uneven.
+- Swarat Chaudhuri, [*Neurosymbolic Program Synthesis*](https://www.cs.utexas.edu/~swarat/pubs/ns-handbook-2025.pdf) — the broader case for combining neural search with symbolic correctness.

@@ -48,6 +48,8 @@ They are not all equally comfortable. The inner keys are easier to reach; the ou
 
 With QMK or ZMK, a key can send a string or a chord and change per layer, so the 24 keys can become a dev layer, a writing layer, or a dedicated macro layer.
 
+And 24 is only the physical count. Miryoku has eight main layers — Base, Nav, Mouse, Button, Media, Num, Sym, Fun — so the spare keys represent **24 × 8 = 192 possible assignments**. Only 24 are reachable at once, but the same key can be a dev macro on one layer and a writing snippet on another. Add a dedicated macro layer and the ceiling goes up again.
+
 ## What I expect
 
 **First month:** slower typing, wrong layers, accidental home-row mods. **By month three:** Colemak-DH comfortable, the main Miryoku layers automatic, and a handful of macros in daily use. **Long term:** less finger travel and pinky reaching, more comfortable long sessions, faster navigation, and a keyboard shaped around my workflow.

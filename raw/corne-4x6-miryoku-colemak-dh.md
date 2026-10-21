@@ -10,6 +10,12 @@ I just bought a Corne 4x6. I wanted a metal case, could not find one in Brazil, 
 
 ![Corne 4x6 — 60 keys, split, column-staggered](images/corne-4x6.jpg)
 
+## Why this wild journey
+
+I am not doing this for novelty. The default keyboard is a set of compromises I never chose: QWERTY, row stagger, pinky modifiers, and a number row that pulls the hands off home. I type for hours every day, so small inefficiencies compound. This board lets me fix the geometry and the layout at once.
+
+The three changes reinforce each other. Miryoku assumes Colemak-DH. The 60-key matrix makes the layers possible and leaves 24 keys for macros. Learning them together is harder up front, but it avoids relearning the same habits twice. The keymap is firmware, not hardware, so the investment moves to my next board — including the custom metal case I still want to build.
+
 ## Layout
 
 **Matrix.** My board has 60 keys. Firmware defines what each key sends, so every key is programmable.
@@ -39,5 +45,11 @@ They are not all equally comfortable. The inner keys are easier to reach; the ou
 - **Remainder:** app-specific macros, experiments, or nothing.
 
 With QMK or ZMK, a key can send a string or a chord and change per layer, so the 24 keys can become a dev layer, a writing layer, or a dedicated macro layer.
+
+## What I expect
+
+**First month:** slower typing, wrong layers, accidental home-row mods. **By month three:** Colemak-DH comfortable, the main Miryoku layers automatic, and a handful of macros in daily use. **Long term:** less finger travel and pinky reaching, more comfortable long sessions, faster navigation, and a keyboard shaped around my workflow.
+
+I do not expect magic. Speed may dip before it recovers, and comfort matters more than WPM. If it fails, I can flash QWERTY back. But the point is to stop treating it as the default.
 
 **Practice:** Colemak Club, Keybr, and Monkeytype. Start in Colemak-DH from day one — no QWERTY phase — then add Miryoku layers, then macros. I will follow up with speed, accuracy, and which macros stick.

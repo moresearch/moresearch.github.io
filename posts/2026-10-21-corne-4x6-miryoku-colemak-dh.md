@@ -14,6 +14,8 @@ I just bought a Corne 4x6. I wanted a metal case, could not find one in Brazil, 
 
 I am not doing this for novelty. The default keyboard is a set of compromises I never chose: QWERTY, row stagger, pinky modifiers, and a number row that pulls the hands off home. I type for hours every day, so small inefficiencies compound. This board lets me fix the geometry and the layout at once.
 
+The history matters because this is not gadget churn. QWERTY dates to Sholes and Remington in the 1870s and was shaped by mechanical typebars, not hand comfort; the story that it was designed to slow typists down is a myth, but it was never an ergonomic layout. Splits are older than the hobby suggests: Klockenberg argued in 1926 that the two hand clusters should be separated and angled so the wrists stay straight, Kroemer suggested in 1972 that adjustable splits could reduce pain, and commercial splits arrived in the 1990s. The Corne (crkbd, 2018) is the compact DIY descendant: column-staggered halves, thumbs off the space bar, and firmware-defined keys. Colemak (2006) and Colemak-DH (2014) put common letters under stronger fingers; Miryoku (2019) packages Colemak-DH into a 36-key layer system with home-row mods and six thumb keys. A 60-key Corne keeps that geometry and adds the surplus keys I need for macros.
+
 The three changes reinforce each other. Miryoku assumes Colemak-DH. The 60-key matrix makes the layers possible and leaves 24 keys for macros. Learning them together is harder up front, but it avoids relearning the same habits twice. The keymap is firmware, not hardware, so the investment moves to my next board — including the custom metal case I still want to build.
 
 ## Layout

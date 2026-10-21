@@ -40,6 +40,4 @@ They are not all equally comfortable. The inner keys are easier to reach; the ou
 
 With QMK or ZMK, a key can send a string or a chord and change per layer, so the 24 keys can become a dev layer, a writing layer, or a dedicated macro layer.
 
-**Practice:** Colemak Club, Keybr, and Monkeytype.
-
-Plan: QWERTY first, then Colemak-DH drills, then Miryoku layers, then macros. I will follow up with speed, accuracy, and which macros stick.
+**Practice:** Colemak Club, Keybr, and Monkeytype. Start in Colemak-DH from day one — no QWERTY phase — then add Miryoku layers, then macros. I will follow up with speed, accuracy, and which macros stick.

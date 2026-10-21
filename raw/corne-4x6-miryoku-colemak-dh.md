@@ -54,4 +54,4 @@ With QMK or ZMK, a key can send a string or a chord and change per layer, so the
 
 I do not expect magic. Speed may dip before it recovers, and comfort matters more than WPM. If it fails, I can flash QWERTY back. But the point is to stop treating it as the default.
 
-**Practice:** Colemak Club, Keybr, and Monkeytype. Start in Colemak-DH from day one — no QWERTY phase — then add Miryoku layers, then macros. I will follow up with speed, accuracy, and which macros stick.
+**Practice:** [Colemak Club](https://gnusenpai.net/colemakclub/), [Keybr](https://www.keybr.com/), and [Monkeytype](https://monkeytype.com/). Start in Colemak-DH from day one — no QWERTY phase — then add Miryoku layers, then macros. I will follow up with speed, accuracy, and which macros stick.

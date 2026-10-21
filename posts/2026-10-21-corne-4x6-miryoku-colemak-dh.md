@@ -1,20 +1,22 @@
 ---
-title: "A metal Corne 4x6 and the road to Miryoku + Colemak-DH"
+title: "A non-metal Corne 4x6 for now, and the road to Miryoku + Colemak-DH"
 date: 2026-10-21
 slug: corne-4x6-miryoku-colemak-dh
-summary: "I just bought a Corne 4x6 in a metal case — after a long hunt in Brazil. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey, and here is what I expect to get out of it."
+summary: "I just bought a Corne 4x6. I wanted a metal case, could not find one in Brazil, so I settled for a non-metal build until I make my own custom metal case one day. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey."
 tags: keyboards, corne, miryoku, colemak-dh, ergonomics, split-keyboard, brazil
 ---
 
-I just bought a new keyboard: a Corne 4x6 with a metal case. It is the first board I have owned where the layout, the firmware, and the way I type are all going to change at the same time. I have been circling split ergonomic keyboards for a while, and this felt like the right moment to stop reading about them and actually commit.
+I just bought a new keyboard: a Corne 4x6. It is the first board I have owned where the layout, the firmware, and the way I type are all going to change at the same time. I have been circling split ergonomic keyboards for a while, and this felt like the right moment to stop reading about them and actually commit.
 
-![Corne 4x6 in a metal case — 42 keys, split, column-staggered](images/corne-4x6-metal.jpg)
+![Corne 4x6 — 42 keys, split, column-staggered](images/corne-4x6.jpg)
 
 ## The board
 
 The Corne — originally the crkbd — is a 42-key split keyboard: three rows of six columns per side, plus three thumb keys per half. The "4x6" name comes from the switch matrix on each half: three six-key rows plus a fourth row for the three thumb keys. It is column-staggered rather than a flat grid, so each finger gets its own column at its own height, and the thumbs finally get real keys instead of being relegated to the space bar.
 
-Mine has a metal case, which is the part I care about more than I expected. Aluminum gives the board weight, so it stays put on the desk instead of skating around mid-sentence. It also changes the sound: less hollow plastic, more of a low, solid thock. And honestly, it just looks like a tool rather than a toy.
+Mine is a non-metal build. I wanted a metal case, and that is still the version of this board I have in my head: aluminum gives the keyboard enough weight to stay put on the desk, changes the sound from something hollow to a low, solid thock, and makes it look like a tool rather than a toy.
+
+But I could not find one. So I settled for a non-metal case for now. The long-term plan is to make my own custom metal case one day, once I have the time and the workshop access to do it properly.
 
 ## Why a metal Corne was hard to find in Brazil
 
@@ -22,7 +24,9 @@ This was not a casual purchase. Finding a metal Corne in Brazil was genuinely di
 
 The local mechanical keyboard scene is small, and the niche-within-a-niche of split ergonomic boards is smaller still. Most Corne kits are sold as group buys or small batches from abroad, and metal cases are usually the most limited part of the run. Add international shipping, import taxes, and customs clearance, and the effective price of a nice aluminum case can double before it reaches your desk. Local sellers who do stock split boards tend to carry acrylic or 3D-printed cases, because those are cheaper to produce and easier to ship.
 
-So the search meant watching classifieds, importers, and group-buy leftovers for months, comparing case materials, and deciding whether to settle for acrylic or pay the import premium. I am glad I waited. The metal case is the difference between a keyboard I use and a keyboard I enjoy using.
+So the search meant watching classifieds, importers, and group-buy leftovers for months, comparing case materials, and deciding whether to settle for acrylic or pay the import premium. In the end, I did not find a metal case I was willing to pay for, and I was not going to let the search keep me from actually using the keyboard. I bought the non-metal build, and I am treating the custom metal case as a separate project for later.
+
+That is the honest trade-off: I get to start learning the layout now, and the board I really want is still ahead of me.
 
 ## The plan: Miryoku, Colemak-DH, matrix
 
@@ -92,4 +96,4 @@ I am going to take the transition in stages instead of changing everything on da
 4. **Track speed and accuracy weekly**, not daily. Daily numbers during a layout change are noise.
 5. **Keep a QWERTY fallback** on the laptop so real work does not grind to a halt.
 
-I will write a follow-up once I have a few weeks of data: typing speed, accuracy, which layers clicked, and whether the metal Corne was worth the search. For now, the board is on the desk, the keymap is flashing, and the first drill is waiting.
+I will write a follow-up once I have a few weeks of data: typing speed, accuracy, which layers clicked, and whether the non-metal build held up. Eventually there should be a second follow-up about the custom metal case, too. For now, the board is on the desk, the keymap is flashing, and the first drill is waiting.

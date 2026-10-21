@@ -18,13 +18,27 @@ I just bought a Corne 4x6. I wanted a metal case, could not find one in Brazil, 
 
 **Miryoku.** A 36-key design: five columns, three rows, and three thumbs per hand. Layers handle navigation, numbers, symbols, functions, media, and mouse; hold a thumb on the opposite hand to activate one. Home-row mods put `Ctrl`, `Alt`, `Shift`, and `GUI` under the resting fingers.
 
-## 24 spare keys
+## 60 keys − 36 = 24 macro keys
 
-Miryoku's core uses 36 keys. My board has 60. That leaves **24 keys** for macros — 12 per hand on a symmetric split.
+Miryoku's core is 36 keys: 30 alpha keys (five columns × three rows per hand) plus six thumb keys. My board has 60, so **24 keys are left for macros** — 12 per hand.
 
-They are not all equally comfortable. The inner keys are easier to reach; the outer ones are not. But every one is programmable, so the easy ones get the frequent macros and the awkward ones get the rare ones.
+| Piece | Keys |
+|---|---:|
+| Board | 60 |
+| Colemak-DH alphas (5×3 × 2) | 30 |
+| Miryoku thumbs (3×2) | 6 |
+| **Miryoku core** | **36** |
+| **Left for macros** | **24** |
 
-Ideas: `git status`, `make test`, comment line, screenshot, markdown link, `á ã ç é ê í ó ô ú`, play/pause. With QMK or ZMK, a key can send a string or a chord and change per layer, so the 24 keys can become a dev layer, a writing layer, or a dedicated macro layer.
+This is not the six-key situation of a 42-key Corne, where the only extras are one outer column per hand. On a 60-key board the surplus is four times larger. If you count only the Colemak-DH alpha block, it looks like 30 keys are free, but six of those become the Miryoku thumb/layer keys — so the real number is 24.
+
+They are not all equally comfortable. The inner keys are easier to reach; the outer and top keys are not. So the easy ones get the daily macros, the awkward ones get the rare ones, and some can stay unbound:
+
+- **Daily six:** `git status`, `make test`, comment line, screenshot, Portuguese accents, play/pause.
+- **Next tier:** markdown link, email signature, window switch, terminal, app launcher, duplicate line.
+- **Remainder:** app-specific macros, experiments, or nothing.
+
+With QMK or ZMK, a key can send a string or a chord and change per layer, so the 24 keys can become a dev layer, a writing layer, or a dedicated macro layer.
 
 **Practice:** Colemak Club, Keybr, and Monkeytype.
 

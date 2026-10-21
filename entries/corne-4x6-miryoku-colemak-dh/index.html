@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#02391f">
+  <meta name="description" content="I just bought a Corne 4x6 in a metal case — after a long hunt in Brazil. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey, and here is what I expect to get out of it.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.hackspree.com/entries/corne-4x6-miryoku-colemak-dh/">
+  <title>A metal Corne 4x6 and the road to Miryoku &#43; Colemak-DH — hackspree</title>
+  <meta property="og:title" content="A metal Corne 4x6 and the road to Miryoku &#43; Colemak-DH">
+  <meta property="og:description" content="I just bought a Corne 4x6 in a metal case — after a long hunt in Brazil. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey, and here is what I expect to get out of it.">
+  <meta property="og:url" content="https://blog.hackspree.com/entries/corne-4x6-miryoku-colemak-dh/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://blog.hackspree.com/logoicon2.png">
+  <meta property="og:image:width" content="257">
+  <meta property="og:image:height" content="705">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="A metal Corne 4x6 and the road to Miryoku &#43; Colemak-DH">
+  <meta name="twitter:description" content="I just bought a Corne 4x6 in a metal case — after a long hunt in Brazil. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey, and here is what I expect to get out of it.">
+  <meta name="twitter:image" content="https://blog.hackspree.com/logoicon2.png">
+  <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/sudo-var" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+  <style>
+    :root{--syntax-bg:#000;--syntax-normal:#bcbcbc;--syntax-keyword:#eee;--syntax-constant:#d0d0d0;--syntax-string:#8a8a8a;--syntax-comment:#585858;--syntax-number:#d0d0d0;--syntax-error-bg:#870000}
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-width:100%!important;min-height:100%!important;background:#02391f!important;color:#eafff3!important}
+    *{box-sizing:border-box}::selection{background:#00f090;color:#021a0e;text-shadow:none}::-moz-selection{background:#00f090;color:#021a0e;text-shadow:none}body{position:relative;overflow-x:hidden;font-family:"Orbitron",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}img{display:block;max-width:100%;height:auto}
+    code,pre{font-family:"Sudo Var",monospace;font-variant-ligatures:none}
+    .bg{position:fixed;inset:0;background:#02391f;z-index:0}
+    .wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box}
+    .content{width:100%;max-width:640px;margin:0 auto;padding:48px 16px}
+    .back-link{display:inline-block;margin-bottom:32px;color:#79c2a0;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.2s}
+    .back-link:hover{color:#eafff3}
+    .post-meta,.tag{margin:0;color:#79c2a0;letter-spacing:0.18em;text-transform:uppercase}
+    .post-meta{font-size:0.56rem;line-height:1.4;margin-bottom:9px}
+    h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:0.08em;color:#f3fff8}
+    h1{font-size:clamp(1.18rem,1.7vw,1.4rem);margin-bottom:12px}
+    h2{font-size:clamp(0.84rem,1.1vw,0.98rem)}h3{font-size:0.72rem}
+    .post-summary{max-width:54ch;padding-left:12px;border-left:1px solid rgba(0,224,128,0.30);color:#d6f5e4;font-size:0.62rem;line-height:1.78;letter-spacing:0.04em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;margin-bottom:28px}
+    .tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}.tag{font-size:0.4rem}
+    .raw-link{display:inline-flex;align-items:center;margin-left:.55em;color:#4f9e77;vertical-align:middle;text-decoration:none;opacity:.9;transition:color .15s ease,opacity .15s ease}
+    .raw-link:hover,.raw-link:focus-visible{color:#00f090;opacity:1}
+    .post-body{margin-top:18px;color:#8fd9b4;font-size:0.74rem;letter-spacing:0.02em;line-height:1.76;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-weight:400}
+    .post-body>:first-child{margin-top:0}.post-body>:last-child{margin-bottom:0}
+    .post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre,.post-body h2,.post-body h3,.post-body table{margin:0 0 20px}
+    .post-body table{width:100%;border-collapse:collapse;font-size:.62rem;line-height:1.6}
+    .post-body table th,.post-body table td{border:1px solid rgba(0,224,128,0.18);padding:6px 8px;vertical-align:top;text-align:left}
+    .post-body table th{color:#d6f5e4;text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:rgba(0,224,128,.08)}
+    .post-body table tr:nth-child(even) td{background:rgba(0,224,128,.035)}
+    .post-body h2,.post-body h3{font-size:0.62rem;color:#f3fff8;font-family:"Orbitron",Arial,sans-serif}
+    .post-body a,.post-body strong,.post-body code{color:#eafff3}.post-body a{text-decoration:none}
+    .post-body a:hover{color:#00f090}
+    .post-body img{width:min(720px,100%);margin:28px 0 10px;border:1px solid rgba(0,224,128,0.20);border-radius:12px;background:#021a0e;box-shadow:0 20px 48px rgba(0,0,0,0.4)}
+    .post-body figure.fig-thumb{display:inline-block;width:250px;margin:0 12px 14px 0;vertical-align:top;border:1px solid rgba(0,224,128,0.25);border-radius:8px;background:#021a0e;overflow:hidden}
+    .post-body figure.fig-thumb img{width:100%;height:auto;margin:0;border:0;border-radius:0;box-shadow:none}
+    .post-body figure.fig-thumb figcaption{padding:7px 9px;color:#79c2a0;font-size:9px;line-height:1.55;letter-spacing:0.02em;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+    .post-body ul,.post-body ol{padding-left:24px}.post-body li+li{margin-top:8px}
+    .post-body blockquote{max-width:34ch;padding-left:18px;border-left:2px solid rgba(0,240,144,0.55);color:#eafff3;font-weight:600}
+    .post-body code{padding:2px 6px;border-radius:0;background:#000;color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px}
+    .post-body pre{overflow-x:auto;padding:18px;border-radius:0;background:var(--syntax-bg);border:1px solid rgba(0,224,128,0.20);color:var(--syntax-normal);font-family:"Sudo Var",monospace;font-size:14px;line-height:20px;scrollbar-width:none;scrollbar-color:#2e8b57 #000}
+    .post-body pre code{padding:0;background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre code.hljs{display:block;overflow:visible;color:var(--syntax-normal);background:transparent;font-family:inherit;font-size:inherit;line-height:inherit}
+    .post-body pre:hover{scrollbar-width:thin}
+    .post-body pre::-webkit-scrollbar{width:0;height:0}.post-body pre:hover::-webkit-scrollbar{width:8px;height:8px}
+    .post-body pre::-webkit-scrollbar-track{background:#000}.post-body pre::-webkit-scrollbar-thumb{background:#2e8b57}
+    .post-body pre:hover::-webkit-scrollbar-thumb{background:#5fb98b}
+    .post-body .hljs-comment,.post-body .hljs-quote,.post-body .hljs-meta{color:var(--syntax-comment)}
+    .post-body .hljs-keyword,.post-body .hljs-built_in,.post-body .hljs-type,.post-body .hljs-title.function_,.post-body .hljs-title.class_,.post-body .hljs-function .hljs-title,.post-body .hljs-title,.post-body .hljs-operator,.post-body .hljs-selector-tag,.post-body .hljs-section,.post-body .hljs-link,.post-body .hljs-tag{color:var(--syntax-keyword)}
+    .post-body .hljs-literal,.post-body .hljs-variable,.post-body .hljs-property,.post-body .hljs-params,.post-body .hljs-attr,.post-body .hljs-attribute,.post-body .hljs-punctuation{color:var(--syntax-constant)}
+    .post-body .hljs-string,.post-body .hljs-symbol,.post-body .hljs-bullet,.post-body .hljs-template-tag,.post-body .hljs-template-variable,.post-body .hljs-addition,.post-body .hljs-subst{color:var(--syntax-string)}
+    .post-body .hljs-number,.post-body .hljs-regexp,.post-body .hljs-selector-class,.post-body .hljs-selector-id,.post-body .hljs-char.escape_{color:var(--syntax-number)}
+    .post-body .hljs-emphasis,.post-body .hljs-strong{color:var(--syntax-keyword)}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <div class="content">
+      <a class="back-link" href="https://blog.hackspree.com/">← Back to all posts</a>
+      <article>
+        <header>
+          <p class="post-meta"><time datetime="2026-10-21">2026-10-21</time></p>
+          <h1>A metal Corne 4x6 and the road to Miryoku &#43; Colemak-DH<a class="raw-link" href="https://blog.hackspree.com/raw/corne-4x6-miryoku-colemak-dh.md" title="Raw markdown source" aria-label="Raw markdown source of A metal Corne 4x6 and the road to Miryoku &#43; Colemak-DH" target="_blank" rel="noopener noreferrer"><svg class="raw-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5H4.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4.5L9.5 1.5Z"/><path d="M9.5 1.5v3h3"/><path d="M5.5 8h5"/><path d="M5.5 10.5h5"/><path d="M5.5 13h3"/></svg></a></h1><p class="post-summary">I just bought a Corne 4x6 in a metal case — after a long hunt in Brazil. Now I am starting the Miryoku, Colemak-DH, matrix-layout learning journey, and here is what I expect to get out of it.</p>
+          <div class="tags"><span class="tag">keyboards</span><span class="tag">corne</span><span class="tag">miryoku</span><span class="tag">colemak-dh</span><span class="tag">ergonomics</span><span class="tag">split-keyboard</span><span class="tag">brazil</span></div>
+          
+        </header>
+        <div class="post-body"><p>I just bought a new keyboard: a Corne 4x6 with a metal case. It is the first board I have owned where the layout, the firmware, and the way I type are all going to change at the same time. I have been circling split ergonomic keyboards for a while, and this felt like the right moment to stop reading about them and actually commit.</p>
+<p><img src="/images/corne-4x6-metal.jpg" alt="Corne 4x6 in a metal case — 42 keys, split, column-staggered"></p>
+<h2 id="the-board">The board</h2>
+<p>The Corne — originally the crkbd — is a 42-key split keyboard: three rows of six columns per side, plus three thumb keys per half. The &quot;4x6&quot; name comes from the switch matrix on each half: three six-key rows plus a fourth row for the three thumb keys. It is column-staggered rather than a flat grid, so each finger gets its own column at its own height, and the thumbs finally get real keys instead of being relegated to the space bar.</p>
+<p>Mine has a metal case, which is the part I care about more than I expected. Aluminum gives the board weight, so it stays put on the desk instead of skating around mid-sentence. It also changes the sound: less hollow plastic, more of a low, solid thock. And honestly, it just looks like a tool rather than a toy.</p>
+<h2 id="why-a-metal-corne-was-hard-to-find-in-brazil">Why a metal Corne was hard to find in Brazil</h2>
+<p>This was not a casual purchase. Finding a metal Corne in Brazil was genuinely difficult.</p>
+<p>The local mechanical keyboard scene is small, and the niche-within-a-niche of split ergonomic boards is smaller still. Most Corne kits are sold as group buys or small batches from abroad, and metal cases are usually the most limited part of the run. Add international shipping, import taxes, and customs clearance, and the effective price of a nice aluminum case can double before it reaches your desk. Local sellers who do stock split boards tend to carry acrylic or 3D-printed cases, because those are cheaper to produce and easier to ship.</p>
+<p>So the search meant watching classifieds, importers, and group-buy leftovers for months, comparing case materials, and deciding whether to settle for acrylic or pay the import premium. I am glad I waited. The metal case is the difference between a keyboard I use and a keyboard I enjoy using.</p>
+<h2 id="the-plan-miryoku-colemak-dh-matrix">The plan: Miryoku, Colemak-DH, matrix</h2>
+<p>Now the hard part begins. I am going to learn three things together:</p>
+<ol>
+<li><strong>A split matrix layout</strong> — six columns per hand, column-staggered, with thumbs doing real work.</li>
+<li><strong>Colemak-DH</strong> — the layout on the keys.</li>
+<li><strong>Miryoku</strong> — the layer system that makes 42 keys act like a full-size keyboard.</li>
+</ol>
+<p>That is a lot of change at once, and I know it. But the three pieces are designed for each other.</p>
+<h3 id="colemak-dh">Colemak-DH</h3>
+<p><a target="_blank" rel="noopener noreferrer" href="https://colemakmods.github.io/mod-dh/">Colemak-DH</a> is a variant of Colemak that keeps the familiar QWERTY positions for <code>Z</code>, <code>X</code>, <code>C</code>, and <code>V</code>, so common shortcuts such as <code>Ctrl+C</code> and <code>Ctrl+V</code> still work with the same hand shape. It moves <code>D</code> and <code>H</code> onto the home row for better rolls and less lateral stretching, and it keeps most punctuation within easy reach. Compared with QWERTY, it is less about raw speed and more about comfort: fewer awkward same-finger bigrams and fewer long reaches.</p>
+<p>The catch is that the first two weeks feel like typing with someone else's hands. I expect my speed to fall off a cliff before it comes back.</p>
+<h3 id="miryoku">Miryoku</h3>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/manna-harbour/miryoku">Miryoku</a> is Manna Harbour's minimal layout philosophy for small split keyboards. It organizes the board into layers:</p>
+<ul>
+<li><strong>Base</strong> for letters.</li>
+<li><strong>Nav</strong> for arrows, Home/End, Page Up/Down, and window management.</li>
+<li><strong>Symbols</strong> for brackets, punctuation, and programming characters.</li>
+<li><strong>Numbers</strong> for a numpad-style cluster.</li>
+<li><strong>Function</strong> and <strong>media</strong> layers for the rest.</li>
+<li><strong>Mouse</strong> keys, so the hands can stay on the keyboard for small pointer movements.</li>
+</ul>
+<p>Miryoku is built around the 36-key form factor (three rows of five columns plus three thumbs per hand), but it adapts to a 4x6 Corne: the extra outer columns can host modifiers, macros, or stay unused, and the top row gives a bit more room for numbers or function keys. The important idea is not the exact key count. It is that every layer is reachable from the home position, with home-row mods — <code>Ctrl</code>, <code>Alt</code>, <code>Shift</code>, and <code>GUI</code> on the home keys when held — so the pinkies stop stretching for modifiers.</p>
+<h3 id="matrix">Matrix</h3>
+<p>The Corne is a matrix in the sense that each half is a grid of switches wired in rows and columns. Typing on it is not the same as typing on a staggered row board: the columns are vertical and staggered by finger length, so the fingers move mostly up and down instead of diagonally. For someone raised on a standard keyboard, the first few days are disorienting. After that, the geometry starts to make sense — especially for the pinkies and the thumbs, which no longer have to reach sideways for common keys.</p>
+<h2 id="what-i-expect-to-get-out-of-it">What I expect to get out of it</h2>
+<p>I am trying to be honest about the benefits, because a new keyboard is easy to romanticize.</p>
+<p><strong>Less finger travel.</strong> On a 40% split board, almost everything is one layer away from the home row. Numbers, symbols, navigation, and function keys stop requiring a trip to the edges of a 104-key rectangle. Over a long writing or coding session, that adds up.</p>
+<p><strong>Modifiers without pinky gymnastics.</strong> Home-row mods put <code>Ctrl</code>, <code>Alt</code>, <code>Shift</code>, and <code>GUI</code> under keys my fingers already rest on. Instead of curling a pinky to the bottom corner for every shortcut, the modifier is a held home key. This is the change I am most curious about, and also the one I expect to mis-trigger most often at first.</p>
+<p><strong>Thumbs that do something useful.</strong> The three thumb keys per side can take <code>Space</code>, <code>Backspace</code>, <code>Enter</code>, and layer shifts. Thumbs are strong and underused on a normal keyboard; giving them real work should reduce strain on the other fingers.</p>
+<p><strong>A more symmetric posture.</strong> Splitting the board lets my shoulders sit at roughly their natural width, and the column stagger keeps my wrists straighter. I am not expecting the keyboard to fix everything — sleep, breaks, and desk height still matter — but the geometry should stop fighting me.</p>
+<p><strong>Navigation and mouse on the keyboard.</strong> The Nav and Mouse layers mean I can move the cursor, select text, switch windows, and scroll without moving my right hand to a mouse. For editing and code review, that is a quiet but constant win.</p>
+<p><strong>A layout I chose instead of inherited.</strong> QWERTY is a historical accident. Colemak-DH is not magic, and it will not make me a faster typist by itself, but it is designed around the way fingers actually move. Learning it deliberately also forces me to pay attention to habits I had stopped noticing.</p>
+<h2 id="the-costs">The costs</h2>
+<p>The costs are real too:</p>
+<ul>
+<li><strong>Speed will drop.</strong> Probably from around my normal typing speed to something embarrassing for a couple of weeks.</li>
+<li><strong>Mistakes will be frequent.</strong> Wrong layer, wrong modifier, accidental <code>Ctrl</code> chord. Home-row mods are notorious for this until the timing is tuned.</li>
+<li><strong>Two layouts in my head.</strong> I still need QWERTY on laptops and other people's machines, so I will keep a QWERTY layer or a toggle available.</li>
+<li><strong>Configuration time.</strong> Firmware, keymaps, tapping terms, and layer tweaks are their own hobby. I am trying to timebox this rather than endlessly rebuilding.</li>
+</ul>
+<h2 id="how-i-plan-to-learn-it">How I plan to learn it</h2>
+<p>I am going to take the transition in stages instead of changing everything on day one:</p>
+<ol>
+<li><strong>Type on the Corne in QWERTY first</strong> for a few days, just to get used to the split geometry and the thumb keys.</li>
+<li><strong>Switch the alpha layer to Colemak-DH</strong> and do daily drills until the home row stops feeling foreign.</li>
+<li><strong>Add Miryoku layers one at a time</strong>, starting with numbers and symbols, then navigation, then mouse keys.</li>
+<li><strong>Track speed and accuracy weekly</strong>, not daily. Daily numbers during a layout change are noise.</li>
+<li><strong>Keep a QWERTY fallback</strong> on the laptop so real work does not grind to a halt.</li>
+</ol>
+<p>I will write a follow-up once I have a few weeks of data: typing speed, accuracy, which layers clicked, and whether the metal Corne was worth the search. For now, the board is on the desk, the keymap is flashing, and the first drill is waiting.</p>
+</div>
+      </article>
+    </div>
+  </main>
+  <script>if(window.hljs){window.hljs.highlightAll()}</script>
+</body>
+</html>
+
